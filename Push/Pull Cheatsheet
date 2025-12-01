@@ -1,0 +1,11 @@
+Full Update Workflow Summary
+
+To update the remote repository:
+
+1. Get latest changes: git pull
+
+2.  Add your files: git add . #adds all new or modified files | git add (file name) #adds the speficic file
+
+3.  Commit your changes: git commit -m "A brief description of my changes"
+
+4.  Send your changes: git push
