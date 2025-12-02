@@ -35,6 +35,7 @@ workflow_status:
         status:
           - "docs/brainstorming-session-results-2025-12-02.md"
           - "docs/brainstorming-session-results-user-interactions-2025-12-02.md"
+          - "docs/brainstorming-session-results-risk-and-monitoring-2025-12-02.md"
 
       - id: "research"
         optional: true
