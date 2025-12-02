@@ -12,10 +12,11 @@ The purpose of this application is to provide an interactive, AI-enhanced simula
 
 Unlike standard simulations where task duration and costs are given, here the player must:
 
-1. Analyze the provided Work Breakdown Structure (WBS) and Requirements.
+1. Analyze the provided Work Breakdown Structure (WBS) and Requirements (given in the simulation).
 2. Contact specific "Suppliers" (simulated by AI agents) to get estimates.
 3. **Negotiate** with these suppliers because their initial quotes will cumulatively exceed the project's strict budget (700 MNOK) and timeline (15 months). Any negotiation can be continued at a later point in order to get a plan within the project scope.
-4. Construct a valid Project Plan (Gantt chart data) based on these negotiations.
+4. An important role is the project owner. The project manager can also ask for change in budget/time constraints as well in order to solve the problem of exceeding limits.
+5. Construct a valid Project Plan (Gantt chart data) based on these negotiations, with critical path shown.
 
 The MVP focuses strictly on the **Planning Phase**, specifically the collection and validation of task data.
 
