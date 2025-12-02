@@ -1,0 +1,201 @@
+# Project Proposal Grading Checklist
+# Course: Programming with AI
+# Timeframe: 1.5 months with AI-assisted development
+
+criteria:
+  # Scope Clarity and Definition (30 points)
+  - name: "Scope Clarity"
+    weight: 15
+    description: "Is the project scope clear and specific?"
+    scoring:
+      - score: 15
+        condition: "Scope is crystal clear with specific, measurable goals and well-defined boundaries"
+      - score: 10
+        condition: "Scope is clear with some specific goals, minor ambiguities exist"
+      - score: 5
+        condition: "Scope is somewhat vague with unclear boundaries or goals"
+      - score: 0
+        condition: "Scope is unclear, vague, or poorly defined"
+
+  - name: "Scope Appropriateness"
+    weight: 15
+    description: "Is the scope appropriately sized for 1.5 months with AI-assisted development?"
+    scoring:
+      - score: 15
+        condition: "Perfect scope - challenging but achievable with AI assistance in 1.5 months"
+      - score: 10
+        condition: "Slightly ambitious or slightly simple, but manageable with adjustments"
+      - score: 5
+        condition: "Too ambitious (likely unfinished) or too simple (not challenging enough)"
+      - score: 0
+        condition: "Completely unrealistic scope or trivially simple project"
+
+  # Technical Architecture (35 points)
+  - name: "Frontend Specification"
+    weight: 7
+    description: "Is there a frontend involved? Is it clearly specified?"
+    scoring:
+      - score: 7
+        condition: "Frontend clearly specified with technology stack, framework, and design approach"
+      - score: 5
+        condition: "Frontend mentioned with some technology details"
+      - score: 3
+        condition: "Frontend vaguely mentioned or unclear if needed"
+      - score: 0
+        condition: "Frontend not addressed when clearly needed, or no frontend when appropriate"
+
+  - name: "Backend Specification"
+    weight: 7
+    description: "Is there a backend involved? Is it clearly specified?"
+    scoring:
+      - score: 7
+        condition: "Backend clearly specified with technology stack, API design, and architecture"
+      - score: 5
+        condition: "Backend mentioned with some technology details"
+      - score: 3
+        condition: "Backend vaguely mentioned or unclear if needed"
+      - score: 0
+        condition: "Backend not addressed when clearly needed, or no backend when appropriate"
+
+  - name: "Database Specification"
+    weight: 7
+    description: "Is there a database involved? Is it clearly specified?"
+    scoring:
+      - score: 7
+        condition: "Database clearly specified with type (SQL/NoSQL), schema design, and data model"
+      - score: 5
+        condition: "Database mentioned with some details (type or structure)"
+      - score: 3
+        condition: "Database vaguely mentioned or unclear if needed"
+      - score: 0
+        condition: "Database not addressed when clearly needed, or unnecessary database complexity"
+
+  - name: "AI Integration"
+    weight: 7
+    description: "Is there AI involved? Is it clearly specified?"
+    scoring:
+      - score: 7
+        condition: "AI integration clearly specified with models, APIs, or techniques and use cases"
+      - score: 5
+        condition: "AI mentioned with some details on implementation"
+      - score: 3
+        condition: "AI vaguely mentioned without clear integration plan"
+      - score: 0
+        condition: "No AI integration or unrealistic AI expectations"
+
+  - name: "Platform Type"
+    weight: 7
+    description: "Is it a mobile app or web app? Is the platform clearly specified?"
+    scoring:
+      - score: 7
+        condition: "Platform clearly specified (web/mobile/both) with target devices and compatibility"
+      - score: 5
+        condition: "Platform mentioned with basic details"
+      - score: 3
+        condition: "Platform vaguely mentioned or unclear"
+      - score: 0
+        condition: "Platform not specified or unrealistic multi-platform ambitions"
+
+  # Features and Complexity (20 points)
+  - name: "User Authentication"
+    weight: 5
+    description: "Is user authentication involved? Is it appropriately specified?"
+    scoring:
+      - score: 5
+        condition: "Authentication clearly specified if needed (method, security) or appropriately excluded"
+      - score: 3
+        condition: "Authentication mentioned but lacks implementation details"
+      - score: 1
+        condition: "Authentication unclear or inappropriate for project scope"
+      - score: 0
+        condition: "Missing authentication when clearly needed or over-engineered"
+
+  - name: "Payment System"
+    weight: 5
+    description: "Is a payment system involved? Is it appropriately specified?"
+    scoring:
+      - score: 5
+        condition: "Payment system clearly specified if needed (provider, flow) or appropriately excluded"
+      - score: 3
+        condition: "Payment system mentioned but lacks details"
+      - score: 1
+        condition: "Payment system unclear or inappropriate for project scope"
+      - score: 0
+        condition: "Missing payment system when needed or adds unnecessary complexity"
+
+  - name: "Core Features Definition"
+    weight: 10
+    description: "Are the core features well-defined and prioritized?"
+    scoring:
+      - score: 10
+        condition: "Core features clearly listed, prioritized (MVP vs nice-to-have), and realistic"
+      - score: 7
+        condition: "Features listed with some prioritization"
+      - score: 4
+        condition: "Features listed but unclear priorities or missing key details"
+      - score: 0
+        condition: "Features vague, missing, or unrealistic"
+
+  # Feasibility and Planning (15 points)
+  - name: "Technical Feasibility"
+    weight: 8
+    description: "Is the project technically feasible with proposed technologies?"
+    scoring:
+      - score: 8
+        condition: "Technologies are appropriate, proven, and well-suited for AI-assisted development"
+      - score: 6
+        condition: "Technologies are reasonable with minor concerns"
+      - score: 3
+        condition: "Technologies are questionable or overly complex"
+      - score: 0
+        condition: "Technologies are unrealistic, unproven, or inappropriate"
+
+  - name: "Timeline and Milestones"
+    weight: 7
+    description: "Does the proposal include a realistic timeline with milestones?"
+    scoring:
+      - score: 7
+        condition: "Clear timeline with weekly milestones, accounting for AI-assisted development pace"
+      - score: 5
+        condition: "Basic timeline with some milestones"
+      - score: 2
+        condition: "Vague timeline or unrealistic milestones"
+      - score: 0
+        condition: "No timeline or completely unrealistic expectations"
+
+# Grading Scale
+grading_scale:
+  excellent:
+    range: "90-100"
+    category: "Excellent - Approved without modifications"
+    grade: "A"
+  very_good:
+    range: "80-89"
+    category: "Very Good - Approved with minor suggestions"
+    grade: "B"
+  good:
+    range: "60-79"
+    category: "Good - Approved with recommended modifications"
+    grade: "C"
+  fair:
+    range: "50-59"
+    category: "Fair - Revisions required before approval"
+    grade: "D"
+  poor:
+    range: "40-49"
+    category: "Poor - Significant revisions required"
+    grade: "E"
+  fail:
+    range: "0-39"
+    category: "Fail - Failed to meet minimum requirements"
+    grade: "F"
+
+# Scoring Rules
+scoring_rules:
+  - "Sum all weighted scores to get final grade (0-100)"
+  - "Round final grade to nearest integer"
+  - "Consider AI-assisted development accelerates coding but not architectural complexity"
+  - "1.5 months = ~6 weeks of development time"
+  - "Projects scoring < 70 should be discussed with instructor before proceeding"
+  - "Balance ambition with deliverability - incomplete projects score poorly"
+  - "Clarity is valued over cleverness - specific details are essential"
