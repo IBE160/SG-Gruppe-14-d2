@@ -82,7 +82,9 @@ workflow_status:
         agent: "architect"
         command: "create-architecture"
         output: "System architecture document"
-        note: "Complete system design for greenfield projects"
+        note: "Completed system design for greenfield projects on 2025-12-04."
+        status:
+          - "docs/brainstorming-technical-architecture-report.md"
 
       - id: "create-epics-and-stories"
         required: true
