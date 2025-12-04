@@ -47,11 +47,15 @@
 
 - [ ] **/run-agent-task pm *prd**
     - *File: `PRD.md`*
+    - *Description for programmers: This is the 'spec sheet' for the entire project. It defines all the features and behaviors the system must have, and serves as the main guide for what to build.*
 - [ ] **/run-agent-task pm *validate-prd**
     - *File: `validation-report-date.md`*
+    - *Description for programmers: This is like a 'code review' for the spec sheet. It ensures the requirements are clear, consistent, and make sense before any coding starts, preventing wasted effort.*
 - [ ] **/run-agent-task ux-designer *create-ux-design {prompt / user-input-file}**
+    - *Description for programmers: If the project has a user interface, this step provides the 'mockups' or 'wireframes'. It shows how the screens should look and how users will interact with them, guiding frontend development.*
     - *File: `ux-design-specification.md`*
 - [ ] **/run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}**
+    - *Description for programmers: This is the quality check for the UX/UI design. It ensures the designs are feasible, meet the requirements, and provide a good user experience before implementation.*
 
 ---
 
