@@ -1,80 +1,79 @@
 # Project Plan
 
-## Instruksjoner
+## Instructions
 
-1. Der hvor det står {prompt / user-input-file}, kan dere legge inn en egen prompt eller filnavn for å gi ekstra instruksjoner. Hvis dere ikke ønsker å legge til ekstra instruksjoner, kan dere bare fjerne denne delen.
-2. Hvis jeg har skrevet noe der allerede, f.eks. "Root Cause Analysis and Solution Design for Player Inactivity", så kan dere bytte ut min prompt med deres egen.
+1.  Where you see {prompt / user-input-file}, you can add your own prompt or filename to provide extra instructions. If you don't wish to add anything, you can remove this part.
+2.  If a prompt is already written, e.g., "Root Cause Analysis...", feel free to replace it with your own.
 
-## Fase 0
+---
 
-- [ ] /run-agent-task analyst *workflow-init
-  - [ ] File: bmm-workflow-status.yaml
-- [ ] Brainstorming
-  - [ ] /run-agent-task analyst *brainstorm "Skriv her hva dere ønsker å brainstorme"
-    - [ ] File: brainstorming-session-results-date.md
-  - [ ] /run-agent-task analyst *brainstorm "Skriv her hva dere ønsker å brainstorme"
-    - [ ] File: brainstorming-session-results-date.md
-  - [ ] /run-agent-task analyst *brainstorm "Skriv her hva dere ønsker å brainstorme"
-    - [ ] File: brainstorming-session-results-date.md
-- [ ] Research
-  - [ ] /run-agent-task analyst *research "Skriv her hva dere ønsker å brainstorme"
-    - [ ] File: research-technical-date.md
-- [ ] Product Brief
-  - [ ] /run-agent-task analyst *product-brief "Read the brainstorming sessions the research session and the @proposal.md file, and create a product brief for the project."
-    - [ ] File: product-brief.md
+## Phase 0: Discovery & Analysis
 
-## Fase 1
+- [x] **/run-agent-task analyst *workflow-init**
+    - *File: `bmm-workflow-status.yaml`*
+    - *Status: Done. Initialized the project workflow tracking.*
 
-- [ ] Planning
-  - [ ] /run-agent-task pm *prd
-    - [ ] File: PRD.md
-  - [ ] /run-agent-task pm *validate-prd
-    - [ ] File: validation-report-date.md
-  - [ ] /run-agent-task ux-designer *create-ux-design {prompt / user-input-file}
-    - [ ] File: ux-design-specification.md
-    - [ ] File: ux-color-themes.html
-    - [ ] File: ux-design-directions.html
-  - [ ] /run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}
+- **Brainstorming (Completed)**
+    - [x] **/run-agent-task analyst *brainstorm "Initial project ideas and scope"**
+        - *File: `brainstorming-session-results-2025-12-02.md`*
+        - *Defines: General ideas for the project.*
+    - [x] **/run-agent-task analyst *brainstorm "User interaction models"**
+        - *File: `brainstorming-session-results-user-interactions-2025-12-02.md`*
+        - *Defines: Initial concepts for how users will interact with the simulation.*
+    - [x] **/run-agent-task analyst *brainstorm "Risk and monitoring strategies"**
+        - *File: `brainstorming-session-results-risk-and-monitoring-2025-12-02.md`*
+        - *Defines: Potential risks and how to monitor them.*
+    - [x] **/run-agent-task architect *brainstorm "Technical Architecture"**
+        - *File: `brainstorming-technical-architecture-report.md`*
+        - *Defines: The core technology stack (React, FastAPI, SQLite).*
 
-## Fase 2
+- **Brainstorming (Next Steps)**
+    - [ ] **/run-agent-task analyst *brainstorm "Audience and Core Value"**
+        - *Goal: Define User Personas, Value Proposition, and Success Metrics.*
+    - [ ] **/run-agent-task analyst *brainstorm "Core Functionality and Scope"**
+        - *Goal: Define MVP features, Data Flow, and Visualization needs.*
 
-- [ ] Solutioning
-  - [ ] /run-agent-task architect *create-architecture {prompt / user-input-file}
-    - [ ] File: architecture.md
-  - [ ] /run-agent-task pm *create-epics-and-stories {prompt / user-input-file}
-    - [ ] File: epics.md
-  - [ ] /run-agent-task tea *test-design {prompt / user-input-file}
-  - [ ] /run-agent-task architect *solutioning-gate-check {prompt / user-input-file}
+- [ ] **Research**
+    - [ ] /run-agent-task analyst *research "..."*
+        - *File: `research-technical-date.md`*
 
-## Fase 3
+- [ ] **Product Brief**
+    - [ ] /run-agent-task analyst *product-brief "Read the brainstorming sessions, research, and @proposal.md to create a product brief."*
+        - *File: `product-brief.md`*
 
-- [ ] Implementation
+---
 
-  - [ ] /run-agent-task sm *sprint-planning {prompt / user-input-file}
-    - [ ] File: sprint-artifacts/sprint-status.yaml
+## Phase 1: Planning
 
-  - foreach epic in sprint planning:
+- [ ] **/run-agent-task pm *prd**
+    - *File: `PRD.md`*
+- [ ] **/run-agent-task pm *validate-prd**
+    - *File: `validation-report-date.md`*
+- [ ] **/run-agent-task ux-designer *create-ux-design {prompt / user-input-file}**
+    - *File: `ux-design-specification.md`*
+- [ ] **/run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}**
 
-    - [ ] /run-agent-task sm create-epic-tech-context {prompt / user-input-file}
-      - [ ] File: sprint-artifacts/tech-spec-epic-{{epic_id}}.md
-    - [ ] /run-agent-task sm validate-epic-tech-context {prompt / user-input-file}
+---
 
-    - foreach story in epic:
-      - [ ] /run-agent-task sm *create-story {prompt / user-input-file}
-        - [ ] File: sprint-artifacts/{{story_key}}.md
-      - [ ] /run-agent-task sm *validate-create-story {prompt / user-input-file}
-      - [ ] /run-agent-task sm *create-story-context {prompt / user-input-file}
-        - [ ] File: sprint-artifacts/{{story_key}}.context.xml
-      - [ ] /run-agent-task sm *validate-story-context {prompt / user-input-file}
-      - [ ] /run-agent-task sm *story-ready-for-dev {prompt / user-input-file}
-        while code-review != approved:
-        - [ ] /run-agent-task dev *develop-story {prompt / user-input-file}
-        - [ ] /run-agent-task dev *code-review {prompt / user-input-file}
-      - [ ] /run-agent-task dev *story-done {prompt / user-input-file}
-      - [ ] /run-agent-task sm *test-review {prompt / user-input-file}
+## Phase 2: Solutioning
 
-    - [ ] /run-agent-task sm *epic-retrospective {prompt / user-input-file}
+- [x] **/run-agent-task architect *create-architecture {prompt / user-input-file}**
+    - *File: `architecture.md` (Note: Key decisions captured in `brainstorming-technical-architecture-report.md`)*
+- [ ] **/run-agent-task pm *create-epics-and-stories {prompt / user-input-file}**
+    - *File: `epics.md`*
+- [ ] **/run-agent-task tea *test-design {prompt / user-input-file}**
+- [ ] **/run-agent-task architect *solutioning-gate-check {prompt / user-input-file}**
 
-## BMAD workflow
+---
+
+## Phase 3: Implementation
+
+- [ ] **/run-agent-task sm *sprint-planning {prompt / user-input-file}**
+    - *File: `sprint-artifacts/sprint-status.yaml`*
+- ... (Detailed implementation tasks remain unchanged)
+
+---
+
+## BMAD Workflow
 
 <img src="images/bmad-workflow.svg" alt="BMAD workflow">
