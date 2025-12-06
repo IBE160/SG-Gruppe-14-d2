@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# backend
+backend/app/__pycache__/
+
+# frontend
+frontend/package-lock.json

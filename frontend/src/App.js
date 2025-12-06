@@ -3,22 +3,23 @@ import { Routes, Route, Link } from 'react-router-dom';
 import WBSHierarchy from './WBSHierarchy';
 import ChatHistory from './ChatHistory';
 import Tabs from './Tabs'; // Import the new Tabs component
+import './App.css'; // Import the new CSS file
 
 // Define personas
 const personas = [
-  { id: 'contractor', name: 'General Contractor' },
-  { id: 'architect', name: 'Architect' },
-  { id: 'hvac', name: 'HVAC Engineer' },
+  { id: 'contractor', name: 'Hovedentreprenør' },
+  { id: 'architect', name: 'Arkitekt' },
+  { id: 'hvac', name: 'VVS-ingeniør' },
 ];
 
 // Main simulator page component
 const SimulatorPage = ({ wbsData }) => {
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="simulator-page">
       <Tabs personas={personas} />
-      <hr style={{ margin: '20px 0' }} />
+      <hr />
       <div>
-        <h2>Work Breakdown Structure</h2>
+        <h2>Arbeidsnedbrytningsstruktur</h2>
         <WBSHierarchy wbsData={wbsData} />
       </div>
     </div>
@@ -50,26 +51,14 @@ function App() {
       .catch(error => console.error('Error fetching WBS data:', error));
   }, []);
 
-  const headerStyle = {
-    padding: '10px 20px',
-    backgroundColor: '#f0f0f0',
-    borderBottom: '2px solid #ccc'
-  };
-
-  const navStyle = {
-    display: 'flex',
-    gap: '20px',
-    marginTop: '10px'
-  };
-
   return (
     <div className="App">
-      <header style={headerStyle}>
-        <h1>Project Management Simulator</h1>
+      <header className="app-header">
+        <h1>Prosjektledelsessimulator</h1>
         <p>{message}</p>
-        <nav style={navStyle}>
+        <nav className="app-nav">
           <Link to="/">Simulator</Link>
-          <Link to="/history">Chat History</Link>
+          <Link to="/history">Chat-historikk</Link>
         </nav>
       </header>
       <main>

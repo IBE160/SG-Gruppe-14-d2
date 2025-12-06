@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './ChatHistory.css'; // Import the CSS file
 
 const ChatHistory = ({ personas }) => {
   const [selectedPersonaId, setSelectedPersonaId] = useState(personas.length > 0 ? personas[0].id : '');
@@ -8,13 +9,13 @@ const ChatHistory = ({ personas }) => {
   const selectedPersona = personas.find(p => p.id === selectedPersonaId);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Chat History</h2>
+    <div className="chat-history-container">
+      <h2>Chat-historikk</h2>
 
       {personas.length > 0 ? (
         <>
           <div>
-            <label htmlFor="persona-select">Select Persona: </label>
+            <label htmlFor="persona-select">Velg persona: </label>
             <select
               id="persona-select"
               value={selectedPersonaId}
@@ -28,17 +29,17 @@ const ChatHistory = ({ personas }) => {
             </select>
           </div>
 
-          <hr style={{ margin: '20px 0' }} />
+          <hr />
 
           {savedMessages.length === 0 ? (
-            <p>No chat history found for {selectedPersona?.name}.</p>
+            <p>Ingen chat-historikk funnet for {selectedPersona?.name}.</p>
           ) : (
-            <div style={{ border: '1px solid #ccc', padding: '10px' }}>
-              <h3>History with {selectedPersona?.name}</h3>
+            <div className="chat-history-log">
+              <h3>Historikk med {selectedPersona?.name}</h3>
               {savedMessages.map((msg, index) => (
-                <div key={index} style={{ marginBottom: '10px', textAlign: msg.sender === 'user' ? 'right' : 'left' }}>
+                <div key={index} className={`chat-history-message ${msg.sender === 'user' ? 'user' : 'persona'}`}>
                   <p>
-                    <strong>{msg.sender === 'user' ? 'You' : selectedPersona?.name}:</strong> {msg.text}
+                    <strong>{msg.sender === 'user' ? 'Du' : selectedPersona?.name}:</strong> {msg.text}
                   </p>
                   <small>{new Date(msg.timestamp).toLocaleString()}</small>
                 </div>
@@ -47,7 +48,7 @@ const ChatHistory = ({ personas }) => {
           )}
         </>
       ) : (
-        <p>No personas available.</p>
+        <p>Ingen personaer tilgjengelig.</p>
       )}
     </div>
   );

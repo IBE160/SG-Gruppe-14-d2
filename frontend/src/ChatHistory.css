@@ -1,0 +1,26 @@
+/* ChatHistory.css */
+
+.chat-history-container {
+  padding: 20px;
+}
+
+.chat-history-container hr {
+  margin: 20px 0;
+}
+
+.chat-history-log {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.chat-history-message {
+  margin-bottom: 10px;
+}
+
+.chat-history-message.user {
+  text-align: right;
+}
+
+.chat-history-message.persona {
+  text-align: left;
+}

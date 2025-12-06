@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './ChatWindow.css'; // Import the CSS file
 
 const ChatWindow = ({ persona }) => { // Accept persona prop
   const storageKey = `chatHistory_${persona.id}`; // Dynamic storage key
@@ -47,38 +48,45 @@ const ChatWindow = ({ persona }) => { // Accept persona prop
         setMessages(prevMessages => [...prevMessages, { ...aiResponse, timestamp: new Date().toISOString() }]);
       } else {
         console.error('Error sending message:', response.statusText);
-        setMessages(prevMessages => [...prevMessages, { text: 'Error: Could not get response from server.', sender: 'system', timestamp: new Date().toISOString() }]);
+        setMessages(prevMessages => [...prevMessages, { text: 'Feil: Kunne ikke få svar fra serveren.', sender: 'system', timestamp: new Date().toISOString() }]);
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      setMessages(prevMessages => [...prevMessages, { text: 'Error: Could not connect to the server.', sender: 'system', timestamp: new Date().toISOString() }]);
+      setMessages(prevMessages => [...prevMessages, { text: 'Feil: Kunne ikke koble til serveren.', sender: 'system', timestamp: new Date().toISOString() }]);
     }
+  };
+
+  const getMessageClassName = (msg) => {
+    const baseClass = 'message';
+    if (msg.sender === 'user') return `${baseClass} user`;
+    if (msg.sender === 'system') return `${baseClass} system`;
+    return `${baseClass} persona`;
   };
 
   return (
     <div>
-      <h3>Chat with {persona.name}</h3>
-      <div style={{ border: '1px solid #ccc', padding: '10px', height: '300px', overflowY: 'scroll', marginBottom: '10px' }}>
+      <h3>Chat med {persona.name}</h3>
+      <div className="chat-log">
         {messages.map((msg, index) => (
-          <div key={index} style={{ textAlign: msg.sender === 'user' ? 'right' : (msg.sender === 'system' ? 'center' : 'left') }}>
+          <div key={index} className={getMessageClassName(msg)}>
             <p>
-              <strong>{msg.sender === 'user' ? 'You' : (msg.sender === 'system' ? 'System' : persona.name)}:</strong> {msg.text}
+              <strong>{msg.sender === 'user' ? 'Du' : (msg.sender === 'system' ? 'System' : persona.name)}:</strong> {msg.text}
             </p>
             <small>{new Date(msg.timestamp).toLocaleString()}</small>
           </div>
         ))}
       </div>
-      <div>
+      <div className="chat-input-area">
         <input
           type="text"
+          className="chat-input"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-          style={{ width: '80%', padding: '10px' }}
-          placeholder={`Ask ${persona.name} a question...`}
+          placeholder={`Still ${persona.name} et spørsmål...`}
         />
-        <button onClick={handleSendMessage} style={{ width: '19%', padding: '10px' }}>
-          Send
+        <button onClick={handleSendMessage} className="send-button">
+          Send inn
         </button>
       </div>
     </div>
