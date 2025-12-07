@@ -48,7 +48,9 @@ This document breaks down the Product Requirements Document (PRD) into implement
 | **E7** | Session Export & Data Management | 3 | 5 | Must Have | Week 4 |
 | **E8** | Help & Documentation | 2 | 3 | Should Have | Week 4 |
 | **E9** | Infrastructure & DevOps | 4 | 5 | Must Have | Week 1 |
-| **TOTAL** | **9 Epics** | **36 Stories** | **89 Points** | - | **3-4 Weeks** |
+| **TOTAL** | **9 Epics** | **36 Stories** | **89 Points*** | - | **3-4 Weeks** |
+
+***Note:** Sprint planning (Section 11) allocates 95 total points (Week 1: 13, Week 2: 28, Week 3: 34, Week 4: 20), which includes a 6-point buffer for testing, integration overhead, and bug fixes beyond individual story estimates.
 
 ---
 

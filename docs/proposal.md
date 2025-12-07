@@ -163,3 +163,36 @@ The MVP focuses strictly on the **Planning Phase**, specifically the collection 
 1. **Playability:** A user can complete the full "Planning Loop" (negotiate all WBS items) in under 45 minutes.
 2. **AI Realism:** The AI suppliers reference actual project documents (e.g., "TEK17 requirements") during the chat.
 3. **Constraint Enforcement:** The system correctly flags plans that exceed the 700 MNOK budget or the May 2026 deadline.
+
+---
+
+## Document History
+
+### Version 1.0 (Original)
+- Timeline: 5 weeks
+- Database: Supabase PostgreSQL
+- State Management: Zustand
+- AI Model: Gemini 2.5 Pro/Flash
+
+### Version 1.1 (2025-12-07 Update)
+
+**Timeline Optimization:**
+- **Timeline updated to 3-4 weeks** (from 5 weeks)
+- **Reason:** Simplified architecture decision saves 1-2 weeks development time
+
+**Architecture Changes:**
+- **Database:** Changed from Supabase PostgreSQL to **localStorage** for MVP
+  - **Rationale:** 45-60 minute single-session use case validated as sufficient for localStorage (5MB browser limit >> 62KB session size)
+  - **Validation:** Research Report Section 2 confirms feasibility (localStorage can store 80+ sessions)
+  - **Auth preserved:** Supabase Auth still used for JWT-based authentication
+
+- **State Management:** React Context API preferred over Zustand for simplicity
+  - Zustand remains optional for future complexity
+
+- **AI Model:** Gemini 2.5 Flash preferred for MVP (cost-effective, 1-3 sec response)
+  - Pro available as fallback if quality issues arise
+
+**References:**
+- Detailed justification: `brainstorming-session-core-functionality-and-scope-2025-12-07.md`
+- Technical validation: `research-report-2025-12-07.md` Section 2
+- Final specification: `PRD.md` Sections 7-8

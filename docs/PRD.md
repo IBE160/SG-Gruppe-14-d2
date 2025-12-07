@@ -1286,7 +1286,7 @@ An interactive, browser-based simulation where students:
 
 **TR-2.2: AI Integration**
 - **Library:** PydanticAI (for structured AI interactions)
-- **AI Provider:** Google Gemini 2.5 Pro or Flash
+- **AI Provider:** Google Gemini 2.5 Flash (preferred for MVP: 1-3 sec response time, cost-effective) or Pro (fallback if quality insufficient)
 - **API Key:** Stored in environment variable (`GEMINI_API_KEY`)
 
 **TR-2.3: Dependencies**
