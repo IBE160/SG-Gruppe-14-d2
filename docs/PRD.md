@@ -1,0 +1,2331 @@
+# Product Requirements Document (PRD)
+## Nye Hædda Barneskole - Project Management Simulation
+
+**Document Version:** 1.0
+**Date:** 2025-12-07
+**Status:** Draft - Pending Validation
+**Product Owner:** [To be assigned]
+**Technical Lead:** [To be assigned]
+
+---
+
+## Document Control
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2025-12-07 | BMAD System | Initial PRD based on Phase 0 brainstorming |
+
+---
+
+## Table of Contents
+
+1. [Product Overview](#1-product-overview)
+2. [Goals and Objectives](#2-goals-and-objectives)
+3. [Target Users](#3-target-users)
+4. [User Stories](#4-user-stories)
+5. [Functional Requirements](#5-functional-requirements)
+6. [Non-Functional Requirements](#6-non-functional-requirements)
+7. [Technical Requirements](#7-technical-requirements)
+8. [Data Requirements](#8-data-requirements)
+9. [API Specifications](#9-api-specifications)
+10. [UI/UX Requirements](#10-uiux-requirements)
+11. [Success Metrics](#11-success-metrics)
+12. [Scope Definition](#12-scope-definition)
+13. [Dependencies and Assumptions](#13-dependencies-and-assumptions)
+14. [Glossary](#14-glossary)
+
+---
+
+## 1. Product Overview
+
+### 1.1 Product Name
+**Nye Hædda Barneskole - Project Management Simulation** (working title)
+
+### 1.2 Product Vision
+An AI-powered educational simulation that teaches LOG565 Project Management students realistic negotiation and planning skills by having them act as Project Manager for the "Nye Hædda Barneskole" construction project. Students negotiate with AI-driven supplier personas to gather project estimates, make trade-off decisions under strict constraints, and experience the iterative nature of real-world project planning.
+
+### 1.3 Problem Statement
+Traditional project management education suffers from a critical theory-practice gap. Students learn frameworks (WBS, Gantt charts, critical path) through lectures and case studies, but case studies provide pre-determined data, eliminating the most valuable real-world skill: **gathering and validating project data through negotiation with stakeholders who have conflicting interests.**
+
+Students graduate understanding how to create a project plan but not how to obtain the realistic estimates that go into it. They've never practiced:
+- Negotiating with a stubborn supplier who gives inflated quotes
+- Making trade-offs between cost, time, and quality
+- Validating estimates against project requirements
+- Experiencing the iterative back-and-forth of real planning
+
+### 1.4 Solution Overview
+An interactive, browser-based simulation where students:
+1. Act as Project Manager for a real LOG565 case study (Hædda Barneskole construction project)
+2. Negotiate with AI suppliers (each with distinct personalities: profit-driven, quality-focused, detail-oriented)
+3. Gather cost and duration estimates for 15 WBS items
+4. Commit estimates to a project plan
+5. Validate the plan against strict constraints (700 MNOK budget, 15-month timeline ending May 15, 2026)
+6. Renegotiate when early decisions prove unsustainable (iterative planning)
+7. Export complete session history (all chat logs, all plan changes) as a portfolio artifact
+
+**Session Duration:** 45-60 minutes (single-session, time-efficient)
+
+### 1.5 Key Differentiators
+
+| Feature | Nye Hædda Simulation | Traditional Case Studies | Generic PM Simulations |
+|---------|----------------------|--------------------------|------------------------|
+| **Data Source** | Student must negotiate to gather estimates | Pre-determined data provided | Static estimates given |
+| **AI Behavior** | Dynamic personas (stubborn, flexible, data-driven) | N/A (paper-based) | Scripted, predictable |
+| **Learning Focus** | Negotiation, validation, trade-offs | Analysis of completed decisions | Tool mechanics, execution phase |
+| **Iteration** | Required (renegotiation when over budget) | Linear (one-pass analysis) | Limited or none |
+| **Realism** | Real LOG565 case, authentic documents | Generic or historical cases | Abstract scenarios |
+| **Feedback** | Real-time (immediate budget/timeline updates) | Delayed (exam results) | End-of-simulation only |
+
+### 1.6 Success Criteria (MVP)
+- ✅ **60%+ completion rate** - Students can succeed with effort (not too hard)
+- ✅ **40%+ renegotiation rate** - Students experience iterative planning
+- ✅ **45-60 min completion time** - Time-efficient, single-session
+- ✅ **4.0+/5.0 satisfaction** - Students find it valuable
+- ✅ **50%+ document usage** - Students reference requirements in negotiations
+
+---
+
+## 2. Goals and Objectives
+
+### 2.1 Pedagogical Goals
+
+**PG-1: Bridge Theory-Practice Gap**
+- Students apply PM frameworks (WBS, critical path, constraint management) to realistic, dynamic scenarios
+- Success Metric: 70%+ of students report "this helped me understand planning better than case studies"
+
+**PG-2: Develop Soft Skills**
+- Students practice negotiation, persuasion, stakeholder management
+- Success Metric: 60%+ of students demonstrate ≥3 distinct negotiation strategies (evidence-based arguments, trade-off proposals, alternative solutions)
+
+**PG-3: Experience Iterative Planning**
+- Students learn planning is a cyclical process (plan → validate → renegotiate), not a one-time template exercise
+- Success Metric: 40%+ of students renegotiate at least one WBS item
+
+**PG-4: Build Practical Confidence**
+- Students gain tangible proof of capability: "I managed a 700 MNOK project within constraints"
+- Success Metric: 70%+ of students report increased confidence in PM abilities
+
+### 2.2 Business Goals
+
+**BG-1: Product-Market Fit**
+- Validate demand for AI-powered PM simulations in Norwegian business schools
+- Success Metric: 30%+ of LOG565 instructors at Norwegian universities adopt within 1 year
+
+**BG-2: User Adoption**
+- Achieve critical mass of users for feedback and iteration
+- Success Metric: 200+ students complete simulation in first semester
+
+**BG-3: Educational Impact**
+- Demonstrate measurable learning outcomes
+- Success Metric: Positive correlation (r≥0.3) between simulation completion and exam performance on planning questions
+
+**BG-4: Technical Viability**
+- Prove simplified architecture (localStorage + AI) is sustainable
+- Success Metric: <2 NOK per session (AI API costs), 99%+ uptime
+
+### 2.3 Non-Goals (Out of Scope for MVP)
+
+- ❌ Execution phase simulation (monitoring, controlling, risk management during construction)
+- ❌ Multiplayer/collaborative mode
+- ❌ Instructor analytics dashboard (students export JSON, instructors review manually)
+- ❌ Mobile native app (responsive web app is sufficient)
+- ❌ Integration with LMS (Canvas, Blackboard) - students access directly via URL
+- ❌ Multiple scenarios (only Hædda Barneskole for MVP)
+
+---
+
+## 3. Target Users
+
+### 3.1 Primary User Persona: Sara - The Academic Student
+
+**Demographics:**
+- Age: 22-25
+- Currently enrolled in LOG565 Project Management 2
+- Norwegian business school student (BI, NHH, NTNU)
+- Limited real-world PM experience
+- High technical comfort with digital tools
+
+**Context of Use:**
+- Uses simulation as coursework assignment (required or optional)
+- Completes in one sitting (45-60 minutes) between classes or at home
+- Submits exported JSON + reflection essay to instructor
+
+**Pain Points:**
+- "I know PERT theory but have never negotiated with a real contractor"
+- "All case studies give me the numbers - I never learn how to GET those numbers"
+- "I don't know if my practice plans are realistic until the exam"
+
+**Success Criteria:**
+- Complete realistic project plan within constraints
+- Develop concrete negotiation strategies
+- Generate portfolio artifact for coursework
+- Gain confidence for exams and job interviews
+
+---
+
+### 3.2 Secondary User Persona: Magnus - The Career Switcher
+
+**Demographics:**
+- Age: 28-35
+- Professional with 3-5 years in different field (engineering, finance)
+- Taking LOG565 as part of executive education or part-time master's
+- Works full-time, time-constrained
+
+**Context of Use:**
+- Uses simulation on weekends or evenings
+- Wants focused, efficient practice (under 1 hour)
+- May use exported session in job interview discussions
+
+**Pain Points:**
+- "I need practical skills fast - I have a full-time job"
+- "I've coordinated projects but never been THE project manager"
+- "Generic simulations don't feel like real negotiations"
+
+**Success Criteria:**
+- Complete in <60 minutes
+- Experience realistic negotiation scenarios
+- Build portfolio piece for interviews
+- Develop PM mental models
+
+---
+
+### 3.3 Stakeholder Persona: Professor Eriksen - The Instructor
+
+**Demographics:**
+- Age: 40-60
+- Academic or industry professional teaching LOG565
+- 15+ years PM experience
+- Moderate technical comfort
+
+**Context of Use:**
+- Assigns simulation as homework or in-class activity
+- Reviews exported JSON files manually (or uses class discussion)
+- Uses as complement to traditional case studies
+
+**Pain Points:**
+- "Students can't apply theory to messy real-world scenarios"
+- "I can't provide personalized feedback to 60 students"
+- "Traditional role-plays require too much setup"
+
+**Success Criteria:**
+- Students produce discussion-worthy artifacts
+- Higher engagement and satisfaction
+- Minimal integration friction (no LMS setup needed)
+- Students demonstrate improved skills
+
+---
+
+### 3.4 Tertiary User Persona: Ingrid - The Self-Learner
+
+**Demographics:**
+- Age: 25-40
+- Not enrolled in LOG565 but interested in PM
+- Self-taught via books, YouTube, online certs
+- Preparing for career change or job interviews
+
+**Context of Use:**
+- Discovers simulation via search or social media
+- Uses to validate PM knowledge
+- May replay to experiment with strategies
+
+**Pain Points:**
+- "Have I actually learned anything useful, or just memorized definitions?"
+- "No one gives me feedback on practice plans"
+- "Free PM resources are too generic"
+
+**Success Criteria:**
+- Validate skills in realistic scenario
+- Generate concrete examples for interviews
+- Build confidence in PM abilities
+
+---
+
+## 4. User Stories
+
+### 4.1 Epic: Authentication & Onboarding
+
+**US-1.1: User Registration**
+- **As** Sara (student)
+- **I want to** register with my university email
+- **So that** my simulation session is associated with my identity and I can submit it for coursework
+- **Acceptance Criteria:**
+  - User can register with email and password
+  - Password must be ≥8 characters
+  - Email verification sent via Supabase
+  - User cannot access simulation until email is verified
+  - Registration errors are clearly displayed (e.g., "Email already exists")
+
+**US-1.2: User Login**
+- **As** Magnus (career switcher)
+- **I want to** log in with my credentials
+- **So that** I can resume my session if I refresh the page or return later
+- **Acceptance Criteria:**
+  - User can log in with verified email and password
+  - JWT token stored in localStorage
+  - Token persists across page refreshes
+  - User redirected to Dashboard after successful login
+  - Invalid credentials show clear error: "Incorrect email or password"
+
+**US-1.3: Session Resume**
+- **As** Sara
+- **I want to** automatically resume my in-progress session when I log back in
+- **So that** I don't lose my progress if I close the browser
+- **Acceptance Criteria:**
+  - On login, if in-progress session exists in localStorage, load it
+  - Dashboard shows current state (budget used, WBS items completed)
+  - All chat history preserved
+  - User sees confirmation: "Resuming session from [timestamp]"
+
+---
+
+### 4.2 Epic: Project Dashboard & Overview
+
+**US-2.1: View Project Constraints**
+- **As** Sara
+- **I want to** see the budget limit (700 MNOK) and deadline (May 15, 2026) prominently
+- **So that** I constantly remember the constraints I must meet
+- **Acceptance Criteria:**
+  - Dashboard displays "Budget: X / 700 MNOK" with progress bar
+  - Dashboard displays "Deadline: May 15, 2026"
+  - Dashboard displays "Projected End Date: [calculated date]"
+  - Budget progress bar is color-coded: green (<680), yellow (680-700), red (>700)
+  - Timeline is color-coded: green (before May 15), red (after May 15)
+
+**US-2.2: Track Real-Time Progress**
+- **As** Magnus
+- **I want to** see my current budget and timeline update immediately after committing a quote
+- **So that** I know if I'm on track or need to adjust
+- **Acceptance Criteria:**
+  - After commitment, budget updates within 1 second
+  - Projected end date recalculates based on critical path
+  - Quick stats show: "X / 15 WBS items completed"
+  - Quick stats show: "X total negotiations"
+  - No page refresh required (optimistic UI update)
+
+**US-2.3: View WBS Items**
+- **As** Sara
+- **I want to** browse all WBS items and see their status
+- **So that** I can decide which items to negotiate next
+- **Acceptance Criteria:**
+  - WBS items displayed in hierarchical or flat list
+  - Each item shows: WBS code (e.g., 1.3.1), name (e.g., "Grunnarbeid"), status
+  - Status indicators: ⚪ Pending, 🟢 Completed
+  - Completed items show committed values (cost, duration, supplier)
+  - User can click item to expand details (description, dependencies, baseline estimate)
+
+---
+
+### 4.3 Epic: Supplier Selection & Chat
+
+**US-3.1: Browse Suppliers**
+- **As** Sara
+- **I want to** see which suppliers are appropriate for a specific WBS item
+- **So that** I don't waste time contacting the wrong supplier
+- **Acceptance Criteria:**
+  - Clicking "Contact Supplier" on a WBS item shows relevant suppliers
+  - Supplier cards show: Name, role (e.g., "Totalentreprenør"), specialty
+  - Suggested suppliers are filtered by WBS item relevance
+  - User can view supplier persona summary (e.g., "Profit-driven negotiator")
+
+**US-3.2: Initiate Chat**
+- **As** Magnus
+- **I want to** start a conversation with a supplier
+- **So that** I can request a quote for a WBS item
+- **Acceptance Criteria:**
+  - Clicking "Start Chat" opens chat interface
+  - Chat header shows: Supplier name, WBS item context
+  - Chat window is empty (ready for first message)
+  - User can type and send messages immediately
+
+**US-3.3: Negotiate via Chat**
+- **As** Sara
+- **I want to** have a back-and-forth conversation with the AI supplier
+- **So that** I can negotiate cost and duration
+- **Acceptance Criteria:**
+  - User types message, clicks Send
+  - Message appears in chat (right-aligned, blue bubble)
+  - AI responds within 3 seconds (95th percentile)
+  - AI message appears (left-aligned, gray bubble)
+  - All messages logged to localStorage
+  - Chat history preserved if user leaves and returns
+  - User can reference earlier messages by scrolling
+
+**US-3.4: Reference Project Documents During Chat**
+- **As** Sara
+- **I want to** quickly access the Requirements Specification while negotiating
+- **So that** I can find evidence to support my arguments
+- **Acceptance Criteria:**
+  - Document sidebar visible while chatting (or accessible via button)
+  - Links to: wbs.pdf, krav-spec.pdf, project-description.pdf
+  - Documents open in new tab or embedded viewer
+  - User can keep document open while typing in chat (split screen)
+
+---
+
+### 4.4 Epic: Plan Management
+
+**US-4.1: Accept Quote**
+- **As** Magnus
+- **I want to** accept a negotiated offer from the supplier
+- **So that** I can lock in the terms and move to the next WBS item
+- **Acceptance Criteria:**
+  - When AI makes an offer (e.g., "105 MNOK, 2.5 months"), "Accept Offer" button appears
+  - Clicking button shows confirmation modal with terms
+  - User confirms acceptance
+  - Plan entry created in localStorage
+  - Dashboard updates immediately
+  - WBS item status changes to 🟢 Completed
+  - Chat shows system message: "✅ Offer accepted and committed to plan"
+
+**US-4.2: View Current Plan**
+- **As** Sara
+- **I want to** see all my committed WBS items in one place
+- **So that** I can review my overall plan and budget
+- **Acceptance Criteria:**
+  - Dashboard or dedicated tab shows current plan
+  - Each committed item shows: WBS code, name, cost, duration, supplier, start date, end date
+  - Table is sortable (by cost, date, WBS code)
+  - Total cost and projected end date displayed prominently
+
+**US-4.3: Renegotiate Item**
+- **As** Sara
+- **I want to** go back and renegotiate a committed WBS item
+- **So that** I can reduce costs after realizing my plan is over budget
+- **Acceptance Criteria:**
+  - User clicks "Renegotiate" button on completed WBS item
+  - Confirmation modal: "This will uncommit this item. Continue?"
+  - User confirms
+  - Plan entry removed from current_plan (or marked inactive)
+  - Uncommit action logged to plan_history
+  - Dashboard recalculates budget and timeline immediately
+  - Chat interface reopens with full conversation history preserved
+  - User can continue negotiating from where they left off
+
+---
+
+### 4.5 Epic: Validation & Submission
+
+**US-5.1: Continuous Validation Feedback**
+- **As** Magnus
+- **I want to** see warnings if my plan is approaching limits
+- **So that** I can proactively adjust before final submission
+- **Acceptance Criteria:**
+  - After each commitment, system checks: budget >680 MNOK or timeline >5 days before deadline
+  - If close to limits, yellow warning banner: "⚠️ Budget at 95% - limited flexibility remaining"
+  - Warnings are non-blocking (user can continue)
+
+**US-5.2: Submit Plan for Validation**
+- **As** Sara
+- **I want to** submit my completed plan for final validation
+- **So that** I can find out if I successfully met all constraints
+- **Acceptance Criteria:**
+  - "Submit Plan" button enabled when ≥1 WBS item committed
+  - Clicking button triggers full validation:
+    - Completeness: All 15 WBS items committed?
+    - Budget: Total cost ≤700 MNOK?
+    - Timeline: Projected end date ≤May 15, 2026?
+    - Dependencies: All dependencies satisfied?
+  - Validation runs in <1 second
+
+**US-5.3: Receive Clear Error Feedback**
+- **As** Sara
+- **I want to** see exactly what's wrong if my plan fails validation
+- **So that** I know how to fix it
+- **Acceptance Criteria:**
+  - Error modal shows all validation failures
+  - Budget error: "❌ Budget exceeded by 50 MNOK. Total: 750 MNOK (Limit: 700)"
+  - Timeline error: "❌ Project delayed until May 20, 2026. Deadline: May 15, 2026"
+  - Suggestions provided: "Renegotiate these high-cost items: 2.1 (250 MNOK), 3.4 (180 MNOK)"
+  - User can close modal and return to planning
+
+**US-5.4: Celebrate Success**
+- **As** Magnus
+- **I want to** see a clear success message when my plan passes validation
+- **So that** I feel a sense of accomplishment
+- **Acceptance Criteria:**
+  - Success modal displays: "🎉 Plan Approved!"
+  - Final stats shown: Total cost, completion date, time spent, negotiation count, renegotiation count
+  - "Export Session" button available
+  - "Start New Game" button available
+  - Session status updated to "completed" in localStorage
+
+---
+
+### 4.6 Epic: Export & Persistence
+
+**US-6.1: Export Complete Session**
+- **As** Sara
+- **I want to** download my complete session history as a file
+- **So that** I can submit it for coursework or save it for my portfolio
+- **Acceptance Criteria:**
+  - "Export Session" button available on success screen
+  - Clicking downloads JSON file: `nye-haedda-session-{user_id}-{game_id}.json`
+  - JSON includes:
+    - User metadata (user_id, game_id, timestamps)
+    - Complete chat_logs (every message)
+    - Complete plan_history (every commit/uncommit)
+    - Final current_plan
+    - Metrics (budget, timeline, negotiation counts)
+    - Validation result
+  - File is valid JSON (parseable)
+  - File size typically 200-500 KB
+
+**US-6.2: Save Progress Automatically**
+- **As** Magnus
+- **I want to** have my session auto-saved after every action
+- **So that** I don't lose progress if my browser crashes
+- **Acceptance Criteria:**
+  - Every user action (send message, commit quote, uncommit) saves to localStorage immediately
+  - No explicit "Save" button needed
+  - If browser crashes and user reopens, session is intact
+  - localStorage key: `nye-haedda-session-{user_id}`
+
+---
+
+### 4.7 Epic: Help & Support
+
+**US-7.1: Access Help Documentation**
+- **As** Ingrid (self-learner)
+- **I want to** access help documentation if I'm confused
+- **So that** I can understand how the simulation works
+- **Acceptance Criteria:**
+  - "Help" button visible on Dashboard
+  - Clicking opens modal with:
+    - Simulation overview (what is this?)
+    - How to negotiate (tips)
+    - How to commit quotes
+    - How to validate plan
+    - FAQ section
+  - Help modal closeable without losing state
+
+**US-7.2: Report Issues**
+- **As** Sara
+- **I want to** report a bug or incorrect AI response
+- **So that** the developers can improve the simulation
+- **Acceptance Criteria:**
+  - "Report Issue" link in footer or Help modal
+  - Opens simple form or links to GitHub Issues
+  - User can describe problem and attach session ID
+
+---
+
+## 5. Functional Requirements
+
+### 5.1 Authentication & User Management
+
+**FR-1.1: User Registration**
+- **Priority:** Must Have
+- **Description:** Users can create an account using email and password via Supabase Auth
+- **Detailed Requirements:**
+  - Email must be valid format (regex validation)
+  - Password must be ≥8 characters, contain at least 1 number
+  - Email verification required before first login
+  - Duplicate email shows error: "Email already registered"
+  - Registration form has "Already have an account? Login" link
+- **Dependencies:** Supabase Auth SDK
+- **Acceptance Test:**
+  - User enters valid email + password → account created, verification email sent
+  - User enters duplicate email → error displayed
+  - User enters weak password → error: "Password must be at least 8 characters"
+
+---
+
+**FR-1.2: User Login**
+- **Priority:** Must Have
+- **Description:** Users can log in with verified email and password
+- **Detailed Requirements:**
+  - JWT token generated by Supabase on successful login
+  - Token stored in localStorage['auth-token']
+  - Token persists across browser sessions (until user logs out or token expires)
+  - Invalid credentials → error: "Incorrect email or password"
+  - Unverified email → error: "Please verify your email first"
+- **Acceptance Test:**
+  - User enters correct credentials → logged in, redirected to Dashboard
+  - User enters wrong password → error displayed, not logged in
+
+---
+
+**FR-1.3: User Logout**
+- **Priority:** Must Have
+- **Description:** Users can log out, clearing session data
+- **Detailed Requirements:**
+  - Logout button in header (user menu dropdown)
+  - Clicking logout:
+    - Clears auth token from localStorage
+    - (Optional) Clears session data (prompt user to export first)
+    - Redirects to login page
+- **Acceptance Test:**
+  - User clicks Logout → redirected to login, cannot access Dashboard without re-login
+
+---
+
+### 5.2 Session Management
+
+**FR-2.1: Create New Game Session**
+- **Priority:** Must Have
+- **Description:** User can start a new simulation session
+- **Detailed Requirements:**
+  - "Start New Game" button on Dashboard (if no active session)
+  - Clicking creates new session object in localStorage:
+    ```javascript
+    {
+      user_id: from JWT,
+      game_id: UUID,
+      created_at: ISO timestamp,
+      status: "in_progress",
+      wbs_items: loaded from /data/wbs.json,
+      suppliers: loaded from /data/suppliers.json,
+      chat_logs: [],
+      plan_history: [],
+      current_plan: {},
+      metrics: {total_budget_used: 0, projected_end_date: null, ...}
+    }
+    ```
+  - If active session exists, prompt: "You have an in-progress session. Resume or start new?"
+  - Starting new session archives old session (optional: move to `nye-haedda-archive-{game_id}`)
+- **Acceptance Test:**
+  - User clicks "Start New Game" → session created in localStorage, Dashboard loads with 0/700 MNOK budget
+
+---
+
+**FR-2.2: Resume Session**
+- **Priority:** Must Have
+- **Description:** On login, user automatically resumes in-progress session
+- **Detailed Requirements:**
+  - On Dashboard load, check localStorage for `nye-haedda-session-{user_id}`
+  - If exists and status="in_progress", load session
+  - Dashboard displays current state (budget used, completed WBS items, chat history)
+  - User sees confirmation message: "Resuming session from [created_at]"
+- **Acceptance Test:**
+  - User logs in with in-progress session → Dashboard shows current progress
+  - User logs in with no session → "Start New Game" screen
+
+---
+
+**FR-2.3: Auto-Save Session**
+- **Priority:** Must Have
+- **Description:** Session automatically saves to localStorage after every user action
+- **Detailed Requirements:**
+  - After every action (send message, commit quote, uncommit), call `saveSession()`
+  - `saveSession()` serializes session object to JSON and writes to localStorage
+  - No user-visible "Save" button (automatic)
+  - Session persists across page refreshes
+- **Acceptance Test:**
+  - User sends chat message, refreshes page → message still visible
+  - User commits quote, closes browser, reopens → commitment still in plan
+
+---
+
+### 5.3 Dashboard & Information Display
+
+**FR-3.1: Display Project Constraints**
+- **Priority:** Must Have
+- **Description:** Dashboard prominently displays budget limit and deadline
+- **Detailed Requirements:**
+  - Constraint panel shows:
+    - "Budget: X / 700 MNOK" with horizontal progress bar
+    - "Deadline: May 15, 2026"
+    - "Projected End Date: [calculated or TBD]"
+  - Progress bar color:
+    - Green: 0-680 MNOK
+    - Yellow: 680-700 MNOK
+    - Red: >700 MNOK
+  - Projected end date color:
+    - Green: before May 15, 2026
+    - Red: after May 15, 2026
+- **Acceptance Test:**
+  - User with 500 MNOK committed sees green progress bar at 71%
+  - User with 750 MNOK committed sees red progress bar at 107%
+
+---
+
+**FR-3.2: Display WBS Items**
+- **Priority:** Must Have
+- **Description:** Dashboard displays all WBS items with status
+- **Detailed Requirements:**
+  - WBS items loaded from `/data/wbs.json` (static file)
+  - Display format: List or tree view (hierarchical if parent_id exists)
+  - Each item shows:
+    - WBS code (e.g., "1.3.1")
+    - Name (e.g., "Grunnarbeid")
+    - Status icon: ⚪ Pending (not in current_plan) or 🟢 Completed (in current_plan)
+  - Clicking item expands details:
+    - Description
+    - Dependencies (e.g., "Requires 1.2 to be completed first")
+    - Baseline estimate (reference only)
+    - If completed: Committed cost, duration, supplier, dates
+  - "Contact Supplier" button (if pending) or "Renegotiate" button (if completed)
+- **Acceptance Test:**
+  - User sees 15 WBS items, initially all ⚪ Pending
+  - After committing 1.3.1, it shows 🟢 Completed with values
+
+---
+
+**FR-3.3: Real-Time Metrics Update**
+- **Priority:** Must Have
+- **Description:** Dashboard metrics update immediately after commitment/uncommitment
+- **Detailed Requirements:**
+  - After commitment:
+    - Recalculate `total_budget_used = SUM(current_plan.*.cost)`
+    - Recalculate `projected_end_date = calculateCriticalPath(current_plan, wbs_items)`
+    - Update Quick Stats: "X / 15 WBS items completed"
+  - Update happens client-side (no API call needed)
+  - UI updates within 1 second (optimistic update)
+- **Acceptance Test:**
+  - User commits 105 MNOK quote → budget immediately shows 105/700 MNOK
+  - User uncommits quote → budget immediately recalculates
+
+---
+
+### 5.4 Supplier Interaction
+
+**FR-4.1: Display Supplier Directory**
+- **Priority:** Must Have
+- **Description:** Users can browse available suppliers filtered by WBS item
+- **Detailed Requirements:**
+  - Suppliers loaded from `/data/suppliers.json` (static file)
+  - When user clicks "Contact Supplier" on WBS item X, show suppliers where `specialty` includes X
+  - Supplier card shows:
+    - Name (e.g., "Bjørn Eriksen")
+    - Role (e.g., "Totalentreprenør")
+    - Persona summary (e.g., "Profit-driven, shrewd negotiator")
+  - "Start Chat" button on each card
+- **Acceptance Test:**
+  - User clicks "Contact Supplier" for WBS 1.3.1 → sees Bjørn Eriksen (Totalentreprenør) and Kari Jensen (Groundwork Specialist)
+
+---
+
+**FR-4.2: Chat Interface**
+- **Priority:** Must Have
+- **Description:** Users can send messages to AI suppliers and receive responses
+- **Detailed Requirements:**
+  - Chat window components:
+    - Header: Supplier name, role, WBS item context
+    - Message list: Scrollable, auto-scroll to latest
+    - Input: Multi-line text area + Send button
+  - Message display:
+    - User messages: Right-aligned, blue bubble
+    - AI messages: Left-aligned, gray bubble
+    - System messages: Center-aligned, small gray text
+  - Message flow:
+    1. User types message, clicks Send
+    2. Message immediately appears in chat (optimistic update)
+    3. Message logged to `session.chat_logs`
+    4. POST to `/api/chat/message` with context
+    5. AI response received (typically 1-3 seconds)
+    6. AI message logged to `session.chat_logs`
+    7. AI message appears in chat
+  - Typing indicator: "Bjørn is reviewing the specifications..." while waiting for AI
+  - All messages persisted in localStorage
+- **Acceptance Test:**
+  - User sends "I need a quote for Grunnarbeid" → message appears in chat
+  - AI responds within 3 seconds → response appears in chat
+  - User refreshes page → full chat history still visible
+
+---
+
+**FR-4.3: AI Response Generation**
+- **Priority:** Must Have
+- **Description:** Backend generates AI responses based on supplier persona and negotiation state
+- **Detailed Requirements:**
+  - Backend receives:
+    - Supplier data (id, system_prompt, hidden_params)
+    - WBS item data (id, name, baseline_cost, baseline_duration)
+    - Chat history (all previous messages for this WBS + supplier)
+    - User message
+  - Backend constructs prompt:
+    - Supplier system_prompt (persona)
+    - WBS context
+    - Relevant requirements (from static requirements.json or embedded in prompt)
+    - Conversation history
+    - Negotiation rules (hidden minimum cost/duration from supplier.hidden_params)
+  - Backend calls Gemini API (via PydanticAI)
+  - Backend extracts structured offer if present (regex or structured output):
+    - Example: "I can do 105 MNOK for 2.5 months" → {cost: 105, duration: 2.5}
+  - Backend returns:
+    ```json
+    {
+      "response": "Based on current market rates, I estimate...",
+      "offer": {cost: 120, duration: 3} or null,
+      "timestamp": "ISO timestamp"
+    }
+    ```
+- **Acceptance Test:**
+  - User sends message → AI responds with persona-appropriate answer
+  - AI references WBS baseline: "The baseline estimate was 100 MNOK..."
+  - AI respects hidden minimums: Will not accept <88 MNOK if min_cost_multiplier=0.88 and baseline=100
+
+---
+
+**FR-4.4: Offer Extraction**
+- **Priority:** Must Have
+- **Description:** System detects when AI makes a structured offer
+- **Detailed Requirements:**
+  - AI response analyzed for patterns:
+    - Cost: "[number] MNOK" or "[number] million NOK"
+    - Duration: "[number] months" or "[number] mnd"
+  - Extracted values stored in chat_log entry: `extracted_offer: {cost, duration}`
+  - If offer detected, "Accept Offer" button appears below AI message
+  - Button shows extracted values: "Accept: 105 MNOK, 2.5 months"
+- **Acceptance Test:**
+  - AI says "I can do 105 MNOK for 2.5 months" → "Accept Offer" button appears
+  - User clicks button → commitment flow triggers
+
+---
+
+### 5.5 Plan Management
+
+**FR-5.1: Commit Quote to Plan**
+- **Priority:** Must Have
+- **Description:** User can accept an AI offer and commit it to the project plan
+- **Detailed Requirements:**
+  - User clicks "Accept Offer" button
+  - Confirmation modal shows:
+    - WBS item: "1.3.1 - Grunnarbeid"
+    - Supplier: "Bjørn Eriksen"
+    - Cost: 105 MNOK
+    - Duration: 2.5 months
+    - "This will update your project plan. Confirm?"
+  - User clicks Confirm
+  - System calculates start_date based on dependencies:
+    - If no dependencies: start_date = project start (e.g., Jan 15, 2025)
+    - If dependencies exist: start_date = MAX(dependency end dates)
+  - System calculates end_date: start_date + duration
+  - System creates plan_history entry:
+    ```javascript
+    {
+      timestamp: now(),
+      action: "commit",
+      wbs_item: "1.3.1",
+      supplier: "bjorn-eriksen",
+      cost: 105,
+      duration: 2.5,
+      start_date: "2025-01-15",
+      end_date: "2025-04-01"
+    }
+    ```
+  - System updates current_plan:
+    ```javascript
+    current_plan["1.3.1"] = {
+      supplier: "bjorn-eriksen",
+      cost: 105,
+      duration: 2.5,
+      start_date: "2025-01-15",
+      end_date: "2025-04-01",
+      committed_at: now()
+    }
+    ```
+  - System recalculates metrics:
+    - `total_budget_used = SUM(current_plan.*.cost)`
+    - `projected_end_date = calculateCriticalPath(current_plan, wbs_items)`
+  - System saves session to localStorage
+  - Dashboard updates (budget, timeline, WBS status)
+  - Chat shows system message: "✅ Offer accepted and committed to plan"
+- **Acceptance Test:**
+  - User accepts offer → plan updates, dashboard shows new budget, WBS item marked complete
+
+---
+
+**FR-5.2: Uncommit and Renegotiate**
+- **Priority:** Must Have
+- **Description:** User can uncommit a plan entry and renegotiate
+- **Detailed Requirements:**
+  - User clicks "Renegotiate" button on completed WBS item
+  - Confirmation modal: "This will remove this item from your plan and recalculate your budget/timeline. Continue?"
+  - User clicks Confirm
+  - System creates plan_history entry:
+    ```javascript
+    {
+      timestamp: now(),
+      action: "uncommit",
+      wbs_item: "1.3.1"
+    }
+    ```
+  - System removes item from current_plan: `delete current_plan["1.3.1"]`
+  - System increments `metrics.renegotiation_count++`
+  - System recalculates metrics
+  - System saves session
+  - Dashboard updates
+  - Chat interface reopens with full history preserved
+  - User can continue negotiation
+- **Acceptance Test:**
+  - User uncommits 1.3.1 (105 MNOK) → budget decreases by 105 MNOK
+  - Chat history still visible with all previous messages
+
+---
+
+### 5.6 Validation & Submission
+
+**FR-6.1: Real-Time Validation (Soft Warnings)**
+- **Priority:** Must Have
+- **Description:** System shows warnings when plan approaches limits
+- **Detailed Requirements:**
+  - After each commitment, check:
+    - If total_budget_used >680 MNOK (>97%): Show yellow banner: "⚠️ Budget at 97% capacity"
+    - If projected_end_date <5 days before May 15, 2026: Show yellow banner: "⚠️ Timeline has minimal buffer"
+  - Warnings are non-blocking (user can continue)
+  - Banner dismissible but reappears on next commitment if still over threshold
+- **Acceptance Test:**
+  - User commits quote bringing budget to 690 MNOK → yellow warning appears
+
+---
+
+**FR-6.2: Plan Validation (Hard Errors)**
+- **Priority:** Must Have
+- **Description:** System validates plan against all constraints on submission
+- **Detailed Requirements:**
+  - User clicks "Submit Plan" button
+  - System runs validation checks:
+    1. **Completeness:** `Object.keys(current_plan).length === wbs_items.length` (all 15 items committed)
+    2. **Budget:** `total_budget_used <= 700`
+    3. **Timeline:** `projected_end_date <= new Date('2026-05-15')`
+    4. **Dependencies:** For each committed item, all dependencies are committed and end before this item starts
+  - If any check fails, collect errors array
+  - Return validation result:
+    ```javascript
+    {
+      valid: false,
+      errors: [
+        {type: "budget", message: "Budget exceeded by 50 MNOK", current: 750, limit: 700},
+        {type: "completeness", message: "Only 14/15 WBS items committed"}
+      ],
+      warnings: []
+    }
+    ```
+- **Acceptance Test:**
+  - User submits plan with 750 MNOK total → validation fails with budget error
+  - User submits plan with all items <700 MNOK, on time → validation passes
+
+---
+
+**FR-6.3: Validation Error Display**
+- **Priority:** Must Have
+- **Description:** User sees clear, actionable error messages on failed validation
+- **Detailed Requirements:**
+  - Error modal displays:
+    - Title: "❌ Plan Validation Failed"
+    - Error list:
+      - Budget error: "Budget exceeded by 50 MNOK. Total: 750 MNOK (Limit: 700 MNOK)"
+      - Timeline error: "Project delayed until May 20, 2026. Deadline: May 15, 2026."
+      - Completeness: "Missing WBS items: 3.2, 4.1"
+    - Suggestions section: "Consider renegotiating these high-cost items: 2.1 (250 MNOK), 3.4 (180 MNOK)"
+    - "Back to Planning" button (closes modal)
+  - Errors should be specific and actionable (not generic "Plan failed")
+- **Acceptance Test:**
+  - User submits over-budget plan → sees exact amount over and suggestions
+
+---
+
+**FR-6.4: Success State**
+- **Priority:** Must Have
+- **Description:** User sees congratulations screen when plan passes validation
+- **Detailed Requirements:**
+  - Success modal displays:
+    - Title: "🎉 Plan Approved!"
+    - Final stats:
+      - "Total Cost: 698 MNOK (within 700 MNOK budget)"
+      - "Completion Date: May 10, 2026 (5 days before deadline)"
+      - "Time Spent: 47 minutes"
+      - "Total Negotiations: 23"
+      - "Renegotiations: 3"
+    - Buttons:
+      - "Export Session" (primary)
+      - "Start New Game" (secondary)
+      - "Take Survey" (optional feedback)
+  - Session status updated to "completed" in localStorage
+  - `session.completed_at = now()`
+- **Acceptance Test:**
+  - User submits valid plan → success modal appears with accurate stats
+
+---
+
+### 5.7 Export & Data Management
+
+**FR-7.1: Export Session as JSON**
+- **Priority:** Must Have
+- **Description:** User can download complete session history as JSON file
+- **Detailed Requirements:**
+  - "Export Session" button available on success screen (and optionally in dashboard menu)
+  - Clicking button generates JSON export:
+    ```javascript
+    {
+      // Metadata
+      export_version: "1.0",
+      exported_at: ISO timestamp,
+
+      // Game info
+      user_id, game_id, created_at, completed_at, status,
+
+      // Complete logs
+      chat_logs: [/* every message */],
+      plan_history: [/* every commit/uncommit */],
+
+      // Final state
+      final_plan: current_plan,
+      metrics: {...},
+
+      // Context
+      wbs_items: [/* reference data */],
+
+      // Validation
+      validation: {valid: true, errors: []}
+    }
+    ```
+  - File downloaded with name: `nye-haedda-session-{user_id}-{game_id}.json`
+  - File size typically 200-500 KB
+  - JSON is valid and human-readable (pretty-printed with 2-space indent)
+- **Acceptance Test:**
+  - User clicks Export → JSON file downloads
+  - Opening file in text editor shows valid JSON with all session data
+
+---
+
+**FR-7.2: localStorage Management**
+- **Priority:** Must Have
+- **Description:** Session data is stored efficiently in browser localStorage
+- **Detailed Requirements:**
+  - localStorage key: `nye-haedda-session-{user_id}`
+  - Data structure: JSON string (serialized session object)
+  - Auto-save after every action
+  - Check localStorage quota before saving (catch QuotaExceededError)
+  - If quota exceeded, prompt user: "Storage full. Please export and clear old sessions."
+  - On logout, optionally prompt: "Export your session before logging out?"
+- **Acceptance Test:**
+  - User completes 100+ message negotiation → session still saves (typical session <500 KB)
+
+---
+
+### 5.8 Static Data & Documents
+
+**FR-8.1: WBS Data Loading**
+- **Priority:** Must Have
+- **Description:** WBS items loaded from static JSON file
+- **Detailed Requirements:**
+  - File location: `/public/data/wbs.json`
+  - File structure:
+    ```json
+    [
+      {
+        "id": "1.3.1",
+        "name": "Grunnarbeid",
+        "description": "Site preparation...",
+        "baseline_cost": 100,
+        "baseline_duration": 2,
+        "dependencies": ["1.2"],
+        "suggested_suppliers": ["bjorn-eriksen", "kari-jensen"]
+      }
+      // ... all 15 WBS items
+    ]
+    ```
+  - Loaded on session initialization
+  - Stored in `session.wbs_items`
+- **Acceptance Test:**
+  - Dashboard displays all 15 WBS items from wbs.json
+
+---
+
+**FR-8.2: Supplier Data Loading**
+- **Priority:** Must Have
+- **Description:** Supplier personas loaded from static JSON file
+- **Detailed Requirements:**
+  - File location: `/public/data/suppliers.json`
+  - File structure:
+    ```json
+    [
+      {
+        "id": "bjorn-eriksen",
+        "name": "Bjørn Eriksen",
+        "role": "Totalentreprenør",
+        "specialty": ["1.3.1", "2.1"],
+        "persona_summary": "Profit-driven, shrewd negotiator",
+        "system_prompt": "You are Bjørn Eriksen, a general contractor...",
+        "hidden_params": {
+          "min_cost_multiplier": 0.88,
+          "min_duration_multiplier": 0.92
+        }
+      }
+      // ... 5-10 suppliers
+    ]
+    ```
+  - Loaded on session initialization
+  - Stored in `session.suppliers`
+  - `system_prompt` and `hidden_params` sent to backend API (not displayed to user)
+- **Acceptance Test:**
+  - Supplier directory shows all suppliers from suppliers.json
+
+---
+
+**FR-8.3: Document Access**
+- **Priority:** Must Have
+- **Description:** Users can access project documents (WBS, requirements, project description)
+- **Detailed Requirements:**
+  - Files location: `/public/docs/`
+    - `wbs.pdf`
+    - `krav-spec.pdf`
+    - `project-description.pdf`
+  - Document sidebar or "Resources" tab
+  - Clicking document link opens in new tab or embedded PDF viewer
+  - User can access documents while chat interface is open (multi-window or split screen)
+- **Acceptance Test:**
+  - User clicks "Requirements Specification" → krav-spec.pdf opens
+
+---
+
+## 6. Non-Functional Requirements
+
+### 6.1 Performance
+
+**NFR-1.1: AI Response Time**
+- **Requirement:** AI responses must appear within 3 seconds (95th percentile)
+- **Rationale:** Maintain immersion and engagement; delays break flow
+- **Measurement:** Log `response_time = timestamp(AI response) - timestamp(user message)` in chat_logs
+- **Target:** <3 seconds for 95% of requests, <5 seconds for 99%
+- **Mitigation if violated:**
+  - Use Gemini Flash instead of Pro for faster responses
+  - Show typing indicator to set expectations
+  - Optimize prompt length
+
+**NFR-1.2: Dashboard Load Time**
+- **Requirement:** Dashboard must render within 2 seconds on initial load
+- **Target:** <2 seconds (First Contentful Paint), <3 seconds (Time to Interactive)
+- **Measurement:** Lighthouse performance audit
+- **Mitigation:**
+  - Lazy load non-critical components
+  - Use Vercel CDN for static assets
+  - Optimize bundle size (code splitting)
+
+**NFR-1.3: Validation Calculation Time**
+- **Requirement:** Plan validation must complete within 1 second
+- **Target:** <1 second for 15 WBS items
+- **Rationale:** Instant feedback is critical for UX
+- **Mitigation:**
+  - Optimize critical path algorithm
+  - Run validation client-side (no network round-trip)
+
+---
+
+### 6.2 Scalability
+
+**NFR-2.1: Concurrent Users**
+- **Requirement:** Support 100+ concurrent users without degradation
+- **Target:** 100 simultaneous chat requests handled with <5 second response time
+- **Measurement:** Load testing with simulated users
+- **Mitigation:**
+  - Stateless backend (easy horizontal scaling on Vercel)
+  - Gemini API rate limits handled with queuing
+
+**NFR-2.2: Data Storage per User**
+- **Requirement:** Session data must fit within localStorage limits (5 MB per domain)
+- **Target:** Typical session <500 KB (10x under limit)
+- **Measurement:** Measure session JSON size after 100+ message simulation
+- **Mitigation:**
+  - If approaching limit, prompt user to export and start new session
+  - Compress chat_logs if needed (remove redundant data)
+
+---
+
+### 6.3 Reliability
+
+**NFR-3.1: System Uptime**
+- **Requirement:** 99%+ uptime
+- **Target:** <7.2 hours downtime per month
+- **Measurement:** Vercel uptime monitoring
+- **Mitigation:**
+  - Use Vercel's enterprise SLA
+  - Status page for known issues
+
+**NFR-3.2: Data Persistence**
+- **Requirement:** Session data must persist across browser restarts
+- **Target:** 100% of sessions resumable if browser reopens within 7 days
+- **Rationale:** Users may pause mid-session
+- **Mitigation:**
+  - localStorage persists until manually cleared
+  - Remind users to export before clearing cache
+
+**NFR-3.3: Error Recovery**
+- **Requirement:** Graceful handling of all errors (no unhandled exceptions)
+- **Target:** 0 unhandled errors causing white screen or crash
+- **Measurement:** Sentry error tracking
+- **Mitigation:**
+  - Try-catch blocks around all critical operations
+  - User-friendly error messages (never show stack traces)
+  - "Retry" buttons for recoverable errors
+
+---
+
+### 6.4 Security
+
+**NFR-4.1: Authentication Security**
+- **Requirement:** User credentials protected according to industry standards
+- **Implementation:** Supabase Auth handles password hashing (bcrypt), secure token generation (JWT)
+- **Compliance:** GDPR-compliant (Supabase EU region)
+
+**NFR-4.2: Data Privacy**
+- **Requirement:** User session data is private and not shared
+- **Implementation:**
+  - Session data stored in user's own browser (localStorage)
+  - Backend does not store session data (stateless)
+  - Exported JSON includes user_id but no personally identifiable information beyond email
+- **Compliance:** No PII stored beyond email (required for auth)
+
+**NFR-4.3: Input Sanitization**
+- **Requirement:** User inputs sanitized to prevent XSS attacks
+- **Implementation:**
+  - React escapes all rendered user content by default
+  - Chat messages rendered as text (not HTML)
+  - No `dangerouslySetInnerHTML` used
+
+---
+
+### 6.5 Usability
+
+**NFR-5.1: Mobile Responsiveness**
+- **Requirement:** Application must be usable on tablets (10+ inch screens)
+- **Target:** Fully functional on iPad and similar tablets
+- **Not Required (MVP):** Mobile phone support (<7 inch screens) - complex chat interface is difficult on small screens
+- **Measurement:** Manual testing on iPad, Samsung Tab
+- **Implementation:** Tailwind CSS responsive breakpoints
+
+**NFR-5.2: Browser Compatibility**
+- **Requirement:** Support latest 2 versions of major browsers
+- **Target Browsers:**
+  - Chrome 120+
+  - Firefox 120+
+  - Safari 17+
+  - Edge 120+
+- **Not Supported:** Internet Explorer (deprecated)
+- **Measurement:** Manual testing, BrowserStack
+
+**NFR-5.3: Accessibility**
+- **Requirement:** Basic WCAG 2.1 Level A compliance
+- **Target:**
+  - Keyboard navigation (tab, enter, escape)
+  - Screen reader compatibility (ARIA labels)
+  - Sufficient color contrast (4.5:1 for text)
+- **Measurement:** Lighthouse accessibility audit, manual screen reader testing
+- **Implementation:**
+  - Semantic HTML
+  - Shadcn UI components (accessible by default)
+  - Focus indicators on interactive elements
+
+---
+
+### 6.6 Maintainability
+
+**NFR-6.1: Code Quality**
+- **Requirement:** Code must be readable, well-documented, and follow standards
+- **Implementation:**
+  - TypeScript for type safety
+  - ESLint + Prettier for code formatting
+  - Component-level comments for complex logic
+  - README with setup instructions
+
+**NFR-6.2: Testability**
+- **Requirement:** Critical functions must have unit tests
+- **Target:** 70%+ code coverage for core logic (validation, critical path calculation)
+- **Implementation:**
+  - Vitest for unit tests
+  - React Testing Library for component tests
+  - Critical functions: `validatePlan()`, `calculateCriticalPath()`, `saveSession()`
+
+---
+
+### 6.7 Localization
+
+**NFR-7.1: Language**
+- **Requirement:** All UI text and AI responses in Norwegian (Bokmål)
+- **Implementation:**
+  - UI strings in Norwegian
+  - AI system prompts specify: "Respond in Norwegian"
+  - Static documents (WBS, requirements) already in Norwegian
+- **Future:** English version can be added with i18n library (not MVP)
+
+**NFR-7.2: Currency & Dates**
+- **Requirement:** Display monetary values in NOK, dates in European format
+- **Implementation:**
+  - Currency: "105 MNOK" (Millioner Norske Kroner)
+  - Dates: "15. mai 2026" (dd. MMMM yyyy)
+  - Use Norwegian locale for number/date formatting
+
+---
+
+## 7. Technical Requirements
+
+### 7.1 Frontend Technology Stack
+
+**TR-1.1: Framework & Language**
+- **Framework:** React 18+ with Next.js 14+ (App Router)
+- **Language:** TypeScript 5+
+- **Build Tool:** Next.js built-in (webpack/turbopack)
+- **Package Manager:** npm or yarn
+
+**TR-1.2: UI Libraries**
+- **Styling:** Tailwind CSS 3+
+- **Component Library:** Shadcn UI (copy-paste components, built on Radix UI)
+- **Icons:** Lucide React or Heroicons
+- **Fonts:** System fonts or Google Fonts (Inter, Open Sans)
+
+**TR-1.3: State Management**
+- **Session Data:** localStorage (direct read/write, no library needed)
+- **UI State:** React Context API or Zustand (lightweight)
+- **Form State:** React Hook Form (if complex forms needed)
+
+**TR-1.4: Utilities**
+- **Date Manipulation:** date-fns or day.js (lightweight)
+- **UUID Generation:** `crypto.randomUUID()` (native browser API)
+- **JSON Handling:** Native `JSON.parse/stringify`
+
+---
+
+### 7.2 Backend Technology Stack
+
+**TR-2.1: Framework & Language**
+- **Framework:** FastAPI 0.100+ (Python 3.11+)
+- **Language:** Python 3.11+
+- **ASGI Server:** Uvicorn (for local dev) or Vercel serverless (production)
+
+**TR-2.2: AI Integration**
+- **Library:** PydanticAI (for structured AI interactions)
+- **AI Provider:** Google Gemini 2.5 Pro or Flash
+- **API Key:** Stored in environment variable (`GEMINI_API_KEY`)
+
+**TR-2.3: Dependencies**
+- **pydantic:** For request/response validation
+- **python-dotenv:** For environment variables
+- **httpx:** For async HTTP requests (if needed)
+
+---
+
+### 7.3 Authentication
+
+**TR-3.1: Supabase Auth**
+- **Service:** Supabase Auth (hosted, managed)
+- **Region:** EU (for GDPR compliance)
+- **Authentication Methods:** Email + Password only (MVP)
+- **SDK:** `@supabase/supabase-js` (frontend), `supabase-py` (backend if needed)
+- **Token Format:** JWT (signed by Supabase, verified client-side and server-side)
+
+**TR-3.2: JWT Handling**
+- **Storage:** localStorage['auth-token']
+- **Expiration:** Configurable (default 1 hour, refresh token for longer sessions)
+- **Validation:** Every backend API call validates JWT in Authorization header
+
+---
+
+### 7.4 Deployment & Hosting
+
+**TR-4.1: Hosting Platform**
+- **Platform:** Vercel
+- **Frontend:** Static site generation (SSG) where possible, server-side rendering (SSR) where needed
+- **Backend:** Vercel Serverless Functions (FastAPI endpoints)
+- **Region:** EU (closest to Norwegian users)
+
+**TR-4.2: Environment Variables**
+- **Frontend (.env.local):**
+  - `NEXT_PUBLIC_SUPABASE_URL`
+  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- **Backend (.env):**
+  - `SUPABASE_URL`
+  - `SUPABASE_SERVICE_KEY` (for server-side operations)
+  - `GEMINI_API_KEY`
+
+**TR-4.3: CI/CD**
+- **Deployment:** Git-based (push to `main` branch triggers auto-deploy)
+- **Preview Deploys:** Every pull request gets preview URL (Vercel feature)
+- **Rollback:** Instant rollback via Vercel dashboard
+
+---
+
+### 7.5 Monitoring & Analytics
+
+**TR-5.1: Error Tracking**
+- **Tool:** Sentry (optional for MVP, recommended post-MVP)
+- **Coverage:** Frontend errors, backend exceptions
+- **Alerts:** Notify on critical errors (>10 errors/min)
+
+**TR-5.2: Performance Monitoring**
+- **Tool:** Vercel Analytics (built-in)
+- **Metrics:** Page load time, API response time, Core Web Vitals
+
+**TR-5.3: User Analytics**
+- **Tool:** PostHog or Plausible (privacy-friendly, GDPR-compliant)
+- **Events Tracked:**
+  - Session started
+  - Message sent
+  - Quote committed
+  - Plan validated (success/failure)
+  - Session exported
+- **No PII:** Track events without collecting personal data
+
+---
+
+## 8. Data Requirements
+
+### 8.1 localStorage Schema (Complete)
+
+**Key:** `nye-haedda-session-{user_id}`
+
+**Schema:**
+```typescript
+interface GameSession {
+  // Metadata
+  user_id: string;              // From JWT
+  game_id: string;              // UUID
+  created_at: string;           // ISO 8601 timestamp
+  completed_at: string | null;  // ISO 8601 or null if in_progress
+  status: 'in_progress' | 'completed' | 'abandoned';
+
+  // Static reference data (loaded from JSON files)
+  wbs_items: WBSItem[];
+  suppliers: Supplier[];
+
+  // Dynamic session data
+  chat_logs: ChatMessage[];
+  plan_history: PlanHistoryEntry[];
+  current_plan: Record<string, PlanEntry>;
+
+  // Real-time metrics
+  metrics: {
+    total_budget_used: number;          // Sum of current_plan costs
+    projected_end_date: string | null;  // ISO 8601 date or null
+    negotiation_count: number;          // Total user messages sent
+    renegotiation_count: number;        // Number of uncommit actions
+    time_spent_seconds: number;         // Calculated from created_at
+  };
+}
+
+interface WBSItem {
+  id: string;                    // e.g., "1.3.1"
+  name: string;                  // e.g., "Grunnarbeid"
+  description: string;
+  baseline_cost: number;         // MNOK
+  baseline_duration: number;     // months
+  dependencies: string[];        // WBS IDs
+  suggested_suppliers: string[]; // Supplier IDs
+}
+
+interface Supplier {
+  id: string;                    // e.g., "bjorn-eriksen"
+  name: string;                  // e.g., "Bjørn Eriksen"
+  role: string;                  // e.g., "Totalentreprenør"
+  specialty: string[];           // WBS IDs this supplier handles
+  persona_summary: string;
+  system_prompt: string;         // Full AI prompt (sent to backend only)
+  hidden_params: {
+    min_cost_multiplier: number;     // e.g., 0.88
+    min_duration_multiplier: number; // e.g., 0.92
+  };
+}
+
+interface ChatMessage {
+  timestamp: string;             // ISO 8601
+  wbs_item: string;              // WBS ID
+  supplier: string;              // Supplier ID
+  sender: 'user' | 'ai' | 'system';
+  message: string;
+  extracted_offer?: {
+    cost: number;
+    duration: number;
+  };
+}
+
+interface PlanHistoryEntry {
+  timestamp: string;
+  action: 'commit' | 'uncommit';
+  wbs_item: string;
+  supplier?: string;
+  cost?: number;
+  duration?: number;
+  start_date?: string;           // ISO 8601 date
+  end_date?: string;
+}
+
+interface PlanEntry {
+  supplier: string;
+  cost: number;
+  duration: number;
+  start_date: string;            // ISO 8601 date
+  end_date: string;
+  committed_at: string;          // ISO 8601 timestamp
+}
+```
+
+---
+
+### 8.2 Static Data Files
+
+**File: `/public/data/wbs.json`**
+- **Content:** Array of 15 WBS items for Hædda Barneskole project
+- **Schema:** `WBSItem[]` (see above)
+- **Source:** Extracted from `wbs.pdf` (manual data entry)
+- **Size:** ~5-10 KB
+- **Update Frequency:** Static (no updates post-launch for MVP)
+
+**File: `/public/data/suppliers.json`**
+- **Content:** Array of 5-10 supplier personas
+- **Schema:** `Supplier[]` (see above)
+- **Source:** Manually defined during prompt engineering
+- **Size:** ~20-30 KB (system_prompts are verbose)
+- **Update Frequency:** Updated during testing/tuning phase
+
+**File: `/public/docs/wbs.pdf`**
+- **Content:** Original WBS document (from LOG565 case)
+- **Size:** ~1-2 MB
+- **Access:** Direct download or embedded PDF viewer
+
+**File: `/public/docs/krav-spec.pdf`**
+- **Content:** Requirements specification (from LOG565 case)
+- **Size:** ~1-2 MB
+
+**File: `/public/docs/project-description.pdf`**
+- **Content:** Project description (from LOG565 case)
+- **Size:** ~500 KB - 1 MB
+
+---
+
+### 8.3 Export Data Format
+
+**File Name:** `nye-haedda-session-{user_id}-{game_id}.json`
+
+**Schema:**
+```typescript
+interface ExportData {
+  // Metadata
+  export_version: string;        // e.g., "1.0"
+  exported_at: string;           // ISO 8601
+
+  // Game info
+  user_id: string;
+  game_id: string;
+  created_at: string;
+  completed_at: string | null;
+  status: string;
+
+  // Complete logs
+  chat_logs: ChatMessage[];
+  plan_history: PlanHistoryEntry[];
+
+  // Final state
+  final_plan: Record<string, PlanEntry>;
+
+  // Metrics
+  metrics: {
+    total_cost: number;
+    completion_date: string;
+    time_spent_minutes: number;
+    negotiation_count: number;
+    renegotiation_count: number;
+  };
+
+  // Context (for instructors/reviewers)
+  wbs_items: WBSItem[];
+
+  // Validation result
+  validation: {
+    valid: boolean;
+    errors: Array<{type: string; message: string}>;
+    warnings: Array<{type: string; message: string}>;
+  };
+}
+```
+
+---
+
+## 9. API Specifications
+
+### 9.1 Overview
+
+**Base URL (Production):** `https://nye-haedda.vercel.app/api`
+**Base URL (Development):** `http://localhost:3000/api`
+
+**Authentication:** JWT token in `Authorization: Bearer {token}` header (for endpoints that require auth)
+
+**Content-Type:** `application/json`
+
+---
+
+### 9.2 Endpoints
+
+#### 9.2.1 POST /api/chat/message
+
+**Purpose:** Send user message to AI supplier, receive AI response
+
+**Authentication:** Optional for MVP (can add JWT validation post-MVP)
+
+**Request:**
+```json
+{
+  "supplier": {
+    "id": "bjorn-eriksen",
+    "system_prompt": "You are Bjørn Eriksen...",
+    "hidden_params": {
+      "min_cost_multiplier": 0.88,
+      "min_duration_multiplier": 0.92
+    }
+  },
+  "wbs_item": {
+    "id": "1.3.1",
+    "name": "Grunnarbeid",
+    "baseline_cost": 100,
+    "baseline_duration": 2
+  },
+  "chat_history": [
+    {
+      "sender": "user",
+      "message": "I need a quote for Grunnarbeid"
+    },
+    {
+      "sender": "ai",
+      "message": "Based on current market rates, 120 MNOK..."
+    }
+  ],
+  "user_message": "Can you do 100 MNOK?"
+}
+```
+
+**Response (Success - 200 OK):**
+```json
+{
+  "response": "That's below my cost baseline. However, if we optimize the scope, I can consider 105 MNOK for 2.5 months.",
+  "offer": {
+    "cost": 105,
+    "duration": 2.5
+  },
+  "timestamp": "2025-12-07T12:34:56Z"
+}
+```
+
+**Response (Error - 500 Internal Server Error):**
+```json
+{
+  "error": "AI service unavailable",
+  "message": "Gemini API timeout. Please try again."
+}
+```
+
+**Implementation Notes:**
+- Backend constructs full prompt with supplier persona, WBS context, requirements, conversation history
+- Backend calls Gemini API (via PydanticAI)
+- Backend extracts structured offer from AI response (regex or structured output)
+- Backend is stateless (no session stored server-side)
+- Response time target: <3 seconds (95th percentile)
+
+---
+
+#### 9.2.2 POST /api/validate (Optional - Can Be Client-Side)
+
+**Purpose:** Validate project plan against constraints
+
+**Authentication:** Optional
+
+**Request:**
+```json
+{
+  "current_plan": {
+    "1.3.1": {"cost": 105, "duration": 2.5, "start_date": "2025-01-15", "end_date": "2025-04-01"},
+    "2.1": {"cost": 200, "duration": 3, "start_date": "2025-04-01", "end_date": "2025-07-01"}
+  },
+  "wbs_items": [
+    {"id": "1.3.1", "dependencies": ["1.2"]},
+    {"id": "2.1", "dependencies": ["1.3.1"]}
+  ]
+}
+```
+
+**Response (Success - 200 OK):**
+```json
+{
+  "valid": false,
+  "errors": [
+    {
+      "type": "budget",
+      "message": "Budget exceeded by 50 MNOK",
+      "current": 750,
+      "limit": 700
+    },
+    {
+      "type": "timeline",
+      "message": "Project delayed until May 20, 2026",
+      "current": "2026-05-20",
+      "limit": "2026-05-15"
+    }
+  ],
+  "warnings": []
+}
+```
+
+**Implementation Notes:**
+- This endpoint is optional - validation can be done entirely client-side (faster, no network latency)
+- Server-side validation is useful for instructor trust (they can validate exported JSON)
+
+---
+
+#### 9.2.3 GET /api/health
+
+**Purpose:** Health check endpoint
+
+**Authentication:** None
+
+**Response (Success - 200 OK):**
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-12-07T12:34:56Z",
+  "version": "1.0.0"
+}
+```
+
+---
+
+## 10. UI/UX Requirements
+
+### 10.1 Design Principles
+
+**DP-1: Clarity Over Cleverness**
+- UI should be immediately understandable (no hidden features)
+- Labels and buttons use clear, action-oriented language
+- Example: "Submit Plan" not "Finish", "Renegotiate" not "Undo"
+
+**DP-2: Enterprise Aesthetic**
+- Professional, clean design (not gamified or playful)
+- Suitable for academic/professional context
+- Color scheme: Neutral grays, blues, greens (avoid bright/flashy colors)
+- Typography: Sans-serif, high readability (Inter, Open Sans)
+
+**DP-3: Immediate Feedback**
+- All user actions have instant visual response
+- Button clicks show loading state
+- Form submissions show success/error immediately
+- Dashboard updates in real-time (no manual refresh)
+
+**DP-4: Progressive Disclosure**
+- Don't overwhelm users with all information at once
+- WBS item details hidden until clicked (expand/collapse)
+- Advanced features (e.g., export) appear after completion
+
+---
+
+### 10.2 Page Layouts
+
+#### 10.2.1 Login/Register Page
+
+**Layout:**
+- Centered form on neutral background
+- Logo/title at top: "Nye Hædda Barneskole - Project Management Simulation"
+- Form fields:
+  - Email input (with validation)
+  - Password input (with show/hide toggle)
+  - "Login" button (primary CTA)
+  - "Don't have an account? Register" link
+- Error messages appear above form (red text)
+
+**Responsive:**
+- Form width: 400px desktop, 90% mobile
+- Single column layout
+
+---
+
+#### 10.2.2 Dashboard (Main Game View)
+
+**Layout (Desktop):**
+```
++--------------------------------------------------+
+| Header: Logo | User Menu (Logout)                |
++--------------------------------------------------+
+| Constraint Panel:                                |
+|   Budget: [========>    ] 450 / 700 MNOK (64%)   |
+|   Deadline: May 15, 2026                         |
+|   Projected End: April 10, 2026 ✓                |
++--------------------------------------------------+
+| Quick Stats: 8/15 WBS Completed | 32 Negotiations|
++--------------------------------------------------+
+| WBS List                      | [Submit Plan]    |
+| ⚪ 1.1 Prosjektering          | [Help]           |
+| 🟢 1.3.1 Grunnarbeid          |                  |
+|     105 MNOK, 2.5 mnd         |                  |
+|     [Renegotiate]             |                  |
+| ⚪ 2.1 Råbygg                 |                  |
+|     [Contact Supplier]        |                  |
++--------------------------------------------------+
+```
+
+**Layout (Mobile/Tablet):**
+- Stack vertically: Constraint Panel → Quick Stats → WBS List
+- Collapsible sections to save space
+
+---
+
+#### 10.2.3 Negotiation/Chat Page
+
+**Layout (Desktop):**
+```
++--------------------------------------------------+
+| Header: [< Back to Dashboard] | Bjørn Eriksen -  |
+|         Totalentreprenør | WBS 1.3.1 Grunnarbeid |
++--------------------------------------------------+
+| Chat Window                | Document Sidebar   |
+| (scrollable)               | 📄 WBS              |
+|                            | 📄 Requirements     |
+| User: Quote?               | 📄 Project Desc     |
+| AI: 120 MNOK, 3 months     |                    |
+| User: Too high...          |                    |
+| AI: 105 MNOK, 2.5 months   |                    |
+|   [Accept: 105 MNOK, 2.5]  |                    |
++--------------------------------------------------+
+| [Message Input]                    | [Send]      |
++--------------------------------------------------+
+```
+
+**Chat Message Styles:**
+- User messages: Right-aligned, blue background (#3B82F6), white text
+- AI messages: Left-aligned, gray background (#E5E7EB), black text
+- System messages: Center-aligned, small gray text, italic
+
+---
+
+### 10.3 Component Specifications
+
+#### 10.3.1 Button Styles
+
+**Primary Button** (e.g., "Submit Plan", "Send", "Accept Offer")
+- Background: Blue (#3B82F6)
+- Text: White, bold
+- Hover: Darker blue (#2563EB)
+- Disabled: Gray (#9CA3AF), cursor not-allowed
+
+**Secondary Button** (e.g., "Cancel", "Back")
+- Background: White
+- Border: Gray (#D1D5DB)
+- Text: Gray (#374151)
+- Hover: Light gray background
+
+**Danger Button** (e.g., "Renegotiate", "Uncommit")
+- Background: Red (#EF4444)
+- Text: White
+- Hover: Darker red (#DC2626)
+
+---
+
+#### 10.3.2 Form Inputs
+
+**Text Input:**
+- Border: Gray (#D1D5DB), 2px
+- Focus: Blue border (#3B82F6)
+- Error state: Red border (#EF4444)
+- Placeholder: Gray text (#9CA3AF)
+
+**Text Area (Chat Input):**
+- Height: 60px (expandable)
+- Border: Same as text input
+- Max height: 200px (with scrollbar)
+
+---
+
+#### 10.3.3 Status Indicators
+
+**WBS Item Status:**
+- ⚪ Pending: Light gray circle
+- 🟢 Completed: Green circle with checkmark
+
+**Budget Progress Bar:**
+- Background: Light gray (#E5E7EB)
+- Fill color:
+  - Green (#10B981): 0-680 MNOK
+  - Yellow (#F59E0B): 680-700 MNOK
+  - Red (#EF4444): >700 MNOK
+- Height: 20px
+- Border radius: 10px (rounded)
+
+---
+
+#### 10.3.4 Modals
+
+**Structure:**
+- Overlay: Semi-transparent black (#000000 40% opacity)
+- Modal box: White, centered, max-width 600px
+- Close button: X icon in top-right
+- Buttons: Primary + Secondary at bottom-right
+
+**Examples:**
+- Confirmation Modal (Commit): "Confirm commitment: 105 MNOK, 2.5 months?"
+- Error Modal (Validation Failure): Red error icon, error list, "Back to Planning" button
+- Success Modal (Plan Approved): Green success icon, stats table, "Export" and "New Game" buttons
+
+---
+
+### 10.4 Responsive Breakpoints
+
+**Tailwind CSS Breakpoints:**
+- `sm`: 640px (small tablets)
+- `md`: 768px (tablets)
+- `lg`: 1024px (desktops)
+- `xl`: 1280px (large desktops)
+
+**Design Priorities:**
+- Desktop-first design (primary use case)
+- Tablet support (iPad horizontal)
+- Mobile support (nice-to-have, not critical for MVP)
+
+---
+
+### 10.5 Accessibility
+
+**Keyboard Navigation:**
+- Tab order: Header → Main content → Footer
+- Enter key submits forms, Escape closes modals
+- Focus indicators visible (blue outline)
+
+**Screen Reader Support:**
+- All buttons have aria-label
+- Form inputs have associated <label>
+- Status indicators have aria-live regions (announce updates)
+
+**Color Contrast:**
+- Text on white background: ≥4.5:1 contrast ratio
+- Important buttons: ≥7:1 contrast (AAA level)
+
+---
+
+## 11. Success Metrics
+
+*(Detailed metrics already defined in Section 2.2 and Brainstorming Summary. Reference those for complete list.)*
+
+**Key Metrics Summary:**
+
+**User Engagement:**
+- Completion Rate: ≥60%
+- Time to Completion: 45-60 minutes
+- Renegotiation Rate: ≥40%
+
+**Learning Outcomes:**
+- Document Utilization: ≥50%
+- Constraint Awareness: ≥70%
+- Negotiation Strategy Diversity: ≥3 tactics per user
+
+**User Satisfaction:**
+- Post-Simulation Survey: ≥4.0/5.0
+- NPS: ≥50% Promoters
+
+**Technical Performance:**
+- AI Response Time: <3 seconds (95th percentile)
+- System Uptime: ≥99%
+
+---
+
+## 12. Scope Definition
+
+### 12.1 In Scope (MVP)
+
+✅ **Must Have Features (15 total):**
+1. User authentication (Supabase)
+2. Session initialization and persistence (localStorage)
+3. Project dashboard with constraints
+4. WBS view
+5. Supplier directory
+6. AI chat interface
+7. AI supplier logic (Gemini integration)
+8. Quote acceptance and commitment
+9. Real-time plan validation
+10. Plan submission and win/loss state
+11. Session export (JSON)
+12. Renegotiation capability
+13. Document access (PDFs)
+14. Error handling and loading states
+15. Help documentation
+
+✅ **Technical Components:**
+- React + Next.js frontend
+- FastAPI backend (2-3 endpoints)
+- Supabase Auth
+- localStorage for session data
+- Static JSON files (WBS, suppliers)
+
+✅ **Single Scenario:**
+- Nye Hædda Barneskole only
+
+---
+
+### 12.2 Out of Scope (MVP)
+
+❌ **Post-MVP (Should Have):**
+- Cloud backup (Supabase Storage)
+- Visual Gantt chart
+- PDF export
+- Negotiation hints
+- Auto-save to cloud
+- Session import
+
+❌ **Future (Could Have):**
+- Difficulty settings
+- Random risk events
+- Multiplayer mode
+- Instructor dashboard
+- Alternative scenarios
+- Achievements/badges
+- AI voice chat
+- Mobile native app
+
+❌ **Explicitly Not Building:**
+- Execution phase simulation
+- Financial management (beyond budget totals)
+- 3D visualization
+- MS Project integration
+- Social features
+- VR/AR experience
+
+---
+
+## 13. Dependencies and Assumptions
+
+### 13.1 External Dependencies
+
+**DEP-1: Supabase Service**
+- **Dependency:** Supabase Auth must be available and operational
+- **Risk:** Supabase downtime prevents user login
+- **Mitigation:** Use Supabase's 99.9% uptime SLA; have status page for known issues
+- **Contingency:** If Supabase has prolonged outage, users can still access simulation if already logged in (JWT cached)
+
+**DEP-2: Gemini API**
+- **Dependency:** Google Gemini 2.5 API must be available
+- **Risk:** API downtime or rate limiting prevents AI responses
+- **Mitigation:** Implement retry logic with exponential backoff; show user-friendly error: "AI service temporarily unavailable"
+- **Contingency:** Queue requests during rate limits; consider fallback to Gemini Flash (lower quality but higher availability)
+
+**DEP-3: Vercel Platform**
+- **Dependency:** Vercel for hosting and deployment
+- **Risk:** Vercel downtime affects application availability
+- **Mitigation:** Vercel has 99.99% uptime SLA; global CDN reduces regional failures
+- **Contingency:** Static assets can be mirrored to alternative CDN if needed
+
+---
+
+### 13.2 Data Dependencies
+
+**DEP-4: Static WBS Data**
+- **Dependency:** Accurate extraction of WBS from wbs.pdf into wbs.json
+- **Risk:** Manual data entry errors (wrong costs, missing dependencies)
+- **Mitigation:** Manual review and validation against original PDF; cross-reference with LOG565 course materials
+- **Verification:** Test simulation with known valid plan to ensure constraints are achievable
+
+**DEP-5: Requirements Specification**
+- **Dependency:** Requirements from krav-spec.pdf must be accurately represented in AI prompts
+- **Risk:** AI references incorrect or outdated requirements
+- **Mitigation:** Extract key requirements during prompt engineering; manual review of AI responses during testing
+
+---
+
+### 13.3 Assumptions
+
+**ASM-1: User Device Capabilities**
+- **Assumption:** Users have devices with:
+  - Modern browsers (Chrome 120+, Firefox 120+, Safari 17+)
+  - ≥5 MB available localStorage
+  - Stable internet connection (for AI API calls)
+- **Validation:** Test on common student devices (laptops, iPads)
+
+**ASM-2: Session Completion in Single Sitting**
+- **Assumption:** Most users will complete simulation in one 45-60 minute session without needing to resume on different device
+- **Rationale:** This assumption justifies localStorage-only approach (no database)
+- **Validation:** Track session duration and abandonment rate during pilot testing
+- **Fallback:** If assumption proves false, add cloud backup feature (Should-Have)
+
+**ASM-3: Instructor Manual Review**
+- **Assumption:** Instructors are willing to manually review exported JSON files (no automated dashboard for MVP)
+- **Rationale:** Keeps MVP scope minimal
+- **Validation:** Confirm with 2-3 instructors during pilot
+- **Fallback:** Build instructor dashboard post-MVP if demand is high
+
+**ASM-4: Norwegian Language Sufficiency**
+- **Assumption:** Norwegian-only UI and AI is acceptable for target market (LOG565 students in Norway)
+- **Validation:** Confirm with instructors and students
+- **Fallback:** Add English version post-MVP for international expansion
+
+**ASM-5: Free Tier Sustainability**
+- **Assumption:** Gemini API costs remain <2 NOK per session, making free access sustainable
+- **Validation:** Monitor costs during pilot testing
+- **Fallback:** If costs exceed projections, implement rate limiting (e.g., max 100 messages per session) or explore freemium model
+
+---
+
+### 13.4 Constraints
+
+**CON-1: Development Timeline**
+- **Constraint:** MVP must be completed in 3-4 weeks
+- **Impact:** Limits feature scope; prioritize Must-Haves only
+- **Mitigation:** Use pre-built libraries (Supabase, Shadcn, PydanticAI) to accelerate development
+
+**CON-2: Budget**
+- **Constraint:** Minimal budget for MVP (assumes free tiers: Vercel, Supabase, Gemini)
+- **Impact:** Cannot use premium features or paid support
+- **Mitigation:** Design architecture to stay within free tier limits
+
+**CON-3: Team Size**
+- **Constraint:** Small team (1-2 developers for MVP)
+- **Impact:** Limited parallel workstreams
+- **Mitigation:** Clear separation of concerns (frontend/backend can be developed in parallel if 2 developers)
+
+---
+
+## 14. Glossary
+
+**AI Agent / AI Supplier:** A persona-driven AI chatbot representing a specific supplier (e.g., Bjørn Eriksen - Totalentreprenør). Powered by Gemini 2.5, configured with system prompts to behave consistently with the persona.
+
+**Baseline Estimate:** The initial cost and duration estimate for a WBS item, provided in the WBS document. Used as a reference point for negotiations but not binding.
+
+**Commitment:** The act of accepting a negotiated quote and adding it to the project plan. Creates a plan entry with cost, duration, start date, and end date.
+
+**Critical Path:** The longest sequence of dependent tasks in the project plan. Determines the projected end date.
+
+**Current Plan:** The set of all currently committed WBS items. Stored in `session.current_plan` in localStorage.
+
+**Gemini:** Google's large language model (LLM) used to power AI supplier responses. Accessed via API.
+
+**Hædda Barneskole:** The construction project case study from LOG565 course. A new elementary school in Hædda municipality, Norway.
+
+**Hidden Parameters:** Minimum acceptable cost and duration values for each AI supplier, enforced in the system prompt. Not visible to users. Prevents AI from accepting unrealistically low offers.
+
+**localStorage:** Browser-based storage (5-10 MB per domain) where the entire game session is persisted. Data survives page refreshes but is cleared if user clears browser cache.
+
+**LOG565:** Project Management 2 course at Norwegian business schools (e.g., BI, NHH, NTNU).
+
+**MNOK:** Millioner Norske Kroner (Millions of Norwegian Kroner). Currency unit used in the simulation (e.g., 700 MNOK budget).
+
+**MVP (Minimum Viable Product):** The initial version of the simulation with only essential features (15 Must-Haves). Designed to validate product-market fit.
+
+**Persona:** The personality, motivations, and negotiation style of an AI supplier. Defined in the system prompt.
+
+**Plan History:** A chronological log of all commit and uncommit actions. Stored in `session.plan_history`. Used for export and tracking changes.
+
+**PydanticAI:** Python library for building AI agents with structured inputs/outputs. Simplifies Gemini API integration.
+
+**Renegotiation:** The act of uncommitting a previously committed WBS item and reopening negotiations. Allows iterative planning.
+
+**Session:** A single playthrough of the simulation. Starts when user clicks "Start New Game", ends when plan is successfully submitted or abandoned.
+
+**Supabase:** Backend-as-a-Service platform. Used for authentication (JWT tokens) in this project.
+
+**System Prompt:** The initial instructions given to the AI that define its persona, knowledge, and behavior. Includes supplier personality, negotiation rules, and references to project documents.
+
+**Uncommit:** Remove a previously committed WBS item from the current plan. Budget and timeline recalculate. Logged in plan_history.
+
+**WBS (Work Breakdown Structure):** Hierarchical decomposition of project work into manageable tasks. 15 items total for Hædda project.
+
+**WBS Item:** A single task in the WBS (e.g., "1.3.1 - Grunnarbeid"). Has baseline cost, duration, dependencies, and suggested suppliers.
+
+---
+
+## Appendices
+
+### Appendix A: Static Data File Samples
+
+**Sample: wbs.json (excerpt)**
+```json
+[
+  {
+    "id": "1.1",
+    "name": "Prosjektering",
+    "description": "Design and engineering phase",
+    "baseline_cost": 30,
+    "baseline_duration": 0.5,
+    "dependencies": [],
+    "suggested_suppliers": ["siri-hansen"]
+  },
+  {
+    "id": "1.3.1",
+    "name": "Grunnarbeid",
+    "description": "Site preparation, earthwork, foundation groundwork",
+    "baseline_cost": 100,
+    "baseline_duration": 2,
+    "dependencies": ["1.2"],
+    "suggested_suppliers": ["bjorn-eriksen", "kari-jensen"]
+  },
+  {
+    "id": "2.1",
+    "name": "Råbygg - Fundament",
+    "description": "Foundation construction",
+    "baseline_cost": 150,
+    "baseline_duration": 3,
+    "dependencies": ["1.3.1"],
+    "suggested_suppliers": ["bjorn-eriksen"]
+  }
+]
+```
+
+---
+
+**Sample: suppliers.json (excerpt)**
+```json
+[
+  {
+    "id": "bjorn-eriksen",
+    "name": "Bjørn Eriksen",
+    "role": "Totalentreprenør",
+    "specialty": ["1.3.1", "2.1", "2.2", "2.3"],
+    "persona_summary": "Profit-driven general contractor. Experienced negotiator who starts with inflated quotes but is flexible with strong evidence-based arguments.",
+    "system_prompt": "You are Bjørn Eriksen, a general contractor (Totalentreprenør) with 20 years of experience in Norwegian construction. Your main goal is to maximize profit while maintaining a good industry reputation. You start negotiations with quotes 15-20% above your minimum acceptable cost, but you can be negotiated down with strong arguments. You respect project managers who reference requirements specifications (krav-spec) and industry standards. You become more flexible when users propose creative solutions like phased delivery or alternative materials. You speak Norwegian. Never accept offers below {{baseline_cost * 0.88}} MNOK or {{baseline_duration * 0.92}} months for this WBS item.",
+    "hidden_params": {
+      "min_cost_multiplier": 0.88,
+      "min_duration_multiplier": 0.92
+    }
+  }
+]
+```
+
+---
+
+### Appendix B: User Journey Example (Detailed)
+
+*(This is a condensed reference to the detailed user journey in Brainstorming Executive Summary, Section 7)*
+
+**Sara's Complete Journey (34 Steps):**
+1. Discovery → 2. Registration → 3. Login → ... → 34. Exam Success
+
+**Key Phases:**
+- Onboarding (5 min)
+- First Negotiation (10-15 min)
+- Iteration & Crisis (20-25 min)
+- Completion & Success (5-10 min)
+- Transfer to Real World (1 week later)
+
+---
+
+### Appendix C: Validation Algorithm (Pseudocode)
+
+```typescript
+function validatePlan(session: GameSession): ValidationResult {
+  const errors: ValidationError[] = [];
+  const warnings: ValidationWarning[] = [];
+
+  // 1. Completeness Check
+  const committedCount = Object.keys(session.current_plan).length;
+  const totalWBSItems = session.wbs_items.length;
+  if (committedCount < totalWBSItems) {
+    errors.push({
+      type: 'completeness',
+      message: `Only ${committedCount}/${totalWBSItems} WBS items committed`,
+      missing: session.wbs_items
+        .filter(w => !session.current_plan[w.id])
+        .map(w => w.id)
+    });
+  }
+
+  // 2. Budget Check
+  const totalCost = Object.values(session.current_plan)
+    .reduce((sum, entry) => sum + entry.cost, 0);
+
+  if (totalCost > 700) {
+    errors.push({
+      type: 'budget',
+      message: `Budget exceeded by ${totalCost - 700} MNOK`,
+      current: totalCost,
+      limit: 700,
+      suggestions: getHighCostItems(session.current_plan, 3) // Top 3 expensive items
+    });
+  } else if (totalCost > 680) {
+    warnings.push({
+      type: 'budget',
+      message: `Budget at ${(totalCost/700*100).toFixed(1)}% - limited flexibility`
+    });
+  }
+
+  // 3. Timeline Check (Critical Path Calculation)
+  const endDate = calculateCriticalPath(session.current_plan, session.wbs_items);
+  const deadline = new Date('2026-05-15');
+
+  if (endDate > deadline) {
+    const daysLate = Math.ceil((endDate.getTime() - deadline.getTime()) / (1000*60*60*24));
+    errors.push({
+      type: 'timeline',
+      message: `Project delayed by ${daysLate} days`,
+      current: endDate.toISOString().split('T')[0],
+      limit: '2026-05-15'
+    });
+  }
+
+  // 4. Dependency Check
+  for (const [wbsId, entry] of Object.entries(session.current_plan)) {
+    const wbsItem = session.wbs_items.find(w => w.id === wbsId);
+
+    for (const depId of wbsItem.dependencies) {
+      const depEntry = session.current_plan[depId];
+
+      if (!depEntry) {
+        errors.push({
+          type: 'dependency',
+          message: `${wbsId} requires ${depId} to be completed first`,
+          wbs_item: wbsId,
+          missing_dependency: depId
+        });
+      } else if (new Date(entry.start_date) < new Date(depEntry.end_date)) {
+        errors.push({
+          type: 'dependency',
+          message: `${wbsId} starts (${entry.start_date}) before ${depId} finishes (${depEntry.end_date})`,
+          wbs_item: wbsId,
+          blocking_dependency: depId
+        });
+      }
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors: errors,
+    warnings: warnings
+  };
+}
+
+function calculateCriticalPath(
+  currentPlan: Record<string, PlanEntry>,
+  wbsItems: WBSItem[]
+): Date {
+  // Topological sort + longest path algorithm
+  // (Implementation details omitted for brevity)
+  // Returns the latest end_date in the critical path
+}
+```
+
+---
+
+### Appendix D: Critical Path Calculation Notes
+
+**Algorithm:** Topological Sort + Longest Path
+
+**Steps:**
+1. Build dependency graph from WBS items
+2. Topological sort (ensures dependencies processed before dependents)
+3. For each node in topological order:
+   - Calculate earliest start: MAX(dependency end dates)
+   - Calculate end: start + duration
+4. Return maximum end date across all nodes
+
+**Edge Cases:**
+- Circular dependencies: Should not exist in WBS data (validation during data entry)
+- Missing dependencies: Validation catches this before calculation
+- Multiple paths: Algorithm finds the longest (critical) path
+
+**Performance:**
+- Time complexity: O(V + E) where V=WBS items, E=dependencies
+- For 15 WBS items: <1ms calculation time
+
+---
+
+## Document Approval
+
+| Role | Name | Signature | Date |
+|------|------|-----------|------|
+| Product Owner | [TBD] | | |
+| Technical Lead | [TBD] | | |
+| UX Designer | [TBD] | | |
+| QA Lead | [TBD] | | |
+
+---
+
+**End of Product Requirements Document (PRD)**
+
+*This document defines the complete functional and technical requirements for the Nye Hædda Barneskole Project Management Simulation MVP. All implementation work should reference this PRD as the single source of truth.*
+
+**Next Steps:**
+1. PRD Validation (stakeholder review)
+2. UX Design (wireframes, user flows)
+3. Implementation (Week 1-4)
+4. Testing & Launch (Week 4)
