@@ -1,0 +1,246 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900">
+  <defs>
+    <style>
+      .title { font: bold 20px sans-serif; fill: #1F2937; }
+      .subtitle { font: 13px sans-serif; fill: #6B7280; }
+      .device-label { font: bold 14px sans-serif; fill: #2563EB; }
+      .breakpoint { font: 12px sans-serif; fill: #6B7280; }
+      .element-label { font: 11px sans-serif; fill: #374151; }
+      .screen { fill: #FFFFFF; stroke: #D1D5DB; stroke-width: 2; }
+      .header { fill: #2563EB; }
+      .panel { fill: #F3F4F6; stroke: #D1D5DB; stroke-width: 1; }
+      .content-block { fill: #DBEAFE; stroke: #2563EB; stroke-width: 1; }
+      .action-block { fill: #DCFCE7; stroke: #16A34A; stroke-width: 1; }
+      .not-supported { fill: #FEE2E2; stroke: #DC2626; stroke-width: 2; }
+      .post-mvp { font: bold 11px sans-serif; fill: #DC2626; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="700" y="35" class="title" text-anchor="middle">Responsiv Design - Breakpoint-sammenligning</text>
+  <text x="700" y="55" class="subtitle" text-anchor="middle">Visuell fremstilling av layout på tvers av enheter (Desktop, Tablet, Mobil)</text>
+
+  <!-- Desktop Layout (lg: 1024px+) -->
+  <text x="250" y="100" class="device-label" text-anchor="middle">🖥️ Desktop</text>
+  <text x="250" y="120" class="breakpoint" text-anchor="middle">lg: 1024px+ (Primær målgruppe)</text>
+
+  <!-- Desktop screen -->
+  <rect x="50" y="140" width="400" height="300" rx="8" class="screen"/>
+
+  <!-- Desktop header -->
+  <rect x="50" y="140" width="400" height="30" class="header"/>
+  <text x="250" y="160" class="element-label" text-anchor="middle" fill="#FFFFFF">Nye Hædda Barneskole | 👤 Bruker ▼</text>
+
+  <!-- Desktop constraint panel -->
+  <rect x="60" y="180" width="380" height="50" rx="4" class="panel"/>
+  <text x="250" y="200" class="element-label" text-anchor="middle">Budsjett: [=========>   ] 450/700 MNOK</text>
+  <text x="250" y="218" class="element-label" text-anchor="middle">Frist: 15. mai 2026 | Forventet: 10. april 2026 ✓</text>
+
+  <!-- Desktop 2-column layout -->
+  <rect x="60" y="240" width="250" height="190" rx="4" class="content-block"/>
+  <text x="185" y="260" class="element-label" text-anchor="middle" font-weight="bold">WBS-oppgaver (2/3 bredde)</text>
+  <text x="185" y="280" class="element-label" text-anchor="middle">✅ 1.3.1 Grunnarbeid</text>
+  <text x="185" y="300" class="element-label" text-anchor="middle">✅ 1.3.2 Fundamentering</text>
+  <text x="185" y="320" class="element-label" text-anchor="middle">⭕ 1.4.1 Råbygg</text>
+  <text x="185" y="340" class="element-label" text-anchor="middle">⭕ 1.4.2 Tak og vegger</text>
+  <text x="185" y="360" class="element-label" text-anchor="middle">...</text>
+  <text x="185" y="380" class="element-label" text-anchor="middle" fill="#9CA3AF">Rull for å se alle</text>
+
+  <rect x="320" y="240" width="120" height="190" rx="4" class="action-block"/>
+  <text x="380" y="260" class="element-label" text-anchor="middle" font-weight="bold">Handlinger</text>
+  <text x="380" y="280" class="element-label" text-anchor="middle">(1/3 bredde)</text>
+  <rect x="330" y="290" width="100" height="25" rx="4" fill="#2563EB"/>
+  <text x="380" y="307" class="element-label" text-anchor="middle" fill="#FFFFFF">Send Inn Plan</text>
+  <rect x="330" y="325" width="100" height="25" rx="4" fill="#10B981"/>
+  <text x="380" y="342" class="element-label" text-anchor="middle" fill="#FFFFFF">Eksporter</text>
+  <rect x="330" y="360" width="100" height="25" rx="4" fill="#F59E0B"/>
+  <text x="380" y="377" class="element-label" text-anchor="middle" fill="#FFFFFF">Hjelp</text>
+
+  <!-- Tablet Landscape (md: 768px) -->
+  <text x="650" y="100" class="device-label" text-anchor="middle">📱 Tablet Landscape</text>
+  <text x="650" y="120" class="breakpoint" text-anchor="middle">md: 768px (Sekundær målgruppe)</text>
+
+  <!-- Tablet screen -->
+  <rect x="500" y="140" width="300" height="350" rx="8" class="screen"/>
+
+  <!-- Tablet header -->
+  <rect x="500" y="140" width="300" height="25" class="header"/>
+  <text x="650" y="158" class="element-label" text-anchor="middle" fill="#FFFFFF" font-size="10">Hædda | 👤 ▼</text>
+
+  <!-- Tablet constraint panel -->
+  <rect x="510" y="175" width="280" height="45" rx="4" class="panel"/>
+  <text x="650" y="193" class="element-label" text-anchor="middle" font-size="10">Budsjett: 450/700 MNOK (64%)</text>
+  <text x="650" y="209" class="element-label" text-anchor="middle" font-size="10">Frist: 15. mai 2026 ✓</text>
+
+  <!-- Tablet single-column WBS -->
+  <rect x="510" y="230" width="280" height="180" rx="4" class="content-block"/>
+  <text x="650" y="248" class="element-label" text-anchor="middle" font-weight="bold">WBS-oppgaver (full bredde)</text>
+  <text x="650" y="268" class="element-label" text-anchor="middle" font-size="10">✅ 1.3.1 Grunnarbeid | 60d | 105M</text>
+  <text x="650" y="285" class="element-label" text-anchor="middle" font-size="10">✅ 1.3.2 Fundamentering | 45d | 60M</text>
+  <text x="650" y="302" class="element-label" text-anchor="middle" font-size="10">⭕ 1.4.1 Råbygg | Forhandl →</text>
+  <text x="650" y="319" class="element-label" text-anchor="middle" font-size="10">⭕ 1.4.2 Tak/Vegger | Låst</text>
+  <text x="650" y="336" class="element-label" text-anchor="middle" font-size="10">...</text>
+  <text x="650" y="353" class="element-label" text-anchor="middle" fill="#9CA3AF" font-size="10">Scroll nedover</text>
+  <text x="650" y="370" class="element-label" text-anchor="middle" fill="#9CA3AF" font-size="10">↓</text>
+  <text x="650" y="395" class="element-label" text-anchor="middle" font-size="10" font-weight="bold">Handlinger (sticky bottom)</text>
+
+  <!-- Tablet sticky actions -->
+  <rect x="510" y="420" width="280" height="60" rx="4" class="action-block" stroke-width="2"/>
+  <rect x="520" y="430" width="120" height="20" rx="3" fill="#2563EB"/>
+  <text x="580" y="444" class="element-label" text-anchor="middle" fill="#FFFFFF" font-size="9">Send Inn Plan</text>
+  <rect x="650" y="430" width="65" height="20" rx="3" fill="#10B981"/>
+  <text x="682" y="444" class="element-label" text-anchor="middle" fill="#FFFFFF" font-size="9">Eksport</text>
+  <rect x="725" y="430" width="55" height="20" rx="3" fill="#F59E0B"/>
+  <text x="752" y="444" class="element-label" text-anchor="middle" fill="#FFFFFF" font-size="9">Hjelp</text>
+  <text x="650" y="470" class="element-label" text-anchor="middle" fill="#6B7280" font-size="9">⬆ Alltid synlig (sticky)</text>
+
+  <!-- Tablet Portrait (sm: 640px) -->
+  <text x="950" y="100" class="device-label" text-anchor="middle">📱 Tablet Portrait</text>
+  <text x="950" y="120" class="breakpoint" text-anchor="middle">sm: 640px (Tertiær målgruppe)</text>
+
+  <!-- Tablet portrait screen -->
+  <rect x="825" y="140" width="250" height="400" rx="8" class="screen"/>
+
+  <!-- Tablet portrait header -->
+  <rect x="825" y="140" width="250" height="25" class="header"/>
+  <text x="950" y="158" class="element-label" text-anchor="middle" fill="#FFFFFF" font-size="10">Hædda | 👤</text>
+
+  <!-- Tablet portrait constraint (compact) -->
+  <rect x="835" y="175" width="230" height="35" rx="4" class="panel"/>
+  <text x="950" y="190" class="element-label" text-anchor="middle" font-size="9">450/700 MNOK (64%)</text>
+  <text x="950" y="203" class="element-label" text-anchor="middle" font-size="9">10. apr 2026 ✓</text>
+
+  <!-- Tablet portrait WBS (vertical) -->
+  <rect x="835" y="220" width="230" height="240" rx="4" class="content-block"/>
+  <text x="950" y="238" class="element-label" text-anchor="middle" font-weight="bold" font-size="11">WBS-oppgaver</text>
+  <text x="950" y="258" class="element-label" text-anchor="middle" font-size="9">✅ 1.3.1 Grunnarbeid</text>
+  <text x="950" y="273" class="element-label" text-anchor="middle" font-size="9">60d | 105 MNOK</text>
+  <line x1="845" y1="280" x2="1055" y2="280" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="950" y="295" class="element-label" text-anchor="middle" font-size="9">✅ 1.3.2 Fundamentering</text>
+  <text x="950" y="310" class="element-label" text-anchor="middle" font-size="9">45d | 60 MNOK</text>
+  <line x1="845" y1="317" x2="1055" y2="317" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="950" y="332" class="element-label" text-anchor="middle" font-size="9">⭕ 1.4.1 Råbygg</text>
+  <text x="950" y="347" class="element-label" text-anchor="middle" font-size="9" fill="#2563EB">Forhandl →</text>
+  <line x1="845" y1="354" x2="1055" y2="354" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="950" y="369" class="element-label" text-anchor="middle" font-size="9">⭕ 1.4.2 Tak/Vegger</text>
+  <text x="950" y="384" class="element-label" text-anchor="middle" font-size="9" fill="#9CA3AF">Låst</text>
+  <text x="950" y="405" class="element-label" text-anchor="middle" fill="#9CA3AF" font-size="9">...</text>
+  <text x="950" y="425" class="element-label" text-anchor="middle" fill="#9CA3AF" font-size="9">Scroll ↓</text>
+  <text x="950" y="450" class="element-label" text-anchor="middle" font-size="10" font-weight="bold">Handlinger (sticky)</text>
+
+  <!-- Tablet portrait sticky actions -->
+  <rect x="835" y="470" width="230" height="60" rx="4" class="action-block" stroke-width="2"/>
+  <rect x="845" y="480" width="100" height="18" rx="3" fill="#2563EB"/>
+  <text x="895" y="492" class="element-label" text-anchor="middle" fill="#FFFFFF" font-size="8">Send Inn Plan</text>
+  <rect x="955" y="480" width="50" height="18" rx="3" fill="#10B981"/>
+  <text x="980" y="492" class="element-label" text-anchor="middle" fill="#FFFFFF" font-size="8">Eksport</text>
+  <rect x="1015" y="480" width="40" height="18" rx="3" fill="#F59E0B"/>
+  <text x="1035" y="492" class="element-label" text-anchor="middle" fill="#FFFFFF" font-size="8">Hjelp</text>
+  <text x="950" y="515" class="element-label" text-anchor="middle" fill="#6B7280" font-size="8">Alltid synlig</text>
+
+  <!-- Mobile (NOT MVP) -->
+  <text x="1250" y="100" class="device-label" text-anchor="middle">📱 Mobil (Post-MVP)</text>
+  <text x="1250" y="120" class="breakpoint" text-anchor="middle"><640px (Ikke støttet i MVP)</text>
+
+  <!-- Mobile screen (marked as not supported) -->
+  <rect x="1150" y="140" width="200" height="350" rx="12" class="not-supported" stroke-width="3"/>
+
+  <!-- Mobile header -->
+  <rect x="1150" y="140" width="200" height="22" fill="#DC2626"/>
+  <text x="1250" y="156" class="element-label" text-anchor="middle" fill="#FFFFFF" font-size="9">Hædda</text>
+
+  <!-- Not supported message -->
+  <text x="1250" y="250" class="post-mvp" text-anchor="middle">❌ IKKE MVP</text>
+  <text x="1250" y="280" class="element-label" text-anchor="middle" font-size="10">Chat-grensesnittet er for</text>
+  <text x="1250" y="298" class="element-label" text-anchor="middle" font-size="10">komplekst for små skjermer.</text>
+
+  <rect x="1170" y="320" width="160" height="80" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="1250" y="338" class="element-label" text-anchor="middle" font-weight="bold" font-size="10">Post-MVP Plan:</text>
+  <text x="1250" y="355" class="element-label" text-anchor="middle" font-size="9">• Vertikal layout</text>
+  <text x="1250" y="370" class="element-label" text-anchor="middle" font-size="9">• Collapsible WBS</text>
+  <text x="1250" y="385" class="element-label" text-anchor="middle" font-size="9">• Simplified chat UI</text>
+  <text x="1250" y="398" class="element-label" text-anchor="middle" font-size="8" fill="#DC2626">Est. 1-2 uker utvikling</text>
+
+  <text x="1250" y="430" class="element-label" text-anchor="middle" font-size="10" fill="#6B7280">For MVP: Bruk desktop/tablet</text>
+  <text x="1250" y="450" class="element-label" text-anchor="middle" font-size="10" fill="#6B7280">for optimal opplevelse</text>
+
+  <!-- Feature comparison table -->
+  <rect x="50" y="560" width="1300" height="300" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="2"/>
+  <text x="700" y="590" class="title" text-anchor="middle" font-size="18">Funksjonstabell: Enhetssammenligning</text>
+
+  <!-- Table header -->
+  <rect x="70" y="610" width="200" height="30" fill="#2563EB"/>
+  <text x="170" y="630" class="element-label" text-anchor="middle" fill="#FFFFFF" font-weight="bold">Funksjon</text>
+  <rect x="270" y="610" width="250" height="30" fill="#2563EB"/>
+  <text x="395" y="630" class="element-label" text-anchor="middle" fill="#FFFFFF" font-weight="bold">Desktop (1024px+)</text>
+  <rect x="520" y="610" width="250" height="30" fill="#2563EB"/>
+  <text x="645" y="630" class="element-label" text-anchor="middle" fill="#FFFFFF" font-weight="bold">Tablet Landscape (768px)</text>
+  <rect x="770" y="610" width="250" height="30" fill="#2563EB"/>
+  <text x="895" y="630" class="element-label" text-anchor="middle" fill="#FFFFFF" font-weight="bold">Tablet Portrait (640px)</text>
+  <rect x="1020" y="610" width="250" height="30" fill="#DC2626"/>
+  <text x="1145" y="630" class="element-label" text-anchor="middle" fill="#FFFFFF" font-weight="bold">Mobil (<640px)</text>
+
+  <!-- Table rows -->
+  <!-- Row 1: Layout -->
+  <rect x="70" y="640" width="200" height="30" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="170" y="660" class="element-label" text-anchor="middle">Layout</text>
+  <rect x="270" y="640" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="395" y="660" class="element-label" text-anchor="middle">2-kolonne (WBS + Actions)</text>
+  <rect x="520" y="640" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="645" y="660" class="element-label" text-anchor="middle">1-kolonne (sticky actions)</text>
+  <rect x="770" y="640" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="895" y="660" class="element-label" text-anchor="middle">1-kolonne (compact)</text>
+  <rect x="1020" y="640" width="250" height="30" fill="#FEE2E2" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="1145" y="660" class="element-label" text-anchor="middle">❌ Ikke støttet</text>
+
+  <!-- Row 2: Chat UI -->
+  <rect x="70" y="670" width="200" height="30" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="170" y="690" class="element-label" text-anchor="middle">Chat med leverandører</text>
+  <rect x="270" y="670" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="395" y="690" class="element-label" text-anchor="middle">✅ Full funksjonalitet</text>
+  <rect x="520" y="670" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="645" y="690" class="element-label" text-anchor="middle">✅ Full funksjonalitet</text>
+  <rect x="770" y="670" width="250" height="30" fill="#FEF3C7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="895" y="690" class="element-label" text-anchor="middle">⚠️ Mindre meldinger</text>
+  <rect x="1020" y="670" width="250" height="30" fill="#FEE2E2" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="1145" y="690" class="element-label" text-anchor="middle">❌ For kompleks</text>
+
+  <!-- Row 3: WBS Visibility -->
+  <rect x="70" y="700" width="200" height="30" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="170" y="720" class="element-label" text-anchor="middle">WBS-synlighet</text>
+  <rect x="270" y="700" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="395" y="720" class="element-label" text-anchor="middle">5-7 oppgaver synlige</text>
+  <rect x="520" y="700" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="645" y="720" class="element-label" text-anchor="middle">4-5 oppgaver synlige</text>
+  <rect x="770" y="700" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="895" y="720" class="element-label" text-anchor="middle">3-4 oppgaver synlige</text>
+  <rect x="1020" y="700" width="250" height="30" fill="#FEE2E2" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="1145" y="720" class="element-label" text-anchor="middle">❌</text>
+
+  <!-- Row 4: Budsjettvisning -->
+  <rect x="70" y="730" width="200" height="30" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="170" y="750" class="element-label" text-anchor="middle">Budsjettvisning</text>
+  <rect x="270" y="730" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="395" y="750" class="element-label" text-anchor="middle">Full progress bar</text>
+  <rect x="520" y="730" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="645" y="750" class="element-label" text-anchor="middle">Kompakt progress bar</text>
+  <rect x="770" y="730" width="250" height="30" fill="#DCFCE7" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="895" y="750" class="element-label" text-anchor="middle">Kun tall (450/700)</text>
+  <rect x="1020" y="730" width="250" height="30" fill="#FEE2E2" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="1145" y="750" class="element-label" text-anchor="middle">❌</text>
+
+  <!-- Row 5: Recommended Use -->
+  <rect x="70" y="760" width="200" height="30" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="170" y="780" class="element-label" text-anchor="middle" font-weight="bold">Anbefalt bruk</text>
+  <rect x="270" y="760" width="250" height="30" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+  <text x="395" y="780" class="element-label" text-anchor="middle" font-weight="bold">✅ PRIMÆR</text>
+  <rect x="520" y="760" width="250" height="30" fill="#DCFCE7" stroke="#16A34A" stroke-width="2"/>
+  <text x="645" y="780" class="element-label" text-anchor="middle" font-weight="bold">✅ SEKUNDÆR</text>
+  <rect x="770" y="760" width="250" height="30" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="895" y="780" class="element-label" text-anchor="middle" font-weight="bold">⚠️ TERTIÆR</text>
+  <rect x="1020" y="760" width="250" height="30" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+  <text x="1145" y="780" class="element-label" text-anchor="middle" font-weight="bold">❌ POST-MVP</text>
+
+  <!-- Footer note -->
+  <text x="700" y="835" class="breakpoint" text-anchor="middle">Estimert utviklingstid mobil-støtte (post-MVP): 1-2 uker | Se ux-design-specification.md Seksjon 7.1</text>
+</svg>

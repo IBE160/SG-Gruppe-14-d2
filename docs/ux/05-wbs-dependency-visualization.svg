@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000">
+  <defs>
+    <style>
+      .title { font: bold 22px sans-serif; fill: #1F2937; }
+      .subtitle { font: 14px sans-serif; fill: #6B7280; }
+      .wbs-title { font: bold 13px sans-serif; fill: #1F2937; }
+      .wbs-label { font: 11px sans-serif; fill: #374151; }
+      .wbs-data { font: 11px sans-serif; fill: #6B7280; }
+      .phase-title { font: bold 16px sans-serif; fill: #1F2937; }
+      .wbs-completed { fill: #DCFCE7; stroke: #16A34A; stroke-width: 2; }
+      .wbs-in-progress { fill: #FEF3C7; stroke: #F59E0B; stroke-width: 2; }
+      .wbs-pending { fill: #F3F4F6; stroke: #9CA3AF; stroke-width: 2; }
+      .wbs-critical { stroke: #DC2626; stroke-width: 3; stroke-dasharray: 5,5; }
+      .dependency { stroke: #6B7280; stroke-width: 2; fill: none; marker-end: url(#dep-arrow); }
+      .critical-path { stroke: #DC2626; stroke-width: 3; fill: none; marker-end: url(#crit-arrow); }
+      .timeline { fill: none; stroke: #D1D5DB; stroke-width: 1; }
+    </style>
+    <marker id="dep-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#6B7280" />
+    </marker>
+    <marker id="crit-arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#DC2626" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="700" y="40" class="title" text-anchor="middle">WBS-avhengighetsstruktur og Kritisk Sti</text>
+  <text x="700" y="65" class="subtitle" text-anchor="middle">Visualisering av oppgaveavhengigheter og prosjektflyt (15 WBS-oppgaver)</text>
+
+  <!-- Timeline header -->
+  <rect x="300" y="90" width="1050" height="30" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="450" y="110" class="wbs-data" text-anchor="middle">Q1 2025</text>
+  <text x="650" y="110" class="wbs-data" text-anchor="middle">Q2 2025</text>
+  <text x="850" y="110" class="wbs-data" text-anchor="middle">Q3 2025</text>
+  <text x="1050" y="110" class="wbs-data" text-anchor="middle">Q4 2025</text>
+  <text x="1250" y="110" class="wbs-data" text-anchor="middle">Q1 2026</text>
+
+  <!-- Phase 1: Prosjektering (1.1-1.2) -->
+  <text x="50" y="160" class="phase-title">1.1-1.2</text>
+  <text x="50" y="178" class="wbs-label">Prosjektering</text>
+
+  <!-- 1.1 Arkitekt -->
+  <rect x="300" y="140" width="120" height="70" rx="6" class="wbs-completed"/>
+  <text x="360" y="163" class="wbs-title" text-anchor="middle">1.1 Arkitekt</text>
+  <text x="360" y="178" class="wbs-data" text-anchor="middle">30 dager</text>
+  <text x="360" y="193" class="wbs-data" text-anchor="middle">25 MNOK</text>
+  <text x="310" y="158" class="wbs-label">✅</text>
+
+  <!-- 1.2 RIB -->
+  <rect x="450" y="140" width="120" height="70" rx="6" class="wbs-completed"/>
+  <text x="510" y="163" class="wbs-title" text-anchor="middle">1.2 RIB</text>
+  <text x="510" y="178" class="wbs-data" text-anchor="middle">20 dager</text>
+  <text x="510" y="193" class="wbs-data" text-anchor="middle">15 MNOK</text>
+  <text x="460" y="158" class="wbs-label">✅</text>
+
+  <!-- Dependency: 1.1 → 1.2 -->
+  <path d="M 420 175 L 450 175" class="dependency"/>
+
+  <!-- Phase 2: Grunnarbeider (1.3) -->
+  <text x="50" y="280" class="phase-title">1.3</text>
+  <text x="50" y="298" class="wbs-label">Grunnarbeider</text>
+
+  <!-- 1.3.1 Grunnarbeid -->
+  <rect x="600" y="240" width="130" height="90" rx="6" class="wbs-completed wbs-critical"/>
+  <text x="665" y="268" class="wbs-title" text-anchor="middle">1.3.1 Grunnarbeid</text>
+  <text x="665" y="288" class="wbs-data" text-anchor="middle">60 dager</text>
+  <text x="665" y="303" class="wbs-data" text-anchor="middle">105 MNOK</text>
+  <text x="665" y="320" class="wbs-label" text-anchor="middle" fill="#DC2626">🔴 KRITISK STI</text>
+  <text x="610" y="258" class="wbs-label">✅</text>
+
+  <!-- Dependency: 1.2 → 1.3.1 (critical path) -->
+  <path d="M 510 210 L 510 230 L 665 230 L 665 240" class="critical-path"/>
+
+  <!-- 1.3.2 Fundamentering -->
+  <rect x="760" y="240" width="130" height="90" rx="6" class="wbs-completed wbs-critical"/>
+  <text x="825" y="268" class="wbs-title" text-anchor="middle">1.3.2 Fundamentering</text>
+  <text x="825" y="288" class="wbs-data" text-anchor="middle">45 dagar</text>
+  <text x="825" y="303" class="wbs-data" text-anchor="middle">60 MNOK</text>
+  <text x="825" y="320" class="wbs-label" text-anchor="middle" fill="#DC2626">🔴 KRITISK STI</text>
+  <text x="770" y="258" class="wbs-label">✅</text>
+
+  <!-- Dependency: 1.3.1 → 1.3.2 (critical path) -->
+  <path d="M 730 285 L 760 285" class="critical-path"/>
+
+  <!-- Phase 3: Råbygg (1.4) -->
+  <text x="50" y="430" class="phase-title">1.4</text>
+  <text x="50" y="448" class="wbs-label">Råbygg</text>
+
+  <!-- 1.4.1 Råbygg -->
+  <rect x="920" y="380" width="130" height="90" rx="6" class="wbs-in-progress wbs-critical"/>
+  <text x="985" y="408" class="wbs-title" text-anchor="middle">1.4.1 Råbygg</text>
+  <text x="985" y="428" class="wbs-data" text-anchor="middle">90 dager</text>
+  <text x="985" y="443" class="wbs-data" text-anchor="middle">180 MNOK</text>
+  <text x="985" y="460" class="wbs-label" text-anchor="middle" fill="#DC2626">🔴 KRITISK STI</text>
+  <text x="930" y="398" class="wbs-label">⏳</text>
+
+  <!-- Dependency: 1.3.2 → 1.4.1 (critical path) -->
+  <path d="M 825 330 L 825 360 L 985 360 L 985 380" class="critical-path"/>
+
+  <!-- 1.4.2 Tak og vegger -->
+  <rect x="1080" y="380" width="130" height="90" rx="6" class="wbs-pending wbs-critical"/>
+  <text x="1145" y="408" class="wbs-title" text-anchor="middle">1.4.2 Tak/Vegger</text>
+  <text x="1145" y="428" class="wbs-data" text-anchor="middle">75 dager</text>
+  <text x="1145" y="443" class="wbs-data" text-anchor="middle">95 MNOK</text>
+  <text x="1145" y="460" class="wbs-label" text-anchor="middle" fill="#DC2626">🔴 KRITISK STI</text>
+  <text x="1090" y="398" class="wbs-label">⭕</text>
+
+  <!-- Dependency: 1.4.1 → 1.4.2 (critical path) -->
+  <path d="M 1050 425 L 1080 425" class="critical-path"/>
+
+  <!-- Phase 4: Tekniske fag (1.5) -->
+  <text x="50" y="590" class="phase-title">1.5</text>
+  <text x="50" y="608" class="wbs-label">Tekniske fag</text>
+
+  <!-- 1.5.1 Elektro -->
+  <rect x="920" y="540" width="120" height="80" rx="6" class="wbs-pending"/>
+  <text x="980" y="568" class="wbs-title" text-anchor="middle">1.5.1 Elektro</text>
+  <text x="980" y="588" class="wbs-data" text-anchor="middle">60 dager</text>
+  <text x="980" y="603" class="wbs-data" text-anchor="middle">45 MNOK</text>
+  <text x="930" y="558" class="wbs-label">⭕</text>
+
+  <!-- 1.5.2 VVS -->
+  <rect x="1070" y="540" width="120" height="80" rx="6" class="wbs-pending"/>
+  <text x="1130" y="568" class="wbs-title" text-anchor="middle">1.5.2 VVS</text>
+  <text x="1130" y="588" class="wbs-data" text-anchor="middle">50 dager</text>
+  <text x="1130" y="603" class="wbs-data" text-anchor="middle">38 MNOK</text>
+  <text x="1080" y="558" class="wbs-label">⭕</text>
+
+  <!-- Dependencies: 1.4.1 → 1.5.1, 1.5.2 -->
+  <path d="M 985 470 L 985 520 L 980 520 L 980 540" class="dependency"/>
+  <path d="M 985 520 L 1130 520 L 1130 540" class="dependency"/>
+
+  <!-- 1.5.3 Ventilasjon -->
+  <rect x="1220" y="540" width="120" height="80" rx="6" class="wbs-pending"/>
+  <text x="1280" y="568" class="wbs-title" text-anchor="middle">1.5.3 Ventilasjon</text>
+  <text x="1280" y="588" class="wbs-data" text-anchor="middle">45 dager</text>
+  <text x="1280" y="603" class="wbs-data" text-anchor="middle">40 MNOK</text>
+  <text x="1230" y="558" class="wbs-label">⭕</text>
+
+  <!-- Dependency: 1.4.1 → 1.5.3 -->
+  <path d="M 985 520 L 1280 520 L 1280 540" class="dependency"/>
+
+  <!-- Phase 5: Innvendig (1.6) -->
+  <text x="50" y="750" class="phase-title">1.6</text>
+  <text x="50" y="768" class="wbs-label">Innvendig</text>
+
+  <!-- 1.6.1 Innvendige vegger -->
+  <rect x="920" y="700" width="130" height="80" rx="6" class="wbs-pending"/>
+  <text x="985" y="728" class="wbs-title" text-anchor="middle">1.6.1 Inn.vegger</text>
+  <text x="985" y="748" class="wbs-data" text-anchor="middle">40 dager</text>
+  <text x="985" y="763" class="wbs-data" text-anchor="middle">32 MNOK</text>
+  <text x="930" y="718" class="wbs-label">⭕</text>
+
+  <!-- 1.6.2 Gulv -->
+  <rect x="1080" y="700" width="120" height="80" rx="6" class="wbs-pending"/>
+  <text x="1140" y="728" class="wbs-title" text-anchor="middle">1.6.2 Gulv</text>
+  <text x="1140" y="748" class="wbs-data" text-anchor="middle">30 dager</text>
+  <text x="1140" y="763" class="wbs-data" text-anchor="middle">28 MNOK</text>
+  <text x="1090" y="718" class="wbs-label">⭕</text>
+
+  <!-- Dependencies: 1.4.2 → 1.6.1, 1.6.2 -->
+  <path d="M 1145 470 L 1145 490 L 985 490 L 985 700" class="dependency"/>
+  <path d="M 1145 490 L 1140 490 L 1140 700" class="dependency"/>
+
+  <!-- Phase 6: Ferdigstillelse (1.7-1.8) -->
+  <text x="50" y="900" class="phase-title">1.7-1.8</text>
+  <text x="50" y="918" class="wbs-label">Ferdigstillelse</text>
+
+  <!-- 1.7 Maling -->
+  <rect x="920" y="850" width="110" height="80" rx="6" class="wbs-pending"/>
+  <text x="975" y="878" class="wbs-title" text-anchor="middle">1.7 Maling</text>
+  <text x="975" y="898" class="wbs-data" text-anchor="middle">25 dager</text>
+  <text x="975" y="913" class="wbs-data" text-anchor="middle">18 MNOK</text>
+  <text x="930" y="868" class="wbs-label">⭕</text>
+
+  <!-- 1.8 Inspeksjon -->
+  <rect x="1060" y="850" width="130" height="80" rx="6" class="wbs-pending wbs-critical"/>
+  <text x="1125" y="878" class="wbs-title" text-anchor="middle">1.8 Inspeksjon</text>
+  <text x="1125" y="898" class="wbs-data" text-anchor="middle">15 dager</text>
+  <text x="1125" y="913" class="wbs-data" text-anchor="middle">5 MNOK</text>
+  <text x="1125" y="925" class="wbs-label" text-anchor="middle" fill="#DC2626">🔴 KRITISK STI</text>
+  <text x="1070" y="868" class="wbs-label">⭕</text>
+
+  <!-- Dependencies: 1.6.1 → 1.7, 1.4.2 → 1.8 (critical) -->
+  <path d="M 985 780 L 985 820 L 975 820 L 975 850" class="dependency"/>
+  <path d="M 1145 470 L 1210 470 L 1210 840 L 1125 840 L 1125 850" class="critical-path"/>
+
+  <!-- Legend -->
+  <rect x="50" y="960" width="1300" height="30" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1"/>
+
+  <rect x="70" y="967" width="20" height="15" class="wbs-completed"/>
+  <text x="100" y="978" class="wbs-label" text-anchor="start">Fullført</text>
+
+  <rect x="200" y="967" width="20" height="15" class="wbs-in-progress"/>
+  <text x="230" y="978" class="wbs-label" text-anchor="start">Pågår</text>
+
+  <rect x="330" y="967" width="20" height="15" class="wbs-pending"/>
+  <text x="360" y="978" class="wbs-label" text-anchor="start">Ikke startet</text>
+
+  <line x1="480" y1="974" x2="530" y2="974" class="critical-path"/>
+  <text x="540" y="978" class="wbs-label" text-anchor="start">Kritisk sti (rød stiplet)</text>
+
+  <line x1="720" y1="974" x2="770" y2="974" class="dependency"/>
+  <text x="780" y="978" class="wbs-label" text-anchor="start">Avhengighet</text>
+
+  <!-- Summary box -->
+  <rect x="300" y="150" width="200" height="60" rx="8" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+  <text x="400" y="173" class="wbs-title" text-anchor="middle">Prosjektsammendrag</text>
+  <text x="400" y="190" class="wbs-data" text-anchor="middle">Total: 695 MNOK / 700 MNOK</text>
+  <text x="400" y="205" class="wbs-data" text-anchor="middle">Sluttdato: 10. april 2026 ✅</text>
+</svg>

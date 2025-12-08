@@ -2309,6 +2309,189 @@ function calculateCriticalPath(
 
 ---
 
+### Appendix E: Sample localStorage Sessions
+
+This appendix provides examples of localStorage data structure at different stages of gameplay to aid frontend development and testing.
+
+#### E.1 Empty Session (New Game)
+
+```json
+{
+  "gameId": "game_1733645231000",
+  "userId": "user_abc123",
+  "createdAt": "2025-12-08T10:00:31Z",
+  "status": "in_progress",
+  "budgetUsed": 0,
+  "projectedEndDate": null,
+  "planEntries": [],
+  "chatLogs": [],
+  "metadata": {
+    "lastModified": "2025-12-08T10:00:31Z",
+    "version": "1.0"
+  }
+}
+```
+
+**Size:** ~250 bytes
+
+#### E.2 Partially Complete Session (3/15 WBS Items)
+
+```json
+{
+  "gameId": "game_1733645231000",
+  "userId": "user_abc123",
+  "createdAt": "2025-12-08T10:00:31Z",
+  "status": "in_progress",
+  "budgetUsed": 215000000,
+  "projectedEndDate": "2026-03-15",
+  "planEntries": [
+    {
+      "wbsId": "1.3.1",
+      "wbsName": "Grunnarbeid",
+      "supplierId": "supplier_groundwork",
+      "duration": 60,
+      "cost": 105000000,
+      "startDate": "2025-01-01",
+      "dependencies": [],
+      "negotiatedAt": "2025-12-08T10:15:00Z"
+    },
+    {
+      "wbsId": "1.3.2",
+      "wbsName": "Fundamentering",
+      "supplierId": "supplier_foundation",
+      "duration": 45,
+      "cost": 60000000,
+      "startDate": "2025-03-01",
+      "dependencies": ["1.3.1"],
+      "negotiatedAt": "2025-12-08T10:32:00Z"
+    },
+    {
+      "wbsId": "1.4.1",
+      "wbsName": "Råbygg",
+      "supplierId": "supplier_construction",
+      "duration": 90,
+      "cost": 50000000,
+      "startDate": "2025-04-15",
+      "dependencies": ["1.3.2"],
+      "negotiatedAt": "2025-12-08T10:48:00Z"
+    }
+  ],
+  "chatLogs": [
+    {
+      "supplierId": "supplier_groundwork",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Jeg trenger et pristilbud for grunnarbeid (WBS 1.3.1). Varighet og kostnad?",
+          "timestamp": "2025-12-08T10:12:00Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Basert på grunnforholdene i Hædda kan vi levere grunnarbeid på 3 måneder for 120 MNOK.",
+          "timestamp": "2025-12-08T10:12:15Z"
+        },
+        {
+          "role": "user",
+          "content": "Budsjettet er stramt. Kan vi optimalisere ned til 2 måneder og 105 MNOK?",
+          "timestamp": "2025-12-08T10:13:00Z"
+        },
+        {
+          "role": "assistant",
+          "content": "Med dobbelskift og effektiv ressursbruk kan vi redusere til 2 måneder for 105 MNOK. Akseptert.",
+          "timestamp": "2025-12-08T10:13:30Z"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "lastModified": "2025-12-08T10:48:00Z",
+    "negotiationCount": 8,
+    "version": "1.0"
+  }
+}
+```
+
+**Size:** ~2.1 KB (estimated ~20 KB for full 15 WBS items with chat logs)
+
+#### E.3 Complete Session (All 15 WBS Items, Within Budget)
+
+```json
+{
+  "gameId": "game_1733645231000",
+  "userId": "user_abc123",
+  "createdAt": "2025-12-08T10:00:31Z",
+  "status": "completed",
+  "budgetUsed": 695000000,
+  "projectedEndDate": "2026-05-10",
+  "completedAt": "2025-12-08T11:45:00Z",
+  "planEntries": [
+    {
+      "wbsId": "1.3.1",
+      "wbsName": "Grunnarbeid",
+      "supplierId": "supplier_groundwork",
+      "duration": 60,
+      "cost": 105000000,
+      "startDate": "2025-01-01",
+      "dependencies": [],
+      "negotiatedAt": "2025-12-08T10:15:00Z"
+    },
+    {
+      "wbsId": "1.3.2",
+      "wbsName": "Fundamentering",
+      "supplierId": "supplier_foundation",
+      "duration": 45,
+      "cost": 60000000,
+      "startDate": "2025-03-01",
+      "dependencies": ["1.3.1"],
+      "negotiatedAt": "2025-12-08T10:32:00Z"
+    },
+    ...
+    // (13 more WBS items omitted for brevity)
+  ],
+  "chatLogs": [
+    ...
+    // (Full negotiation history for 15 suppliers, ~30-50 messages total)
+  ],
+  "validationResult": {
+    "budgetValid": true,
+    "deadlineValid": true,
+    "allItemsComplete": true,
+    "criticalPath": ["1.3.1", "1.3.2", "1.4.1", "1.4.2", "1.5.1"],
+    "validatedAt": "2025-12-08T11:45:00Z"
+  },
+  "metadata": {
+    "lastModified": "2025-12-08T11:45:00Z",
+    "negotiationCount": 42,
+    "sessionDuration": 6300,
+    "version": "1.0"
+  }
+}
+```
+
+**Size:** ~62 KB (validated to fit within localStorage 5 MB limit; allows 80+ sessions)
+
+#### E.4 Storage Monitoring Example
+
+Frontend should implement storage checks:
+
+```typescript
+function checkStorageUsage() {
+  const used = JSON.stringify(localStorage).length;
+  const usedKB = (used / 1024).toFixed(2);
+  const usedPercent = ((used / (5 * 1024 * 1024)) * 100).toFixed(1);
+
+  console.log(`localStorage: ${usedKB} KB used (${usedPercent}%)`);
+
+  if (usedPercent > 80) {
+    // Warn user: "Lagringsplass lav. Vurder å eksportere gamle økter."
+  }
+}
+```
+
+**Reference:** See `research-report-2025-12-07.md` Section 2 for full localStorage capacity analysis.
+
+---
+
 ## Document Approval
 
 | Role | Name | Signature | Date |

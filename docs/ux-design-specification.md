@@ -1025,6 +1025,9 @@ xl:  1280px  - Large desktop
 - **Tertiary:** Tablet portrait (sm: 640px) - iPad vertical
 - **Not MVP:** Mobile (<640px) - Chat interface too complex for small screens
 
+**Post-MVP Mobile Strategy:**
+Full mobile support (<640px breakpoints) estimated 1-2 weeks effort. Requires chat UI redesign for small screens (vertical layout, collapsible supplier list, simplified WBS view).
+
 ---
 
 ### 7.2 Dashboard Responsive Layout
@@ -1425,6 +1428,87 @@ const nb_NO = {
 - **Tailwind CSS Color Generator:** Auto-generate Tailwind classes from Figma colors
 - **Accessibility Checker:** Verify contrast ratios
 - **Auto Layout:** Create responsive components
+
+---
+
+### Appendix D: Component Development Time Estimates
+
+This appendix provides development time estimates for implementing the components specified in this document. Estimates assume a developer familiar with React, TypeScript, and Tailwind CSS.
+
+#### D.1 Core Components (Section 5)
+
+| Component | Complexity | Estimated Time | Notes |
+|-----------|-----------|----------------|-------|
+| **Button** | Low | 1-2 hours | Variants (primary, secondary, ghost), states (hover, disabled, loading) |
+| **ProgressBar** | Low | 2-3 hours | Dynamic width calculation, color thresholds (green/yellow/red), percentage label |
+| **SupplierCard** | Medium | 3-4 hours | Conditional styling (online/offline), modal trigger, responsive layout |
+| **WBSListItem** | Medium | 4-5 hours | Expandable details, status icons, conditional rendering (empty/filled states) |
+| **ChatInterface** | High | 6-8 hours | Message history, auto-scroll, typing indicator, supplier avatar, responsive height |
+
+**Subtotal:** 16-22 hours
+
+#### D.2 Page Layouts (Section 3)
+
+| Page | Complexity | Estimated Time | Notes |
+|------|-----------|----------------|-------|
+| **Login Page** | Low | 2-3 hours | Form validation, error handling, Supabase Auth integration |
+| **Dashboard** | High | 8-10 hours | Multi-section layout, real-time budget/deadline calculation, WBS list integration, action buttons |
+| **Chat Page** | High | 6-8 hours | Supplier selection, chat interface integration, back navigation, responsive grid |
+| **Success Modal** | Low | 1-2 hours | Centered modal, export button, visual feedback (confetti optional) |
+| **Validation Error Modal** | Medium | 2-3 hours | Conditional content (budget/deadline violations), WBS item list, dynamic error messages |
+
+**Subtotal:** 19-26 hours
+
+#### D.3 Interaction Patterns (Section 6)
+
+| Pattern | Estimated Time | Notes |
+|---------|----------------|-------|
+| **Modal System (Base)** | 3-4 hours | Reusable modal wrapper, overlay, close handlers, focus trap |
+| **Form Validation** | 2-3 hours | Email validation, password strength, error display patterns |
+| **Real-time Updates** | 4-5 hours | Budget/deadline recalculation on plan changes, localStorage sync |
+| **Loading States** | 2-3 hours | Skeleton screens, spinner components, button loading states |
+
+**Subtotal:** 11-15 hours
+
+#### D.4 Responsive Design (Section 7)
+
+| Task | Estimated Time | Notes |
+|------|----------------|-------|
+| **Desktop Layout (lg:)** | Included in page estimates | Primary target |
+| **Tablet Landscape (md:)** | 3-4 hours | Grid adjustments, sticky action buttons |
+| **Tablet Portrait (sm:)** | 2-3 hours | Single-column layouts, font size adjustments |
+| **Responsive Testing** | 2-3 hours | Cross-device testing, breakpoint validation |
+
+**Subtotal:** 7-10 hours
+
+#### D.5 Accessibility (Section 8)
+
+| Task | Estimated Time | Notes |
+|------|----------------|-------|
+| **ARIA Labels** | 3-4 hours | Add aria-label, aria-describedby to all interactive elements |
+| **Keyboard Navigation** | 4-5 hours | Focus indicators, tab order, keyboard shortcuts (ESC for modals) |
+| **Contrast Validation** | 1-2 hours | Verify all text/background combinations meet WCAG 2.1 Level A |
+| **Screen Reader Testing** | 2-3 hours | Manual testing with NVDA/VoiceOver, adjust as needed |
+
+**Subtotal:** 10-14 hours
+
+#### D.6 Total Estimates
+
+| Category | Time Range |
+|----------|-----------|
+| Core Components | 16-22 hours |
+| Page Layouts | 19-26 hours |
+| Interaction Patterns | 11-15 hours |
+| Responsive Design | 7-10 hours |
+| Accessibility | 10-14 hours |
+| **Total** | **63-87 hours** |
+
+**Recommended Sprint Allocation:**
+- **Week 2 (UI Foundation):** 20-24 hours (Login, Dashboard shell, Core components)
+- **Week 3 (AI Integration):** 24-30 hours (Chat interface, WBS interaction, Modal system)
+- **Week 4 (Polish):** 19-33 hours (Responsive, Accessibility, Testing, Bug fixes)
+
+**Note:** These estimates exclude backend integration time (API calls, authentication, localStorage logic), which is covered in the Epic story point estimates in `epics.md`. Estimates assume working in 4-hour focused blocks per day (half-day sprints).
 
 ---
 
