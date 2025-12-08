@@ -1,10 +1,11 @@
 # Epics and User Stories
 ## Nye Hædda Barneskole - Project Management Simulation
 
-**Document Version:** 1.0
-**Date:** 2025-12-07
+**Document Version:** 1.1
+**Date:** 2025-12-08
 **Status:** Ready for Sprint Planning
 **Total Story Points:** 89 (estimated)
+**Changelog:** Added Epic 10 for advanced visualization features (Gantt, precedence diagram, history/timeline)
 
 ---
 

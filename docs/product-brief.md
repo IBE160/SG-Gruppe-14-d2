@@ -10,7 +10,7 @@
 
 ## Executive Overview
 
-**Nye Hædda Barneskole** is an AI-powered project management simulation that teaches university students the critical planning phase of construction projects through realistic negotiation with AI supplier personas. The MVP will be delivered in **3-4 weeks** with a focus on Norwegian university students learning procurement, constraint balancing, and negotiation skills.
+**Nye Hædda Barneskole** is an AI-powered project management simulation that teaches university students the critical planning phase of construction projects through realistic negotiation with AI supplier personas. The MVP will be delivered in **4-5 weeks** with a focus on Norwegian university students learning procurement, constraint balancing, and negotiation skills.
 
 **Key Differentiators:**
 - ✅ **Only PM simulation focused on PLANNING** (vs execution)
@@ -90,7 +90,7 @@ Students play the role of project manager for Nye Hædda Barneskole (New Hædda 
 
 ---
 
-## 4. MVP Scope (3-4 Weeks)
+## 4. MVP Scope (4-5 Weeks)
 
 ### Must-Have Features (15 items)
 1. User authentication (Supabase JWT)
@@ -134,7 +134,7 @@ Students play the role of project manager for Nye Hædda Barneskole (New Hædda 
 
 ## 5. Timeline & Budget
 
-### Development Timeline (3-4 Weeks)
+### Development Timeline (4-5 Weeks)
 
 **Week 1: Static Data & Infrastructure (5-7 days)**
 - Extract WBS from PDF → wbs.json
@@ -157,15 +157,20 @@ Students play the role of project manager for Nye Hædda Barneskole (New Hædda 
 - Tune concession_rate, patience
 - Validation logic (budget/timeline check)
 
-**Week 4: Testing & Polish (3-5 days)**
-- Bug fixes
-- Edge case handling (renegotiation, validation errors)
+**Week 4: Validation & Visualization Foundation (5-7 days)**
+- Validation logic (budget/timeline check)
+- Basic Gantt chart view
+- Bug fixes and edge case handling
+
+**Week 5: Advanced Visualization & Polish (3-5 days)**
+- Precedence diagram view
+- History/timeline view
 - Norwegian string validation
 - Pilot test with 5-10 students
 - Final QA
 
 ### Budget
-**Development:** 3-4 weeks × 1 developer = **120-160 hours**
+**Development:** 4-5 weeks × 1 developer = **160-200 hours**
 **API Costs:** Gemini 2.5 Flash (free tier: 15 RPM, 1M TPM) → $0 for pilot
 **Hosting:** Vercel (free tier for MVP)
 
@@ -257,13 +262,14 @@ Students play the role of project manager for Nye Hædda Barneskole (New Hædda 
   - Realistic walk-away behavior (AI refuses unreasonable demands)
   - Success metrics track negotiation quality, not just completion
 
-### Risk 4: 3-4 Week Timeline Too Tight
-- **Probability:** Low (20%)
+### Risk 4: 4-5 Week Timeline Too Tight
+- **Probability:** Low (15%)
 - **Impact:** Medium (delayed launch)
 - **Mitigation:**
   - Simplified architecture (localStorage, minimal backend)
   - Clear MoSCoW prioritization (15 Must-Haves defined)
-  - Buffer built into Week 4 (3-5 days for polish)
+  - Buffer built into Week 5 (3-5 days for polish)
+  - Visualization features (Epic 10) marked as "Should Have" for flexibility
 
 ---
 

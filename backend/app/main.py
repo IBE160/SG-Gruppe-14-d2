@@ -4,6 +4,10 @@ from pydantic import BaseModel
 import pdfplumber
 import os
 import re
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class NegotiationRequest(BaseModel):
     persona_id: str
@@ -29,8 +33,15 @@ async def root():
 
 @app.get("/wbs")
 async def get_wbs():
-    # Correctly locate the PDF relative to the current script
-    pdf_path = os.path.join(os.path.dirname(__file__), "..", "..", "docs", "data", "wbs.pdf")
+    # Get WBS PDF path from environment variable or use default
+    wbs_pdf_path = os.getenv("WBS_PDF_PATH", "../docs/data/wbs.pdf")
+
+    # Resolve path relative to the current script
+    if not os.path.isabs(wbs_pdf_path):
+        pdf_path = os.path.join(os.path.dirname(__file__), "..", wbs_pdf_path)
+    else:
+        pdf_path = wbs_pdf_path
+
     wbs_items = []
 
     if not os.path.exists(pdf_path):

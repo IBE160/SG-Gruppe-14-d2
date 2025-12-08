@@ -1,8 +1,8 @@
 # Product Requirements Document (PRD)
 ## Nye Hædda Barneskole - Project Management Simulation
 
-**Document Version:** 1.0
-**Date:** 2025-12-07
+**Document Version:** 1.1
+**Date:** 2025-12-08
 **Status:** Draft - Pending Validation
 **Product Owner:** [To be assigned]
 **Technical Lead:** [To be assigned]
@@ -14,6 +14,7 @@
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2025-12-07 | BMAD System | Initial PRD based on Phase 0 brainstorming |
+| 1.1 | 2025-12-08 | BMAD System | Added visualization features (Gantt, precedence diagram, history/timeline) |
 
 ---
 
@@ -1712,84 +1713,81 @@ interface ExportData {
 
 ### 9.1 Overview
 
-**Base URL (Production):** `https://nye-haedda.vercel.app/api`
-**Base URL (Development):** `http://localhost:3000/api`
+**Base URL (Production):** `https://nye-haedda.vercel.app`
+**Base URL (Development):** `http://localhost:8000` (Backend), `http://localhost:3000` (Frontend)
 
 **Authentication:** JWT token in `Authorization: Bearer {token}` header (for endpoints that require auth)
 
 **Content-Type:** `application/json`
 
+**Note on API Prefix:** Current MVP implementation does not use `/api` prefix. Endpoints are at root level (e.g., `/negotiate` instead of `/api/negotiate`). This can be standardized in a future release by adding an API router prefix in FastAPI.
+
 ---
 
 ### 9.2 Endpoints
 
-#### 9.2.1 POST /api/chat/message
+#### 9.2.1 GET /wbs
 
-**Purpose:** Send user message to AI supplier, receive AI response
+**Purpose:** Retrieve WBS items parsed from PDF
 
-**Authentication:** Optional for MVP (can add JWT validation post-MVP)
+**Authentication:** None (MVP)
+
+**Request:** None
+
+**Response:**
+```json
+[
+  {
+    "id": "1.0",
+    "name": "Grunnarbeid",
+    "status": "Not Started"
+  },
+  ...
+]
+```
+
+**Error Response:**
+```json
+{
+  "error": "wbs.pdf not found at the expected path."
+}
+```
+
+---
+
+#### 9.2.2 POST /negotiate
+
+**Purpose:** Send user message to AI supplier persona, receive AI response
+
+**Authentication:** None (MVP)
 
 **Request:**
 ```json
 {
-  "supplier": {
-    "id": "bjorn-eriksen",
-    "system_prompt": "You are Bjørn Eriksen...",
-    "hidden_params": {
-      "min_cost_multiplier": 0.88,
-      "min_duration_multiplier": 0.92
-    }
-  },
-  "wbs_item": {
-    "id": "1.3.1",
-    "name": "Grunnarbeid",
-    "baseline_cost": 100,
-    "baseline_duration": 2
-  },
-  "chat_history": [
-    {
-      "sender": "user",
-      "message": "I need a quote for Grunnarbeid"
-    },
-    {
-      "sender": "ai",
-      "message": "Based on current market rates, 120 MNOK..."
-    }
-  ],
-  "user_message": "Can you do 100 MNOK?"
+  "persona_id": "contractor",
+  "message": "Can you reduce the cost for this task?"
 }
 ```
+
+**Supported Persona IDs:** `contractor`, `architect`, `hvac`
 
 **Response (Success - 200 OK):**
 ```json
 {
-  "response": "That's below my cost baseline. However, if we optimize the scope, I can consider 105 MNOK for 2.5 months.",
-  "offer": {
-    "cost": 105,
-    "duration": 2.5
-  },
-  "timestamp": "2025-12-07T12:34:56Z"
-}
-```
-
-**Response (Error - 500 Internal Server Error):**
-```json
-{
-  "error": "AI service unavailable",
-  "message": "Gemini API timeout. Please try again."
+  "text": "As the General Contractor, we focus on delivering value. Let's discuss your budget and find an optimal solution.",
+  "sender": "ai"
 }
 ```
 
 **Implementation Notes:**
-- Backend constructs full prompt with supplier persona, WBS context, requirements, conversation history
-- Backend calls Gemini API (via PydanticAI)
-- Backend extracts structured offer from AI response (regex or structured output)
-- Backend is stateless (no session stored server-side)
-- Response time target: <3 seconds (95th percentile)
+- Current MVP uses simple keyword-based responses (not AI-powered yet)
+- Backend matches keywords in user message to generate appropriate responses
+- Future implementation will integrate Gemini API for dynamic AI negotiations
+- Response is stateless (no session stored server-side)
 
 ---
 
-#### 9.2.2 POST /api/validate (Optional - Can Be Client-Side)
+#### 9.2.3 POST /validate (Optional - Can Be Client-Side - Not Yet Implemented)
 
 **Purpose:** Validate project plan against constraints
 
@@ -1837,7 +1835,7 @@ interface ExportData {
 
 ---
 
-#### 9.2.3 GET /api/health
+#### 9.2.4 GET /health (Not Yet Implemented)
 
 **Purpose:** Health check endpoint
 
