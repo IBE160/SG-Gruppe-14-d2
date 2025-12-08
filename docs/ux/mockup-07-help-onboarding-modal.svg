@@ -42,10 +42,10 @@
   <text x="595" y="216" class="tab-text" text-anchor="middle">💬 Forhandling</text>
 
   <rect x="690" y="190" width="150" height="40" rx="8" class="tab"/>
-  <text x="765" y="216" class="tab-text" text-anchor="middle">📊 WBS & Budsjett</text>
+  <text x="765" y="216" class="tab-text" text-anchor="middle">📊 WBS &amp; Budsjett</text>
 
   <rect x="860" y="190" width="150" height="40" rx="8" class="tab"/>
-  <text x="935" y="216" class="tab-text" text-anchor="middle">🎓 Tips & Triks</text>
+  <text x="935" y="216" class="tab-text" text-anchor="middle">🎓 Tips &amp; Triks</text>
 
   <rect x="1030" y="190" width="150" height="40" rx="8" class="tab"/>
   <text x="1105" y="216" class="tab-text" text-anchor="middle">❓ FAQ</text>
