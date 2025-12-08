@@ -112,7 +112,7 @@
   <text x="1150" y="395" class="label" text-anchor="middle" font-weight="bold">⚠️ Guardrails Sjekk</text>
   <rect x="1020" y="410" width="260" height="70" rx="6" fill="#FFFFFF" stroke="#DC2626" stroke-width="1"/>
   <text x="1030" y="430" class="label-small">AI kan ALDRI gå under hardkodede grenser:</text>
-  <text x="1030" y="450" class="code">if offer_cost < min_cost:</text>
+  <text x="1030" y="450" class="code">if offer_cost &lt; min_cost:</text>
   <text x="1050" y="465" class="code">reject("Vi kan ikke gå lavere")</text>
   <text x="1030" y="477" class="label-small" fill="#DC2626">Dette hindrer AI-hallusinering (0 NOK-tilbud)</text>
 

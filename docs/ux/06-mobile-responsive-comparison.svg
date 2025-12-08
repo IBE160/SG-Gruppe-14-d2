@@ -140,7 +140,7 @@
 
   <!-- Mobile (NOT MVP) -->
   <text x="1250" y="100" class="device-label" text-anchor="middle">📱 Mobil (Post-MVP)</text>
-  <text x="1250" y="120" class="breakpoint" text-anchor="middle"><640px (Ikke støttet i MVP)</text>
+  <text x="1250" y="120" class="breakpoint" text-anchor="middle">&lt;640px (Ikke støttet i MVP)</text>
 
   <!-- Mobile screen (marked as not supported) -->
   <rect x="1150" y="140" width="200" height="350" rx="12" class="not-supported" stroke-width="3"/>
@@ -178,7 +178,7 @@
   <rect x="770" y="610" width="250" height="30" fill="#2563EB"/>
   <text x="895" y="630" class="element-label" text-anchor="middle" fill="#FFFFFF" font-weight="bold">Tablet Portrait (640px)</text>
   <rect x="1020" y="610" width="250" height="30" fill="#DC2626"/>
-  <text x="1145" y="630" class="element-label" text-anchor="middle" fill="#FFFFFF" font-weight="bold">Mobil (<640px)</text>
+  <text x="1145" y="630" class="element-label" text-anchor="middle" fill="#FFFFFF" font-weight="bold">Mobil (&lt;640px)</text>
 
   <!-- Table rows -->
   <!-- Row 1: Layout -->
