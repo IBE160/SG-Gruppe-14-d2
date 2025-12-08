@@ -31,7 +31,8 @@ This document breaks down the Product Requirements Document (PRD) into implement
 8. [Epic 7: Session Export & Data Management](#epic-7-session-export--data-management)
 9. [Epic 8: Help & Documentation](#epic-8-help--documentation)
 10. [Epic 9: Infrastructure & DevOps](#epic-9-infrastructure--devops)
-11. [Story Point Estimation Guide](#story-point-estimation-guide)
+11. [Epic 10: Visualization & Analysis](#epic-10-visualization--analysis)
+12. [Story Point Estimation Guide](#story-point-estimation-guide)
 
 ---
 
@@ -48,9 +49,10 @@ This document breaks down the Product Requirements Document (PRD) into implement
 | **E7** | Session Export & Data Management | 3 | 5 | Must Have | Week 4 |
 | **E8** | Help & Documentation | 2 | 3 | Should Have | Week 4 |
 | **E9** | Infrastructure & DevOps | 4 | 5 | Must Have | Week 1 |
-| **TOTAL** | **9 Epics** | **36 Stories** | **89 Points*** | - | **3-4 Weeks** |
+| **E10** | Visualization & Analysis | 4 | 27 | Must Have | Week 3-4 |
+| **TOTAL** | **10 Epics** | **40 Stories** | **116 Points*** | - | **4-5 Weeks** |
 
-***Note:** Sprint planning (Section 11) allocates 95 total points (Week 1: 13, Week 2: 28, Week 3: 34, Week 4: 20), which includes a 6-point buffer for testing, integration overhead, and bug fixes beyond individual story estimates.
+***Note:** Sprint planning allocates 116 total points across 4-5 weeks. The addition of Epic 10 (Visualization & Analysis: 27 points) extends the timeline from the original 3-4 weeks to 4-5 weeks, including buffer for testing and integration.
 
 ---
 
@@ -1169,6 +1171,197 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 ---
 
+## Epic 10: Visualization & Analysis
+
+**Epic Goal:** Provide interactive Gantt chart, precedence diagram, and history/timeline views for project visualization and analysis.
+
+**Priority:** Must Have (Week 3-4)
+
+**Dependencies:** E5 (Plan management), E9 (Static data, algorithms)
+
+---
+
+### Story E10.1: Gantt Chart View
+
+**As a** user
+**I want to** view my project plan as an interactive Gantt chart
+**So that** I can visualize task durations, dependencies, and the critical path
+
+**Acceptance Criteria:**
+- [ ] "Gantt-diagram" tab added to main navigation (between Dashboard and Precedence tabs)
+- [ ] Timeline header displays months from Jan 2025 to May 2026 with "Today" marker (blue dashed line)
+- [ ] Task bars displayed horizontally:
+  - **Completed tasks:** Green bars with 100% fill
+  - **In-progress tasks:** Yellow/orange bars with progress percentage (e.g., "45%")
+  - **Planned tasks:** Gray outlined bars
+  - **Critical path tasks:** Red 3px border/outline
+- [ ] Dependency arrows: Gray for normal, red dashed for critical path
+- [ ] Interactive controls:
+  - View mode selector: "Måned" | "Uke" | "Dag"
+  - Zoom slider (50%-200%)
+  - Filter checkboxes: "Vis kritisk sti", "Vis fullførte"
+- [ ] Info panel displays:
+  - Expected completion: "Forventet ferdig: 10. april 2026 ✓"
+  - Budget used: "450 / 700 MNOK (64%)"
+  - Critical path length: "15 måneder"
+- [ ] "Eksporter Gantt (PNG)" button downloads chart as image
+- [ ] Chart updates in real-time when plan changes (commit/renegotiation)
+
+**Technical Notes:**
+- Library options: `react-gantt-timeline`, `dhtmlx-gantt`, or custom D3.js implementation
+- Critical path calculation: Topological sort + longest path algorithm (PRD Appendix B)
+- Today marker: Blue vertical dashed line at current date position
+- Responsive: Horizontal scroll for mobile, full width for desktop (1920px)
+- Data source: `session.current_plan` from localStorage
+- Color scheme: Green (#10B981), Yellow (#F59E0B), Gray (#9CA3AF), Red (#EF4444)
+
+**Story Points:** 8 (HIGH COMPLEXITY - visualization + algorithms)
+
+**Priority:** Must Have
+
+**Reference:** PRD FR-9.1, mockup-08-gantt-chart-view.svg
+
+---
+
+### Story E10.2: Precedence Diagram (AON Network)
+
+**As a** user
+**I want to** view the Activity-on-Node network diagram
+**So that** I can understand task dependencies, critical path, and slack times
+
+**Acceptance Criteria:**
+- [ ] "Presedensdiagram" tab added to main navigation (after Gantt tab)
+- [ ] Network diagram displays:
+  - **Nodes (rectangular boxes):** One per WBS task
+  - **Node content:** WBS code, name, duration, cost, slack time
+  - **Node styling:** Green (completed), Yellow (in-progress), White (planned), Red border (critical path)
+  - **START and END nodes:** Circular, gray
+  - **Arrows:** Gray (normal dependencies), Red thick 3px (critical path)
+- [ ] Layout algorithms:
+  - Default: Left-to-right (horizontal)
+  - Options: Top-to-bottom, Hierarchical
+  - Auto-layout using Dagre or force-directed algorithm
+- [ ] Info panels (right sidebar):
+  - **Critical Path Summary:** Tasks on critical path with total duration
+  - **Parallel Paths:** Up to 3 paths with their durations
+  - **Progress Stats:** Completed vs remaining tasks
+  - **Network Statistics:** Total tasks, dependencies, max depth
+- [ ] Interactive features:
+  - Hover on node → highlight dependencies (incoming/outgoing arrows)
+  - Click on node → show detailed popup (WBS info, supplier, dates)
+  - Zoom controls (50%-200%)
+  - Pan/drag canvas
+- [ ] Layout mode selector: "Venstre→Høyre" | "Topp→Bunn" | "Hierarkisk"
+- [ ] "Eksporter Diagram (PNG)" button
+
+**Technical Notes:**
+- Library options: `react-flow`, `cytoscape.js`, or `d3-dag`
+- Algorithms:
+  - **Topological sort:** Order tasks by dependencies
+  - **Critical path:** Longest path from START to END
+  - **Slack calculation:** `slack = latest_start - earliest_start`
+- Node size: 180px × 100px (desktop), 140px × 80px (tablet)
+- Data source: `session.current_plan` + `wbs_items.dependencies`
+- Styling: Shadcn colors, rounded corners (border-radius: 8px)
+
+**Story Points:** 8 (HIGH COMPLEXITY - graph algorithms + layout)
+
+**Priority:** Must Have
+
+**Reference:** PRD FR-9.2, mockup-09-precedence-diagram.svg
+
+---
+
+### Story E10.3: History/Timeline View
+
+**As a** user
+**I want to** view a history timeline of all plan changes
+**So that** I can review past decisions and see before/after comparisons
+
+**Acceptance Criteria:**
+- [ ] "🕒 Historikk" button added to top-right navigation (next to user menu)
+- [ ] Clicking opens full-screen overlay panel (z-index: 50)
+- [ ] **Left sidebar (400px width):**
+  - Timeline list of all events (newest first)
+  - Each entry shows: timestamp, action icon, description
+  - Action types: "Forpliktet" (commit), "Fjernet" (remove), "Reforhandlet" (renegotiation)
+  - Filter buttons: "Alle" | "Forhandlinger" | "Planendringer"
+  - Selected event highlighted in blue
+  - Scroll bar for >20 events
+- [ ] **Right panel (split screen):**
+  - "Før (Versjon N)" vs "Etter (Versjon N+1)" headers
+  - Side-by-side Gantt chart comparison:
+    - Old state: Red bars, strikethrough for removed tasks
+    - New state: Green bars, highlighted for added/changed tasks
+  - Change summary stats:
+    - Budget change: "-15 MNOK (2.1% reduksjon)"
+    - Timeline change: "-5 dager (1.5% raskere)"
+    - Critical path change: "Uendret" or "Ny kritisk sti"
+  - **Cascade effects panel:** List of 5 impacts (e.g., "WBS 2.1 start moved 5 days earlier")
+- [ ] Action buttons:
+  - "← Forrige versjon" | "Neste versjon →"
+  - "Sammenlign med nåværende"
+  - "Eksporter historikk (JSON/PDF)"
+- [ ] "✕ Lukk historikk" button (top right, red)
+- [ ] Data persisted in `session.version_history` array (localStorage)
+- [ ] Storage limit: Keep last 50 versions (auto-prune oldest)
+
+**Technical Notes:**
+- Data structure: `version_history: [{ version: number, timestamp: string, action: string, wbs_code: string, snapshot: CurrentPlan, changes: string[] }]`
+- Snapshot creation: Deep clone `current_plan` on every commit/remove action
+- Diff calculation: Compare snapshots to identify changes (lodash `_.difference`)
+- Cascade effects: Recalculate dependencies and show affected tasks
+- Animation: Slide-in from right (300ms transition)
+- Mobile: Full-screen, left sidebar collapses to dropdown
+
+**Story Points:** 8 (HIGH COMPLEXITY - version control + diff visualization)
+
+**Priority:** Should Have (can be post-MVP if timeline tight)
+
+**Reference:** PRD FR-9.3, mockup-10-history-timeline-pane.svg
+
+---
+
+### Story E10.4: Navigation Between Views
+
+**As a** user
+**I want** seamless navigation between Dashboard, Gantt, Precedence, and History views
+**So that** I can easily switch contexts while working on my plan
+
+**Acceptance Criteria:**
+- [ ] Main navigation tabs (top of page):
+  - 📊 **Dashbord** (default active)
+  - 📈 **Gantt-diagram**
+  - 🔀 **Presedensdiagram**
+- [ ] 🕒 **Historikk** button (top-right, separate from main tabs)
+- [ ] Active tab highlighted: Blue underline (3px), bold text
+- [ ] Tab click → navigate to view with fade transition (200ms)
+- [ ] All views share same top navigation bar (no duplication)
+- [ ] URL routing:
+  - `/dashboard` → Dashboard
+  - `/gantt` → Gantt Chart
+  - `/precedence` → Precedence Diagram
+  - History: Overlay panel (no URL change)
+- [ ] Browser back/forward buttons work (React Router history)
+- [ ] State persistence: Active tab saved to `sessionStorage`
+- [ ] Real-time synchronization: Changes in Dashboard immediately update Gantt/Precedence views
+
+**Technical Notes:**
+- React Router: `<Route path="/dashboard" element={<Dashboard />} />`
+- Navigation component: `<Tabs>` from Shadcn UI
+- State management: Context API or Zustand to share `current_plan` across views
+- Real-time updates: Use React state + localStorage listener
+- Icons: Lucide `BarChart3`, `GanttChart`, `Network`, `Clock`
+- Responsive: Tabs collapse to hamburger menu on mobile (<768px)
+
+**Story Points:** 3 (MODERATE - routing + state sync)
+
+**Priority:** Must Have
+
+**Reference:** PRD FR-9.4, all mockups (08, 09, 10)
+
+---
+
 ## Story Point Estimation Guide
 
 **Story Points = Complexity × Effort × Uncertainty**
@@ -1195,9 +1388,9 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 **Week 1:** ~20-25 points (setup overhead)
 **Week 2-3:** ~25-30 points per week (full velocity)
-**Week 4:** ~15-20 points (testing, polish, buffer)
+**Week 4-5:** ~20-25 points per week (visualization + testing, polish, buffer)
 
-**Total: 89 points ≈ 3.5-4 weeks** ✅
+**Total: 116 points ≈ 4.5-5 weeks** ✅
 
 ---
 
@@ -1245,32 +1438,48 @@ This document breaks down the Product Requirements Document (PRD) into implement
 - E4.3: AI offer detection (3 pt)
 - **E4.4: AI prompt engineering (8 pt)** ← CRITICAL PATH
 - E4.5: Negotiation history (2 pt)
-- E4.6: Document sidebar (3 pt)
 - E5.1: Commit quote to plan (5 pt)
 - E5.2: Renegotiation (3 pt)
 - E5.3: Plan history tracking (1 pt)
 - E5.4: Dependency validation (2 pt)
 - E5.5: Visual feedback (2 pt)
 
-**Total:** 34 points (HIGH—may need to defer E4.6, E5.3 to Week 4)
+**Total:** 31 points (deferred E4.6 to Week 4)
 
 ---
 
-### Sprint 4 (Week 4): Validation, Export, Polish
-**Goal:** Plan submission, export, testing, launch
+### Sprint 4 (Week 4): Validation & Visualization Foundation
+**Goal:** Plan validation, Gantt chart, navigation
 
 **Stories:**
+- E4.6: Document sidebar (3 pt) ← deferred from Week 3
 - E6.1: Submit plan for validation (3 pt)
 - E6.2: Validation success modal (2 pt)
 - E6.3: Validation error modal (2 pt)
 - E6.4: Validation logic (1 pt)
+- **E10.1: Gantt Chart View (8 pt)** ← HIGH PRIORITY visualization
+- E10.4: Navigation Between Views (3 pt)
 - E7.1: Export session as JSON (2 pt)
+
+**Total:** 24 points
+
+---
+
+### Sprint 5 (Week 5): Advanced Visualization & Polish
+**Goal:** Precedence diagram, history, export, testing, launch
+
+**Stories:**
+- **E10.2: Precedence Diagram (8 pt)** ← HIGH PRIORITY visualization
+- **E10.3: History/Timeline View (8 pt)** ← Should Have (can defer if needed)
 - E7.2: Clear session data (2 pt)
 - E7.3: Storage quota monitoring (1 pt)
 - E8.1: In-app help documentation (2 pt)
-- **Testing & Bug Fixes** (5 pt buffer)
+- **Integration Testing** (3 pt buffer)
+- **Bug Fixes & Polish** (3 pt buffer)
 
-**Total:** 20 points
+**Total:** 27 points
+
+**Note:** If timeline is tight, E10.3 (History/Timeline View - 8 pt) can be deferred to post-MVP as it's marked "Should Have" priority.
 
 ---
 
@@ -1287,6 +1496,7 @@ This document breaks down the Product Requirements Document (PRD) into implement
 | E7 | FR-8 (Export) | N/A | Section 2 (localStorage) |
 | E8 | FR-9 (Help) | N/A | N/A |
 | E9 | Section 7 (Tech Stack) | 9 (Implementation) | Sections 2-3 |
+| **E10** | **FR-9 (Visualization)** | **Mockups 08, 09, 10** | **Appendix B (Algorithms)** |
 
 ---
 

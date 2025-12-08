@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <style>
+      .overlay { fill: rgba(0, 0, 0, 0.5); }
+      .modal { fill: #FFFFFF; filter: drop-shadow(0 20px 50px rgba(0,0,0,0.3)); }
+      .title { font: bold 28px sans-serif; fill: #1F2937; }
+      .subtitle { font: 16px sans-serif; fill: #6B7280; }
+      .step-title { font: bold 18px sans-serif; fill: #2563EB; }
+      .step-text { font: 14px sans-serif; fill: #374151; }
+      .button-primary { fill: #2563EB; }
+      .button-text { font: 16px sans-serif; fill: #FFFFFF; font-weight: 600; }
+      .tab { fill: #F3F4F6; }
+      .tab-active { fill: #2563EB; }
+      .tab-text { font: 14px sans-serif; fill: #6B7280; font-weight: 600; }
+      .tab-text-active { font: 14px sans-serif; fill: #FFFFFF; font-weight: 600; }
+    </style>
+  </defs>
+
+  <!-- Blurred background -->
+  <rect width="1920" height="1080" fill="#F9FAFB"/>
+  <rect width="1920" height="80" fill="#2563EB" opacity="0.6"/>
+
+  <!-- Dark overlay -->
+  <rect width="1920" height="1080" class="overlay"/>
+
+  <!-- Help modal -->
+  <rect x="310" y="80" width="1300" height="920" rx="24" class="modal"/>
+
+  <!-- Close button -->
+  <circle cx="1560" cy="130" r="24" fill="#F3F4F6"/>
+  <text x="1560" y="138" font-size="20" fill="#6B7280" text-anchor="middle" font-weight="bold">✕</text>
+
+  <!-- Header -->
+  <text x="960" y="150" class="title" text-anchor="middle">Velkommen til simulatoren! 👋</text>
+  <text x="960" y="180" class="subtitle" text-anchor="middle">Lær hvordan du mestrer prosjektplanlegging gjennom AI-drevet forhandling</text>
+
+  <!-- Tabs -->
+  <rect x="350" y="220" width="150" height="40" rx="8" class="tab-active"/>
+  <text x="425" y="246" class="tab-text-active" text-anchor="middle">🎯 Kom i gang</text>
+
+  <rect x="520" y="220" width="150" height="40" rx="8" class="tab"/>
+  <text x="595" y="246" class="tab-text" text-anchor="middle">💬 Forhandling</text>
+
+  <rect x="690" y="220" width="150" height="40" rx="8" class="tab"/>
+  <text x="765" y="246" class="tab-text" text-anchor="middle">📊 WBS & Budsjett</text>
+
+  <rect x="860" y="220" width="150" height="40" rx="8" class="tab"/>
+  <text x="935" y="246" class="tab-text" text-anchor="middle">🎓 Tips & Triks</text>
+
+  <rect x="1030" y="220" width="150" height="40" rx="8" class="tab"/>
+  <text x="1105" y="246" class="tab-text" text-anchor="middle">❓ FAQ</text>
+
+  <rect x="1200" y="220" width="150" height="40" rx="8" class="tab"/>
+  <text x="1275" y="246" class="tab-text" text-anchor="middle">📚 Ressurser</text>
+
+  <!-- Content area -->
+  <rect x="350" y="280" width="1220" height="640" rx="12" fill="#F9FAFB"/>
+
+  <!-- Step-by-step guide -->
+  <text x="380" y="325" font-size="22" fill="#1F2937" font-weight="bold">Slik bruker du simulatoren:</text>
+
+  <!-- Step 1 -->
+  <rect x="380" y="360" width="1160" height="100" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <circle cx="420" cy="410" r="30" fill="#2563EB"/>
+  <text x="420" y="420" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+
+  <text x="470" y="390" class="step-title">Gjennomgå prosjektbegrensninger</text>
+  <text x="470" y="415" class="step-text">Budsjettet ditt er <tspan font-weight="bold">700 MNOK</tspan> og fristen er <tspan font-weight="bold">15. mai 2026</tspan>.</text>
+  <text x="470" y="435" class="step-text">Målet er å fylle ut alle 15 WBS-oppgaver uten å overskride disse grensene.</text>
+
+  <!-- Step 2 -->
+  <rect x="380" y="475" width="1160" height="100" rx="12" fill="#F0FDF4"/>
+  <circle cx="420" cy="525" r="30" fill="#16A34A"/>
+  <text x="420" y="535" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+
+  <text x="470" y="505" class="step-title">Velg en WBS-oppgave fra listen</text>
+  <text x="470" y="530" class="step-text">Klikk på en oppgave (f.eks. "1.3.1 Grunnarbeid") for å starte forhandling.</text>
+  <text x="470" y="550" class="step-text">💡 Tip: Start med oppgaver tidlig i prosjektet (1.1, 1.2, 1.3) for å følge logisk rekkefølge.</text>
+
+  <!-- Step 3 -->
+  <rect x="380" y="590" width="1160" height="120" rx="12" fill="#FEF3C7"/>
+  <circle cx="420" cy="650" r="30" fill="#F59E0B"/>
+  <text x="420" y="660" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+
+  <text x="470" y="620" class="step-title">Forhandl med AI-leverandøren</text>
+  <text x="470" y="645" class="step-text">Leverandøren starter med et <tspan font-weight="bold">høyt tilbud</tspan>. Din jobb er å forhandle ned!</text>
+  <text x="470" y="665" class="step-text">Argumenter basert på: budsjettbegrensninger, TEK17-krav, tidsfrister, eller andre WBS-oppgaver.</text>
+  <text x="470" y="685" class="step-text">Eksempel: "Budsjettet er stramt - kan vi optimalisere ned til 105 MNOK?"</text>
+
+  <!-- Step 4 -->
+  <rect x="380" y="725" width="1160" height="80" rx="12" fill="#F3E8FF"/>
+  <circle cx="420" cy="765" r="30" fill="#A855F7"/>
+  <text x="420" y="775" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+
+  <text x="470" y="750" class="step-title">Aksepter tilbudet når du er fornøyd</text>
+  <text x="470" y="775" class="step-text">Klikk "Aksepter tilbud" for å lagre dataene til planen din.</text>
+  <text x="470" y="795" class="step-text">⚠️ Du kan ikke endre etter aksept, så sørg for at prisen er rimelig!</text>
+
+  <!-- Step 5 -->
+  <rect x="380" y="820" width="560" height="80" rx="12" fill="#DBEAFE"/>
+  <circle cx="420" cy="860" r="30" fill="#2563EB"/>
+  <text x="420" y="870" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+
+  <text x="470" y="845" class="step-title">Gjenta for alle 15 WBS-oppgaver</text>
+  <text x="470" y="870" class="step-text">Dashbordet viser fremdrift (8/15 fullført).</text>
+  <text x="470" y="890" class="step-text">Hold øye med budsjett og frist underveis!</text>
+
+  <!-- Step 6 -->
+  <rect x="960" y="820" width="580" height="80" rx="12" fill="#DCFCE7"/>
+  <circle cx="1000" cy="860" r="30" fill="#16A34A"/>
+  <text x="1000" y="870" font-size="24" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+
+  <text x="1050" y="845" class="step-title">Send inn planen for validering</text>
+  <text x="1050" y="870" class="step-text">Klikk "Send Inn Plan" når alle 15 er fullført.</text>
+  <text x="1050" y="890" class="step-text">✅ Suksess hvis budsjett ≤700M og dato ≤15. mai!</text>
+
+  <!-- Info box at bottom -->
+  <rect x="350" y="940" width="1220" height="80" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+
+  <circle cx="390" cy="980" r="20" fill="#2563EB"/>
+  <text x="390" y="987" font-size="16" fill="#FFFFFF" text-anchor="middle" font-weight="bold">i</text>
+
+  <text x="430" y="970" font-size="16" fill="#1F2937" font-weight="bold">Estimert tid: 45-60 minutter</text>
+  <text x="430" y="995" font-size="14" fill="#6B7280">All data lagres automatisk i nettleseren din. Du kan ta pauser og fortsette senere!</text>
+
+  <rect x="1300" y="955" width="220" height="40" rx="8" fill="#10B981"/>
+  <text x="1410" y="980" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">📺 Se videotutorial →</text>
+
+  <!-- Bottom buttons -->
+  <rect x="560" y="1040" width="360" height="60" rx="12" class="button-primary"/>
+  <text x="740" y="1075" class="button-text" text-anchor="middle">Start simulering nå!</text>
+
+  <rect x="1000" y="1040" width="360" height="60" rx="12" fill="#F3F4F6"/>
+  <text x="1180" y="1075" font-size="16" fill="#6B7280" text-anchor="middle" font-weight="600">Les mer dokumentasjon</text>
+
+  <!-- Progress dots -->
+  <g transform="translate(860, 1120)">
+    <circle cx="0" cy="0" r="8" fill="#2563EB"/>
+    <circle cx="30" cy="0" r="8" fill="#D1D5DB"/>
+    <circle cx="60" cy="0" r="8" fill="#D1D5DB"/>
+    <circle cx="90" cy="0" r="8" fill="#D1D5DB"/>
+    <circle cx="120" cy="0" r="8" fill="#D1D5DB"/>
+    <circle cx="150" cy="0" r="8" fill="#D1D5DB"/>
+  </g>
+
+  <text x="960" y="1160" font-size="13" fill="#6B7280" text-anchor="middle">Side 1 av 6 | Bruk piltaster eller klikk for å navigere</text>
+</svg>

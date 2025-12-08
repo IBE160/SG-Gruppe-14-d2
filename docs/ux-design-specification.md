@@ -1,10 +1,11 @@
 # UX Design Specification
 ## Nye Hædda Barneskole - Project Management Simulation
 
-**Document Version:** 1.0
-**Date:** 2025-12-07
-**Status:** Draft - Pending Validation
+**Document Version:** 1.1
+**Date:** 2025-12-08
+**Status:** Updated with Visualization Features
 **UX Designer:** [To be assigned]
+**Changelog:** Added sections 3.7-3.9 for Gantt chart, precedence diagram, and history/timeline views
 
 ---
 
@@ -565,6 +566,285 @@ w-8 h-8:   32px  - Extra large (empty states)
 - Buttons: Full width, mb-2
   - Eksporter: bg-blue-600 (primary)
   - Start Nytt: bg-white border (secondary)
+
+---
+
+### 3.7 Gantt Chart View
+
+**Layout (Desktop):**
+```
+┌────────────────────────────────────────────────────────────────────┐
+│ [Nye Hædda]  📊 Dashbord | 📈 Gantt-diagram | 🔀 Presedensdiagram  │
+│                                                    🕒 Historikk  [User] │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│ Gantt-diagram                                                      │
+│                                                                    │
+│ ┌──Controls────────────────────────────────────────────────────┐ │
+│ │ Visning: [Måned ▼] | Zoom: [=====>    ] | ☑ Vis kritisk sti │ │
+│ └──────────────────────────────────────────────────────────────┘ │
+│                                                                    │
+│ ┌──Timeline─────────────────────────────────────────────────────┐│
+│ │       Jan 2025  Feb  Mar  Apr  Mai  Jun ... Mai 2026          ││
+│ │                           ↓ Idag                               ││
+│ │ 1.1   [========]                                               ││
+│ │ 1.3.1   [==========]                                           ││
+│ │ 2.1       [█████████████░░░░] 45%                              ││
+│ │ 2.2         └──→[──────]                                       ││
+│ │ ...                                                            ││
+│ │                                                                ││
+│ └────────────────────────────────────────────────────────────────┘│
+│                                                                    │
+│ ┌──Info Panel──────────────────────────────────────────────────┐ │
+│ │ Forventet ferdig: 10. april 2026 ✓                            │ │
+│ │ Budsjett brukt:   450 / 700 MNOK (64%)                        │ │
+│ │ Kritisk sti:      15 måneder                                  │ │
+│ │                                                                │ │
+│ │                           [Eksporter Gantt (PNG)]             │ │
+│ └────────────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+**Specifications:**
+
+**Navigation Tabs:**
+- Height: 48px, background: white, border-bottom: 2px solid gray-200
+- Active tab: border-bottom-color: blue-600, text-blue-600, font-semibold
+- Inactive tabs: text-gray-600, hover: text-gray-900
+- Icons: Lucide icons (BarChart3, GanttChart, Network)
+- Historikk button: Positioned absolute right, blue-600 button with Clock icon
+
+**Controls Panel:**
+- Background: white, rounded-md, shadow-sm, p-4, mb-4
+- View selector: Dropdown with options "Måned", "Uke", "Dag"
+- Zoom slider: Input range 50-200%, default 100%
+- Filter checkbox: Styled checkbox + label
+
+**Timeline Canvas:**
+- Background: white, rounded-md, shadow, p-6
+- Min-height: 500px, overflow: auto (horizontal + vertical scroll)
+- Timeline header:
+  - Months displayed as text-sm font-medium text-gray-700
+  - Grid lines: 1px dashed gray-300 for month boundaries
+  - "Idag" marker: Blue vertical dashed line (border-left: 2px dashed blue-500)
+- Task bars:
+  - Height: 32px, margin-bottom: 8px
+  - **Completed:** bg-green-500, 100% opacity
+  - **In-progress:** bg-yellow-500, with percentage label (text-xs white)
+  - **Planned:** border-2 border-gray-400, bg-transparent
+  - **Critical path:** border: 3px solid red-500
+- Dependency arrows:
+  - Normal: stroke-gray-400, stroke-width: 2px
+  - Critical: stroke-red-500, stroke-width: 3px, stroke-dasharray: "5,5"
+- WBS labels (left): text-sm font-medium text-gray-900, width: 80px
+
+**Info Panel:**
+- Background: gray-50, rounded-md, p-4
+- Stats: text-sm, font-medium
+- Checkmark/X icons: Lucide Check/X icons with conditional colors
+- Export button: bg-blue-600, text-white, px-4 py-2, rounded
+
+**Real-time Updates:**
+- When plan changes (commit/renegotiate), re-render chart with smooth transition (300ms)
+- Critical path recalculation triggers red outline updates
+
+**Reference:** mockup-08-gantt-chart-view.svg, PRD FR-9.1
+
+---
+
+### 3.8 Precedence Diagram View
+
+**Layout (Desktop):**
+```
+┌────────────────────────────────────────────────────────────────────┐
+│ [Nye Hædda]  📊 Dashbord | 📈 Gantt-diagram | 🔀 Presedensdiagram  │
+│                                                    🕒 Historikk  [User] │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│ Presedensdiagram                                                   │
+│                                                                    │
+│ ┌──Controls────────────────────────────────────────────────────┐ │
+│ │ Layout: [Venstre→Høyre ▼] | Zoom: [=====>    ]              │ │
+│ └──────────────────────────────────────────────────────────────┘ │
+│                                                                    │
+│ ┌──Network Diagram──────────────────────┐ ┌──Info Panels─────┐  │
+│ │                                        │ │ Kritisk Sti:     │  │
+│ │  (START)                               │ │ • 1.1 → 1.3.1    │  │
+│ │     ↓                                  │ │ • 2.1 → 3.2      │  │
+│ │  ┌────────┐                            │ │ • ...            │  │
+│ │  │  1.1   │──→┌────────┐               │ │ Total: 15 mnd   │  │
+│ │  │Proj... │   │ 1.3.1  │               │ │                  │  │
+│ │  │2m, 50M │   │Grunn..│                │ │ Parallelle Stier:│  │
+│ │  └────────┘   │2.5m,105M│               │ │ Sti A: 12 mnd   │  │
+│ │               └────────┘                │ │ Sti B: 10 mnd   │  │
+│ │                   ↓                     │ │                  │  │
+│ │               ┌────────┐                │ │ Fremdrift:       │  │
+│ │               │  2.1   │ (CRITICAL)     │ │ Fullført: 4/15   │  │
+│ │               │Råbygg  │                │ │ Gjenstår: 11     │  │
+│ │               └────────┘                │ │                  │  │
+│ │                   ↓                     │ │ Nettverksstat:   │  │
+│ │                 (END)                   │ │ Oppgaver: 15     │  │
+│ │                                        │ │ Avhengigheter:18 │  │
+│ └────────────────────────────────────────┘ │ Dybde: 5 nivåer  │  │
+│                                             └──────────────────┘  │
+│                          [Eksporter Diagram (PNG)]                │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+**Specifications:**
+
+**Network Canvas:**
+- Background: white, rounded-md, shadow, p-6
+- Min-height: 600px, width: 70% of viewport
+- Pan/zoom enabled: Use react-flow or cytoscape.js
+- Layout algorithm: Dagre (hierarchical left-to-right)
+
+**Node Styling:**
+- Size: 180px × 100px (desktop), 140px × 80px (tablet)
+- Border-radius: 8px, shadow-sm
+- Border: 2px solid
+- **Colors:**
+  - Completed: bg-green-50, border-green-500
+  - In-progress: bg-yellow-50, border-yellow-500
+  - Planned: bg-white, border-gray-300
+  - Critical path: border-red-500, border-width: 3px
+- **Content:**
+  - WBS code: text-sm font-bold text-gray-900 (top)
+  - Name: text-xs text-gray-700 (truncated if long)
+  - Duration: text-xs text-gray-600
+  - Cost: text-xs text-gray-600
+  - Slack time: text-xs text-blue-600 (bottom right)
+- **START/END nodes:** Circular (w-20 h-20), bg-gray-200, border-gray-400
+
+**Arrows/Edges:**
+- **Normal dependencies:** stroke-gray-400, stroke-width: 2px, arrow-head
+- **Critical path:** stroke-red-500, stroke-width: 3px
+
+**Interactive Features:**
+- **Hover on node:** Highlight incoming/outgoing arrows with blue-400
+- **Click on node:** Show popup modal with full WBS details
+- **Drag to pan:** Canvas is draggable
+- **Scroll to zoom:** Mouse wheel or pinch gesture
+
+**Info Panels (Right Sidebar):**
+- Width: 30% of viewport, background: gray-50, rounded-md, p-4
+- 4 panels stacked vertically:
+  - Critical Path Summary
+  - Parallel Paths
+  - Progress Stats
+  - Network Statistics
+- Each panel: bg-white, rounded, p-3, mb-3, shadow-sm
+- Titles: text-sm font-semibold text-gray-900
+- Content: text-xs text-gray-700, bullet lists
+
+**Layout Mode Selector:**
+- Dropdown: "Venstre→Høyre" (default), "Topp→Bunn", "Hierarkisk"
+- Triggers re-layout animation (500ms transition)
+
+**Reference:** mockup-09-precedence-diagram.svg, PRD FR-9.2
+
+---
+
+### 3.9 History/Timeline View (Overlay Panel)
+
+**Layout (Full-screen Overlay):**
+```
+┌────────────────────────────────────────────────────────────────────┐
+│ 🕒 Historikk                                    ✕ Lukk historikk  │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                    │
+│ ┌──Event Timeline──────┐  ┌──Comparison View──────────────────┐  │
+│ │ [Filter: Alle ▼]     │  │ Før (Versjon 7) | Etter (Versjon 8)│  │
+│ │                      │  │                                     │  │
+│ │ Versjon 8 (Nå)       │  │ ┌─────────────┐  ┌─────────────┐   │  │
+│ │ ⦿ Forpliktet         │  │ │ Råbygg      │  │ Råbygg      │   │  │
+│ │   2.1 Råbygg         │  │ │ 200 MNOK    │  │ 185 MNOK    │   │  │
+│ │   15. mar 13:24      │  │ │ [████████]  │  │ [████████]  │   │  │
+│ │                      │  │ └─────────────┘  └─────────────┘   │  │
+│ │ ○ Versjon 7          │  │     (rødt)          (grønt)        │  │
+│ │   Fjernet 3.2        │  │                                     │  │
+│ │   15. mar 13:20      │  │ Endringer:                          │  │
+│ │                      │  │ • Budsjett: -15 MNOK (2.1% ↓)      │  │
+│ │ ○ Versjon 6          │  │ • Tidslinje: -5 dager (1.5% raskere)│ │
+│ │   Reforhandlet 1.3.1 │  │ • Kritisk sti: Uendret              │  │
+│ │   15. mar 12:45      │  │                                     │  │
+│ │                      │  │ Kaskadeeffekter:                    │  │
+│ │ ○ Versjon 5          │  │ 1. WBS 2.2 start flyttet 5 d tid.. │  │
+│ │   ...                │  │ 2. Kritisk sti opprettholdt         │  │
+│ │ (scrollable)         │  │ 3. Ingen nye forsinkelser           │  │
+│ │                      │  │                                     │  │
+│ │                      │  │ [← Forrige] [Neste →]              │  │
+│ │ (32 hendelser)       │  │ [Sammenlign med nåværende]         │  │
+│ └──────────────────────┘  │ [Eksporter historikk (JSON)]       │  │
+│                            └─────────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────────┘
+```
+
+**Specifications:**
+
+**Overlay Container:**
+- Position: fixed, z-index: 50
+- Background: rgba(0, 0, 0, 0.5) (semi-transparent backdrop)
+- Click backdrop to close (or use ✕ button)
+- Animation: Slide-in from right (300ms ease-in-out)
+
+**Panel:**
+- Background: white, full height, 90% width (max 1400px)
+- Position: right: 0
+- Border-left: 1px solid gray-300
+- Padding: p-6
+
+**Header:**
+- Title: text-xl font-bold text-gray-900, with Clock icon
+- Close button: Absolute top-right, red-600 text, hover: red-700
+- Border-bottom: 1px solid gray-200, pb-4
+
+**Left Sidebar - Event Timeline:**
+- Width: 400px, border-right: 1px solid gray-200
+- Filter dropdown: mb-4, options: "Alle", "Forhandlinger", "Planendringer"
+- Event list:
+  - Scrollable: max-height: calc(100vh - 200px), overflow-y: auto
+  - Each event: py-3, border-bottom: 1px gray-100
+  - **Current/selected event:** bg-blue-50, border-left: 3px blue-600
+  - **Other events:** hover: bg-gray-50
+  - Event icon: Circle (filled for current, outline for past)
+  - Action type icons: CheckCircle (commit), XCircle (remove), RefreshCw (renegotiate)
+  - Timestamp: text-xs text-gray-500
+  - WBS description: text-sm font-medium text-gray-900
+- Total count: text-xs text-gray-500, at bottom
+
+**Right Panel - Comparison View:**
+- Width: calc(100% - 400px - 48px)
+- Headers: "Før (Versjon N)" | "Etter (Versjon N+1)"
+  - text-lg font-semibold text-gray-900
+  - Separated by vertical divider
+- **Gantt Comparison:**
+  - Side-by-side mini Gantt charts (simplified view)
+  - Old state: Red bars, strikethrough for removed tasks
+  - New state: Green bars, highlighted for added/changed tasks
+  - Height: 300px
+- **Change Summary Stats:**
+  - Background: blue-50, rounded, p-3
+  - Stats displayed with icons (TrendingDown for reductions, TrendingUp for increases)
+  - Text: text-sm font-medium
+- **Cascade Effects Panel:**
+  - Background: gray-50, rounded, p-3
+  - Numbered list (1, 2, 3...)
+  - Each effect: text-xs text-gray-700
+  - Shows up to 5 most significant impacts
+
+**Action Buttons:**
+- Row of buttons at bottom
+- Navigation: "← Forrige versjon" | "Neste versjon →" (ghost buttons)
+- Compare: "Sammenlign med nåværende" (secondary button)
+- Export: "Eksporter historikk (JSON)" or "(PDF)" (primary button)
+
+**Data Management:**
+- Maximum 50 versions stored (auto-prune oldest)
+- Each version ~5-10 KB (snapshot of current_plan)
+- Storage warning if approaching localStorage limit
+
+**Reference:** mockup-10-history-timeline-pane.svg, PRD FR-9.3
 
 ---
 

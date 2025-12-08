@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <style>
+      .overlay { fill: rgba(0, 0, 0, 0.6); }
+      .modal { fill: #FFFFFF; filter: drop-shadow(0 20px 50px rgba(0,0,0,0.3)); }
+      .title { font: bold 32px sans-serif; fill: #DC2626; }
+      .subtitle { font: 18px sans-serif; fill: #6B7280; }
+      .label { font: 16px sans-serif; fill: #374151; }
+      .label-small { font: 14px sans-serif; fill: #6B7280; }
+      .error-text { font: 16px sans-serif; fill: #DC2626; font-weight: 600; }
+      .stat-label { font: 13px sans-serif; fill: #6B7280; }
+      .stat-value { font: bold 24px sans-serif; fill: #1F2937; }
+      .button-primary { fill: #2563EB; }
+      .button-secondary { fill: #DC2626; }
+      .button-text { font: 16px sans-serif; fill: #FFFFFF; font-weight: 600; }
+      .wbs-item { font: 14px sans-serif; fill: #374151; }
+    </style>
+  </defs>
+
+  <!-- Blurred background -->
+  <rect width="1920" height="1080" fill="#F9FAFB"/>
+  <rect width="1920" height="80" fill="#2563EB" opacity="0.7"/>
+  <rect x="100" y="150" width="1720" height="200" rx="12" fill="#EFF6FF" opacity="0.5"/>
+  <rect x="100" y="380" width="1100" height="600" rx="12" fill="#FFFFFF" opacity="0.5"/>
+  <rect x="1230" y="380" width="590" height="600" rx="12" fill="#FFFFFF" opacity="0.5"/>
+
+  <!-- Dark overlay -->
+  <rect width="1920" height="1080" class="overlay"/>
+
+  <!-- Error modal -->
+  <rect x="410" y="100" width="1100" height="880" rx="24" class="modal"/>
+
+  <!-- Error icon -->
+  <circle cx="960" cy="220" r="80" fill="#FEE2E2"/>
+  <circle cx="960" cy="220" r="60" fill="#DC2626"/>
+  <text x="960" y="245" font-size="60" fill="#FFFFFF" text-anchor="middle" font-weight="bold">!</text>
+
+  <!-- Title -->
+  <text x="960" y="340" class="title" text-anchor="middle">Valideringsfeil</text>
+  <text x="960" y="375" class="subtitle" text-anchor="middle">Din plan overstiger prosjektets begrensninger</text>
+
+  <!-- Error summary boxes -->
+  <rect x="470" y="420" width="1000" height="100" rx="12" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+
+  <circle cx="510" cy="470" r="24" fill="#DC2626"/>
+  <text x="510" y="478" font-size="20" fill="#FFFFFF" text-anchor="middle" font-weight="bold">✕</text>
+
+  <text x="550" y="455" class="error-text">Budsjettoverskridelse</text>
+  <text x="550" y="480" class="label-small">Total kostnad: <tspan font-weight="bold" fill="#DC2626">715 MNOK</tspan></text>
+  <text x="550" y="500" class="label-small">Budsjett: <tspan font-weight="bold">700 MNOK</tspan></text>
+
+  <rect x="1300" y="445" width="140" height="50" rx="8" fill="#FFFFFF"/>
+  <text x="1370" y="465" font-size="14" fill="#6B7280" text-anchor="middle">Du må redusere:</text>
+  <text x="1370" y="488" font-size="24" fill="#DC2626" text-anchor="middle" font-weight="bold">-15 MNOK</text>
+
+  <!-- Problematic WBS items -->
+  <rect x="470" y="550" width="1000" height="280" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+
+  <text x="490" y="585" font-size="18" fill="#92400E" font-weight="bold">⚠️ WBS-oppgaver med høyest kostnad</text>
+  <text x="490" y="608" font-size="13" fill="#92400E">Forhandl på nytt med disse leverandørene for å redusere budsjettet:</text>
+
+  <!-- WBS item 1 -->
+  <rect x="490" y="630" width="960" height="50" rx="8" fill="#FFFFFF"/>
+  <text x="510" y="655" class="wbs-item" font-weight="bold">1.4.1 Råbygg</text>
+  <text x="510" y="672" font-size="12" fill="#6B7280">Entreprenør Råbygg AS</text>
+
+  <rect x="1180" y="640" width="240" height="30" rx="6" fill="#FEE2E2"/>
+  <text x="1300" y="661" font-size="14" fill="#DC2626" text-anchor="middle" font-weight="bold">200 MNOK (høyest!)</text>
+
+  <!-- WBS item 2 -->
+  <rect x="490" y="690" width="960" height="50" rx="8" fill="#FFFFFF"/>
+  <text x="510" y="715" class="wbs-item" font-weight="bold">1.3.1 Grunnarbeid</text>
+  <text x="510" y="732" font-size="12" fill="#6B7280">Entreprenør Grunnarbeid AS</text>
+
+  <rect x="1180" y="700" width="240" height="30" rx="6" fill="#FEF3C7"/>
+  <text x="1300" y="721" font-size="14" fill="#F59E0B" text-anchor="middle" font-weight="bold">105 MNOK</text>
+
+  <!-- WBS item 3 -->
+  <rect x="490" y="750" width="960" height="50" rx="8" fill="#FFFFFF"/>
+  <text x="510" y="775" class="wbs-item" font-weight="bold">1.5.1 Elektrisk installasjon</text>
+  <text x="510" y="792" font-size="12" fill="#6B7280">Elektro Nord AS</text>
+
+  <rect x="1180" y="760" width="240" height="30" rx="6" fill="#FEF3C7"/>
+  <text x="1300" y="781" font-size="14" fill="#F59E0B" text-anchor="middle" font-weight="bold">65 MNOK</text>
+
+  <!-- Recommendations -->
+  <rect x="470" y="860" width="1000" height="200" rx="12" fill="#EFF6FF"/>
+
+  <text x="490" y="895" font-size="18" fill="#1F2937" font-weight="bold">💡 Anbefalte tiltak</text>
+
+  <g transform="translate(490, 915)">
+    <circle cx="10" cy="5" r="5" fill="#2563EB"/>
+    <text x="25" y="10" font-size="14" fill="#374151">Gå tilbake til "1.4.1 Råbygg" og forhandl ned fra 200 MNOK til ~185 MNOK</text>
+  </g>
+
+  <g transform="translate(490, 945)">
+    <circle cx="10" cy="5" r="5" fill="#2563EB"/>
+    <text x="25" y="10" font-size="14" fill="#374151">Optimaliser tidslinjen for å redusere kostnader (f.eks. færre dager = lavere pris)</text>
+  </g>
+
+  <g transform="translate(490, 975)">
+    <circle cx="10" cy="5" r="5" fill="#2563EB"/>
+    <text x="25" y="10" font-size="14" fill="#374151">Vurder å kontakte prosjekteier for budsjettøkning (alternativ)</text>
+  </g>
+
+  <g transform="translate(490, 1005)">
+    <circle cx="10" cy="5" r="5" fill="#2563EB"/>
+    <text x="25" y="10" font-size="14" fill="#374151">Sjekk om noen WBS-oppgaver kan slås sammen for volumrabatt</text>
+  </g>
+
+  <g transform="translate(490, 1035)">
+    <circle cx="10" cy="5" r="5" fill="#2563EB"/>
+    <text x="25" y="10" font-size="14" fill="#374151">Prioriter kritisk sti-oppgaver (røde) - disse påvirker sluttdatoen mest</text>
+  </g>
+
+  <!-- Action buttons -->
+  <rect x="470" y="1080" width="480" height="60" rx="12" class="button-primary"/>
+  <text x="710" y="1115" class="button-text" text-anchor="middle">← Tilbake og forhandl på nytt</text>
+
+  <rect x="990" y="1080" width="480" height="60" rx="12" class="button-secondary"/>
+  <text x="1230" y="1115" class="button-text" text-anchor="middle">🔄 Nullstill hele planen</text>
+
+  <!-- Help link -->
+  <text x="960" y="1165" font-size="14" fill="#2563EB" text-anchor="middle" style="text-decoration: underline; cursor: pointer;">❓ Trenger du hjelp med forhandling?</text>
+</svg>

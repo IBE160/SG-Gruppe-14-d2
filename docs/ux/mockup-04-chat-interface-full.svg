@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <style>
+      .header { fill: #2563EB; }
+      .bg { fill: #F9FAFB; }
+      .card { fill: #FFFFFF; }
+      .chat-bg { fill: #F9FAFB; }
+      .title { font: bold 20px sans-serif; fill: #FFFFFF; }
+      .subtitle { font: 13px sans-serif; fill: #DBEAFE; }
+      .section-title { font: bold 16px sans-serif; fill: #1F2937; }
+      .label { font: 14px sans-serif; fill: #374151; }
+      .label-small { font: 12px sans-serif; fill: #6B7280; }
+      .chat-user { fill: #DBEAFE; }
+      .chat-ai { fill: #F3F4F6; }
+      .supplier-online { fill: #DCFCE7; }
+      .supplier-offline { fill: #F3F4F6; }
+      .button-text { font: 14px sans-serif; fill: #FFFFFF; font-weight: 600; }
+    </style>
+    <filter id="card-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" class="bg"/>
+
+  <!-- Header -->
+  <rect width="1920" height="80" class="header"/>
+
+  <rect x="40" y="20" width="40" height="40" rx="8" fill="#1D4ED8"/>
+  <text x="60" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">H</text>
+
+  <text x="100" y="45" class="title">Nye Hædda Barneskole</text>
+  <text x="100" y="62" class="subtitle">Prosjektplanleggings-simulator</text>
+
+  <!-- Back to dashboard button -->
+  <rect x="700" y="25" width="160" height="30" rx="6" fill="rgba(255,255,255,0.1)"/>
+  <text x="780" y="47" font-size="14" fill="#FFFFFF" text-anchor="middle">← Tilbake til dashbord</text>
+
+  <rect x="1640" y="25" width="100" height="30" rx="6" fill="#3B82F6"/>
+  <text x="1690" y="47" font-size="13" fill="#FFFFFF" text-anchor="middle" font-weight="600">❓ Hjelp</text>
+
+  <circle cx="1820" cy="40" r="20" fill="#DBEAFE"/>
+  <text x="1820" y="47" font-size="16" fill="#2563EB" text-anchor="middle" font-weight="bold">ON</text>
+  <text x="1850" y="45" font-size="14" fill="#FFFFFF">▼</text>
+
+  <!-- Main content -->
+  <g transform="translate(40, 120)">
+
+    <!-- Supplier List (left sidebar) -->
+    <rect width="400" height="880" rx="12" class="card" filter="url(#card-shadow)"/>
+
+    <text x="30" y="35" class="section-title">Leverandører (15)</text>
+
+    <!-- Search -->
+    <rect x="30" y="50" width="340" height="40" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+    <text x="50" y="75" font-size="14" fill="#9CA3AF">🔍 Søk leverandør...</text>
+
+    <!-- Filter tabs -->
+    <rect x="30" y="105" width="100" height="28" rx="6" fill="#2563EB"/>
+    <text x="80" y="124" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="600">Alle (15)</text>
+
+    <rect x="140" y="105" width="110" height="28" rx="6" fill="#F3F4F6"/>
+    <text x="195" y="124" font-size="12" fill="#6B7280" text-anchor="middle">Online (15)</text>
+
+    <rect x="260" y="105" width="110" height="28" rx="6" fill="#F3F4F6"/>
+    <text x="315" y="124" font-size="12" fill="#6B7280" text-anchor="middle">Aktive (3)</text>
+
+    <!-- Supplier items -->
+    <!-- Active supplier -->
+    <rect x="30" y="150" width="340" height="80" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+    <circle cx="60" cy="190" r="24" fill="#2563EB"/>
+    <text x="60" y="197" font-size="18" fill="#FFFFFF" text-anchor="middle">🏗️</text>
+
+    <text x="100" y="180" font-size="15" fill="#1F2937" font-weight="bold">Entreprenør Råbygg AS</text>
+    <text x="100" y="198" font-size="12" fill="#2563EB">● Online - Forhandler nå</text>
+    <text x="100" y="215" font-size="11" fill="#6B7280">WBS: 1.4.1 Råbygg | Siste: for 2 min siden</text>
+
+    <circle cx="350" cy="190" r="8" fill="#EF4444"/>
+    <text x="350" y="193" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+
+    <!-- Supplier 2 - Completed -->
+    <rect x="30" y="240" width="340" height="75" rx="8" fill="#F9FAFB"/>
+    <circle cx="60" cy="277" r="24" fill="#16A34A"/>
+    <text x="60" y="284" font-size="18" fill="#FFFFFF" text-anchor="middle">✓</text>
+
+    <text x="100" y="267" font-size="14" fill="#1F2937" font-weight="600">Entreprenør Grunnarbeid AS</text>
+    <text x="100" y="285" font-size="12" fill="#16A34A">● Avtale inngått</text>
+    <text x="100" y="302" font-size="11" fill="#6B7280">WBS: 1.3.1 | 60d, 105 MNOK</text>
+
+    <!-- Supplier 3 -->
+    <rect x="30" y="325" width="340" height="75" rx="8" fill="#F9FAFB"/>
+    <circle cx="60" cy="362" r="24" fill="#10B981"/>
+    <text x="60" y="369" font-size="16" fill="#FFFFFF" text-anchor="middle">🏢</text>
+
+    <text x="100" y="352" font-size="14" fill="#1F2937" font-weight="600">Fundamentspesialisten AS</text>
+    <text x="100" y="370" font-size="12" fill="#16A34A">● Avtale inngått</text>
+    <text x="100" y="387" font-size="11" fill="#6B7280">WBS: 1.3.2 | 45d, 60 MNOK</text>
+
+    <!-- Supplier 4 -->
+    <rect x="30" y="410" width="340" height="75" rx="8" fill="#F9FAFB"/>
+    <circle cx="60" cy="447" r="24" fill="#6B7280"/>
+    <text x="60" y="454" font-size="16" fill="#FFFFFF" text-anchor="middle">⚡</text>
+
+    <text x="100" y="437" font-size="14" fill="#1F2937" font-weight="600">Elektro Nord AS</text>
+    <text x="100" y="455" font-size="12" fill="#6B7280">● Online - Venter på kontakt</text>
+    <text x="100" y="472" font-size="11" fill="#6B7280">WBS: 1.5.1 Elektrisk installasjon</text>
+
+    <!-- Supplier 5 -->
+    <rect x="30" y="495" width="340" height="75" rx="8" fill="#F9FAFB"/>
+    <circle cx="60" cy="532" r="24" fill="#6B7280"/>
+    <text x="60" y="539" font-size="16" fill="#FFFFFF" text-anchor="middle">🔧</text>
+
+    <text x="100" y="522" font-size="14" fill="#1F2937" font-weight="600">VVS Meister AS</text>
+    <text x="100" y="540" font-size="12" fill="#6B7280">● Online - Venter på kontakt</text>
+    <text x="100" y="557" font-size="11" fill="#6B7280">WBS: 1.5.2 VVS-installasjon</text>
+
+    <!-- More suppliers indicator -->
+    <text x="200" y="595" font-size="12" fill="#9CA3AF" text-anchor="middle">▼ 10 flere leverandører ▼</text>
+
+    <!-- Chat window (main area) -->
+    <rect x="440" y="0" width="1440" height="880" rx="12" class="card" filter="url(#card-shadow)"/>
+
+    <!-- Chat header -->
+    <rect x="440" y="0" width="1440" height="70" rx="12" fill="#2563EB"/>
+    <circle cx="480" cy="35" r="24" fill="#DBEAFE"/>
+    <text x="480" y="42" font-size="18" fill="#2563EB" text-anchor="middle">🏗️</text>
+
+    <text x="520" y="30" font-size="18" fill="#FFFFFF" font-weight="bold">Entreprenør Råbygg AS</text>
+    <text x="520" y="50" font-size="13" fill="#DBEAFE">● Online - AI-drevet forhandling | WBS 1.4.1: Råbygg</text>
+
+    <!-- Context badge -->
+    <rect x="1400" y="15" width="160" height="40" rx="8" fill="rgba(255,255,255,0.1)"/>
+    <text x="1480" y="32" font-size="12" fill="#FFFFFF" text-anchor="middle">Estimert kostnad:</text>
+    <text x="1480" y="48" font-size="16" fill="#FFFFFF" text-anchor="middle" font-weight="bold">150-200 MNOK</text>
+
+    <!-- Export chat button -->
+    <rect x="1600" y="23" width="120" height="24" rx="6" fill="#3B82F6"/>
+    <text x="1660" y="40" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="600">💾 Eksporter</text>
+
+    <!-- Close button -->
+    <rect x="1750" y="23" width="80" height="24" rx="6" fill="#DC2626"/>
+    <text x="1790" y="40" font-size="11" fill="#FFFFFF" text-anchor="middle" font-weight="600">✕ Lukk</text>
+
+    <!-- Messages area -->
+    <rect x="440" y="70" width="1440" height="730" class="chat-bg"/>
+
+    <!-- Welcome message (system) -->
+    <rect x="480" y="100" width="640" height="80" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+    <text x="500" y="125" font-size="13" fill="#92400E" font-weight="bold">💡 Forhandlingstips:</text>
+    <text x="500" y="145" font-size="12" fill="#92400E">Leverandøren starter vanligvis høyt. Argumenter basert på budsjett, TEK17-krav,</text>
+    <text x="500" y="163" font-size="12" fill="#92400E">og prosjektets tidsfrister for å forhandle ned pris og varighet.</text>
+
+    <!-- Message 1: User -->
+    <rect x="900" y="200" width="560" height="85" rx="12" class="chat-user"/>
+    <text x="920" y="225" font-size="13" fill="#1F2937" font-weight="bold">Du:</text>
+    <text x="920" y="245" font-size="13" fill="#1F2937">Hei! Jeg trenger et pristilbud for råbygg (WBS 1.4.1).</text>
+    <text x="920" y="263" font-size="13" fill="#1F2937">Dette inkluderer betongstøp, stålkonstruksjoner og bærevegger</text>
+    <text x="920" y="281" font-size="13" fill="#1F2937">for skolebygningen. Hva er varighet og kostnad?</text>
+    <text x="1440" y="278" font-size="11" fill="#6B7280" text-anchor="end">14:28</text>
+
+    <!-- Message 2: AI -->
+    <rect x="480" y="305" width="620" height="110" rx="12" class="chat-ai"/>
+    <circle cx="500" cy="330" r="16" fill="#2563EB"/>
+    <text x="500" y="336" font-size="12" fill="#FFFFFF" text-anchor="middle">🏗️</text>
+    <text x="530" y="330" font-size="13" fill="#1F2937" font-weight="bold">Entreprenør Råbygg AS:</text>
+
+    <text x="530" y="350" font-size="13" fill="#1F2937">Takk for henvendelsen! Basert på plantegningene og TEK17-krav</text>
+    <text x="530" y="368" font-size="13" fill="#1F2937">kan vi levere komplett råbygg på <tspan font-weight="bold">120 dager (4 måneder)</tspan></text>
+    <text x="530" y="386" font-size="13" fill="#1F2937">for <tspan font-weight="bold">200 MNOK</tspan>. Dette inkluderer alt materiale og arbeidskraft.</text>
+    <text x="530" y="404" font-size="11" fill="#6B7280">14:29</text>
+
+    <!-- Typing indicator -->
+    <rect x="480" y="435" width="180" height="40" rx="12" fill="#E5E7EB"/>
+    <text x="500" y="460" font-size="12" fill="#6B7280">Du skriver...</text>
+    <circle cx="620" cy="455" r="4" fill="#6B7280">
+      <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Message 3: User -->
+    <rect x="800" y="495" width="660" height="120" rx="12" class="chat-user"/>
+    <text x="820" y="520" font-size="13" fill="#1F2937" font-weight="bold">Du:</text>
+    <text x="820" y="540" font-size="13" fill="#1F2937">Takk for tilbudet! Men budsjettet vårt er stramt - vi har totalt</text>
+    <text x="820" y="558" font-size="13" fill="#1F2937">700 MNOK for hele prosjektet med 15 WBS-oppgaver.</text>
+    <text x="820" y="576" font-size="13" fill="#1F2937">Kan vi optimalisere ned til <tspan font-weight="bold">90 dager</tspan> og <tspan font-weight="bold">180 MNOK</tspan>?</text>
+    <text x="820" y="594" font-size="13" fill="#1F2937">Vi kan akseptere noen kostnadsreduksjoner hvis kvalitet opprettholdes.</text>
+    <text x="1440" y="608" font-size="11" fill="#6B7280" text-anchor="end">14:32</text>
+
+    <!-- Message 4: AI (thinking) -->
+    <rect x="480" y="635" width="620" height="140" rx="12" fill="#F3F4F6" stroke="#2563EB" stroke-width="2" stroke-dasharray="4,4"/>
+    <circle cx="500" cy="660" r="16" fill="#2563EB"/>
+    <text x="500" y="666" font-size="12" fill="#FFFFFF" text-anchor="middle">🏗️</text>
+    <text x="530" y="660" font-size="13" fill="#1F2937" font-weight="bold">Entreprenør Råbygg AS:</text>
+
+    <text x="530" y="680" font-size="13" fill="#1F2937">Det er en tøff tidsramme, men la meg se hva vi kan gjøre...</text>
+    <text x="530" y="700" font-size="13" fill="#1F2937">Hvis vi kjører dobbelskift og optimaliserer materialflyt kan vi</text>
+    <text x="530" y="718" font-size="13" fill="#1F2937">redusere til <tspan font-weight="bold" fill="#F59E0B">100 dager</tspan> for <tspan font-weight="bold" fill="#F59E0B">190 MNOK</tspan>.</text>
+    <text x="530" y="738" font-size="13" fill="#1F2937">Dette er vårt beste tilbud uten å gå på akkord med sikkerhet.</text>
+
+    <rect x="530" y="745" width="90" height="20" rx="4" fill="#FEF3C7"/>
+    <text x="575" y="759" font-size="11" fill="#92400E" text-anchor="middle">AI tenker...</text>
+
+    <!-- Input area -->
+    <rect x="440" y="800" width="1440" height="80" rx="0 0 12 12" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+
+    <rect x="480" y="820" width="1200" height="40" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1"/>
+    <text x="500" y="845" font-size="14" fill="#9CA3AF">Skriv din respons her... (F.eks: "Kan dere gå til 185 MNOK?")</text>
+
+    <!-- Send button -->
+    <rect x="1700" y="820" width="120" height="40" rx="8" fill="#2563EB"/>
+    <text x="1760" y="845" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">Send →</text>
+
+    <!-- Accept offer button -->
+    <rect x="1830" y="820" width="130" height="40" rx="8" fill="#16A34A"/>
+    <text x="1895" y="845" font-size="14" fill="#FFFFFF" text-anchor="middle" font-weight="600">✓ Aksepter tilbud</text>
+
+  </g>
+
+  <!-- Floating help tooltip -->
+  <rect x="1540" y="920" width="340" height="140" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="2" filter="url(#card-shadow)"/>
+  <text x="1710" y="950" font-size="14" fill="#1F2937" text-anchor="middle" font-weight="bold">💡 Forhandlingsstrategi</text>
+  <text x="1560" y="975" font-size="12" fill="#374151">• Referér til budsjettbegrensninger</text>
+  <text x="1560" y="995" font-size="12" fill="#374151">• Spør om effektivisering/dobbelskift</text>
+  <text x="1560" y="1015" font-size="12" fill="#374151">• Nevn andre WBS-oppgaver som prioriteres</text>
+  <text x="1560" y="1035" font-size="12" fill="#374151">• Klikk "Aksepter tilbud" når du er fornøyd</text>
+</svg>

@@ -1,10 +1,11 @@
 # Test Design and Strategy
 ## Nye Hædda Barneskole - Project Management Simulation
 
-**Document Version:** 1.0
-**Date:** 2025-12-07
-**Status:** Ready for Implementation
+**Document Version:** 1.1
+**Date:** 2025-12-08
+**Status:** Updated with Visualization Test Cases
 **Test Analyst:** QA Team
+**Changelog:** Added section 3.9 with 28 test cases for Epic 10 (Visualization & Analysis)
 
 ---
 
@@ -351,6 +352,41 @@ test('complete game flow - happy path', async ({ page }) => {
 |---------|-----------|-------|-----------------|----------|
 | **TC-E8-001** | Open help documentation | 1. Click "Hjelp" button in Dashboard | Help modal opens with Norwegian instructions (how to play, tips, FAQ) | Medium |
 | **TC-E8-002** | Close help modal | 1. Open help<br>2. Click X or outside modal | Modal closes, Dashboard still visible | Low |
+
+---
+
+### 3.9 Epic 10: Visualization & Analysis
+
+| Test ID | Test Case | Steps | Expected Result | Priority |
+|---------|-----------|-------|-----------------|----------|
+| **TC-E10-001** | Navigate to Gantt chart | 1. Login<br>2. Click "📈 Gantt-diagram" tab | Navigate to Gantt view, timeline header shows Jan 2025 - Mai 2026, "Idag" marker visible | High |
+| **TC-E10-002** | Display task bars in Gantt | 1. Commit 3 WBS items (2 completed, 1 in-progress 45%)<br>2. View Gantt | Completed: Green bars, In-progress: Yellow bar with "45%" label, Planned: Gray outline bars | Critical |
+| **TC-E10-003** | Critical path visualization Gantt | 1. Commit items forming critical path<br>2. View Gantt | Critical path tasks have red 3px border, Dependency arrows red dashed | High |
+| **TC-E10-004** | Gantt zoom controls | 1. In Gantt view, adjust zoom slider to 150% | Timeline scales to 150%, task bars proportionally larger, scroll enabled | Medium |
+| **TC-E10-005** | Gantt view mode switcher | 1. In Gantt view, select "Uke" from dropdown | Timeline header changes to weekly view (Uke 1, 2, 3...) | Medium |
+| **TC-E10-006** | Gantt filter (critical path) | 1. Check "Vis kritisk sti" checkbox<br>2. Uncheck "Vis fullførte" | Only critical path tasks shown, completed tasks hidden | Low |
+| **TC-E10-007** | Gantt real-time update | 1. Open Gantt view<br>2. Navigate to Dashboard<br>3. Commit new WBS item<br>4. Return to Gantt | New task bar appears with smooth animation (300ms), Critical path recalculated | Critical |
+| **TC-E10-008** | Export Gantt as PNG | 1. In Gantt view, click "Eksporter Gantt (PNG)" | PNG image downloads showing current timeline state | Medium |
+| **TC-E10-009** | Navigate to Precedence diagram | 1. Click "🔀 Presedensdiagram" tab | Navigate to Precedence view, network diagram visible with START/END nodes | High |
+| **TC-E10-010** | Display nodes in Precedence | 1. Commit 5 WBS items<br>2. View Precedence | Nodes show: WBS code, name, duration, cost, status color, Arrows connect dependencies | Critical |
+| **TC-E10-011** | Critical path in Precedence | 1. View Precedence with critical path<br>2. Check info panel | Critical path nodes have red 3px border, Info panel shows: "Kritisk Sti: 1.1 → 1.3.1 → 2.1...", Total duration | High |
+| **TC-E10-012** | Precedence node interaction | 1. Hover on node 1.3.1 | Incoming/outgoing arrows highlighted blue-400 | Medium |
+| **TC-E10-013** | Precedence node click details | 1. Click on node 2.1 | Popup modal shows full WBS details: requirements, supplier, dates | Medium |
+| **TC-E10-014** | Precedence layout modes | 1. Select "Topp→Bunn" from layout dropdown | Network re-renders with top-to-bottom layout (500ms animation) | Low |
+| **TC-E10-015** | Precedence pan/zoom | 1. Drag canvas<br>2. Scroll to zoom | Canvas pans, Zoom in/out (50%-200%) | Medium |
+| **TC-E10-016** | Export Precedence as PNG | 1. Click "Eksporter Diagram (PNG)" | PNG downloads showing current network state | Medium |
+| **TC-E10-017** | Open History/Timeline panel | 1. Click "🕒 Historikk" button (top-right) | Full-screen overlay panel slides in from right (300ms), Event timeline visible on left | High |
+| **TC-E10-018** | Display event timeline | 1. After 10 commits/renegotiations<br>2. Open History | Left sidebar shows 10 events (newest first), Each with icon, description, timestamp | High |
+| **TC-E10-019** | Filter history events | 1. In History, select "Forhandlinger" from filter dropdown | Only negotiation events shown, Commit/remove events hidden | Low |
+| **TC-E10-020** | Compare versions (before/after) | 1. Select event "Versjon 7 - Forpliktet 2.1"<br>2. View comparison panel | Right panel shows: "Før (Versjon 6)" vs "Etter (Versjon 7)", Side-by-side Gantt comparison, Change summary stats | Critical |
+| **TC-E10-021** | Cascade effects display | 1. View comparison after committing WBS 2.1 | Cascade effects panel lists up to 5 impacts: "WBS 2.2 start flyttet 5 dager tidligere", "Kritisk sti opprettholdt" | Medium |
+| **TC-E10-022** | Navigate history versions | 1. Click "← Forrige versjon" | Comparison updates to show Versjon 5 vs Versjon 6 | Medium |
+| **TC-E10-023** | Compare with current | 1. Select old version 3<br>2. Click "Sammenlign med nåværende" | Comparison shows: "Før (Versjon 3)" vs "Etter (Versjon 10 - Nåværende)" | Medium |
+| **TC-E10-024** | Export history as JSON | 1. Click "Eksporter historikk (JSON)" | JSON file downloads: `nye_haedda_history_[timestamp].json`, Contains version_history array | Low |
+| **TC-E10-025** | Close History panel | 1. Click "✕ Lukk historikk" or click backdrop | Panel slides out to right (300ms), Dashboard/current view visible | Medium |
+| **TC-E10-026** | History storage limit (50 versions) | 1. Manually create 55 versions<br>2. Check version_history in localStorage | Only last 50 versions stored, Oldest 5 versions pruned | Low |
+| **TC-E10-027** | Navigation state persistence | 1. Navigate to Gantt<br>2. Refresh page | Returns to Gantt view (not Dashboard), Active tab highlighted | Medium |
+| **TC-E10-028** | Real-time sync across views | 1. Open Gantt view<br>2. In another tab, commit WBS item on Dashboard<br>3. Return to Gantt tab | Gantt automatically updates (localStorage listener), New task bar appears | High |
 
 ---
 

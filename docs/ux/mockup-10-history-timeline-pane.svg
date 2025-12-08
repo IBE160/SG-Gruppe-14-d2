@@ -1,0 +1,274 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+  <defs>
+    <style>
+      .header { fill: #2563EB; }
+      .bg { fill: #F9FAFB; }
+      .card { fill: #FFFFFF; }
+      .sidebar { fill: #FFFFFF; }
+      .title { font: bold 20px sans-serif; fill: #FFFFFF; }
+      .subtitle { font: 13px sans-serif; fill: #DBEAFE; }
+      .section-title { font: bold 16px sans-serif; fill: #1F2937; }
+      .label { font: 13px sans-serif; fill: #374151; }
+      .label-small { font: 11px sans-serif; fill: #6B7280; }
+      .event-title { font: bold 13px sans-serif; fill: #1F2937; }
+      .event-text { font: 12px sans-serif; fill: #6B7280; }
+      .timeline-dot-completed { fill: #16A34A; }
+      .timeline-dot-active { fill: #2563EB; }
+      .timeline-line { stroke: #D1D5DB; stroke-width: 2; }
+      .button-text { font: 14px sans-serif; fill: #FFFFFF; font-weight: 600; }
+      .comparison-before { fill: #FEE2E2; }
+      .comparison-after { fill: #DCFCE7; }
+      .diff-removed { fill: #FCA5A5; }
+      .diff-added { fill: #86EFAC; }
+    </style>
+    <filter id="card-shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" class="bg"/>
+
+  <!-- Header -->
+  <rect width="1920" height="80" class="header"/>
+
+  <rect x="40" y="20" width="40" height="40" rx="8" fill="#1D4ED8"/>
+  <text x="60" y="47" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle">H</text>
+
+  <text x="100" y="45" class="title">Nye Hædda Barneskole</text>
+  <text x="100" y="62" class="subtitle">Historikk og Endringslogg</text>
+
+  <!-- Close history button -->
+  <rect x="1700" y="25" width="140" height="30" rx="6" fill="#DC2626"/>
+  <text x="1770" y="47" font-size="13" fill="#FFFFFF" text-anchor="middle" font-weight="600">✕ Lukk historikk</text>
+
+  <!-- Help button -->
+  <rect x="1560" y="25" width="120" height="30" rx="6" fill="#3B82F6"/>
+  <text x="1620" y="47" font-size="13" fill="#FFFFFF" text-anchor="middle" font-weight="600">❓ Hjelp</text>
+
+  <!-- User menu -->
+  <circle cx="1870" cy="40" r="20" fill="#DBEAFE"/>
+  <text x="1870" y="47" font-size="16" fill="#2563EB" text-anchor="middle" font-weight="bold">ON</text>
+
+  <!-- Main content: Split view -->
+  <g transform="translate(40, 120)">
+
+    <!-- Left sidebar: Timeline list -->
+    <rect width="400" height="880" rx="12" class="sidebar" filter="url(#card-shadow)"/>
+
+    <text x="30" y="35" class="section-title">Tidslinje (32 hendelser)</text>
+
+    <!-- Filter buttons -->
+    <rect x="30" y="50" width="80" height="28" rx="6" fill="#2563EB"/>
+    <text x="70" y="69" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="600">Alle</text>
+
+    <rect x="120" y="50" width="120" height="28" rx="6" fill="#F3F4F6"/>
+    <text x="180" y="69" font-size="12" fill="#6B7280" text-anchor="middle">Forhandlinger</text>
+
+    <rect x="250" y="50" width="120" height="28" rx="6" fill="#F3F4F6"/>
+    <text x="310" y="69" font-size="12" fill="#6B7280" text-anchor="middle">Planendringer</text>
+
+    <!-- Timeline events -->
+    <!-- Event 1 (current/active) -->
+    <rect x="30" y="100" width="340" height="90" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+    <circle cx="60" cy="145" r="12" class="timeline-dot-active"/>
+    <text x="60" y="151" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">8</text>
+
+    <text x="85" y="125" class="event-title">Forhandling med Entreprenør Råbygg AS</text>
+    <text x="85" y="143" class="event-text">Redusert pris: 200 MNOK → 185 MNOK</text>
+    <text x="85" y="159" class="event-text">Varighet: 90 dager → 85 dager</text>
+    <text x="85" y="177" font-size="10" fill="#2563EB" font-weight="600">Nå • 14:32 i dag • Versjon 8</text>
+
+    <!-- Timeline vertical line -->
+    <line x1="60" y1="157" x2="60" y2="210" class="timeline-line"/>
+
+    <!-- Event 2 -->
+    <rect x="30" y="200" width="340" height="75" rx="8" fill="#FFFFFF"/>
+    <circle cx="60" cy="237" r="10" class="timeline-dot-completed"/>
+    <text x="60" y="242" font-size="9" fill="#FFFFFF" text-anchor="middle" font-weight="bold">7</text>
+
+    <text x="85" y="220" class="event-title">Plan validert og justert</text>
+    <text x="85" y="238" class="event-text">Budsjett: 715 MNOK → 695 MNOK ✓</text>
+    <text x="85" y="254" class="event-text">Sluttdato: 20. mai → 10. april ✓</text>
+    <text x="85" y="267" font-size="10" fill="#6B7280">30 min siden • 14:02 • Versjon 7</text>
+
+    <line x1="60" y1="247" x2="60" y2="290" class="timeline-line"/>
+
+    <!-- Event 3 -->
+    <rect x="30" y="285" width="340" height="75" rx="8" fill="#FFFFFF"/>
+    <circle cx="60" cy="322" r="10" class="timeline-dot-completed"/>
+    <text x="60" y="327" font-size="9" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+
+    <text x="85" y="305" class="event-title">Fullført: 1.3.2 Fundamentering</text>
+    <text x="85" y="323" class="event-text">Akseptert: 45 dager, 60 MNOK</text>
+    <text x="85" y="339" class="event-text">Leverandør: Fundamentspesialisten AS</text>
+    <text x="85" y="352" font-size="10" fill="#6B7280">2 timer siden • 12:30 • Versjon 6</text>
+
+    <line x1="60" y1="332" x2="60" y2="375" class="timeline-line"/>
+
+    <!-- Event 4 -->
+    <rect x="30" y="370" width="340" height="75" rx="8" fill="#FFFFFF"/>
+    <circle cx="60" cy="407" r="10" class="timeline-dot-completed"/>
+    <text x="60" y="412" font-size="9" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+
+    <text x="85" y="390" class="event-title">Fullført: 1.3.1 Grunnarbeid</text>
+    <text x="85" y="408" class="event-text">Akseptert: 60 dager, 105 MNOK</text>
+    <text x="85" y="424" class="event-text">Leverandør: Entreprenør Grunnarbeid AS</text>
+    <text x="85" y="437" font-size="10" fill="#6B7280">I går kl 16:45 • Versjon 5</text>
+
+    <line x1="60" y1="417" x2="60" y2="460" class="timeline-line"/>
+
+    <!-- Event 5 -->
+    <rect x="30" y="455" width="340" height="75" rx="8" fill="#FFFFFF"/>
+    <circle cx="60" cy="492" r="10" class="timeline-dot-completed"/>
+    <text x="60" y="497" font-size="9" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+
+    <text x="85" y="475" class="event-title">Forhandling med Grunnarbeid</text>
+    <text x="85" y="493" class="event-text">Første tilbud: 120 MNOK, 90 dager</text>
+    <text x="85" y="509" class="event-text">Etter 3 runder: 105 MNOK, 60 dager ✓</text>
+    <text x="85" y="522" font-size="10" fill="#6B7280">I går kl 16:20 • Versjon 4</text>
+
+    <!-- More events indicator -->
+    <text x="200" y="560" font-size="12" fill="#9CA3AF" text-anchor="middle">▼ Se 27 flere hendelser ▼</text>
+
+    <!-- Right side: Comparison view -->
+    <rect x="460" y="0" width="1380" height="880" rx="12" class="card" filter="url(#card-shadow)"/>
+
+    <text x="490" y="35" class="section-title">Sammenligning: Versjon 7 → Versjon 8</text>
+
+    <!-- Toggle view buttons -->
+    <rect x="1420" y="10" width="140" height="30" rx="6" fill="#2563EB"/>
+    <text x="1490" y="31" font-size="13" fill="#FFFFFF" text-anchor="middle" font-weight="600">Gantt-visning</text>
+
+    <rect x="1570" y="10" width="160" height="30" rx="6" fill="#F3F4F6"/>
+    <text x="1650" y="31" font-size="13" fill="#6B7280" text-anchor="middle">Presedensdiagram</text>
+
+    <rect x="1740" y="10" width="80" height="30" rx="6" fill="#F3F4F6"/>
+    <text x="1780" y="31" font-size="13" fill="#6B7280" text-anchor="middle">Tabell</text>
+
+    <!-- Split comparison: Before (left) vs After (right) -->
+    <!-- Before column -->
+    <rect x="490" y="60" width="640" height="60" fill="#FEE2E2"/>
+    <text x="810" y="90" font-size="16" fill="#DC2626" text-anchor="middle" font-weight="bold">Før (Versjon 7) - 14:02</text>
+    <text x="810" y="110" font-size="13" fill="#6B7280" text-anchor="middle">Total: 715 MNOK | Slutt: 20. mai 2026 ❌</text>
+
+    <!-- After column -->
+    <rect x="1150" y="60" width="640" height="60" fill="#DCFCE7"/>
+    <text x="1470" y="90" font-size="16" fill="#16A34A" text-anchor="middle" font-weight="bold">Etter (Versjon 8) - 14:32</text>
+    <text x="1470" y="110" font-size="13" fill="#6B7280" text-anchor="middle">Total: 695 MNOK | Slutt: 10. april 2026 ✓</text>
+
+    <!-- Gantt comparison -->
+    <!-- Timeline header -->
+    <rect x="490" y="140" width="1300" height="30" fill="#F9FAFB"/>
+    <text x="550" y="160" font-size="11" fill="#6B7280">WBS</text>
+    <text x="750" y="160" font-size="11" fill="#6B7280">Jan</text>
+    <text x="850" y="160" font-size="11" fill="#6B7280">Feb</text>
+    <text x="950" y="160" font-size="11" fill="#6B7280">Mar</text>
+    <text x="1050" y="160" font-size="11" fill="#6B7280">Apr</text>
+    <text x="1150" y="160" font-size="11" fill="#6B7280">Mai</text>
+    <text x="1250" y="160" font-size="11" fill="#6B7280">Jun</text>
+    <text x="1350" y="160" font-size="11" fill="#6B7280">Jul</text>
+    <text x="1450" y="160" font-size="11" fill="#6B7280">Aug</text>
+    <text x="1550" y="160" font-size="11" fill="#6B7280">Sep</text>
+    <text x="1650" y="160" font-size="11" fill="#6B7280">Okt</text>
+
+    <!-- Changed task: 1.4.1 Råbygg -->
+    <rect x="490" y="180" width="1300" height="80" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+    <text x="510" y="210" font-size="13" fill="#1F2937" font-weight="bold">1.4.1 Råbygg (Endret)</text>
+
+    <!-- Before bar (red/removed) -->
+    <rect x="710" y="195" width="200" height="12" rx="3" class="diff-removed"/>
+    <text x="710" y="242" font-size="11" fill="#DC2626">Før: 200 MNOK, 90d</text>
+    <text x="710" y="255" font-size="10" fill="#9CA3AF">Start: 15. apr • Slutt: 15. jul</text>
+
+    <!-- After bar (green/added) -->
+    <rect x="710" y="225" width="180" height="12" rx="3" class="diff-added"/>
+    <text x="940" y="242" font-size="11" fill="#16A34A">Etter: 185 MNOK, 85d</text>
+    <text x="940" y="255" font-size="10" fill="#9CA3AF">Start: 15. apr • Slutt: 10. jul</text>
+
+    <!-- Savings indicator -->
+    <rect x="1100" y="205" width="180" height="40" rx="6" fill="#DCFCE7"/>
+    <text x="1190" y="225" font-size="13" fill="#16A34A" text-anchor="middle" font-weight="bold">Besparelse:</text>
+    <text x="1190" y="240" font-size="12" fill="#16A34A" text-anchor="middle">-15 MNOK, -5 dager</text>
+
+    <!-- Unchanged tasks (collapsed) -->
+    <rect x="490" y="270" width="1300" height="40" fill="#F9FAFB"/>
+    <text x="510" y="293" font-size="12" fill="#6B7280">6 oppgaver uendret (1.1, 1.2, 1.3.1, 1.3.2, 1.4.2, 1.5.1)</text>
+    <rect x="1680" y="277" width="100" height="26" rx="6" fill="#E5E7EB"/>
+    <text x="1730" y="295" font-size="11" fill="#6B7280" text-anchor="middle">Vis detaljer</text>
+
+    <!-- Cascade effects -->
+    <rect x="490" y="320" width="1300" height="200" rx="8" fill="#EFF6FF"/>
+    <text x="510" y="345" font-size="15" fill="#2563EB" font-weight="bold">Kaskadeeffekter av endringen:</text>
+
+    <!-- Effect 1 -->
+    <g transform="translate(510, 365)">
+      <circle cx="10" cy="10" r="6" fill="#2563EB"/>
+      <text x="10" y="14" font-size="8" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+      <text x="25" y="15" font-size="13" fill="#1F2937">Sluttdato forbedret: <tspan font-weight="bold" fill="#DC2626">20. mai 2026</tspan> → <tspan font-weight="bold" fill="#16A34A">10. april 2026</tspan> (10 dagers margin)</text>
+    </g>
+
+    <!-- Effect 2 -->
+    <g transform="translate(510, 395)">
+      <circle cx="10" cy="10" r="6" fill="#2563EB"/>
+      <text x="10" y="14" font-size="8" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+      <text x="25" y="15" font-size="13" fill="#1F2937">Budsjett forbedret: <tspan font-weight="bold" fill="#DC2626">715 MNOK</tspan> → <tspan font-weight="bold" fill="#16A34A">695 MNOK</tspan> (5 MNOK under budsjett!)</text>
+    </g>
+
+    <!-- Effect 3 -->
+    <g transform="translate(510, 425)">
+      <circle cx="10" cy="10" r="6" fill="#2563EB"/>
+      <text x="10" y="14" font-size="8" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+      <text x="25" y="15" font-size="13" fill="#1F2937">Kritisk sti forkortet: <tspan font-weight="bold">340 dager</tspan> → <tspan font-weight="bold">335 dager</tspan></text>
+    </g>
+
+    <!-- Effect 4 -->
+    <g transform="translate(510, 455)">
+      <circle cx="10" cy="10" r="6" fill="#2563EB"/>
+      <text x="10" y="14" font-size="8" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+      <text x="25" y="15" font-size="13" fill="#1F2937">Avhengige oppgaver kan starte tidligere:</text>
+      <text x="25" y="35" font-size="12" fill="#6B7280">• 1.5.1 Elektrisk: Start flyttet til 10. juli (fra 15. juli)</text>
+      <text x="25" y="52" font-size="12" fill="#6B7280">• 1.5.2 VVS: Start flyttet til 10. juli (fra 15. juli)</text>
+    </g>
+
+    <!-- Effect 5 -->
+    <g transform="translate(510, 485)">
+      <circle cx="10" cy="10" r="6" fill="#16A34A"/>
+      <text x="10" y="14" font-size="8" fill="#FFFFFF" text-anchor="middle" font-weight="bold">✓</text>
+      <text x="25" y="15" font-size="13" fill="#16A34A" font-weight="bold">Planen er nå gyldig! Alle begrensninger overholdt.</text>
+    </g>
+
+    <!-- Change summary stats -->
+    <rect x="490" y="540" width="1300" height="140" rx="8" fill="#F9FAFB"/>
+    <text x="510" y="565" font-size="15" fill="#1F2937" font-weight="bold">Sammendrag av endringer:</text>
+
+    <g transform="translate(530, 590)">
+      <rect width="380" height="70" rx="6" fill="#DCFCE7"/>
+      <text x="190" y="25" font-size="13" fill="#16A34A" text-anchor="middle" font-weight="600">Økonomisk påvirkning</text>
+      <text x="190" y="48" font-size="20" fill="#16A34A" text-anchor="middle" font-weight="bold">-15 MNOK</text>
+      <text x="190" y="65" font-size="11" fill="#6B7280" text-anchor="middle">Besparelse (2.1%)</text>
+    </g>
+
+    <g transform="translate(930, 590)">
+      <rect width="380" height="70" rx="6" fill="#DBEAFE"/>
+      <text x="190" y="25" font-size="13" fill="#2563EB" text-anchor="middle" font-weight="600">Tidsmessig påvirkning</text>
+      <text x="190" y="48" font-size="20" fill="#2563EB" text-anchor="middle" font-weight="bold">-5 dager</text>
+      <text x="190" y="65" font-size="11" fill="#6B7280" text-anchor="middle">Raskere (1.5% reduksjon)</text>
+    </g>
+
+    <!-- Action buttons -->
+    <rect x="490" y="700" width="420" height="50" rx="10" fill="#2563EB"/>
+    <text x="700" y="730" class="button-text" text-anchor="middle">◄ Gå til Versjon 7</text>
+
+    <rect x="930" y="700" width="420" height="50" rx="10" fill="#F3F4F6"/>
+    <text x="1140" y="730" font-size="14" fill="#6B7280" text-anchor="middle" font-weight="600">Sammenlign andre versjoner</text>
+
+    <rect x="1370" y="700" width="420" height="50" rx="10" fill="#10B981"/>
+    <text x="1580" y="730" class="button-text" text-anchor="middle">✓ Bruk Versjon 8 (nåværende)</text>
+
+    <!-- Export history -->
+    <rect x="490" y="770" width="1300" height="50" rx="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <text x="1140" y="800" font-size="14" fill="#6B7280" text-anchor="middle">📥 Eksporter fullstendig historikk (JSON) • 📊 Generer endringsrapport (PDF)</text>
+
+  </g>
+</svg>

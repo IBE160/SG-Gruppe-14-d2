@@ -1071,6 +1071,183 @@ An interactive, browser-based simulation where students:
 
 ---
 
+### 5.9 Visualization & Analysis
+
+**FR-9.1: Gantt Chart View**
+- **Priority:** Must Have
+- **Description:** Display project timeline as an interactive Gantt chart showing task durations, dependencies, and critical path
+- **Detailed Requirements:**
+  - Accessible via "Gantt-diagram" tab in main navigation
+  - Timeline header: Shows months from project start (Jan 2025) to deadline (May 2026)
+  - Task bars display:
+    - **Completed tasks:** Green bars with 100% fill
+    - **In-progress tasks:** Yellow/orange bars with progress percentage (e.g., "45%")
+    - **Planned tasks:** Gray outlined bars
+    - **Critical path tasks:** Red outline/border (3px)
+  - Each task bar shows:
+    - WBS ID and name on left
+    - Duration in days
+    - Start and end dates on hover
+  - Dependency arrows:
+    - Gray arrows for normal dependencies
+    - Red dashed arrows for critical path
+  - "Today" marker: Blue vertical dashed line showing current date
+  - Milestone markers: Diamond shapes (e.g., for Inspeksjon)
+  - Interactive controls:
+    - View modes: Month / Week / Day
+    - Zoom slider (50% to 200%)
+    - Filters: Toggle critical path, dependencies, milestones
+  - Legend showing color coding
+  - Export button: "Eksporter Gantt (PNG)"
+  - **Real-time updates:** Chart re-renders when plan changes (new commitments, renegotiations)
+- **Data Source:**
+  - `session.current_plan` (committed WBS items with start_date, end_date, duration, cost)
+  - Critical path calculation: Topological sort + longest path algorithm
+- **Acceptance Test:**
+  - User commits 1.4.1 Råbygg (90 days, starts April 15) → Gantt shows yellow bar from April 15 to July 14
+  - User clicks Month view → timeline shows monthly grid
+  - Critical path tasks have red outline
+
+---
+
+**FR-9.2: Precedence Diagram (AON Network)**
+- **Priority:** Must Have
+- **Description:** Display Activity-on-Node (AON) network diagram showing task dependencies, critical path, and slack times
+- **Detailed Requirements:**
+  - Accessible via "Presedensdiagram" tab in main navigation
+  - Network nodes (rectangular boxes) for each WBS task:
+    - **Node content:**
+      - WBS ID and name (top)
+      - Duration in days
+      - Cost in MNOK
+      - Status: Fullført ✓ / Pågår ⏳ / Planlagt
+      - Slack time (bottom, e.g., "Slack: 0 dager" for critical path)
+    - **Node styling:**
+      - Green fill + green border: Completed
+      - Yellow fill + orange border: In-progress
+      - White fill + gray border: Planned
+      - Red thick border (4px): Critical path nodes
+  - Arrows showing dependencies:
+    - Gray arrows (2px): Normal dependencies
+    - Red thick arrows (3px): Critical path
+  - START node (circle) and END node (after final task)
+  - Layout modes:
+    - Left→Right (default)
+    - Top→Bottom
+    - Hierarchical
+  - Interactive controls:
+    - Filter: "Kun kritisk sti" (show only critical path nodes)
+    - Toggle: Show earliest/latest start times
+    - Toggle: Show slack times (checked by default)
+  - Info panels at bottom:
+    - **Critical Path Summary (red):** Number of tasks, total duration, end date
+    - **Parallel Paths (blue):** Non-critical tasks with slack times
+    - **Progress Stats (green):** X/15 completed, Y in-progress, Z remaining
+    - **Network Statistics (yellow):** Total nodes, dependencies, criticality %
+  - Export button: "Eksporter Diagram (PNG)"
+  - **Real-time updates:** Network recalculates when plan changes
+- **Algorithms:**
+  - Critical path: Topological sort + longest path (same as Gantt)
+  - Slack calculation: `slack = latest_finish - earliest_finish`
+  - Auto-layout: Dagre or force-directed layout
+- **Acceptance Test:**
+  - User commits all critical path tasks → red border appears on nodes
+  - Parallel task 1.5.1 Elektrisk shows "Slack: 15 dager"
+  - Filter "Kun kritisk sti" → only 8 critical nodes visible
+
+---
+
+**FR-9.3: History/Timeline View**
+- **Priority:** Should Have
+- **Description:** Version control system showing all plan changes over time with before/after comparison
+- **Detailed Requirements:**
+  - Accessible via "🕒 Historikk" button in top-right navigation (all views)
+  - Opens side panel overlaying current view
+  - **Left sidebar (400px):**
+    - Timeline list of all events (commits, uncommits, negotiations)
+    - Each event shows:
+      - Version number badge (1, 2, 3...)
+      - Event type icon (💬 negotiation, ✓ commit, 🔄 uncommit, ⚠️ validation)
+      - Title: "Forhandling med [Supplier]" or "Fullført: [WBS ID]"
+      - Key changes: Old value → New value
+      - Timestamp: Relative (e.g., "30 min siden") or absolute
+    - Filter buttons: All / Negotiations / Plan changes
+    - Current event highlighted in blue
+    - Vertical timeline line connecting events
+  - **Right panel (comparison view):**
+    - Split screen: "Før (Versjon X)" vs "Etter (Versjon Y)"
+    - Toggle views: Gantt (default) / Precedence / Table
+    - Summary stats at top:
+      - Before: Total cost, End date (with ✓ or ❌)
+      - After: Total cost, End date (with ✓ or ❌)
+    - **Gantt comparison:**
+      - Timeline showing changed tasks
+      - Red bar: Old values (removed)
+      - Green bar: New values (added)
+      - Savings indicator: "-X MNOK, -Y dager"
+      - Collapsed section for unchanged tasks
+    - **Cascade effects panel (blue):**
+      - Numbered list (1-5) showing impacts:
+        - End date change
+        - Budget change
+        - Critical path change
+        - Dependent task shifts
+        - Validation status change
+    - **Change summary stats:**
+      - Economic impact: +/- X MNOK (Y%)
+      - Time impact: +/- X dager (Y%)
+  - **Action buttons:**
+    - "◄ Gå til Versjon X" (navigate to specific version)
+    - "Sammenlign andre versjoner" (select different versions to compare)
+    - "✓ Bruk Versjon Y (nåværende)" (confirm current version)
+  - **Export:**
+    - "📥 Eksporter fullstendig historikk (JSON)"
+    - "📊 Generer endringsrapport (PDF)"
+  - Close button: "✕ Lukk historikk" (top right, red)
+- **Data Structure:**
+  ```javascript
+  session.version_history = [
+    {
+      version: 1,
+      timestamp: "2025-03-15T10:00:00Z",
+      action: "commit",
+      wbs_id: "1.3.1",
+      changes: {cost: 105, duration: 60},
+      snapshot: {current_plan: {...}, total_budget_used: 105, projected_end_date: "..."}
+    },
+    // ... all versions
+  ]
+  ```
+- **Storage Limit:** Keep last 50 versions (auto-prune older versions)
+- **Acceptance Test:**
+  - User commits 5 WBS items → history shows 5 events
+  - User clicks event 3 → comparison shows version 2 vs version 3
+  - User clicks "Eksporter historikk" → JSON file downloads with all versions
+
+---
+
+**FR-9.4: Navigation Between Views**
+- **Priority:** Must Have
+- **Description:** Seamless navigation between Dashboard, Gantt, Precedence, and History views
+- **Detailed Requirements:**
+  - Main navigation tabs (always visible in header):
+    - 📊 Dashbord
+    - 📈 Gantt-diagram
+    - 🔀 Presedensdiagram
+  - 🕒 Historikk button in top-right (opens overlay panel on any view)
+  - Active tab highlighted with blue background
+  - All views share same header, user menu, help button
+  - View state persists:
+    - Gantt zoom level, scroll position
+    - Precedence layout mode, filter settings
+    - History selected version
+  - All views update in real-time when plan changes
+- **Acceptance Test:**
+  - User navigates Dashboard → Gantt → Precedence → all show consistent data
+  - User commits new WBS item → all views update immediately
+
+---
+
 ## 6. Non-Functional Requirements
 
 ### 6.1 Performance
