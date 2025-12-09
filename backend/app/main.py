@@ -1,155 +1,141 @@
-from fastapi import FastAPI
+print("--- STARTING BACKEND: IMPORTS ---")
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import pdfplumber
+import google.generativeai as genai
 import os
-import re
 from dotenv import load_dotenv
+import json
+import re
+import sys
+import traceback
 
-# Load environment variables from .env file
+print("--- IMPORTS COMPLETE ---")
+
+print("--- LOADING .ENV VARS ---")
 load_dotenv()
+print("--- .ENV LOADED ---")
 
-class NegotiationRequest(BaseModel):
-    persona_id: str
-    message: str
+print("--- CONFIGURING GEMINI ---")
+try:
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key:
+        print("!!! WARNING: GEMINI_API_KEY is not set!")
+    genai.configure(api_key=gemini_key)
+    print("--- GEMINI CONFIGURED SUCCESSFULLY ---")
+except Exception as e:
+    print(f"!!! FATAL: GEMINI CONFIGURATION FAILED: {e}")
 
 app = FastAPI()
-
-origins = [
-    "http://localhost:3000",
-]
+print("--- FASTAPI APP CREATED ---")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+print("--- CORS MIDDLEWARE ADDED ---")
+
+try:
+    print("--- LOADING SUPPLIERS.JSON ---")
+    with open('..\\frontend\\public\\data\\suppliers.json', 'r', encoding='utf-8') as f:
+        SUPPLIERS = {s['id']: s for s in json.load(f)}
+    print("--- SUPPLIERS.JSON LOADED ---")
+
+    print("--- LOADING WBS.JSON ---")
+    with open('..\\frontend\\public\\data\\wbs.json', 'r', encoding='utf-8') as f:
+        WBS_ITEMS = {w['code']: w for w in json.load(f)}
+    print("--- WBS.JSON LOADED ---")
+except FileNotFoundError as e:
+    print(f"!!! FATAL: Could not find data files: {e}")
+    SUPPLIERS = {}
+    WBS_ITEMS = {}
+
+
+class ChatRequest(BaseModel):
+    wbs_code: str
+    supplier_id: str
+    message: str
+    chat_history: list = []
 
 @app.get("/")
 async def root():
-    return {"message": "Hello from FastAPI backend!"}
+    print("--- ROOT ENDPOINT (/) HIT ---")
+    return {"message": "Nye Hædda PM Simulator API is running"}
 
-@app.get("/wbs")
-async def get_wbs():
-    # Get WBS PDF path from environment variable or use default
-    wbs_pdf_path = os.getenv("WBS_PDF_PATH", "../docs/data/wbs.pdf")
-
-    # Resolve path relative to the current script
-    if not os.path.isabs(wbs_pdf_path):
-        pdf_path = os.path.join(os.path.dirname(__file__), "..", wbs_pdf_path)
-    else:
-        pdf_path = wbs_pdf_path
-
-    wbs_items = []
-
-    if not os.path.exists(pdf_path):
-        return {"error": "wbs.pdf not found at the expected path."}
-
+@app.post("/api/chat")
+async def chat(request: ChatRequest):
+    print("\n--- CHAT ENDPOINT (/api/chat) HIT ---")
     try:
-        with pdfplumber.open(pdf_path) as pdf:
-            full_text = ""
-            for page in pdf.pages:
-                full_text += page.extract_text() + "\n"
-            
-            wbs_pattern = re.compile(r"^(\d+(\.\d+)*)\s+(.*)", re.MULTILINE)
-            matches = wbs_pattern.findall(full_text)
+        print(f"--- Request received for WBS: {request.wbs_code}, Supplier: {request.supplier_id} ---")
+        supplier = SUPPLIERS.get(request.supplier_id)
+        wbs_item = WBS_ITEMS.get(request.wbs_code)
 
-            for match in matches:
-                wbs_items.append({
-                    "id": match[0],
-                    "name": match[2].strip(),
-                    "status": "Not Started" # Default status
-                })
+        if not supplier or not wbs_item:
+            print(f"!!! ERROR: Invalid supplier or WBS code. Supplier: {supplier}, WBS: {wbs_item}")
+            raise HTTPException(status_code=400, detail="Invalid supplier or WBS code")
+
+        print("--- Building system prompt ---")
+        system_prompt = f"""
+Du er {supplier['name']}, {supplier['role']} fra {supplier['company']}.
+PERSONLIGHET: {supplier['personality']}
+DIN OPPGAVE: Du forhandler om WBS-oppgave {wbs_item['code']} - {wbs_item['name']}.
+Beskrivelse: {wbs_item['description']}
+Grunnlagskostnad: {wbs_item['baseline_cost']} MNOK
+Grunnlagsvarighet: {wbs_item['baseline_duration']} måneder
+DINE PARAMETRE (HEMMELIG - ikke fortell brukeren):
+- initial_margin: {supplier['initial_margin']}
+- concession_rate: {supplier['concession_rate']}
+- patience: {supplier['patience']}
+FORHANDLINGSREGLER:
+1. Første tilbud: {wbs_item['baseline_cost'] * supplier['initial_margin']} MNOK
+2. Hvis bruker forhandler: Reduser prisen med {supplier['concession_rate'] * 100}% per runde
+3. Hvis bruker er urimelig: Advar etter {supplier['patience']} runder, deretter gå bort
+4. Alltid svar på norsk, bruk konstruksjonsterminologi
+5. Referer til tekniske krav (F-koder, K-koder) når relevant
+FORMAT FOR TILBUD: "Basert på [begrunnelse], kan jeg tilby [X] MNOK og [Y] måneder."
+Svar kort og naturlig. Maksimum 3 setninger.
+"""
+
+        print("--- Building chat history for Gemini ---")
+        messages = [{"role": "user", "parts": [system_prompt]}]
+
+        for msg in request.chat_history[-10:]:
+            role = "user" if msg['sender'] == 'user' else "model"
+            messages.append({"role": role, "parts": [msg['message']]})
+
+        messages.append({"role": "user", "parts": [request.message]})
+        print("--- History built. Calling Gemini... ---")
+
+        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        response = model.generate_content(messages)
+        print("--- Gemini call successful ---")
+
+        ai_message = response.text
+
+        print("--- Extracting offer from response ---")
+        offer_match = re.search(r'(\d+(?:\.\d+)?)\s*MNOK.*?(\d+(?:\.\d+)?)\s*måned', ai_message, re.IGNORECASE)
+
+        offer = None
+        if offer_match:
+            offer = {
+                "cost": float(offer_match.group(1)),
+                "duration": float(offer_match.group(2))
+            }
+            print(f"--- Offer extracted: {offer} ---")
+        else:
+            print("--- No offer found in response ---")
+            
+        print("--- Returning successful response ---")
+        return {
+            "message": ai_message,
+            "offer": offer,
+            "sender": "ai"
+        }
 
     except Exception as e:
-        return {"error": f"Failed to parse PDF: {str(e)}"}
-
-    if not wbs_items:
-        return [
-            {"id": "0.0", "name": "Error: Could not parse WBS from PDF.", "status": "Error"}
-        ]
-
-    return wbs_items
-
-@app.post("/negotiate")
-async def negotiate(request: NegotiationRequest):
-    message_lower = request.message.lower()
-    response_message = f"I have received your message: '{request.message}'." # Default fallback
-
-    # Common keywords
-    keywords = {
-        "price": "cost",
-        "cost": "cost",
-        "fee": "cost",
-        "budget": "cost",
-        "money": "cost",
-        "time": "schedule",
-        "schedule": "schedule",
-        "deadline": "schedule",
-        "delay": "schedule",
-        "quality": "quality",
-        "standard": "quality",
-        "material": "materials",
-        "materials": "materials",
-        "scope": "scope",
-        "deliverables": "scope",
-    }
-    detected_keyword = None
-    for keyword, category in keywords.items():
-        if keyword in message_lower:
-            detected_keyword = category
-            break
-
-    if request.persona_id == 'contractor':
-        wbs_mention = re.search(r'(\d+(\.\d+)*)', request.message)
-        if wbs_mention:
-            wbs_id = wbs_mention.group(0)
-            response_message = f"Regarding WBS {wbs_id}: As the General Contractor, we are ready to discuss the details. Our estimates are competitive and our execution is efficient."
-        elif detected_keyword == "cost":
-            response_message = "As the General Contractor, we focus on delivering value. Let's discuss your budget and find an optimal solution."
-        elif detected_keyword == "schedule":
-            response_message = "Meeting deadlines is crucial for us. Share your timeline, and we'll provide a realistic plan to keep the project on track."
-        elif detected_keyword == "quality":
-            response_message = "Our work is defined by its quality. We ensure all specifications are met and exceed expectations where possible."
-        elif detected_keyword == "materials":
-            response_message = "We source high-quality materials to ensure durability and performance. Do you have specific material requirements?"
-        elif detected_keyword == "scope":
-            response_message = "Understanding the project scope is key. Provide us with more details about deliverables, and we'll prepare a comprehensive plan."
-        else:
-            response_message = f"As the General Contractor, I've received your message: '{request.message}'. How can we help you achieve your project goals?"
-
-    elif request.persona_id == 'architect':
-        if detected_keyword == "cost":
-            response_message = "As the Architect, my designs optimize for long-term value and aesthetics, not just initial cost. What is your overall project vision?"
-        elif detected_keyword == "schedule":
-            response_message = "Design phases require careful consideration. A well-planned schedule ensures creative integrity without unnecessary rushes."
-        elif detected_keyword == "quality":
-            response_message = "Architectural quality is paramount. My designs adhere to the highest standards, ensuring both functionality and aesthetic appeal."
-        elif detected_keyword == "materials":
-            response_message = "Material selection is integral to the design. Do you have specific preferences or sustainable considerations for your materials?"
-        elif detected_keyword == "scope":
-            response_message = "The project scope guides the design process. Let's clearly define your objectives to create a cohesive architectural vision."
-        else:
-            response_message = f"I am the Architect. My vision is non-negotiable, and my fee reflects the quality of my work. You asked: '{request.message}'. What aspect of the design are you curious about?"
-    
-    elif request.persona_id == 'hvac':
-        if detected_keyword == "cost":
-            response_message = "As the HVAC Engineer, my systems are designed for optimal energy efficiency, which translates to long-term cost savings. Can you specify your budget expectations?"
-        elif detected_keyword == "schedule":
-            response_message = "HVAC system installation needs to be integrated seamlessly into the overall project schedule. What are your installation timelines?"
-        elif detected_keyword == "quality":
-            response_message = "Our HVAC designs prioritize system reliability and air quality. We adhere to all industry standards for performance."
-        elif detected_keyword == "materials":
-            response_message = "Specific materials for ducts, units, and insulation are chosen for efficiency and durability. Are there particular material concerns?"
-        elif detected_keyword == "scope":
-            response_message = "To ensure an effective HVAC system, a clear definition of the building's usage and requirements is essential. What are your specific needs?"
-        else:
-            response_message = f"As the HVAC Engineer, I can assure you my design is optimal. The price is based on a detailed calculation. In response to '{request.message}', please provide more technical details."
-
-    else:
-        response_message = f"Unknown persona. Your message was: '{request.message}'. Please select a valid persona to negotiate."
-
-
-    return {"text": response_message, "sender": "ai"}
+        print(f"!!! EXCEPTION IN /api/chat: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
+        raise HTTPException(status_code=500, detail=str(e))
