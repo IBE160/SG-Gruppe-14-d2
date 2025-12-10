@@ -1,0 +1,152 @@
+[
+  {
+    "code": "1.1",
+    "name": "Prosjektering",
+    "description": "Arkitekttjenester, teknisk prosjektering, detaljplanlegging",
+    "baseline_cost": 50,
+    "baseline_duration": 2,
+    "dependencies": [],
+    "requirements": ["F-001", "F-002"],
+    "category": "Planlegging"
+  },
+  {
+    "code": "1.3.1",
+    "name": "Grunnarbeid",
+    "description": "Masseutskifting, grunnmur, drenering, fundamenter",
+    "baseline_cost": 100,
+    "baseline_duration": 2,
+    "dependencies": ["1.1"],
+    "requirements": ["F-003", "K-023"],
+    "category": "Konstruksjon"
+  },
+  {
+    "code": "2.1",
+    "name": "Råbygg",
+    "description": "Betongarbeider, muring, takkonstruksjon",
+    "baseline_cost": 200,
+    "baseline_duration": 4,
+    "dependencies": ["1.3.1"],
+    "requirements": ["F-004", "K-024"],
+    "category": "Konstruksjon"
+  },
+  {
+    "code": "2.2",
+    "name": "Vinduer og Dører",
+    "description": "Montering av vinduer, dører, glass",
+    "baseline_cost": 60,
+    "baseline_duration": 1.5,
+    "dependencies": ["2.1"],
+    "requirements": ["F-005"],
+    "category": "Innredning"
+  },
+  {
+    "code": "3.1",
+    "name": "VVS-installasjon",
+    "description": "Rørleggerarbeider, sanitæranlegg, varmeanlegg",
+    "baseline_cost": 80,
+    "baseline_duration": 2.5,
+    "dependencies": ["2.1"],
+    "requirements": ["F-006", "K-025"],
+    "category": "Teknisk"
+  },
+  {
+    "code": "3.2",
+    "name": "Elektrisk installasjon",
+    "description": "Elektriske anlegg, belysning, styringssystem",
+    "baseline_cost": 70,
+    "baseline_duration": 2,
+    "dependencies": ["2.1"],
+    "requirements": ["F-007", "K-026"],
+    "category": "Teknisk"
+  },
+  {
+    "code": "3.3",
+    "name": "Ventilasjon",
+    "description": "Ventilasjonsanlegg, luftbehandling",
+    "baseline_cost": 50,
+    "baseline_duration": 1.5,
+    "dependencies": ["2.1"],
+    "requirements": ["F-008"],
+    "category": "Teknisk"
+  },
+  {
+    "code": "3.4",
+    "name": "Maling og Overflatebehandling",
+    "description": "Malearbeider innvendig og utvendig",
+    "baseline_cost": 40,
+    "baseline_duration": 2,
+    "dependencies": ["3.1", "3.2"],
+    "requirements": ["F-009"],
+    "category": "Innredning"
+  },
+  {
+    "code": "4.1",
+    "name": "Gulvarbeider",
+    "description": "Gulvbelegg, fliser, parkett",
+    "baseline_cost": 45,
+    "baseline_duration": 1.5,
+    "dependencies": ["3.4"],
+    "requirements": ["F-010"],
+    "category": "Innredning"
+  },
+  {
+    "code": "4.2",
+    "name": "Innvendige Vegger",
+    "description": "Gipsplater, skillevegger, akustikk",
+    "baseline_cost": 55,
+    "baseline_duration": 2,
+    "dependencies": ["3.4"],
+    "requirements": ["F-011"],
+    "category": "Innredning"
+  },
+  {
+    "code": "4.3",
+    "name": "Fast Inventar",
+    "description": "Kjøkkeninnredning, garderober, hyller",
+    "baseline_cost": 35,
+    "baseline_duration": 1,
+    "dependencies": ["4.2"],
+    "requirements": ["F-012"],
+    "category": "Innredning"
+  },
+  {
+    "code": "5.1",
+    "name": "Uteområder",
+    "description": "Asfalt, lekeplasser, grøntanlegg",
+    "baseline_cost": 50,
+    "baseline_duration": 2,
+    "dependencies": ["2.1"],
+    "requirements": ["F-013"],
+    "category": "Utomhus"
+  },
+  {
+    "code": "5.2",
+    "name": "Adkomst og Parkering",
+    "description": "Vei, parkering, HC-tilgjengelighet",
+    "baseline_cost": 40,
+    "baseline_duration": 1.5,
+    "dependencies": ["5.1"],
+    "requirements": ["F-014"],
+    "category": "Utomhus"
+  },
+  {
+    "code": "6.1",
+    "name": "Brannalarm og Sikkerhet",
+    "description": "Brannalarmanlegg, sikkerhetsinstallasjoner",
+    "baseline_cost": 30,
+    "baseline_duration": 1,
+    "dependencies": ["3.2"],
+    "requirements": ["K-027"],
+    "category": "Teknisk"
+  },
+  {
+    "code": "6.2",
+    "name": "Sluttbefaring og Overtakelse",
+    "description": "Dokumentasjon, FDV, innflytting",
+    "baseline_cost": 20,
+    "baseline_duration": 0.5,
+    "dependencies": ["4.3", "5.2", "6.1"],
+    "requirements": ["F-015"],
+    "category": "Avslutning"
+  }
+]

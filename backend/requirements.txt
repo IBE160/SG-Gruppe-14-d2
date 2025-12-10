@@ -2,6 +2,7 @@
 # Package manager: uv
 
 fastapi
+<<<<<<< HEAD
 uvicorn[standard]
 supabase
 python-dotenv
@@ -9,3 +10,8 @@ pydantic-settings
 python-jose[cryptography]
 requests
 python-dotenv
+=======
+uvicorn
+python-dotenv
+google-generativeai
+>>>>>>> 80a8075466c4e49c1ac5674207c3c2484ff6db43

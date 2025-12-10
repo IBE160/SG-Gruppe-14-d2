@@ -1,0 +1,21 @@
+/* App.css */
+
+.simulator-page {
+  padding: 20px;
+}
+
+.simulator-page hr {
+  margin: 20px 0;
+}
+
+.app-header {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border-bottom: 2px solid #ccc;
+}
+
+.app-nav {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
