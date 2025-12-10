@@ -1,0 +1,223 @@
+<svg width="1200" height="900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: 'Inter', sans-serif; }
+      .title-main { font-size: 24px; font-weight: 700; fill: #111827; }
+      .subtitle-main { font-size: 14px; font-weight: 500; fill: #6B7280; }
+      .modal-title { font-size: 22px; font-weight: 700; fill: #111827; }
+      .heading { font-size: 14px; font-weight: 600; fill: #111827; }
+      .label { font-size: 12px; font-weight: 500; fill: #374151; }
+      .value { font-size: 12px; font-weight: 600; fill: #111827; }
+      .small { font-size: 10px; fill: #6B7280; }
+      .persona { font-size: 11px; fill: #6B7280; font-style: italic; }
+
+      .overlay { fill: rgba(0, 0, 0, 0.5); }
+      .modal { fill: #FFFFFF; }
+      .modal-shadow { filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.2)); }
+      .card { fill: #FFFFFF; stroke: #E5E7EB; stroke-width: 1; }
+      .card-hover { fill: #F9FAFB; stroke: #3B82F6; stroke-width: 2; }
+      .card-selected { fill: #EFF6FF; stroke: #3B82F6; stroke-width: 3; }
+      .specialty-tag { fill: #F3F4F6; }
+      .button-primary { fill: #3B82F6; }
+      .button-secondary { fill: #FFFFFF; stroke: #D1D5DB; stroke-width: 1; }
+      .button-text-primary { font-size: 13px; font-weight: 600; fill: #FFFFFF; }
+      .button-text-secondary { font-size: 13px; font-weight: 600; fill: #374151; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" class="title-main">Modal - Leverandørvalg</text>
+  <text x="600" y="65" text-anchor="middle" class="subtitle-main">Velg leverandør for WBS-oppgave før forhandling starter</text>
+
+  <!-- Background/Overlay -->
+  <rect width="1200" height="900" class="overlay"/>
+
+  <!-- Modal Window (Large) -->
+  <g transform="translate(100, 80)">
+    <rect width="1000" height="720" rx="12" class="modal modal-shadow"/>
+
+    <!-- Close Button -->
+    <g transform="translate(960, 20)">
+      <circle r="15" fill="#F3F4F6"/>
+      <line x1="-6" y1="-6" x2="6" y2="6" stroke="#6B7280" stroke-width="2"/>
+      <line x1="6" y1="-6" x2="-6" y2="6" stroke="#6B7280" stroke-width="2"/>
+    </g>
+
+    <!-- Modal Content -->
+    <g transform="translate(50, 50)">
+
+      <!-- Title -->
+      <text x="0" y="0" class="modal-title">Velg Leverandør for Forhandling</text>
+
+      <!-- WBS Info -->
+      <g transform="translate(0, 30)">
+        <rect x="0" y="0" width="900" height="50" rx="6" fill="#F9FAFB"/>
+        <g transform="translate(20, 15)">
+          <text x="0" y="0" class="label">WBS-oppgave:</text>
+          <text x="120" y="0" class="value" font-size="14">1.3.1 - Grunnarbeid</text>
+          <text x="0" y="20" class="small">Masseutskifting, grunnmur, drenering, fundamenter</text>
+        </g>
+      </g>
+
+      <!-- Supplier Cards Grid -->
+      <g transform="translate(0, 110)">
+        <text x="0" y="0" class="heading">Tilgjengelige leverandører (5):</text>
+
+        <!-- Supplier 1: Bjørn Eriksen (Selected) -->
+        <g transform="translate(0, 25)">
+          <rect x="0" y="0" width="430" height="200" rx="8" class="card-selected"/>
+
+          <!-- Selection indicator -->
+          <circle cx="410" cy="20" r="12" fill="#3B82F6"/>
+          <path d="M 405 20 L 408 23 L 415 15" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+
+          <g transform="translate(20, 25)">
+            <!-- Profile image placeholder -->
+            <circle cx="30" cy="30" r="30" fill="#DBEAFE"/>
+            <text x="30" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#3B82F6">BE</text>
+
+            <g transform="translate(75, 10)">
+              <text x="0" y="0" class="heading" font-size="15">Bjørn Eriksen</text>
+              <text x="0" y="20" class="label" fill="#6B7280">Eriksen Bygg AS</text>
+              <text x="0" y="38" class="label">Totalentreprenør</text>
+            </g>
+          </g>
+
+          <!-- Specialties -->
+          <g transform="translate(20, 100)">
+            <text x="0" y="0" class="small" font-weight="600">Spesialiteter:</text>
+            <rect x="0" y="8" width="100" height="22" rx="4" class="specialty-tag"/>
+            <text x="50" y="23" text-anchor="middle" class="small">Grunnarbeid</text>
+            <rect x="110" y="8" width="70" height="22" rx="4" class="specialty-tag"/>
+            <text x="145" y="23" text-anchor="middle" class="small">Råbygg</text>
+            <rect x="190" y="8" width="110" height="22" rx="4" class="specialty-tag"/>
+            <text x="245" y="23" text-anchor="middle" class="small">Prosjektledelse</text>
+          </g>
+
+          <!-- Persona traits -->
+          <g transform="translate(20, 145)">
+            <text x="0" y="0" class="persona">"Pragmatisk og erfaren, fokusert på kvalitet"</text>
+            <text x="0" y="18" class="small">⭐ Anbefalte match for denne oppgaven</text>
+          </g>
+        </g>
+
+        <!-- Supplier 2: Sofia Andersen -->
+        <g transform="translate(470, 25)">
+          <rect x="0" y="0" width="430" height="200" rx="8" class="card"/>
+
+          <g transform="translate(20, 25)">
+            <circle cx="30" cy="30" r="30" fill="#FEF3C7"/>
+            <text x="30" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#F59E0B">SA</text>
+
+            <g transform="translate(75, 10)">
+              <text x="0" y="0" class="heading" font-size="15">Sofia Andersen</text>
+              <text x="0" y="20" class="label" fill="#6B7280">Andersen Gruppen</text>
+              <text x="0" y="38" class="label">Byggeleder</text>
+            </g>
+          </g>
+
+          <g transform="translate(20, 100)">
+            <text x="0" y="0" class="small" font-weight="600">Spesialiteter:</text>
+            <rect x="0" y="8" width="90" height="22" rx="4" class="specialty-tag"/>
+            <text x="45" y="23" text-anchor="middle" class="small">Koordinering</text>
+            <rect x="100" y="8" width="70" height="22" rx="4" class="specialty-tag"/>
+            <text x="135" y="23" text-anchor="middle" class="small">Kvalitet</text>
+          </g>
+
+          <g transform="translate(20, 145)">
+            <text x="0" y="0" class="persona">"Strukturert og detaljorientert, streng på kvalitet"</text>
+          </g>
+        </g>
+
+        <!-- Supplier 3: Olav Berg -->
+        <g transform="translate(0, 250)">
+          <rect x="0" y="0" width="430" height="200" rx="8" class="card"/>
+
+          <g transform="translate(20, 25)">
+            <circle cx="30" cy="30" r="30" fill="#D1FAE5"/>
+            <text x="30" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#10B981">OB</text>
+
+            <g transform="translate(75, 10)">
+              <text x="0" y="0" class="heading" font-size="15">Olav Berg</text>
+              <text x="0" y="20" class="label" fill="#6B7280">Berg Transport & Graving AS</text>
+              <text x="0" y="38" class="label">Graveentreprenør</text>
+            </g>
+          </g>
+
+          <g transform="translate(20, 100)">
+            <text x="0" y="0" class="small" font-weight="600">Spesialiteter:</text>
+            <rect x="0" y="8" width="100" height="22" rx="4" class="specialty-tag"/>
+            <text x="50" y="23" text-anchor="middle" class="small">Grunnarbeid</text>
+            <rect x="110" y="8" width="70" height="22" rx="4" class="specialty-tag"/>
+            <text x="145" y="23" text-anchor="middle" class="small">Graving</text>
+          </g>
+
+          <g transform="translate(20, 145)">
+            <text x="0" y="0" class="persona">"Kostnadsbevisst, fleksibel, fokus på fremdrift"</text>
+          </g>
+        </g>
+
+        <!-- Supplier 4: Emma Larsen -->
+        <g transform="translate(470, 250)">
+          <rect x="0" y="0" width="430" height="200" rx="8" class="card"/>
+
+          <g transform="translate(20, 25)">
+            <circle cx="30" cy="30" r="30" fill="#FCE7F3"/>
+            <text x="30" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#EC4899">EL</text>
+
+            <g transform="translate(75, 10)">
+              <text x="0" y="0" class="heading" font-size="15">Emma Larsen</text>
+              <text x="0" y="20" class="label" fill="#6B7280">Larsen Prosjekt AS</text>
+              <text x="0" y="38" class="label">Prosjektleder</text>
+            </g>
+          </g>
+
+          <g transform="translate(20, 100)">
+            <text x="0" y="0" class="small" font-weight="600">Spesialiteter:</text>
+            <rect x="0" y="8" width="110" height="22" rx="4" class="specialty-tag"/>
+            <text x="55" y="23" text-anchor="middle" class="small">Prosjektledelse</text>
+            <rect x="120" y="8" width="100" height="22" rx="4" class="specialty-tag"/>
+            <text x="170" y="23" text-anchor="middle" class="small">Grunnarbeid</text>
+          </g>
+
+          <g transform="translate(20, 145)">
+            <text x="0" y="0" class="persona">"Ambisiøs og konkurransedyktig, utålmodig"</text>
+          </g>
+        </g>
+
+        <!-- Show all button -->
+        <g transform="translate(200, 475)">
+          <rect x="0" y="0" width="500" height="40" rx="6" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1"/>
+          <text x="250" y="25" text-anchor="middle" class="label" fill="#3B82F6">Vis alle 5 leverandører ↓</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Action Buttons -->
+    <g transform="translate(50, 650)">
+      <rect x="0" y="0" width="430" height="45" rx="8" class="button-secondary"/>
+      <text x="215" y="28" text-anchor="middle" class="button-text-secondary">Avbryt</text>
+
+      <rect x="470" y="0" width="430" height="45" rx="8" class="button-primary"/>
+      <text x="685" y="28" text-anchor="middle" class="button-text-primary">Start forhandling med Bjørn Eriksen →</text>
+    </g>
+  </g>
+
+  <!-- Annotations -->
+  <g transform="translate(50, 680)">
+    <text x="0" y="0" class="label" font-weight="600">Når vises denne modalen?</text>
+    <text x="0" y="25" class="small">• Klikk "Forhandle" på en WBS-oppgave uten leverandør</text>
+    <text x="0" y="45" class="small">• Eller klikk "Reforhandle" for å bytte leverandør</text>
+  </g>
+
+  <g transform="translate(500, 680)">
+    <text x="0" y="0" class="label" font-weight="600">Logikk:</text>
+    <text x="0" y="25" class="small">• Filtrer leverandører etter WBS-spesialiteter</text>
+    <text x="0" y="45" class="small">• Anbefalte matches vises øverst</text>
+    <text x="0" y="65" class="small">• Klikk kort = velg (blå ramme + checkmark)</text>
+    <text x="0" y="85" class="small">• Klikk "Start forhandling" → Chat-side (nhb-09)</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="880" text-anchor="middle" class="small" fill="#FFFFFF">nhb-16-modal-supplier-selection.svg | Leverandørvalg før forhandling</text>
+</svg>
