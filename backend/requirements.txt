@@ -1,3 +1,10 @@
+# backend/requirements.txt
+# Package manager: uv
+
 fastapi
-uvicorn
-pdfplumber
+uvicorn[standard]
+supabase
+python-dotenv
+pydantic-settings
+python-jose[cryptography]
+requests

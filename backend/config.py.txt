@@ -1,0 +1,10 @@
+from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    SUPABASE_URL: str
+    SUPABASE_ANON_KEY: str
+
+    class ConfigDict:
+        env_file = ".env.local"
+
+settings = Settings()
