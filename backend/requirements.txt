@@ -1,0 +1,10 @@
+# backend/requirements.txt
+# Package manager: uv
+
+fastapi
+uvicorn[standard]
+supabase
+python-dotenv
+pydantic-settings
+python-jose[cryptography]
+requests
