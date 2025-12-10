@@ -1,0 +1,253 @@
+<svg width="1600" height="1000" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: 'Inter', sans-serif; }
+      .title { font-size: 24px; font-weight: 700; fill: #111827; }
+      .subtitle { font-size: 14px; font-weight: 500; fill: #6B7280; }
+      .heading { font-size: 14px; font-weight: 600; fill: #111827; }
+      .label { font-size: 11px; font-weight: 500; fill: #374151; }
+      .small { font-size: 9px; fill: #6B7280; }
+      .code { font-size: 9px; font-family: 'Courier New', monospace; fill: #111827; }
+
+      .box { fill: #FFFFFF; stroke: #D1D5DB; stroke-width: 2; }
+      .box-ai { fill: #EFF6FF; stroke: #3B82F6; stroke-width: 2; }
+      .box-decision { fill: #FEF3C7; stroke: #F59E0B; stroke-width: 2; }
+      .box-action { fill: #D1FAE5; stroke: #10B981; stroke-width: 2; }
+      .box-data { fill: #F3F4F6; stroke: #6B7280; stroke-width: 2; }
+      .arrow { stroke: #6B7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-yes { stroke: #10B981; stroke-width: 2; fill: none; marker-end: url(#arrowhead-yes); }
+      .arrow-no { stroke: #EF4444; stroke-width: 2; fill: none; marker-end: url(#arrowhead-no); }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="800" y="40" text-anchor="middle" class="title">Forhandlingsstrategi - AI Logikk og Beslutningstaking</text>
+  <text x="800" y="65" text-anchor="middle" class="subtitle">Gemini 2.0 Flash strategier for prisreduksjon og varighet optimalisering</text>
+
+  <!-- Main Flow -->
+  <g transform="translate(100, 100)">
+
+    <!-- Legend -->
+    <g transform="translate(0, 0)">
+      <text x="0" y="0" class="heading">Forklaring:</text>
+      <rect x="0" y="10" width="100" height="40" rx="6" class="box-ai"/>
+      <text x="50" y="35" text-anchor="middle" class="small">AI Prosess</text>
+
+      <rect x="120" y="10" width="100" height="40" rx="6" class="box-decision"/>
+      <text x="170" y="35" text-anchor="middle" class="small">Beslutning</text>
+
+      <rect x="240" y="10" width="100" height="40" rx="6" class="box-action"/>
+      <text x="290" y="35" text-anchor="middle" class="small">Handling</text>
+
+      <rect x="360" y="10" width="100" height="40" rx="6" class="box-data"/>
+      <text x="410" y="35" text-anchor="middle" class="small">Data/State</text>
+    </g>
+
+    <!-- Flow Diagram -->
+    <g transform="translate(200, 80)">
+
+      <!-- Start: User counter-offer -->
+      <g>
+        <rect x="0" y="0" width="200" height="80" rx="8" class="box"/>
+        <text x="100" y="30" text-anchor="middle" class="label">Bruker sender</text>
+        <text x="100" y="45" text-anchor="middle" class="label">motbud / melding</text>
+        <text x="100" y="65" text-anchor="middle" class="small">(via chat-grensesnitt)</text>
+      </g>
+
+      <path d="M 100 80 L 100 130" class="arrow"/>
+
+      <!-- AI: Parse intent -->
+      <g transform="translate(-100, 130)">
+        <rect x="0" y="0" width="400" height="100" rx="8" class="box-ai"/>
+        <text x="200" y="25" text-anchor="middle" class="heading">Gemini: Parse Intensjon</text>
+        <text x="200" y="45" text-anchor="middle" class="small">Analyser meldingen for:</text>
+        <text x="200" y="62" text-anchor="middle" class="small">• Prisfokus? ("for dyrt", "kan dere gå ned")</text>
+        <text x="200" y="77" text-anchor="middle" class="small">• Tidsfokus? ("for lang tid", "raskere")</text>
+        <text x="200" y="92" text-anchor="middle" class="small">• Forhandlingsstrategi? (partnerskap, kvalitet, volum)</text>
+      </g>
+
+      <path d="M 100 230 L 100 280" class="arrow"/>
+
+      <!-- Decision: Supplier personality -->
+      <g transform="translate(-50, 280)">
+        <rect x="0" y="0" width="300" height="80" rx="8" class="box-decision"/>
+        <text x="150" y="30" text-anchor="middle" class="heading">Leverandør-personlighet</text>
+        <text x="150" y="50" text-anchor="middle" class="small">Bjørn (pragmatisk) vs Emma (utålmodig)</text>
+        <text x="150" y="67" text-anchor="middle" class="small">Tålmodighet: {patience} (1-3)</text>
+      </g>
+
+      <!-- Branch: High patience (Bjørn) -->
+      <g transform="translate(350, 280)">
+        <path d="M 0 40 L 150 40" class="arrow-yes"/>
+        <text x="75" y="30" text-anchor="middle" class="small" fill="#10B981">Høy (3)</text>
+
+        <rect x="150" y="0" width="250" height="100" rx="8" class="box-ai"/>
+        <text x="275" y="25" text-anchor="middle" class="label">Vurder bruker strategi:</text>
+        <text x="275" y="45" text-anchor="middle" class="small">If "langsiktig partnerskap":</text>
+        <text x="275" y="60" text-anchor="middle" class="small">→ Reduser 5-10%</text>
+        <text x="275" y="75" text-anchor="middle" class="small">If "volum argument":</text>
+        <text x="275" y="90" text-anchor="middle" class="small">→ Reduser 3-7%</text>
+      </g>
+
+      <!-- Branch: Low patience (Emma) -->
+      <g transform="translate(-200, 280)">
+        <path d="M 0 40 L -150 40" class="arrow-no"/>
+        <text x="-75" y="30" text-anchor="middle" class="small" fill="#EF4444">Lav (1)</text>
+
+        <rect x="-400" y="0" width="250" height="100" rx="8" class="box-ai"/>
+        <text x="-275" y="25" text-anchor="middle" class="label">Vurder forhold:</text>
+        <text x="-275" y="45" text-anchor="middle" class="small">If negotiation_count > 2:</text>
+        <text x="-275" y="60" text-anchor="middle" class="small">→ "Jeg har ikke mer tid"</text>
+        <text x="-275" y="75" text-anchor="middle" class="small">Else:</text>
+        <text x="-275" y="90" text-anchor="middle" class="small">→ Reduser maks 3%</text>
+      </g>
+
+      <!-- Converge: Calculate new offer -->
+      <g transform="translate(-100, 440)">
+        <path d="M -175 380 L -175 440 L 100 440" class="arrow"/>
+        <path d="M 575 380 L 575 440 L 100 440" class="arrow"/>
+
+        <rect x="0" y="0" width="400" height="100" rx="8" class="box-ai"/>
+        <text x="200" y="25" text-anchor="middle" class="heading">Beregn Nytt Tilbud</text>
+        <text x="200" y="45" text-anchor="middle" class="code">new_cost = original_cost * (1 - reduction_pct)</text>
+        <text x="200" y="62" text-anchor="middle" class="code">new_duration = original_duration * flexibility_factor</text>
+        <text x="200" y="80" text-anchor="middle" class="small">Avhenger av: market_factor, constraints, patience</text>
+      </g>
+
+      <path d="M 100 540 L 100 590" class="arrow"/>
+
+      <!-- Decision: Within constraints? -->
+      <g transform="translate(-75, 590)">
+        <rect x="0" y="0" width="350" height="80" rx="8" class="box-decision"/>
+        <text x="175" y="30" text-anchor="middle" class="heading">Er nytt tilbud innenfor grenser?</text>
+        <text x="175" y="50" text-anchor="middle" class="small">Min pris: cost * 0.85 | Max varighet: +20%</text>
+      </g>
+
+      <!-- Yes branch: Accept -->
+      <g transform="translate(350, 590)">
+        <path d="M 0 40 L 100 40" class="arrow-yes"/>
+        <text x="50" y="30" text-anchor="middle" class="small" fill="#10B981">Ja</text>
+
+        <rect x="100" y="0" width="200" height="80" rx="8" class="box-action"/>
+        <text x="200" y="30" text-anchor="middle" class="heading">Send nytt tilbud</text>
+        <text x="200" y="50" text-anchor="middle" class="small">{cost} MNOK</text>
+        <text x="200" y="65" text-anchor="middle" class="small">{duration} måneder</text>
+      </g>
+
+      <!-- No branch: Reject -->
+      <g transform="translate(-375, 590)">
+        <path d="M 0 40 L -100 40" class="arrow-no"/>
+        <text x="-50" y="30" text-anchor="middle" class="small" fill="#EF4444">Nei</text>
+
+        <rect x="-300" y="0" width="200" height="80" rx="8" class="box-action"/>
+        <text x="-200" y="25" text-anchor="middle" class="heading">Avslå</text>
+        <text x="-200" y="45" text-anchor="middle" class="small">"Beklager, jeg kan ikke</text>
+        <text x="-200" y="60" text-anchor="middle" class="small">gå lavere enn..."</text>
+      </g>
+
+      <!-- Both converge to: Update state -->
+      <g transform="translate(-100, 720)">
+        <path d="M -200 670 L -200 720 L 100 720" class="arrow"/>
+        <path d="M 450 670 L 450 720 L 100 720" class="arrow"/>
+
+        <rect x="0" y="0" width="400" height="80" rx="8" class="box-data"/>
+        <text x="200" y="30" text-anchor="middle" class="heading">Oppdater Tilstand</text>
+        <text x="200" y="50" text-anchor="middle" class="code">negotiation_count++</text>
+        <text x="200" y="65" text-anchor="middle" class="code">conversation_history.append(message)</text>
+      </g>
+
+    </g>
+
+    <!-- Strategy Examples Panel -->
+    <g transform="translate(1050, 80)">
+      <rect x="0" y="0" width="450" height="700" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+
+      <g transform="translate(25, 25)">
+        <text x="0" y="0" class="heading">Forhandlingsstrategier for Bruker</text>
+
+        <!-- Strategy 1: Partnership -->
+        <g transform="translate(0, 30)">
+          <rect x="0" y="0" width="400" height="100" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+          <g transform="translate(15, 20)">
+            <text x="0" y="0" class="label" fill="#3B82F6" font-weight="600">1. Langsiktig partnerskap</text>
+            <text x="0" y="20" class="small">Eksempel melding:</text>
+            <text x="0" y="35" class="small" font-style="italic">"Vi ønsker en langsiktig partner for</text>
+            <text x="0" y="48" class="small" font-style="italic">fremtidige prosjekter."</text>
+            <text x="0" y="68" class="small" font-weight="600">Effekt: 5-10% prisreduksjon (Bjørn)</text>
+          </g>
+        </g>
+
+        <!-- Strategy 2: Volume -->
+        <g transform="translate(0, 145)">
+          <rect x="0" y="0" width="400" height="100" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+          <g transform="translate(15, 20)">
+            <text x="0" y="0" class="label" fill="#3B82F6" font-weight="600">2. Volumargument</text>
+            <text x="0" y="20" class="small">Eksempel melding:</text>
+            <text x="0" y="35" class="small" font-style="italic">"Vi har flere oppgaver som passer</text>
+            <text x="0" y="48" class="small" font-style="italic">deres spesialiteter."</text>
+            <text x="0" y="68" class="small" font-weight="600">Effekt: 3-7% prisreduksjon (Olav)</text>
+          </g>
+        </g>
+
+        <!-- Strategy 3: Timeline flexibility -->
+        <g transform="translate(0, 260)">
+          <rect x="0" y="0" width="400" height="100" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+          <g transform="translate(15, 20)">
+            <text x="0" y="0" class="label" fill="#3B82F6" font-weight="600">3. Tidsfleksibilitet</text>
+            <text x="0" y="20" class="small">Eksempel melding:</text>
+            <text x="0" y="35" class="small" font-style="italic">"Vi kan være fleksible på tidslinje</text>
+            <text x="0" y="48" class="small" font-style="italic">hvis det gir bedre pris."</text>
+            <text x="0" y="68" class="small" font-weight="600">Effekt: 2-5% prisreduksjon, +10% tid</text>
+          </g>
+        </g>
+
+        <!-- Strategy 4: Quality focus -->
+        <g transform="translate(0, 375)">
+          <rect x="0" y="0" width="400" height="100" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+          <g transform="translate(15, 20)">
+            <text x="0" y="0" class="label" fill="#3B82F6" font-weight="600">4. Kvalitetsfokus</text>
+            <text x="0" y="20" class="small">Eksempel melding:</text>
+            <text x="0" y="35" class="small" font-style="italic">"Kvalitet er viktigst for oss,</text>
+            <text x="0" y="48" class="small" font-style="italic">kan dere redusere tid?"</text>
+            <text x="0" y="68" class="small" font-weight="600">Effekt: -10% tid, +2% pris (Sofia)</text>
+          </g>
+        </g>
+
+        <!-- Strategy 5: Direct price -->
+        <g transform="translate(0, 490)">
+          <rect x="0" y="0" width="400" height="100" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+          <g transform="translate(15, 20)">
+            <text x="0" y="0" class="label" fill="#EF4444" font-weight="600">5. Direkte prispress (Risiko)</text>
+            <text x="0" y="20" class="small">Eksempel melding:</text>
+            <text x="0" y="35" class="small" font-style="italic">"Det er for dyrt. Kan dere</text>
+            <text x="0" y="48" class="small" font-style="italic">gå ned til X MNOK?"</text>
+            <text x="0" y="68" class="small" font-weight="600">Effekt: 0-3% (Emma blir utålmodig)</text>
+          </g>
+        </g>
+
+        <g transform="translate(0, 610)">
+          <text x="0" y="0" class="small" fill="#EF4444" font-weight="600">Tips:</text>
+          <text x="0" y="18" class="small">• Bruk "mykere" strategier først</text>
+          <text x="0" y="33" class="small">• Match strategi med leverandørpersonlighet</text>
+          <text x="0" y="48" class="small">• For mange forsøk reduserer effektivitet</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280"/>
+    </marker>
+    <marker id="arrowhead-yes" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#10B981"/>
+    </marker>
+    <marker id="arrowhead-no" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#EF4444"/>
+    </marker>
+  </defs>
+
+  <!-- Footer -->
+  <text x="800" y="980" text-anchor="middle" class="small" fill="#9CA3AF">nhb-03-flow-negotiation-strategy.svg | AI forhandlingslogikk og strategier</text>
+</svg>

@@ -1,0 +1,129 @@
+<svg width="1000" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: 'Inter', sans-serif; }
+      .title-main { font-size: 24px; font-weight: 700; fill: #111827; }
+      .subtitle-main { font-size: 14px; font-weight: 500; fill: #6B7280; }
+      .modal-title { font-size: 30px; font-weight: 700; fill: #10B981; }
+      .message { font-size: 16px; fill: #374151; }
+      .label { font-size: 13px; font-weight: 500; fill: #6B7280; }
+      .value { font-size: 13px; font-weight: 600; fill: #111827; }
+      .small { font-size: 11px; fill: #6B7280; }
+
+      .overlay { fill: rgba(0, 0, 0, 0.5); }
+      .modal { fill: #FFFFFF; }
+      .modal-shadow { filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.2)); }
+      .stats-bg { fill: #F9FAFB; }
+      .button-primary { fill: #3B82F6; }
+      .button-secondary { fill: #FFFFFF; stroke: #D1D5DB; stroke-width: 1; }
+      .button-text-primary { font-size: 14px; font-weight: 600; fill: #FFFFFF; }
+      .button-text-secondary { font-size: 14px; font-weight: 600; fill: #374151; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="500" y="40" text-anchor="middle" class="title-main">Modal - Suksess (Plan Godkjent)</text>
+  <text x="500" y="65" text-anchor="middle" class="subtitle-main">Gratulerer! Brukeren har fullført simuleringen</text>
+
+  <!-- Background/Overlay -->
+  <rect width="1000" height="800" class="overlay"/>
+
+  <!-- Modal Window -->
+  <g transform="translate(200, 120)" class="modal-shadow">
+    <rect width="600" height="560" rx="12" class="modal"/>
+
+    <!-- Close Button -->
+    <g transform="translate(560, 20)">
+      <circle r="15" fill="#F3F4F6"/>
+      <line x1="-6" y1="-6" x2="6" y2="6" stroke="#6B7280" stroke-width="2"/>
+      <line x1="6" y1="-6" x2="-6" y2="6" stroke="#6B7280" stroke-width="2"/>
+    </g>
+
+    <!-- Modal Content -->
+    <g transform="translate(60, 60)">
+
+      <!-- Success Icon (Large Checkmark) -->
+      <g transform="translate(240, 0)">
+        <circle r="50" fill="#D1FAE5" stroke="#10B981" stroke-width="3"/>
+        <path d="M -20 0 L -8 15 L 25 -20" stroke="#10B981" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+
+      <!-- Title -->
+      <text x="240" y="120" text-anchor="middle" class="modal-title">Plan Godkjent!</text>
+      <text x="240" y="150" text-anchor="middle" class="modal-title" font-size="36">🎉</text>
+
+      <!-- Congratulations Message -->
+      <text x="240" y="190" text-anchor="middle" class="message">
+        Gratulerer! Du har lykkes med å fullføre
+      </text>
+      <text x="240" y="215" text-anchor="middle" class="message">
+        planleggingsfasen for Nye Hædda Barneskole.
+      </text>
+
+      <!-- Stats Table -->
+      <g transform="translate(40, 245)">
+        <rect width="400" height="180" rx="8" class="stats-bg"/>
+
+        <g transform="translate(30, 30)">
+          <!-- Row 1: Total Cost -->
+          <text x="0" y="0" class="label">Total Kostnad:</text>
+          <text x="340" y="0" text-anchor="end" class="value" font-size="15">698 MNOK</text>
+          <text x="340" y="18" text-anchor="end" class="small" fill="#10B981">Under budsjett (700 MNOK) ✓</text>
+
+          <!-- Row 2: Completion Date -->
+          <text x="0" y="50" class="label">Fullføringsdato:</text>
+          <text x="340" y="50" text-anchor="end" class="value" font-size="15">10. april 2026</text>
+          <text x="340" y="68" text-anchor="end" class="small" fill="#10B981">Før frist (15. mai 2026) ✓</text>
+
+          <!-- Row 3: Time Spent -->
+          <text x="0" y="100" class="label">Tid Brukt:</text>
+          <text x="340" y="100" text-anchor="end" class="value">47 minutter</text>
+
+          <!-- Row 4: Negotiations -->
+          <text x="0" y="125" class="label">Forhandlinger:</text>
+          <text x="340" y="125" text-anchor="end" class="value">32</text>
+
+          <!-- Row 5: Renegotiations -->
+          <text x="0" y="150" class="label">Reforhandlinger:</text>
+          <text x="340" y="150" text-anchor="end" class="value">3</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- Action Buttons -->
+    <g transform="translate(60, 470)">
+      <!-- Export Button (Primary) -->
+      <rect x="0" y="0" width="480" height="50" rx="8" class="button-primary"/>
+      <text x="240" y="32" text-anchor="middle" class="button-text-primary" font-size="16">
+        📥 Eksporter Økt (JSON)
+      </text>
+
+      <!-- Start New Game Button (Secondary) -->
+      <rect x="0" y="65" width="480" height="45" rx="8" class="button-secondary"/>
+      <text x="240" y="93" text-anchor="middle" class="button-text-secondary">
+        Start Nytt Spill
+      </text>
+    </g>
+  </g>
+
+  <!-- Annotations -->
+  <g transform="translate(50, 550)">
+    <text x="0" y="0" class="label" font-weight="600">Når vises denne modalen?</text>
+    <text x="0" y="25" class="small">• Klikk "Send Inn Plan" på Dashboard</text>
+    <text x="0" y="45" class="small">• Validering kjøres: Budsjett ≤700 MNOK OG Dato ≤15. mai 2026</text>
+    <text x="0" y="65" class="small">• SUKSESS → Denne modalen vises</text>
+    <text x="0" y="85" class="small">• FEIL → Error-modal vises (nhb-20-modal-error-validation.svg)</text>
+  </g>
+
+  <g transform="translate(550, 550)">
+    <text x="0" y="0" class="label" font-weight="600">Interaksjoner:</text>
+    <text x="0" y="25" class="small">• Klikk "Eksporter Økt" → JSON-fil lastes ned</text>
+    <text x="0" y="45" class="small">  Filnavn: nye_haedda_session_[timestamp].json</text>
+    <text x="0" y="65" class="small">• Klikk "Start Nytt Spill" → Bekreftelsesdialog</text>
+    <text x="0" y="85" class="small">  → localStorage tømmes → Ny økt initialiseres</text>
+    <text x="0" y="105" class="small">• Klikk X (lukk) → Tilbake til Dashboard (plan fortsatt godkjent)</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="500" y="780" text-anchor="middle" class="small" fill="#FFFFFF">nhb-19-modal-success.svg | Suksessmodal med statistikk og eksport</text>
+</svg>

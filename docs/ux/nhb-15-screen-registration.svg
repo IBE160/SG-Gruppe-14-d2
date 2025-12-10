@@ -1,0 +1,193 @@
+<svg width="1200" height="900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      text { font-family: 'Inter', sans-serif; }
+      .title-main { font-size: 24px; font-weight: 700; fill: #111827; }
+      .subtitle-main { font-size: 14px; font-weight: 500; fill: #6B7280; }
+      .title { font-size: 32px; font-weight: 700; fill: #111827; }
+      .subtitle { font-size: 16px; fill: #6B7280; }
+      .label { font-size: 13px; font-weight: 500; fill: #374151; }
+      .input-text { font-size: 14px; fill: #111827; }
+      .small { font-size: 11px; fill: #6B7280; }
+      .link { font-size: 13px; fill: #3B82F6; text-decoration: underline; }
+      .error { font-size: 12px; fill: #DC2626; }
+
+      .bg { fill: #F9FAFB; }
+      .card { fill: #FFFFFF; }
+      .input { fill: #FFFFFF; stroke: #D1D5DB; stroke-width: 1; }
+      .input-focus { fill: #FFFFFF; stroke: #3B82F6; stroke-width: 2; }
+      .input-error { fill: #FFFFFF; stroke: #DC2626; stroke-width: 2; }
+      .button { fill: #3B82F6; }
+      .button-disabled { fill: #9CA3AF; }
+      .button-text { font-size: 15px; font-weight: 600; fill: #FFFFFF; }
+      .checkbox { fill: #FFFFFF; stroke: #D1D5DB; stroke-width: 2; }
+      .checkbox-checked { fill: #3B82F6; stroke: #3B82F6; stroke-width: 2; }
+      .divider { stroke: #E5E7EB; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="40" text-anchor="middle" class="title-main">Registreringsside - Ny Bruker</text>
+  <text x="600" y="65" text-anchor="middle" class="subtitle-main">Supabase autentisering med validering og feilhåndtering</text>
+
+  <!-- Background -->
+  <rect width="1200" height="900" class="bg"/>
+
+  <!-- Main Card -->
+  <g transform="translate(300, 120)">
+    <rect width="600" height="680" rx="12" class="card" filter="drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08))"/>
+
+    <!-- Header -->
+    <g transform="translate(60, 60)">
+      <text x="240" y="0" text-anchor="middle" class="title">Opprett konto</text>
+      <text x="240" y="35" text-anchor="middle" class="subtitle">
+        Kom i gang med Nye Hædda Barneskole Simulator
+      </text>
+    </g>
+
+    <!-- Form -->
+    <g transform="translate(60, 140)">
+
+      <!-- Full Name Field -->
+      <g>
+        <text x="0" y="0" class="label">Fullt navn *</text>
+        <rect x="0" y="8" width="480" height="45" rx="6" class="input"/>
+        <text x="15" y="37" class="input-text">Kari Nordmann</text>
+      </g>
+
+      <!-- Email Field -->
+      <g transform="translate(0, 75)">
+        <text x="0" y="0" class="label">E-postadresse *</text>
+        <rect x="0" y="8" width="480" height="45" rx="6" class="input-focus"/>
+        <text x="15" y="37" class="input-text">kari.nordmann@example.no</text>
+        <!-- Focus indicator -->
+        <rect x="0" y="58" width="480" height="2" fill="#3B82F6"/>
+      </g>
+
+      <!-- Password Field -->
+      <g transform="translate(0, 150)">
+        <text x="0" y="0" class="label">Passord *</text>
+        <rect x="0" y="8" width="480" height="45" rx="6" class="input"/>
+        <text x="15" y="37" class="input-text">••••••••••••</text>
+        <!-- Show/Hide toggle -->
+        <text x="455" y="37" text-anchor="end" class="small" fill="#3B82F6" font-weight="600">Vis</text>
+
+        <!-- Password strength indicator -->
+        <g transform="translate(0, 60)">
+          <rect x="0" y="0" width="120" height="4" rx="2" fill="#E5E7EB"/>
+          <rect x="0" y="0" width="120" height="4" rx="2" fill="#10B981"/>
+          <text x="130" y="5" class="small" fill="#10B981" font-weight="600">Sterkt passord</text>
+        </g>
+
+        <!-- Password requirements -->
+        <g transform="translate(0, 75)">
+          <text x="0" y="0" class="small">Passordkrav:</text>
+          <text x="0" y="18" class="small" fill="#10B981">✓ Minst 8 tegn</text>
+          <text x="150" y="18" class="small" fill="#10B981">✓ Ett tall</text>
+          <text x="250" y="18" class="small" fill="#10B981">✓ Ett stort bokstav</text>
+        </g>
+      </g>
+
+      <!-- Confirm Password Field (with error) -->
+      <g transform="translate(0, 290)">
+        <text x="0" y="0" class="label">Bekreft passord *</text>
+        <rect x="0" y="8" width="480" height="45" rx="6" class="input-error"/>
+        <text x="15" y="37" class="input-text">••••••••</text>
+        <!-- Error icon -->
+        <circle cx="455" cy="30" r="10" fill="#DC2626"/>
+        <text x="455" y="35" text-anchor="middle" fill="#FFFFFF" font-size="14" font-weight="700">!</text>
+
+        <!-- Error message -->
+        <text x="0" y="70" class="error">Passordene stemmer ikke overens</text>
+      </g>
+
+      <!-- Terms Checkbox -->
+      <g transform="translate(0, 390)">
+        <rect x="0" y="0" width="20" height="20" rx="4" class="checkbox-checked"/>
+        <path d="M 5 10 L 8 14 L 15 6" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+        <text x="30" y="15" class="label">
+          Jeg godtar
+        </text>
+        <text x="117" y="15" class="link">brukervilkårene</text>
+        <text x="208" y="15" class="label"> og </text>
+        <text x="235" y="15" class="link">personvernpolicyen</text>
+      </g>
+
+      <!-- Submit Button (disabled state) -->
+      <g transform="translate(0, 440)">
+        <rect x="0" y="0" width="480" height="50" rx="8" class="button-disabled"/>
+        <text x="240" y="32" text-anchor="middle" class="button-text">Opprett konto</text>
+      </g>
+
+      <!-- Divider -->
+      <line x1="0" y1="530" x2="480" y2="530" class="divider"/>
+      <rect x="210" y="520" width="60" height="20" class="card"/>
+      <text x="240" y="533" text-anchor="middle" class="small">eller</text>
+
+      <!-- Alternative Sign In -->
+      <g transform="translate(0, 555)">
+        <text x="240" y="0" text-anchor="middle" class="label">
+          Har du allerede en konto?
+        </text>
+        <text x="240" y="22" text-anchor="middle" class="link" font-size="14" font-weight="600">
+          Logg inn her
+        </text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Annotations (Right side) -->
+  <g transform="translate(950, 150)">
+    <text x="0" y="0" class="label" font-weight="600">Validering:</text>
+    <text x="0" y="25" class="small">• Navn: Påkrevd</text>
+    <text x="0" y="45" class="small">• E-post: Gyldig format</text>
+    <text x="0" y="65" class="small">• Passord:</text>
+    <text x="15" y="83" class="small">  - Min 8 tegn</text>
+    <text x="15" y="101" class="small">  - 1 tall</text>
+    <text x="15" y="119" class="small">  - 1 stort bokstav</text>
+    <text x="0" y="139" class="small">• Bekreft: Match</text>
+    <text x="0" y="159" class="small">• Vilkår: Må aksepteres</text>
+
+    <text x="0" y="194" class="label" font-weight="600">Feil:</text>
+    <text x="0" y="219" class="small">• Inline ved felt</text>
+    <text x="0" y="239" class="small">• Rød ramme</text>
+    <text x="0" y="259" class="small">• Knapp deaktivert</text>
+
+    <text x="0" y="294" class="label" font-weight="600">Supabase flow:</text>
+    <text x="0" y="319" class="small">1. Klikk "Opprett konto"</text>
+    <text x="0" y="339" class="small">2. supabase.auth</text>
+    <text x="0" y="357" class="small">   .signUp()</text>
+    <text x="0" y="377" class="small">3. Verifisering e-post</text>
+    <text x="0" y="397" class="small">4. Bekreft link</text>
+    <text x="0" y="417" class="small">5. Auto-login</text>
+    <text x="0" y="437" class="small">6. → Dashboard</text>
+  </g>
+
+  <!-- States Indicator (Left side) -->
+  <g transform="translate(50, 150)">
+    <text x="0" y="0" class="label" font-weight="600">Tilstander:</text>
+
+    <rect x="0" y="15" width="200" height="35" rx="6" fill="#F3F4F6"/>
+    <text x="15" y="37" class="small">Standard</text>
+
+    <rect x="0" y="60" width="200" height="35" rx="6" fill="#DBEAFE" stroke="#3B82F6" stroke-width="2"/>
+    <text x="15" y="82" class="small">Fokus (vist: E-post)</text>
+
+    <rect x="0" y="105" width="200" height="35" rx="6" fill="#FEE2E2" stroke="#DC2626" stroke-width="2"/>
+    <text x="15" y="127" class="small">Feil (vist: Bekreft)</text>
+
+    <rect x="0" y="150" width="200" height="35" rx="6" fill="#9CA3AF"/>
+    <text x="15" y="172" class="small" fill="#FFFFFF">Deaktivert (knapp)</text>
+
+    <text x="0" y="220" class="label" font-weight="600">Interaksjoner:</text>
+    <text x="0" y="245" class="small">• Tab navigasjon</text>
+    <text x="0" y="265" class="small">• Real-time validering</text>
+    <text x="0" y="285" class="small">• Passord styrke-meter</text>
+    <text x="0" y="305" class="small">• Vis/skjul passord</text>
+    <text x="0" y="325" class="small">• Checkbox toggle</text>
+    <text x="0" y="345" class="small">• Enter = submit</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="600" y="880" text-anchor="middle" class="small" fill="#9CA3AF">nhb-15-screen-registration.svg | Registreringsside med Supabase auth</text>
+</svg>

@@ -1,573 +1,504 @@
-# UX Design Diagrams & Mockups
+# UX Design - Nye Hædda School Simulator
 
-This folder contains SVG vector diagrams and high-fidelity mockups that visualize the user experience, workflows, and system architecture for the **Nye Hædda Barneskole Project Management Simulation**.
+This is the complete UX design package for the Nye Hædda School project simulator. All mockups use a unified design system with Inter font, consistent color palette, and professional styling.
 
-All diagrams are created in **Norwegian** to match the application language and are fully scalable vector graphics (SVG) for use in documentation, presentations, and development reference.
-
----
-
-## Contents
-
-- **Workflow Diagrams (01-07):** Process flows, decision trees, and system visualizations
-- **High-Fidelity Mockups (mockup-01 to mockup-07):** Pixel-perfect UI designs for all pages and modals
+> ⚠️ **Important Update (December 2024)**: All mockups have been redesigned with a new naming convention `nhb-*`. The old files (`01-user-journey-flow.svg`, `mockup-01-login-page.svg`, etc.) are deprecated and should not be used.
 
 ---
 
-## Diagram Index
+## 📋 File Naming Convention
 
-### 01. User Journey Flow
-**File:** `01-user-journey-flow.svg`
+All files follow the format: **`nhb-[nr]-[category]-[name].svg`**
 
-**Description:** Complete user journey from login to successful plan submission, showing all major steps:
-- Login authentication
-- Dashboard overview
-- WBS task selection
-- Supplier selection
-- AI negotiation loop
-- Plan validation (success/failure paths)
-
-**Use Cases:**
-- Onboarding documentation for new users
-- Developer reference for implementing the core game loop
-- Stakeholder presentations
+- **nhb** = Nye Hædda Barneskole (Norwegian school name)
+- **[nr]** = Sequence number (01-20)
+- **[category]** = flow | screen | modal | component
+- **[name]** = Descriptive name
 
 ---
 
-### 02. Dashboard Layout
-**File:** `02-dashboard-layout.svg`
+## 📚 Table of Contents
 
-**Description:** Detailed wireframe of the main dashboard view (desktop 1024px+):
-- Header with user menu and help button
-- Project constraints panel (budget progress bar, deadline status)
-- Quick stats (WBS completion, negotiation count)
-- Two-column layout: WBS list (left, 2/3 width) + Action buttons (right, 1/3 width)
-- Individual WBS item cards showing status (completed/pending)
-
-**Use Cases:**
-- Frontend implementation reference
-- UI/UX testing baseline
-- Responsive design starting point
+1. [Flowcharts](#-flowcharts-flows) - 3 files
+2. [Screen Mockups](#-screen-mockups-screens) - 7 files
+3. [Modal Windows](#-modal-windows-modals) - 5 files
+4. [Components](#-components) - 2 files
+5. [Design System](#-design-system)
+6. [User Flow](#-user-flow)
+7. [How to Use Files](#-how-to-use-files)
 
 ---
 
-### 03. Chat Negotiation Flow
-**File:** `03-chat-negotiation-flow.svg`
+## 🗺️ Flowcharts (Flows)
 
-**Description:** Example of a complete negotiation session with an AI supplier:
-- Initial high-price quote from AI (120 MNOK, 90 days)
-- User arguments based on budget constraints
-- AI counter-offers with justification (110 MNOK)
-- Final user push (105 MNOK)
-- AI acceptance and data commit
+Flowcharts showing user journeys, authentication, and AI logic.
 
-Shows realistic Norwegian dialogue and negotiation dynamics.
+### nhb-01-flow-complete-user-journey.svg
+**Description:** Complete user journey from registration to export
+- Shows all main steps: Registration → Login → Dashboard → Negotiation → Validation → Success
+- Includes decision points and loops
+- Error paths and retry logic
+- Visualizes the entire game loop
 
-**Use Cases:**
-- AI prompt engineering reference
-- User training materials
-- Chat UI implementation guide
+**Dimensions:** 1400x1000px
+**Use Cases:** Onboarding, developer reference, project presentations
 
 ---
 
-### 04. Validation Decision Tree
-**File:** `04-validation-decision-tree.svg`
+### nhb-02-flow-authentication.svg
+**Description:** Supabase authentication flow (registration + login)
+- Registration with email verification
+- Login flow with error handling
+- Session management (JWT tokens)
+- Password reset flow
+- Includes code snippets for Supabase integration
 
-**Description:** Decision tree showing the plan validation logic:
-1. Check: All WBS items have data?
-2. Check: Total cost ≤ 700 MNOK?
-3. Check: Projected end date ≤ 15. mai 2026?
-4. Success: Show completion modal
-5. Failure: Show specific error modal with recommendations
-
-Includes error handling paths and retry loops.
-
-**Use Cases:**
-- Backend validation logic implementation
-- Testing edge cases (over budget, delayed project)
-- Error modal design reference
+**Dimensions:** 1400x1000px
+**Use Cases:** Backend auth implementation, security testing
 
 ---
 
-### 05. WBS Dependency Visualization
-**File:** `05-wbs-dependency-visualization.svg`
+### nhb-03-flow-negotiation-strategy.svg
+**Description:** Gemini AI negotiation logic and strategies
+- Shows how AI suppliers make decisions
+- Supplier personalities (Bjørn: pragmatic, Emma: impatient)
+- Patience mechanics (patience: 1-3)
+- Price reduction calculations
+- 5 negotiation strategies for users
 
-**Description:** Complete WBS structure showing all 15 tasks organized by phase:
-- 1.1-1.2: Prosjektering (Architect, RIB)
-- 1.3: Grunnarbeider (Groundwork, Foundation)
-- 1.4: Råbygg (Shell, Roof/Walls)
-- 1.5: Tekniske fag (Electrical, HVAC, Ventilation)
-- 1.6: Innvendig (Interior walls, Flooring)
-- 1.7-1.8: Ferdigstillelse (Painting, Inspection)
-
-**Critical path highlighted in red** (longest dependency chain affecting deadline).
-
-**Use Cases:**
-- Understanding project structure
-- Critical path algorithm implementation
-- Dependency validation logic
-- Gantt chart feature (post-MVP)
+**Dimensions:** 1600x1000px
+**Use Cases:** AI prompt engineering, game balancing, testing
 
 ---
 
-### 06. Mobile Responsive Comparison
-**File:** `06-mobile-responsive-comparison.svg`
+## 🖥️ Screen Mockups (Screens)
 
-**Description:** Side-by-side comparison of layouts across breakpoints:
-- **Desktop (1024px+):** 2-column layout, full features
-- **Tablet Landscape (768px):** 1-column with sticky actions
-- **Tablet Portrait (640px):** Compact vertical layout
-- **Mobile (<640px):** Not supported in MVP (marked with warnings)
+Full-screen mockups of all main pages in the application.
 
-Includes a feature comparison table showing what works on each device.
+### nhb-07-screen-login.svg
+**Description:** Login page with error handling
+- Centered card layout with gradient background
+- Email and password fields with validation
+- "Remember me" checkbox
+- Inline error messages (red border + text)
+- Link to registration
+- UiA branding
 
-**Use Cases:**
-- Responsive design implementation
-- Device testing checklist
-- Stakeholder explanation of mobile strategy
-
----
-
-### 07. AI Negotiation Strategy
-**File:** `07-ai-negotiation-strategy.svg`
-
-**Description:** Technical deep-dive into how AI suppliers negotiate:
-- **System Prompt:** Persona definition (professional Norwegian contractor)
-- **Context:** Project constraints and requirements
-- **Guardrails:** Hardcoded min/max cost/duration limits (prevents AI hallucination)
-- **5-step negotiation flow:** Initial offer → User argues → Counteroffer → User pushes → Final acceptance
-- **Difficulty levels:** Easy (0.3 resistance), Medium (0.6 resistance), Hard (0.9 resistance)
-
-**Use Cases:**
-- Backend AI integration (PydanticAI + Gemini 2.5 Flash)
-- Prompt engineering
-- Balancing game difficulty
-- Testing AI agent behavior
+**Dimensions:** 1200x900px
+**Use Cases:** Frontend implementation, Supabase Auth
 
 ---
 
-## High-Fidelity Mockup Index
+### nhb-08-screen-dashboard.svg
+**Description:** Main overview with budget tracking and WBS list
+- Header with navigation and user menu
+- **Constraint Panel:** Budget bar (450/700 MNOK), deadline (May 15, 2026)
+- **Quick Stats:** 8/15 completed, 32 negotiations, auto-save
+- **WBS List:** 15 tasks with status (pending/negotiating/committed)
+- **Action Sidebar:** "Submit Plan", export, tips, reset
+- Real-time budget and timeline updates
 
-### Mockup 01. Login Page
-**File:** `mockup-01-login-page.svg`
-
-**Description:** Complete login page design with:
-- Clean, centered card layout with gradient background
-- Email and password input fields with proper styling
-- "Remember me" checkbox and "Forgot password" link
-- Primary login button and registration link
-- Info panel with welcome message
-- UiA branding and LOG565 course attribution
-
-**Viewport:** 1440x900px (standard desktop)
-
-**Use Cases:**
-- Frontend implementation reference for authentication
-- Visual design approval
-- Supabase Auth integration guide
+**Dimensions:** 1400x1000px
+**Use Cases:** Main implementation, component hierarchy, data visualization
 
 ---
 
-### Mockup 02. Registration Page
-**File:** `mockup-02-registration-page.svg`
+### nhb-09-screen-chat.svg
+**Description:** AI chat interface for negotiation
+- Chat window with message history (user + AI)
+- Supplier info in sidebar (Bjørn Eriksen - Eriksen Bygg AS)
+- Typing indicator ("Bjørn is reviewing specifications...")
+- "Accept offer" button on AI offers
+- Documents panel (WBS, requirements, project description)
+- Negotiation status (messages, offers, patience)
 
-**Description:** Registration form with right-side feature panel:
-- Full name, email (UiA), password, and confirm password fields
+**Dimensions:** 1400x1000px
+**Use Cases:** Chat UI, Gemini integration, real-time communication
+
+---
+
+### nhb-10-screen-gantt-chart.svg
+**Description:** Gantt chart with critical path
+- Timeline header (Jan 2025 - May 2026)
+- Task bars: Green (completed), Yellow (in progress 45%), Gray (planned)
+- Critical path marked with red border
+- "Today" marker (blue dashed line)
+- Dependency arrows (gray normal, red critical)
+- Zoom slider and view options (month/week/day)
+- Project status panel at bottom
+
+**Dimensions:** 1600x1000px
+**Use Cases:** Timeline visualization, critical path analysis, export to PNG
+
+---
+
+### nhb-11-screen-precedence-diagram.svg
+**Description:** AON precedence diagram with dependencies
+- Activity-on-Node (AON) network diagram
+- Nodes: Green (completed), Yellow (in progress), White (planned), Red border (critical)
+- Each node shows: ID, name, duration, cost, slack
+- Dependency arrows with direction
+- Critical path panel: 15.5 months, 0 days slack
+- Selected task details at bottom
+- Layout options (hierarchical/horizontal)
+
+**Dimensions:** 1600x1000px
+**Use Cases:** CPM analysis, dependency visualization, bottleneck identification
+
+---
+
+### nhb-12-screen-history-timeline.svg
+**Description:** History with diff view and rollback
+- Chronological timeline (left): All events from session created to plan approved
+- Event types: Negotiation, Budget warning, Renegotiation, Validation, Success
+- Detail panel (right): Before/After comparison
+- Diff view: Red (removed), Green (added)
+- Impact analysis: Budget, timeline, critical path
+- Negotiation context: Reason, strategy, reaction
+- "Restore to this point" button
+
+**Dimensions:** 1400x1000px
+**Use Cases:** Version control, audit trail, "what-if" scenarios
+
+---
+
+### nhb-15-screen-registration.svg
+**Description:** Registration page with validation
+- Fields: Full name, email, password, confirm password
 - Real-time password strength indicator (weak/medium/strong)
-- Terms and conditions checkbox
-- Right-side benefits panel with 4 feature highlights:
-  - Save progress
-  - Track performance
-  - Compete with others (coming soon)
-  - 100% private (GDPR-compliant)
-- Time estimate badge: 45-60 minutes
-- Green color scheme to differentiate from login
+- Password requirements checklist (8+ chars, number, uppercase)
+- Inline error messages (red border + text)
+- Terms checkbox (must be accepted)
+- Button disabled until all fields are valid
+- Link to login
 
-**Viewport:** 1440x900px
-
-**Use Cases:**
-- Registration flow implementation
-- Form validation patterns
-- Marketing/feature communication
+**Dimensions:** 1200x900px
+**Use Cases:** Registration, form validation, Supabase auth
 
 ---
 
-### Mockup 03. Dashboard (Full Detail)
-**File:** `mockup-03-dashboard-full.svg`
+## 🔲 Modal Windows (Modals)
 
-**Description:** Complete main dashboard with realistic data:
-- **Header:** Navigation tabs (Dashboard, Leverandører), help button, user menu
-- **Constraints Panel:**
-  - Budget progress bar (450/700 MNOK = 64%)
-  - Deadline tracker (15. mai 2026)
-  - Expected completion (10. april 2026 ✓ with 35-day margin)
-- **Quick Stats Bar:** 8/15 WBS completed, 32 negotiations, auto-save status
-- **WBS List (left 2/3):**
-  - Filter tabs (All/Completed/Remaining)
-  - 5 WBS items shown: 2 completed (green), 1 in-progress (yellow), 2 pending (gray)
-  - Critical path indicators (red 🔴)
-  - Supplier names and cost/duration data
-- **Action Panel (right 1/3):**
-  - "Send Inn Plan" primary button (disabled until 15/15 complete)
-  - Export to JSON button
-  - Tips panel
-  - Progress statistics mini-chart
-  - Reset simulation button (red)
+Modal dialogs for critical decisions and feedback.
 
-**Viewport:** 1920x1080px (full HD)
+### nhb-16-modal-supplier-selection.svg
+**Description:** Select supplier before negotiation starts
+- Shows WBS task context (1.3.1 - Foundation Work)
+- 5 supplier cards with profile info
+- Each supplier: Name, company, specialties, personality description
+- Recommended matches highlighted (⭐)
+- Selected supplier marked with blue border + checkmark
+- "Start negotiation with [name]" button
 
-**Use Cases:**
-- Primary frontend implementation reference
-- Component layout and hierarchy
-- Real data visualization examples
+**Dimensions:** 1200x900px (modal overlay)
+**Use Cases:** Supplier selection, persona system, chat initiation
 
 ---
 
-### Mockup 04. Chat Interface (Full Detail)
-**File:** `mockup-04-chat-interface-full.svg`
+### nhb-17-modal-commitment-confirm.svg
+**Description:** Confirm commitment to offer
+- Shows WBS task, supplier, cost, duration
+- Calculated start and end dates (based on dependencies)
+- Warning: "This will update your project plan"
+- "Cancel" and "Confirm" buttons
+- Data table layout for overview
 
-**Description:** Complete chat negotiation interface:
-- **Left Sidebar (400px):**
-  - Supplier list with 15 items
-  - Search functionality
-  - Filter tabs (All/Online/Active)
-  - Supplier cards showing: avatar, name, status (online/completed), WBS assignment
-  - Active chat highlighted with blue border
-  - Unread message badges
-- **Chat Window (main):**
-  - Chat header: Supplier name, status, WBS context, export/close buttons
-  - Welcome message with negotiation tips
-  - 4 messages shown: User → AI → User → AI (typing)
-  - Real negotiation example: Råbygg 200 MNOK → 190 MNOK
-  - Message timestamps
-  - Input area with text field and two buttons: "Send" and "Aksepter tilbud" (green)
-- **Floating Help Tooltip:** Negotiation strategy tips
-
-**Viewport:** 1920x1080px
-
-**Use Cases:**
-- Chat UI implementation
-- Message layout and styling
-- Real-time typing indicators
-- Supplier list design
+**Dimensions:** 1000x700px (modal overlay)
+**Use Cases:** Commitment confirmation, plan update
 
 ---
 
-### Mockup 05. Success Modal
-**File:** `mockup-05-success-modal.svg`
+### nhb-18-modal-help-onboarding.svg
+**Description:** Onboarding and help guidance
+- Welcome message with 💡 icon
+- 4 step-by-step instructions:
+  1. Understand budget and deadline
+  2. Select WBS tasks
+  3. Negotiate with AI
+  4. Submit plan
+- Tips box with best practices
+- "Skip" and "Start simulator" buttons
+- Shown on first login
 
-**Description:** Celebration modal shown when plan is approved:
-- **Success Icon:** Large green checkmark with confetti decoration
-- **Title:** "Gratulerer! 🎉" with subtitle
-- **Summary Box (green):**
-  - Total cost: 695 MNOK (5 MNOK under budget ✓)
-  - End date: 10. april 2026 (35 days before deadline ✓)
-  - WBS tasks: 15/15 completed ✓
-- **Achievement Badges:**
-  - 💰 Budsjettmester (Under budget)
-  - ⏱️ Tidsmester (Before deadline)
-  - 🤝 Forhandler (32 negotiations)
-  - ✨ Førstegangs (First plan)
-- **Action Buttons:**
-  - Export plan (JSON) - green
-  - View detailed report - blue
-  - Start new simulation - text link
-
-**Viewport:** 1920x1080px (modal overlay)
-
-**Use Cases:**
-- Success feedback design
-- Export functionality
-- Achievement system (post-MVP)
+**Dimensions:** 1000x800px (modal overlay)
+**Use Cases:** First-time user experience, in-app help
 
 ---
 
-### Mockup 06. Error/Validation Modal
-**File:** `mockup-06-error-validation-modal.svg`
+### nhb-19-modal-success.svg
+**Description:** Success message after approved plan
+- Large green checkmark with 🎉 confetti
+- Stats table:
+  - Total cost: 698 MNOK (under budget ✓)
+  - Completion date: April 10, 2026 (before deadline ✓)
+  - Time spent: 47 minutes
+  - Negotiations: 32
+  - Renegotiations: 3
+- "Export session (JSON)" button (primary)
+- "Start new game" button (secondary)
 
-**Description:** Error modal shown when plan exceeds constraints:
-- **Error Icon:** Large red exclamation mark
-- **Error Summary (red):**
-  - Budget overage: 715 MNOK / 700 MNOK
-  - Required reduction: -15 MNOK (highlighted)
-- **Problematic WBS Items (yellow box):**
-  - Top 3 most expensive items listed:
-    1. Råbygg: 200 MNOK (highest!)
-    2. Grunnarbeid: 105 MNOK
-    3. Elektrisk: 65 MNOK
-- **Recommendations (blue box):**
-  - 5 actionable tips for reducing budget
-  - "Go back to Råbygg and negotiate from 200 → 185"
-  - "Optimize timeline to reduce costs"
-  - "Contact project owner for budget increase"
-  - etc.
-- **Action Buttons:**
-  - "Back and negotiate again" (blue)
-  - "Reset entire plan" (red, destructive)
-  - Help link at bottom
-
-**Viewport:** 1920x1080px (modal overlay)
-
-**Use Cases:**
-- Error handling and user guidance
-- Validation feedback design
-- Helpful error messages (not just "Error!")
+**Dimensions:** 1000x800px (modal overlay)
+**Use Cases:** Success feedback, export functionality, session completion
 
 ---
 
-### Mockup 07. Help/Onboarding Modal
-**File:** `mockup-07-help-onboarding-modal.svg`
+### nhb-20-modal-error-validation.svg
+**Description:** Validation error with solution suggestions
+- Large red X with error icon
+- Error list (red background):
+  - Budget exceeded: 750/700 MNOK (+50 MNOK)
+  - Project delayed: May 20, 2026 (5 days over deadline)
+- Suggestions section (gray background):
+  - Top 3 most expensive tasks to renegotiate
+  - Specific cost amounts highlighted
+  - Tip: "Focus on the three most expensive first"
+- "Back to planning" button
 
-**Description:** Multi-tab help system with step-by-step guide:
-- **Header:** "Velkommen til simulatoren! 👋" with subtitle
-- **6 Tabs:** Kom i gang (active), Forhandling, WBS & Budsjett, Tips & Triks, FAQ, Ressurser
-- **Step-by-Step Guide (6 steps):**
-  1. Review project constraints (blue)
-  2. Select WBS task (green)
-  3. Negotiate with AI supplier (yellow)
-  4. Accept offer when satisfied (purple)
-  5. Repeat for all 15 tasks (blue)
-  6. Submit plan for validation (green)
-- **Info Box:** Estimated time 45-60 minutes, auto-save enabled
-- **Bottom Actions:**
-  - "Start simulering nå!" (blue, primary)
-  - "Les mer dokumentasjon" (gray, secondary)
-  - Video tutorial button
-- **Progress Dots:** 1/6 pages (for multi-page onboarding)
-
-**Viewport:** 1920x1080px (modal overlay)
-
-**Use Cases:**
-- User onboarding flow
-- In-app help system
-- Tutorial content structure
+**Dimensions:** 1000x800px (modal overlay)
+**Use Cases:** Error handling, user guidance, retry logic
 
 ---
 
-### Mockup 08. Gantt Chart View
-**File:** `mockup-08-gantt-chart-view.svg`
+## 🧩 Components
 
-**Description:** Interactive Gantt chart showing project timeline:
-- **Header Navigation:** Dashboard, Gantt, Precedence tabs + History button (top right)
-- **Controls Panel:**
-  - View modes: Month/Week/Day (Month active)
-  - Zoom slider
-  - Filters: Critical path, Dependencies, Milestones (all checked)
-  - Export to PNG button
-- **Timeline Header:** Jan 2025 → Mar 2026 (15 months) with grid lines
-- **Today Line:** Blue dashed vertical line (mid-March 2025)
-- **Task Bars:**
-  - Green = Completed (1.1, 1.2, 1.3.1, 1.3.2)
-  - Yellow = In-progress (1.4.1 Råbygg at 45%)
-  - Gray = Planned (1.4.2, 1.5.1, 1.5.2, 1.5.3, 1.8)
-  - Red critical path outline on critical tasks
-- **Dependencies:** Gray arrows showing task relationships
-- **Critical Path:** Red dashed arrows (1.1 → 1.2 → 1.3.1 → 1.3.2 → 1.4.1 → 1.4.2 → 1.8)
-- **Milestone:** Diamond shape for 1.8 Inspeksjon
-- **Legend:** Color coding explanation, expected completion date
+Reusable UI components with various states.
 
-**Viewport:** 1920x1080px
+### nhb-13-component-wbs-card.svg
+**Description:** WBS task card (pending/negotiating/committed)
+- **4 states:**
+  1. **Pending (gray):** Not started, "Negotiate" button active
+  2. **Negotiating (yellow):** Negotiating, shows latest offer and message count
+  3. **Committed (green):** Completed, shows supplier, cost, dates
+  4. **Hover:** Blue border, highlighted buttons
+- Each card shows: WBS ID, name, description, dependencies, requirements
+- Actions: "Negotiate", "Continue chat", "Renegotiate", "View details"
+- Status indicator: Colored circle (gray/yellow/green)
 
-**Use Cases:**
-- Visual project timeline tracking
-- Critical path analysis
-- Dependency visualization
-- Progress monitoring over time
-- Export for reports/presentations
+**Dimensions:** 420x150px per card
+**Use Cases:** Dashboard WBS list, component library
 
 ---
 
-### Mockup 09. Precedence Diagram (AON Network)
-**File:** `mockup-09-precedence-diagram.svg`
+### nhb-14-component-navigation.svg
+**Description:** Top navigation with user menu
+- **Logo/Brand:** "NHB" circle icon + "Nye Hædda Barneskole" text
+- **Navigation links:** Dashboard (active, blue underline), Gantt Chart, Precedence Diagram
+- **Right-side actions:**
+  - Help icon (?) → Opens onboarding modal
+  - History icon (🕒) → Opens history page
+  - User avatar (initials) → Toggle user menu
+- **User menu (dropdown):**
+  - User info (name + email)
+  - Settings
+  - Export session
+  - Start new game
+  - Log out (red)
 
-**Description:** Activity-on-Node (AON) network diagram showing task dependencies:
-- **Header Navigation:** Same as Gantt (with History button top right)
-- **Controls Panel:**
-  - Layout modes: Left→Right (active), Top→Bottom, Hierarchical
-  - Filters: Critical path only (checked), Earliest/Latest times, Slack time (checked)
-  - Export to PNG button
-- **Network Nodes (boxes):**
-  - Green boxes = Completed (4 nodes)
-  - Yellow box = In-progress (1.4.1 Råbygg 45%)
-  - White boxes = Planned (10 nodes)
-  - Red thick border = Critical path nodes (8 total)
-  - Each node shows: ID, name, duration, cost, status, slack time
-- **Arrows:**
-  - Gray = Normal dependencies
-  - Red thick = Critical path arrows
-- **START/END Nodes:** Circular markers
-- **Grid Background:** Light dots for visual reference
-- **Info Panels (bottom):**
-  - Critical Path Summary (red): 8 tasks, 335 days total, ends April 10 2026
-  - Parallel Paths (blue): Non-critical tasks with slack times
-  - Progress Stats (green): 4/15 completed, 1 in-progress, 10 remaining
-  - Network Statistics (yellow): Total nodes, dependencies, criticality percentage
-
-**Viewport:** 1920x1080px
-
-**Use Cases:**
-- Critical path method (CPM) analysis
-- Identifying bottlenecks
-- Understanding task dependencies
-- Float/slack time calculations
-- Network optimization
+**Dimensions:** 1300x70px
+**Use Cases:** Global navigation, all pages
 
 ---
 
-### Mockup 10. History/Timeline Pane
-**File:** `mockup-10-history-timeline-pane.svg`
-
-**Description:** Version control and change tracking system:
-- **Left Sidebar (400px):**
-  - Timeline list showing all 32 events chronologically
-  - Filter buttons: All, Negotiations, Plan changes
-  - Each event shows:
-    - Version number badge (colored dot)
-    - Event title (e.g., "Forhandling med Entreprenør Råbygg AS")
-    - Key changes (price, duration)
-    - Timestamp
-    - Version number
-  - Current event highlighted in blue
-  - Completed events in white with green checkmarks
-  - Vertical timeline line connecting events
-- **Right Panel (comparison view):**
-  - Split screen: Before (red) vs After (green)
-  - Toggle buttons: Gantt view (active), Precedence diagram, Table view
-  - Version headers: "Før (Versjon 7)" vs "Etter (Versjon 8)"
-  - Summary stats: Total budget and end date comparison
-  - **Gantt Comparison:**
-    - Timeline showing changed tasks
-    - Red bar (removed/old values)
-    - Green bar (added/new values)
-    - Savings indicator box
-    - Collapsed unchanged tasks section
-  - **Cascade Effects Panel (blue):**
-    - 5 numbered effects of the change:
-      1. End date improvement (20 May → 10 April)
-      2. Budget improvement (715 → 695 MNOK)
-      3. Critical path shortened
-      4. Dependent tasks can start earlier
-      5. Plan now valid ✓
-  - **Change Summary Stats:**
-    - Economic impact: -15 MNOK (2.1% savings)
-    - Time impact: -5 days (1.5% reduction)
-  - **Action Buttons:**
-    - Go to Version 7 (blue)
-    - Compare other versions (gray)
-    - Use Version 8 / current (green)
-    - Export history (JSON/PDF)
-- **Close History Button:** Top right (red, to return to main view)
-
-**Viewport:** 1920x1080px
-
-**Use Cases:**
-- Version control and audit trail
-- Understanding decision impact
-- Comparing "what-if" scenarios
-- Rolling back to previous versions
-- Learning from negotiation history
-- Demonstrating progress to instructors
-- Compliance and documentation
-
----
-
-## How to Use These Diagrams & Mockups
-
-### In Documentation
-Reference diagrams in Markdown files:
-```markdown
-![User Journey Flow](ux/01-user-journey-flow.svg)
-```
-
-### In Presentations
-SVG files scale perfectly for slides. Import into PowerPoint, Google Slides, or Figma.
-
-### For Development
-Use as reference during implementation:
-- **Frontend devs:** Refer to 02 (Dashboard), 03 (Chat), 06 (Responsive)
-- **Backend devs:** Refer to 04 (Validation), 05 (Dependencies), 07 (AI Logic)
-- **UX designers:** All diagrams provide visual specifications
-
-### For Testing
-Create test cases based on flows:
-- User journey (01): End-to-end test scenarios
-- Validation tree (04): Edge case testing (over budget, delayed)
-- Negotiation (03, 07): AI response quality testing
-
----
-
-## Design Notes
-
-### Visual Style
-- **Color Palette:** Matches UX Design Specification
-  - Blue (#2563EB): Primary actions, headers
-  - Green (#16A34A): Success states, completed items
-  - Yellow (#F59E0B): Warnings, decisions, in-progress
-  - Red (#DC2626): Errors, critical path, not supported
-  - Gray (#F3F4F6): Neutral panels, pending items
+## 🎨 Design System
 
 ### Typography
-- **Sans-serif fonts** for readability
-- **Monospace** for code snippets (in diagram 07)
-- **Norwegian language** throughout (except technical code)
+- **Font family**: Inter (sans-serif)
+- **Titles**: 24-32px, font-weight: 700
+- **Headings**: 16-22px, font-weight: 600
+- **Body text**: 13-14px, font-weight: 500
+- **Small text**: 10-11px
+- **Code**: Courier New, monospace (for code snippets)
 
-### Accessibility
-- High contrast text/background combinations
-- Color is supplemented with icons (✅, ⭕, ❌) for colorblind users
-- Clear labels and legends on all diagrams
+### Color Palette
 
----
+#### Primary Colors
+- **Blue (Primary)**: `#3B82F6` - Actions, active state, links
+- **Green (Success)**: `#10B981` - Completed, success, positive values
+- **Yellow (Warning)**: `#F59E0B` - Warnings, in progress, decisions
+- **Red (Error)**: `#EF4444` - Errors, critical path, destructive actions
 
-## Updating Diagrams
+#### Neutral Colors
+- **Text (Dark)**: `#111827` - Main text
+- **Text (Medium)**: `#374151` - Labels
+- **Text (Light)**: `#6B7280` - Secondary text
+- **Background**: `#F9FAFB` - Page background
+- **Card**: `#FFFFFF` - Cards, modals
+- **Borders**: `#E5E7EB`, `#D1D5DB` - Borders
 
-All diagrams are **pure SVG** (no external dependencies). To edit:
+#### State Colors
+- **Not started**: `#9CA3AF` (gray)
+- **In progress**: `#F59E0B` (yellow/orange)
+- **Completed**: `#10B981` (green)
+- **Critical**: `#EF4444` (red)
 
-1. Open `.svg` file in any text editor
-2. Modify text content, colors, or layout
-3. Preview in browser or VS Code SVG preview extension
-4. Commit changes to repository
+### Spacing and Layout
+- **Border radius**: 6-12px (depending on component size)
+- **Card padding**: 20-60px
+- **Gap between elements**: 15-30px
+- **Shadows**: `drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08))`
 
-**Recommended tools:**
-- **Text editor:** VS Code with SVG preview extension
-- **Visual editor:** Figma, Adobe Illustrator, Inkscape (free)
-- **Online editor:** SVGator, Method Draw
-
----
-
-## Related Documentation
-
-- **UX Design Specification:** `../ux-design-specification.md` (full component details)
-- **PRD:** `../PRD.md` (functional requirements)
-- **Epics:** `../epics.md` (user stories and implementation plan)
-- **Architecture:** `../architecture.md` (technical stack)
-- **Proposal:** `../proposal.md` (project overview and context)
-
----
-
-## Changelog
-
-**2025-12-08:** Complete UX design package created
-- **7 Workflow Diagrams:**
-  - 01: User Journey Flow
-  - 02: Dashboard Layout (wireframe)
-  - 03: Chat Negotiation Flow
-  - 04: Validation Decision Tree
-  - 05: WBS Dependency Visualization
-  - 06: Mobile Responsive Comparison
-  - 07: AI Negotiation Strategy
-- **10 High-Fidelity Mockups:**
-  - mockup-01: Login Page (1440x900)
-  - mockup-02: Registration Page (1440x900)
-  - mockup-03: Dashboard Full Detail (1920x1080)
-  - mockup-04: Chat Interface Full Detail (1920x1080)
-  - mockup-05: Success Modal (overlay)
-  - mockup-06: Error/Validation Modal (overlay)
-  - mockup-07: Help/Onboarding Modal (overlay)
-  - mockup-08: Gantt Chart View (1920x1080) ⭐ NEW
-  - mockup-09: Precedence Diagram (1920x1080) ⭐ NEW
-  - mockup-10: History/Timeline Pane (1920x1080) ⭐ NEW
-- **Total:** 17 SVG files + 1 README
-- **Total size:** ~220 KB (highly optimized)
+### Icons
+- **Emojis**: Used sparingly for personality (📊, 📈, 🔀, ✓, 🎉)
+- **Unicode symbols**: Arrows (→, ↓), checkmarks (✓), warning (!)
 
 ---
 
-**For questions or diagram requests, contact the UX team or create an issue in the repository.**
+## 🔗 User Flow
+
+### Complete flow from start to finish:
+
+1. **`nhb-15-screen-registration.svg`** → Register new user with Supabase
+2. **`nhb-07-screen-login.svg`** → Log in (or resume session)
+3. **`nhb-18-modal-help-onboarding.svg`** → First-time onboarding (optional, can skip)
+4. **`nhb-08-screen-dashboard.svg`** → Main overview
+   - View budget (0/700 MNOK) and deadline (May 15, 2026)
+   - Select a WBS task to negotiate (e.g., 1.3.1 Foundation Work)
+5. **`nhb-16-modal-supplier-selection.svg`** → Select supplier (e.g., Bjørn Eriksen)
+6. **`nhb-09-screen-chat.svg`** → Negotiate with AI
+   - Receive initial offer (120 MNOK, 3 months)
+   - Argue for lower price or shorter time
+   - AI provides counter-offer based on strategy and personality
+   - Click "Accept offer" when satisfied
+7. **`nhb-17-modal-commitment-confirm.svg`** → Confirm commitment
+   - View offer summary
+   - Click "Confirm" → Plan updates
+8. **`nhb-08-screen-dashboard.svg`** → Back to dashboard
+   - Budget updated (105 MNOK spent)
+   - WBS task 1.3.1 marked as completed (green)
+   - Timeline adjusted
+9. **Repeat steps 4-8** for all 15 WBS tasks
+10. **`nhb-08-screen-dashboard.svg`** → When all 15 tasks completed, click "Submit Plan"
+11. **Validation:**
+    - **SUCCESS** (budget ≤700 MNOK AND date ≤May 15, 2026):
+      → **`nhb-19-modal-success.svg`** → Congratulations! Export session or start new game
+    - **ERROR** (budget >700 MNOK OR date >May 15, 2026):
+      → **`nhb-20-modal-error-validation.svg`** → View errors and suggestions → Back to step 4 for renegotiation
+
+### Visualizations (available anytime):
+- **`nhb-10-screen-gantt-chart.svg`** → Click "📈 Gantt Chart" in navigation
+- **`nhb-11-screen-precedence-diagram.svg`** → Click "🔀 Precedence Diagram" in navigation
+- **`nhb-12-screen-history-timeline.svg`** → Click "🕒 History" icon
+
+### Help functions:
+- **`nhb-18-modal-help-onboarding.svg`** → Click "?" icon in navigation anytime
+- **`nhb-14-component-navigation.svg`** → User menu: Export, Settings, Log out
+
+---
+
+## 📖 How to Use Files
+
+### In documentation
+Reference mockups in Markdown files:
+```markdown
+![Dashboard](ux/nhb-08-screen-dashboard.svg)
+```
+
+### In presentations
+SVG files scale perfectly for slides. Import to PowerPoint, Google Slides, or Figma.
+
+### For development
+Use as reference during implementation:
+- **Frontend developers:** See `nhb-08` (Dashboard), `nhb-09` (Chat), `nhb-13` (WBS Card)
+- **Backend developers:** See `nhb-02` (Auth), `nhb-03` (AI Logic), `nhb-20` (Validation)
+- **UX designers:** All files provide visual specifications
+
+### For testing
+Create test cases based on flows:
+- User journey (`nhb-01`): End-to-end test scenarios
+- Validation (`nhb-20`): Edge case testing (over budget, delayed)
+- Negotiation (`nhb-03`, `nhb-09`): AI response quality testing
+
+---
+
+## 📐 Dimensions
+
+| Type | Width | Height | Purpose |
+|------|--------|-------|--------|
+| Flow diagram | 1400-1600px | 1000px | Complex flowcharts |
+| Screen mockup | 1400px | 1000px | Full-screen views |
+| Modal | 500-1000px | 400-800px | Central dialogs |
+| Component | Varies | Varies | Reusable elements |
+
+---
+
+## 🛠️ Technical Implementation
+
+Mockups are created in **SVG format** for:
+- ✅ Vector-based (scalable without quality loss)
+- ✅ Text-searchable (grep, find)
+- ✅ Easy to edit in text editor (XML structure)
+- ✅ Small file sizes (~10-30 KB per file)
+- ✅ Version control-friendly (diff support in Git)
+- ✅ Direct viewing in browsers and Figma
+
+### Editing SVG Files
+
+**Method 1: Text Editor** (recommended for small changes)
+1. Open `.svg` file in VS Code or other editor
+2. Modify text content, colors (`fill="#..."`), or coordinates
+3. Preview in browser (drag-and-drop) or VS Code SVG preview extension
+4. Commit changes to Git
+
+**Method 2: Visual Editor** (for major redesigns)
+- **Figma** (online, free for individual use)
+- **Adobe Illustrator** (paid)
+- **Inkscape** (free, open source)
+- **SVGator** (online animation)
+
+---
+
+## 🔄 Update Log
+
+### Version 2.0 (December 9, 2024) ⭐ CURRENT
+- ✅ **Complete redesign** of all mockups
+- ✅ **New unified file naming convention** (`nhb-[nr]-[category]-[name]`)
+- ✅ **Inter font** throughout (previously mixed fonts)
+- ✅ **Consistent color palette** from UX Design Specification
+- ✅ **Detailed annotations** on all files (specs, interactions, technical details)
+- ✅ **English language** throughout
+- ✅ **17 professional SVG mockups:**
+  - 3 Flowcharts
+  - 7 Screen mockups
+  - 5 Modal windows
+  - 2 Components
+- ✅ **Total size:** ~300 KB (optimized)
+
+### Version 1.0 (December 8, 2024)
+- ⚠️ **DEPRECATED**: Old files are obsolete:
+  - `01-user-journey-flow.svg` → Replaced by `nhb-01-flow-complete-user-journey.svg`
+  - `02-dashboard-layout.svg` → Replaced by `nhb-08-screen-dashboard.svg`
+  - `mockup-01-login-page.svg` → Replaced by `nhb-07-screen-login.svg`
+  - `mockup-02-registration-page.svg` → Replaced by `nhb-15-screen-registration.svg`
+  - `mockup-03-dashboard-full.svg` → Replaced by `nhb-08-screen-dashboard.svg`
+  - `mockup-04-chat-interface-full.svg` → Replaced by `nhb-09-screen-chat.svg`
+  - `mockup-05-success-modal.svg` → Replaced by `nhb-19-modal-success.svg`
+  - `mockup-06-error-validation-modal.svg` → Replaced by `nhb-20-modal-error-validation.svg`
+  - `mockup-07-help-onboarding-modal.svg` → Replaced by `nhb-18-modal-help-onboarding.svg`
+  - `mockup-08-gantt-chart-view.svg` → Replaced by `nhb-10-screen-gantt-chart.svg`
+  - `mockup-09-precedence-diagram.svg` → Replaced by `nhb-11-screen-precedence-diagram.svg`
+  - `mockup-10-history-timeline-pane.svg` → Replaced by `nhb-12-screen-history-timeline.svg`
+- ⚠️ **Use only the new `nhb-*` files from version 2.0**
+
+---
+
+## 📖 See Also
+
+- **[UX Design Specification](../ux-design-specification.md)** - Complete design specification
+- **[PRD](../PRD.md)** - Product Requirements Document
+- **[Epics](../epics.md)** - All user stories and epics
+- **[Test Design](../test-design.md)** - Testing strategy
+- **[Architecture](../architecture.md)** - Technical stack
+- **[Proposal](../proposal.md)** - Project overview
+
+---
+
+## ✉️ Contact
+
+For questions about UX design or mockups, contact the UX team or create an issue in the repository.
+
+---
+
+**Last updated:** December 9, 2024
+**Designed by:** Claude Code AI Agent
+**Project:** Nye Hædda Barneskole PM Simulator
+**Version:** 2.0
