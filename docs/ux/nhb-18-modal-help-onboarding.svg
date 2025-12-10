@@ -23,8 +23,8 @@
   </defs>
 
   <!-- Title -->
-  <text x="500" y="40" text-anchor="middle" class="title-main">Modal - Hjelp og Onboarding</text>
-  <text x="500" y="65" text-anchor="middle" class="subtitle-main">Veiledning for nye brukere - Hvordan spille simulatoren</text>
+  <text x="500" y="40" text-anchor="middle" class="title-main">Modal - Help and Onboarding</text>
+  <text x="500" y="65" text-anchor="middle" class="subtitle-main">Guidance for new users - How to play the simulator</text>
 
   <!-- Background/Overlay -->
   <rect width="1000" height="800" class="overlay"/>
@@ -50,9 +50,9 @@
       </g>
 
       <!-- Title -->
-      <text x="350" y="105" text-anchor="middle" class="modal-title">Velkommen til Simulatoren!</text>
+      <text x="350" y="105" text-anchor="middle" class="modal-title">Welcome to the Simulator!</text>
       <text x="350" y="135" text-anchor="middle" class="label">
-        Lær hvordan du planlegger Nye Hædda Barneskole prosjektet
+        Learn how to plan the Nye Hædda School project
       </text>
 
       <!-- Steps -->
@@ -65,9 +65,9 @@
           <text x="40" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">1</text>
 
           <g transform="translate(75, 20)">
-            <text x="0" y="0" class="heading">Forstå budsjettet og tidsfristen</text>
-            <text x="0" y="22" class="label">Budsjett: 700 MNOK | Frist: 15. mai 2026</text>
-            <text x="0" y="40" class="small">Du må holde deg innenfor disse grensene for å lykkes</text>
+            <text x="0" y="0" class="heading">Understand the budget and deadline</text>
+            <text x="0" y="22" class="label">Budget: 700 MNOK | Deadline: May 15, 2026</text>
+            <text x="0" y="40" class="small">You must stay within these limits to succeed</text>
           </g>
         </g>
 
@@ -78,9 +78,9 @@
           <text x="40" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">2</text>
 
           <g transform="translate(75, 20)">
-            <text x="0" y="0" class="heading">Velg WBS-oppgaver å forhandle</text>
-            <text x="0" y="22" class="label">15 oppgaver fra prosjektering til ferdigstillelse</text>
-            <text x="0" y="40" class="small">Start med avhengige oppgaver (grunnarbeid først)</text>
+            <text x="0" y="0" class="heading">Select WBS tasks to negotiate</text>
+            <text x="0" y="22" class="label">15 tasks from design to completion</text>
+            <text x="0" y="40" class="small">Start with dependent tasks (foundation work first)</text>
           </g>
         </g>
 
@@ -91,9 +91,9 @@
           <text x="40" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">3</text>
 
           <g transform="translate(75, 20)">
-            <text x="0" y="0" class="heading">Forhandle med AI-leverandører</text>
-            <text x="0" y="22" class="label">Chat med 5 unike leverandør-personligheter</text>
-            <text x="0" y="40" class="small">Bruk strategier som partnerskap, volum, eller fleksibilitet</text>
+            <text x="0" y="0" class="heading">Negotiate with AI suppliers</text>
+            <text x="0" y="22" class="label">Chat with 5 unique supplier personalities</text>
+            <text x="0" y="40" class="small">Use strategies like partnership, volumee, or flexibility</text>
           </g>
         </g>
 
@@ -104,9 +104,9 @@
           <text x="40" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">4</text>
 
           <g transform="translate(75, 20)">
-            <text x="0" y="0" class="heading">Send inn planen din</text>
-            <text x="0" y="22" class="label">Valider at planen oppfyller kravene</text>
-            <text x="0" y="40" class="small">Hvis feil oppstår, reforhandle de dyreste oppgavene</text>
+            <text x="0" y="0" class="heading">Submit your plan</text>
+            <text x="0" y="22" class="label">Validate that the plan meets requirements</text>
+            <text x="0" y="40" class="small">If errors occur, renegotiate the most expensive tasks</text>
           </g>
         </g>
       </g>
@@ -116,12 +116,12 @@
     <g transform="translate(50, 520)">
       <rect x="0" y="0" width="700" height="70" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
       <g transform="translate(20, 20)">
-        <text x="0" y="0" class="label" font-weight="600" fill="#92400E">💡 Tips:</text>
+        <text x="0" y="0" class="label" font-weight="600" fill="#92400E">💡 Tip:</text>
         <text x="0" y="20" class="small" fill="#92400E">
-          • Lagre regelmessig med "Eksporter økt" for å ikke miste fremgangen din
+          • Save regularly with "Export session" to not lose your progress
         </text>
         <text x="0" y="37" class="small" fill="#92400E">
-          • Sjekk kritisk sti i Gantt-diagrammet for å identifisere flaskehalser
+          • Check critical path in Gantt chart to identify bottlenecks
         </text>
       </g>
     </g>
@@ -129,25 +129,25 @@
     <!-- Action Buttons -->
     <g transform="translate(50, 605)">
       <rect x="0" y="0" width="330" height="45" rx="8" class="button-secondary"/>
-      <text x="165" y="28" text-anchor="middle" class="button-text-secondary">Hopp over</text>
+      <text x="165" y="28" text-anchor="middle" class="button-text-secondary">Skip</text>
 
       <rect x="370" y="0" width="330" height="45" rx="8" class="button-primary"/>
-      <text x="535" y="28" text-anchor="middle" class="button-text-primary">Start simulatoren →</text>
+      <text x="535" y="28" text-anchor="middle" class="button-text-primary">Start simulator →</text>
     </g>
   </g>
 
   <!-- Annotations -->
   <g transform="translate(50, 625)">
-    <text x="0" y="0" class="label" font-weight="600">Når vises denne modalen?</text>
-    <text x="0" y="25" class="small">• Første gang brukeren logger inn (localStorage: first_visit = true)</text>
-    <text x="0" y="45" class="small">• Manuelt via "?" ikon i navigasjonsfeltet</text>
+    <text x="0" y="0" class="label" font-weight="600">When does this modal appear?</text>
+    <text x="0" y="25" class="small">• First time user logs in (localStorage: first_visit = true)</text>
+    <text x="0" y="45" class="small">• Manually via "?" icon in navigation bar</text>
   </g>
 
   <g transform="translate(550, 625)">
-    <text x="0" y="0" class="label" font-weight="600">Interaksjoner:</text>
-    <text x="0" y="25" class="small">• "Hopp over" → Lukk modal → Dashboard</text>
-    <text x="0" y="45" class="small">• "Start simulatoren" → Marker first_visit = false</text>
-    <text x="0" y="65" class="small">  → Lukk modal → Dashboard</text>
+    <text x="0" y="0" class="label" font-weight="600">Interactions:</text>
+    <text x="0" y="25" class="small">• "Skip" → Close modal → Dashboard</text>
+    <text x="0" y="45" class="small">• "Start simulator" → Mark first_visit = false</text>
+    <text x="0" y="65" class="small">  → Close modal → Dashboard</text>
   </g>
 
   <!-- Footer -->

@@ -26,8 +26,8 @@
   </defs>
 
   <!-- Title -->
-  <text x="600" y="40" text-anchor="middle" class="title-main">Modal - Leverandørvalg</text>
-  <text x="600" y="65" text-anchor="middle" class="subtitle-main">Velg leverandør for WBS-oppgave før forhandling starter</text>
+  <text x="600" y="40" text-anchor="middle" class="title-main">Modal - Supplier Selection</text>
+  <text x="600" y="65" text-anchor="middle" class="subtitle-main">Select supplier for WBS task before negotiation starts</text>
 
   <!-- Background/Overlay -->
   <rect width="1200" height="900" class="overlay"/>
@@ -47,21 +47,21 @@
     <g transform="translate(50, 50)">
 
       <!-- Title -->
-      <text x="0" y="0" class="modal-title">Velg Leverandør for Forhandling</text>
+      <text x="0" y="0" class="modal-title">Select Supplier for Negotiation</text>
 
       <!-- WBS Info -->
       <g transform="translate(0, 30)">
         <rect x="0" y="0" width="900" height="50" rx="6" fill="#F9FAFB"/>
         <g transform="translate(20, 15)">
-          <text x="0" y="0" class="label">WBS-oppgave:</text>
-          <text x="120" y="0" class="value" font-size="14">1.3.1 - Grunnarbeid</text>
-          <text x="0" y="20" class="small">Masseutskifting, grunnmur, drenering, fundamenter</text>
+          <text x="0" y="0" class="label">WBS task:</text>
+          <text x="120" y="0" class="value" font-size="14">1.3.1 - Foundation Work</text>
+          <text x="0" y="20" class="small">Excavation, foundation wall, drainage, foundations</text>
         </g>
       </g>
 
       <!-- Supplier Cards Grid -->
       <g transform="translate(0, 110)">
-        <text x="0" y="0" class="heading">Tilgjengelige leverandører (5):</text>
+        <text x="0" y="0" class="heading">Available suppliers (5):</text>
 
         <!-- Supplier 1: Bjørn Eriksen (Selected) -->
         <g transform="translate(0, 25)">
@@ -79,25 +79,25 @@
             <g transform="translate(75, 10)">
               <text x="0" y="0" class="heading" font-size="15">Bjørn Eriksen</text>
               <text x="0" y="20" class="label" fill="#6B7280">Eriksen Bygg AS</text>
-              <text x="0" y="38" class="label">Totalentreprenør</text>
+              <text x="0" y="38" class="label">General Contractor</text>
             </g>
           </g>
 
           <!-- Specialties -->
           <g transform="translate(20, 100)">
-            <text x="0" y="0" class="small" font-weight="600">Spesialiteter:</text>
+            <text x="0" y="0" class="small" font-weight="600">Specialties:</text>
             <rect x="0" y="8" width="100" height="22" rx="4" class="specialty-tag"/>
-            <text x="50" y="23" text-anchor="middle" class="small">Grunnarbeid</text>
+            <text x="50" y="23" text-anchor="middle" class="small">Foundation Work</text>
             <rect x="110" y="8" width="70" height="22" rx="4" class="specialty-tag"/>
-            <text x="145" y="23" text-anchor="middle" class="small">Råbygg</text>
+            <text x="145" y="23" text-anchor="middle" class="small">Shell Construction</text>
             <rect x="190" y="8" width="110" height="22" rx="4" class="specialty-tag"/>
             <text x="245" y="23" text-anchor="middle" class="small">Prosjektledelse</text>
           </g>
 
           <!-- Persona traits -->
           <g transform="translate(20, 145)">
-            <text x="0" y="0" class="persona">"Pragmatisk og erfaren, fokusert på kvalitet"</text>
-            <text x="0" y="18" class="small">⭐ Anbefalte match for denne oppgaven</text>
+            <text x="0" y="0" class="persona">"Pragmatic and experienced, focused on quality"</text>
+            <text x="0" y="18" class="small">⭐ Recommended match for this task</text>
           </g>
         </g>
 
@@ -112,12 +112,12 @@
             <g transform="translate(75, 10)">
               <text x="0" y="0" class="heading" font-size="15">Sofia Andersen</text>
               <text x="0" y="20" class="label" fill="#6B7280">Andersen Gruppen</text>
-              <text x="0" y="38" class="label">Byggeleder</text>
+              <text x="0" y="38" class="label">Construction Manager</text>
             </g>
           </g>
 
           <g transform="translate(20, 100)">
-            <text x="0" y="0" class="small" font-weight="600">Spesialiteter:</text>
+            <text x="0" y="0" class="small" font-weight="600">Specialties:</text>
             <rect x="0" y="8" width="90" height="22" rx="4" class="specialty-tag"/>
             <text x="45" y="23" text-anchor="middle" class="small">Koordinering</text>
             <rect x="100" y="8" width="70" height="22" rx="4" class="specialty-tag"/>
@@ -125,7 +125,7 @@
           </g>
 
           <g transform="translate(20, 145)">
-            <text x="0" y="0" class="persona">"Strukturert og detaljorientert, streng på kvalitet"</text>
+            <text x="0" y="0" class="persona">"Structured and detail-oriented, strict on quality"</text>
           </g>
         </g>
 
@@ -140,20 +140,20 @@
             <g transform="translate(75, 10)">
               <text x="0" y="0" class="heading" font-size="15">Olav Berg</text>
               <text x="0" y="20" class="label" fill="#6B7280">Berg Transport & Graving AS</text>
-              <text x="0" y="38" class="label">Graveentreprenør</text>
+              <text x="0" y="38" class="label">Excavation Contractor</text>
             </g>
           </g>
 
           <g transform="translate(20, 100)">
-            <text x="0" y="0" class="small" font-weight="600">Spesialiteter:</text>
+            <text x="0" y="0" class="small" font-weight="600">Specialties:</text>
             <rect x="0" y="8" width="100" height="22" rx="4" class="specialty-tag"/>
-            <text x="50" y="23" text-anchor="middle" class="small">Grunnarbeid</text>
+            <text x="50" y="23" text-anchor="middle" class="small">Foundation Work</text>
             <rect x="110" y="8" width="70" height="22" rx="4" class="specialty-tag"/>
             <text x="145" y="23" text-anchor="middle" class="small">Graving</text>
           </g>
 
           <g transform="translate(20, 145)">
-            <text x="0" y="0" class="persona">"Kostnadsbevisst, fleksibel, fokus på fremdrift"</text>
+            <text x="0" y="0" class="persona">"Cost-conscious, flexible, focus on progress"</text>
           </g>
         </g>
 
@@ -168,27 +168,27 @@
             <g transform="translate(75, 10)">
               <text x="0" y="0" class="heading" font-size="15">Emma Larsen</text>
               <text x="0" y="20" class="label" fill="#6B7280">Larsen Prosjekt AS</text>
-              <text x="0" y="38" class="label">Prosjektleder</text>
+              <text x="0" y="38" class="label">Project Manager</text>
             </g>
           </g>
 
           <g transform="translate(20, 100)">
-            <text x="0" y="0" class="small" font-weight="600">Spesialiteter:</text>
+            <text x="0" y="0" class="small" font-weight="600">Specialties:</text>
             <rect x="0" y="8" width="110" height="22" rx="4" class="specialty-tag"/>
             <text x="55" y="23" text-anchor="middle" class="small">Prosjektledelse</text>
             <rect x="120" y="8" width="100" height="22" rx="4" class="specialty-tag"/>
-            <text x="170" y="23" text-anchor="middle" class="small">Grunnarbeid</text>
+            <text x="170" y="23" text-anchor="middle" class="small">Foundation Work</text>
           </g>
 
           <g transform="translate(20, 145)">
-            <text x="0" y="0" class="persona">"Ambisiøs og konkurransedyktig, utålmodig"</text>
+            <text x="0" y="0" class="persona">"Ambitious and competitive, impatient"</text>
           </g>
         </g>
 
         <!-- Show all button -->
         <g transform="translate(200, 475)">
           <rect x="0" y="0" width="500" height="40" rx="6" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1"/>
-          <text x="250" y="25" text-anchor="middle" class="label" fill="#3B82F6">Vis alle 5 leverandører ↓</text>
+          <text x="250" y="25" text-anchor="middle" class="label" fill="#3B82F6">Show all 5 suppliers ↓</text>
         </g>
       </g>
     </g>
@@ -196,26 +196,26 @@
     <!-- Action Buttons -->
     <g transform="translate(50, 650)">
       <rect x="0" y="0" width="430" height="45" rx="8" class="button-secondary"/>
-      <text x="215" y="28" text-anchor="middle" class="button-text-secondary">Avbryt</text>
+      <text x="215" y="28" text-anchor="middle" class="button-text-secondary">Cancel</text>
 
       <rect x="470" y="0" width="430" height="45" rx="8" class="button-primary"/>
-      <text x="685" y="28" text-anchor="middle" class="button-text-primary">Start forhandling med Bjørn Eriksen →</text>
+      <text x="685" y="28" text-anchor="middle" class="button-text-primary">Start negotiation with Bjørn Eriksen →</text>
     </g>
   </g>
 
   <!-- Annotations -->
   <g transform="translate(50, 680)">
-    <text x="0" y="0" class="label" font-weight="600">Når vises denne modalen?</text>
-    <text x="0" y="25" class="small">• Klikk "Forhandle" på en WBS-oppgave uten leverandør</text>
-    <text x="0" y="45" class="small">• Eller klikk "Reforhandle" for å bytte leverandør</text>
+    <text x="0" y="0" class="label" font-weight="600">When does this modal appear?</text>
+    <text x="0" y="25" class="small">• Click "Negotiate" on a WBS task without supplier</text>
+    <text x="0" y="45" class="small">• Or click "Renegotiate" to change supplier</text>
   </g>
 
   <g transform="translate(500, 680)">
-    <text x="0" y="0" class="label" font-weight="600">Logikk:</text>
-    <text x="0" y="25" class="small">• Filtrer leverandører etter WBS-spesialiteter</text>
-    <text x="0" y="45" class="small">• Anbefalte matches vises øverst</text>
-    <text x="0" y="65" class="small">• Klikk kort = velg (blå ramme + checkmark)</text>
-    <text x="0" y="85" class="small">• Klikk "Start forhandling" → Chat-side (nhb-09)</text>
+    <text x="0" y="0" class="label" font-weight="600">Logic:</text>
+    <text x="0" y="25" class="small">• Filter suppliers by WBS specialties</text>
+    <text x="0" y="45" class="small">• Recommended matches shown first</text>
+    <text x="0" y="65" class="small">• Click card = select (blue border + checkmark)</text>
+    <text x="0" y="85" class="small">• Click "Start negotiation" → Chat-side (nhb-09)</text>
   </g>
 
   <!-- Footer -->

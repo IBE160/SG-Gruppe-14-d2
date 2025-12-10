@@ -22,8 +22,8 @@
   </defs>
 
   <!-- Title -->
-  <text x="500" y="40" text-anchor="middle" class="title-main">Modal - Valideringsfeil</text>
-  <text x="500" y="65" text-anchor="middle" class="subtitle-main">Planen oppfyller ikke kravene - vis spesifikke feil og forslag</text>
+  <text x="500" y="40" text-anchor="middle" class="title-main">Modal - Validation Error</text>
+  <text x="500" y="65" text-anchor="middle" class="subtitle-main">Plan does not meet requirements - show specific errors and suggestions</text>
 
   <!-- Background/Overlay -->
   <rect width="1000" height="800" class="overlay"/>
@@ -50,11 +50,11 @@
       </g>
 
       <!-- Title -->
-      <text x="290" y="120" text-anchor="middle" class="modal-title">Planvalidering Mislyktes</text>
+      <text x="290" y="120" text-anchor="middle" class="modal-title">Plan Validation Failed</text>
 
       <!-- Error List Section -->
       <g transform="translate(0, 150)">
-        <text x="0" y="0" class="heading">Feil funnet:</text>
+        <text x="0" y="0" class="heading">Errors found:</text>
 
         <rect x="0" y="15" width="580" height="140" rx="8" class="error-list-bg"/>
 
@@ -63,10 +63,10 @@
           <g>
             <circle cx="0" cy="0" r="8" fill="#EF4444"/>
             <text x="25" y="5" class="error-text">
-              Budsjett overskredet med 50 MNOK
+              Budget exceeded by 50 MNOK
             </text>
             <text x="45" y="25" class="error-detail">
-              Total: 750 MNOK | Grense: 700 MNOK (107%)
+              Total: 750 MNOK | Limit: 700 MNOK (107%)
             </text>
           </g>
 
@@ -74,10 +74,10 @@
           <g transform="translate(0, 60)">
             <circle cx="0" cy="0" r="8" fill="#EF4444"/>
             <text x="25" y="5" class="error-text">
-              Prosjektet forsinket til 20. mai 2026
+              Project delayed until 20. mai 2026
             </text>
             <text x="45" y="25" class="error-detail">
-              Frist: 15. mai 2026 | Overskridelse: 5 dager
+              Deadline: 15. mai 2026 | Delay: 5 days
             </text>
           </g>
         </g>
@@ -85,32 +85,32 @@
 
       <!-- Suggestions Section -->
       <g transform="translate(0, 310)">
-        <text x="0" y="0" class="heading">Forslag til løsning:</text>
+        <text x="0" y="0" class="heading">Suggested solutions:</text>
 
         <rect x="0" y="15" width="580" height="150" rx="8" class="suggestion-bg"/>
 
         <g transform="translate(30, 40)">
           <text x="0" y="0" class="suggestion" font-weight="600">
-            Vurder å reforhandle disse kostbare oppgavene:
+            Consider renegotiating these expensive tasks:
           </text>
 
           <!-- Suggested items to renegotiate -->
           <g transform="translate(20, 25)">
-            <text x="0" y="0" class="suggestion">• 2.1 Råbygg</text>
+            <text x="0" y="0" class="suggestion">• 2.1 Shell Construction</text>
             <text x="450" y="0" text-anchor="end" class="suggestion" font-weight="600" fill="#EF4444">250 MNOK</text>
 
-            <text x="0" y="25" class="suggestion">• 3.4 Maling og Overflatebehandling</text>
+            <text x="0" y="25" class="suggestion">• 3.4 Painting and Surface Treatment</text>
             <text x="450" y="25" text-anchor="end" class="suggestion" font-weight="600" fill="#EF4444">180 MNOK</text>
 
-            <text x="0" y="50" class="suggestion">• 3.1 VVS-installasjon</text>
+            <text x="0" y="50" class="suggestion">• 3.1 Plumbing Installation</text>
             <text x="450" y="50" text-anchor="end" class="suggestion" font-weight="600" fill="#EF4444">120 MNOK</text>
           </g>
 
           <text x="0" y="100" class="small" font-style="italic" fill="#6B7280">
-            Tips: Fokuser på de tre dyreste oppgavene først. En reduksjon på 10-15%
+            Tip: Focus on the three most expensive tasks first. A reduction of 10-15%
           </text>
           <text x="0" y="115" class="small" font-style="italic" fill="#6B7280">
-            i disse vil bringe deg under budsjettet.
+            in these will bring you under budget.
           </text>
         </g>
       </g>
@@ -120,14 +120,14 @@
     <g transform="translate(60, 525)">
       <rect x="0" y="0" width="580" height="50" rx="8" class="button-primary"/>
       <text x="290" y="32" text-anchor="middle" class="button-text" font-size="16">
-        Tilbake til Planlegging
+        Back to Planning
       </text>
     </g>
   </g>
 
   <!-- Annotations -->
   <g transform="translate(50, 560)">
-    <text x="0" y="0" class="label" font-weight="600">Valideringslogikk:</text>
+    <text x="0" y="0" class="label" font-weight="600">Validation Logic:</text>
     <text x="0" y="25" class="small">1. Total kostnad = Sum av alle current_plan[].cost</text>
     <text x="0" y="45" class="small">2. Budsjett PASS hvis total_cost ≤ 700 MNOK</text>
     <text x="0" y="65" class="small">3. Budsjett FAIL hvis total_cost > 700 MNOK</text>
@@ -136,13 +136,13 @@
   </g>
 
   <g transform="translate(550, 560)">
-    <text x="0" y="0" class="label" font-weight="600">Etter feil:</text>
-    <text x="0" y="25" class="small">• Klikk "Tilbake til Planlegging" → Dashboard</text>
-    <text x="0" y="45" class="small">• Foreslåtte WBS-elementer highlightes (gul bakgrunn)</text>
-    <text x="0" y="65" class="small">• Klikk "Reforhandle" på foreslått element</text>
-    <text x="0" y="85" class="small">• Forhandl lavere pris → Godta → Prøv validering igjen</text>
+    <text x="0" y="0" class="label" font-weight="600">After error:</text>
+    <text x="0" y="25" class="small">• Click "Back to Planning" → Dashboard</text>
+    <text x="0" y="45" class="small">• Suggested WBS items highlighted (yellow background)</text>
+    <text x="0" y="65" class="small">• Click "Renegotiate" on suggested item</text>
+    <text x="0" y="85" class="small">• Negotiate lower price → Accept → Try validation again</text>
   </g>
 
   <!-- Footer -->
-  <text x="500" y="780" text-anchor="middle" class="small" fill="#FFFFFF">nhb-20-modal-error-validation.svg | Valideringsfeil med konkrete forslag</text>
+  <text x="500" y="780" text-anchor="middle" class="small" fill="#FFFFFF">nhb-20-modal-error-validation.svg | Validation error with concrete suggestions</text>
 </svg>

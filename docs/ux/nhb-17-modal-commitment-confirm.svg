@@ -22,8 +22,8 @@
   </defs>
 
   <!-- Title -->
-  <text x="500" y="40" text-anchor="middle" class="title-main">Modal - Forpliktelsesbekreftelse</text>
-  <text x="500" y="65" text-anchor="middle" class="subtitle-main">Kritisk beslutningspunkt: Godkjenne tilbud og oppdatere plan</text>
+  <text x="500" y="40" text-anchor="middle" class="title-main">Modal - Commitment Confirmation</text>
+  <text x="500" y="65" text-anchor="middle" class="subtitle-main">Critical decision point: Accept offer and update plan</text>
 
   <!-- Background/Overlay -->
   <rect width="1000" height="700" class="overlay"/>
@@ -43,33 +43,33 @@
     <g transform="translate(40, 50)">
 
       <!-- Title -->
-      <text x="0" y="0" class="modal-title">Bekreft Forpliktelse</text>
+      <text x="0" y="0" class="modal-title">Confirm Commitment</text>
 
       <!-- Data Grid -->
       <g transform="translate(0, 35)">
         <!-- Row 1: WBS -->
         <rect x="-20" y="0" width="440" height="45" rx="6" class="data-row"/>
-        <text x="0" y="25" class="label">WBS-oppgave:</text>
-        <text x="420" y="25" text-anchor="end" class="value">1.3.1 - Grunnarbeid</text>
+        <text x="0" y="25" class="label">WBS task:</text>
+        <text x="420" y="25" text-anchor="end" class="value">1.3.1 - Foundation Work</text>
 
         <!-- Row 2: Supplier -->
         <rect x="-20" y="55" width="440" height="45" rx="6" fill="#FFFFFF"/>
-        <text x="0" y="80" class="label">Leverandør:</text>
+        <text x="0" y="80" class="label">Supplier:</text>
         <text x="420" y="80" text-anchor="end" class="value">Bjørn Eriksen (Eriksen Bygg AS)</text>
 
         <!-- Row 3: Cost -->
         <rect x="-20" y="110" width="440" height="45" rx="6" class="data-row"/>
-        <text x="0" y="135" class="label">Kostnad:</text>
+        <text x="0" y="135" class="label">Cost:</text>
         <text x="420" y="135" text-anchor="end" class="value" fill="#3B82F6">105 MNOK</text>
 
         <!-- Row 4: Duration -->
         <rect x="-20" y="165" width="440" height="45" rx="6" fill="#FFFFFF"/>
-        <text x="0" y="190" class="label">Varighet:</text>
-        <text x="420" y="190" text-anchor="end" class="value" fill="#3B82F6">2.5 måneder</text>
+        <text x="0" y="190" class="label">Duration:</text>
+        <text x="420" y="190" text-anchor="end" class="value" fill="#3B82F6">2.5 months</text>
 
         <!-- Row 5: Start/End dates (calculated) -->
         <rect x="-20" y="220" width="440" height="45" rx="6" class="data-row"/>
-        <text x="0" y="245" class="label">Start → Slutt:</text>
+        <text x="0" y="245" class="label">Start → End:</text>
         <text x="420" y="245" text-anchor="end" class="value">15. jan 2025 → 1. apr 2025</text>
       </g>
 
@@ -77,10 +77,10 @@
       <g transform="translate(0, 310)">
         <rect x="-20" y="-10" width="440" height="50" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
         <text x="210" y="15" text-anchor="middle" class="warning">
-          Dette vil oppdatere prosjektplanen din.
+          This will update your project plan.
         </text>
         <text x="210" y="32" text-anchor="middle" class="warning" font-weight="600">
-          Fortsette?
+          Continue?
         </text>
       </g>
     </g>
@@ -89,35 +89,35 @@
     <g transform="translate(40, 360)">
       <!-- Cancel Button -->
       <rect x="0" y="0" width="200" height="45" rx="8" class="button-secondary"/>
-      <text x="100" y="28" text-anchor="middle" class="button-text-secondary">Avbryt</text>
+      <text x="100" y="28" text-anchor="middle" class="button-text-secondary">Cancel</text>
 
       <!-- Confirm Button -->
       <rect x="220" y="0" width="200" height="45" rx="8" class="button-primary"/>
-      <text x="320" y="28" text-anchor="middle" class="button-text-primary">Bekreft</text>
+      <text x="320" y="28" text-anchor="middle" class="button-text-primary">Confirm</text>
     </g>
   </g>
 
   <!-- Annotations -->
   <g transform="translate(50, 450)">
-    <text x="0" y="0" class="label" font-weight="600">Interaksjoner:</text>
-    <text x="0" y="25" class="small">1. Klikk "Godta" i chat → Modal vises</text>
-    <text x="0" y="45" class="small">2. Klikk "Bekreft" → Plan oppdateres (localStorage)</text>
-    <text x="0" y="65" class="small">3. Toast notification: "1.3.1 Grunnarbeid lagt til i plan"</text>
+    <text x="0" y="0" class="label" font-weight="600">Interactions:</text>
+    <text x="0" y="25" class="small">1. Click "Accept" i chat → Modal appears</text>
+    <text x="0" y="45" class="small">2. Click "Confirm" → Plan updates (localStorage)</text>
+    <text x="0" y="65" class="small">3. Toast notification: "1.3.1 Foundation Work added to plan"</text>
     <text x="0" y="85" class="small">4. Dashboard: Budsjett 0 → 105 MNOK, WBS ⚪ → 🟢</text>
-    <text x="0" y="105" class="small">5. Chat: System message "✅ Tilbud godtatt..."</text>
-    <text x="0" y="125" class="small">6. Redirect til Dashboard etter 1 sekund</text>
+    <text x="0" y="105" class="small">5. Chat: System message "✅ Offer accepted..."</text>
+    <text x="0" y="125" class="small">6. Redirect to Dashboard after 1 second</text>
   </g>
 
   <g transform="translate(550, 450)">
-    <text x="0" y="0" class="label" font-weight="600">Beregninger:</text>
-    <text x="0" y="25" class="small">• Start-dato: Basert på avhengigheter</text>
-    <text x="0" y="45" class="small">  - Hvis ingen: 15. jan 2025 (prosjektstart)</text>
-    <text x="0" y="65" class="small">  - Hvis avhengig: Siste end_date + 1 dag</text>
-    <text x="0" y="85" class="small">• Slutt-dato: Start + varighet (måneder)</text>
-    <text x="0" y="105" class="small">• Budsjett: Sum alle current_plan.cost</text>
-    <text x="0" y="125" class="small">• Forventet dato: Max end_date fra plan</text>
+    <text x="0" y="0" class="label" font-weight="600">Calculations:</text>
+    <text x="0" y="25" class="small">• Start date: Based on dependencies</text>
+    <text x="0" y="45" class="small">  - If none: 15. jan 2025 (project start)</text>
+    <text x="0" y="65" class="small">  - If dependent: Last end_date + 1 day</text>
+    <text x="0" y="85" class="small">• End date: Start + duration (months)</text>
+    <text x="0" y="105" class="small">• Budsjett: Sum all current_plan.cost</text>
+    <text x="0" y="125" class="small">• Expected date: Max end_date from plan</text>
   </g>
 
   <!-- Footer -->
-  <text x="500" y="680" text-anchor="middle" class="small" fill="#FFFFFF">nhb-17-modal-commitment-confirm.svg | Forpliktelsesmodal med bekreftelse</text>
+  <text x="500" y="680" text-anchor="middle" class="small" fill="#FFFFFF">nhb-17-modal-commitment-confirm.svg | Forpliktelsesmodal with bekreftelse</text>
 </svg>

@@ -19,10 +19,10 @@
   </defs>
 
   <!-- Title -->
-  <text x="600" y="40" text-anchor="middle" class="title">Login Page - Authentication</text>
+  <text x="600" y="40" text-anchor="middle" class="title">Landin Page - Authentication</text>
   <text x="600" y="65" text-anchor="middle" class="subtitle">First user interaction - professional and academic expression</text>
 
-  <!-- Device Frame (Desktop) -->
+  <!-- Device Frame (Decktop) -->
   <rect x="250" y="100" width="700" height="600" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="2"/>
   <rect x="250" y="100" width="700" height="40" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
   <circle cx="270" cy="120" r="5" fill="#EF4444"/>
@@ -33,11 +33,11 @@
   <!-- Page Background -->
   <rect x="250" y="140" width="700" height="560" fill="#F9FAFB"/>
 
-  <!-- Login Card (Centered) -->
+  <!-- Landin Card (Centered) -->
   <g transform="translate(425, 250)">
     <rect width="350" height="400" rx="8" class="card"/>
 
-    <!-- Logo/Title Area -->
+    <!-- Lando/Title Area -->
     <text x="175" y="50" text-anchor="middle" class="heading">Nye Hædda School</text>
     <text x="175" y="75" text-anchor="middle" class="small">Project Management Simulator</text>
 
@@ -58,7 +58,7 @@
 
     <!-- Primary Button -->
     <rect x="30" y="290" width="290" height="45" rx="4" class="button-primary"/>
-    <text x="175" y="318" text-anchor="middle" class="button-text">Log In</text>
+    <text x="175" y="318" text-anchor="middle" class="button-text">Land In</text>
 
     <!-- Divider -->
     <line x1="30" y1="360" x2="320" y2="360" stroke="#E5E7EB" stroke-width="1"/>
@@ -89,7 +89,7 @@
 
     <!-- Loading State -->
     <rect x="0" y="210" width="150" height="50" rx="4" fill="#9CA3AF"/>
-    <text x="75" y="235" text-anchor="middle" class="small" fill="#FFFFFF" font-weight="600">Logging in...</text>
+    <text x="75" y="235" text-anchor="middle" class="small" fill="#FFFFFF" font-weight="600">Landging in...</text>
   </g>
 
   <!-- Specs -->
@@ -106,14 +106,14 @@
   <!-- Interaction Notes -->
   <g transform="translate(600, 600)">
     <text x="0" y="0" class="label" font-weight="600">Interactions:</text>
-    <text x="0" y="25" class="small">1. Tab navigation: Email → Password → Log In</text>
+    <text x="0" y="25" class="small">1. Tab navigation: Email → Password → Land In</text>
     <text x="0" y="45" class="small">2. Enter in password field → Submit</text>
     <text x="0" y="65" class="small">3. Click "Sign up" → Registration page</text>
     <text x="0" y="85" class="small">4. Error → Red error message below password</text>
-    <text x="0" y="105" class="small">5. Loading → Button shows "Logging in..."</text>
+    <text x="0" y="105" class="small">5. Loading → Button shows "Landging in..."</text>
     <text x="0" y="125" class="small">6. Success → Redirect to /dashboard</text>
   </g>
 
   <!-- Footer -->
-  <text x="600" y="880" text-anchor="middle" class="small" fill="#9CA3AF">nhb-07-screen-login.svg | Login page mockup with states</text>
+  <text x="600" y="880" text-anchor="middle" class="small" fill="#9CA3AF">nhb-07-screen-landin.svg | Landin page mockup with states</text>
 </svg>

@@ -16,18 +16,18 @@
       .arrow { stroke: #6B7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
     </style>
 
-    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+    <marker id="arrowhead" markerWidth="10" markerHight="10" refX="9" refY="3" orient="auto">
       <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
     </marker>
   </defs>
 
   <!-- Title -->
   <text x="600" y="40" text-anchor="middle" class="title">Autentiseringsflyt - Supabase Auth</text>
-  <text x="600" y="65" text-anchor="middle" class="subtitle">Registrering og innlogging med JWT-basert autentisering</text>
+  <text x="600" y="65" text-anchor="middle" class="subtitle">Registrering and innlandging with JWT-basert autentisering</text>
 
   <!-- Start -->
   <rect x="500" y="100" width="200" height="60" rx="8" class="box"/>
-  <text x="600" y="135" text-anchor="middle" class="label" font-weight="600">Bruker åpner app</text>
+  <text x="600" y="135" text-anchor="middle" class="label" font-weight="600">User åpner app</text>
 
   <path d="M 600 160 L 600 200" class="arrow"/>
 
@@ -41,10 +41,10 @@
 
   <rect x="150" y="210" width="200" height="120" rx="8" class="box-highlight"/>
   <text x="250" y="235" text-anchor="middle" class="label" font-weight="600">Registrering</text>
-  <text x="250" y="255" text-anchor="middle" class="small">1. Klikk "Registrer deg"</text>
+  <text x="250" y="255" text-anchor="middle" class="small">1. Click "Sign up"</text>
   <text x="250" y="275" text-anchor="middle" class="small">2. Fyll inn e-post</text>
   <text x="250" y="295" text-anchor="middle" class="small">3. Fyll inn passord (min 6)</text>
-  <text x="250" y="315" text-anchor="middle" class="small" font-weight="600" fill="#3B82F6">4. Klikk "Registrer"</text>
+  <text x="250" y="315" text-anchor="middle" class="small" font-weight="600" fill="#3B82F6">4. Click "Registrer"</text>
 
   <path d="M 250 330 L 250 400" class="arrow"/>
 
@@ -54,16 +54,16 @@
   <text x="250" y="465" text-anchor="middle" class="code">  email, password</text>
   <text x="250" y="480" text-anchor="middle" class="code">})</text>
 
-  <!-- Path 2: Login (YES) -->
+  <!-- Path 2: Landin (YES) -->
   <path d="M 700 240 L 900 240" class="arrow"/>
   <text x="820" y="235" class="small" fill="#10B981">JA</text>
 
   <rect x="850" y="210" width="200" height="120" rx="8" class="box-highlight"/>
-  <text x="950" y="235" text-anchor="middle" class="label" font-weight="600">Innlogging</text>
+  <text x="950" y="235" text-anchor="middle" class="label" font-weight="600">Innlandging</text>
   <text x="950" y="255" text-anchor="middle" class="small">1. Fyll inn e-post</text>
   <text x="950" y="275" text-anchor="middle" class="small">2. Fyll inn passord</text>
-  <text x="950" y="295" text-anchor="middle" class="small" font-weight="600" fill="#3B82F6">3. Klikk "Logg Inn"</text>
-  <text x="950" y="315" text-anchor="middle" class="small" font-style="italic">Loading: "Logger inn..."</text>
+  <text x="950" y="295" text-anchor="middle" class="small" font-weight="600" fill="#3B82F6">3. Click "Land In"</text>
+  <text x="950" y="315" text-anchor="middle" class="small" font-style="italic">Loading: "Landging in..."</text>
 
   <path d="M 950 330 L 950 400" class="arrow"/>
 
@@ -82,7 +82,7 @@
   <text x="600" y="540" text-anchor="middle" class="label" font-weight="600" fill="#10B981">JWT Token Lagret ✓</text>
   <text x="600" y="565" text-anchor="middle" class="small">localStorage:</text>
   <text x="600" y="585" text-anchor="middle" class="code">supabase_auth_token</text>
-  <text x="600" y="600" text-anchor="middle" class="small" font-style="italic">Brukes for alle API-kall</text>
+  <text x="600" y="600" text-anchor="middle" class="small" font-style="italic">Usees for alle API-kall</text>
 
   <path d="M 600 610 L 600 650" class="arrow"/>
 
@@ -92,11 +92,11 @@
 
   <!-- Error handling -->
   <rect x="50" y="550" width="250" height="120" rx="8" class="box-error"/>
-  <text x="175" y="575" text-anchor="middle" class="label" font-weight="600" fill="#EF4444">Feilhåndtering</text>
+  <text x="175" y="575" text-anchor="middle" class="label" font-weight="600" fill="#EF4444">Errorhåndtering</text>
   <text x="175" y="600" text-anchor="middle" class="small" font-weight="600">Registrering:</text>
-  <text x="175" y="620" text-anchor="middle" class="small">"E-post allerede registrert"</text>
-  <text x="175" y="640" text-anchor="middle" class="small" font-weight="600">Innlogging:</text>
-  <text x="175" y="660" text-anchor="middle" class="small">"Feil e-post eller passord"</text>
+  <text x="175" y="620" text-anchor="middle" class="small">"Email allerede registrert"</text>
+  <text x="175" y="640" text-anchor="middle" class="small" font-weight="600">Innlandging:</text>
+  <text x="175" y="660" text-anchor="middle" class="small">"Invalid email or password"</text>
 
   <path d="M 250 440 L 175 440 L 175 550" class="arrow" stroke="#EF4444" stroke-dasharray="4,4"/>
   <path d="M 950 440 L 1025 440 L 1025 580 L 300 580" class="arrow" stroke="#EF4444" stroke-dasharray="4,4"/>

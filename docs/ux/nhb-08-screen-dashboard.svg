@@ -25,15 +25,15 @@
   </defs>
 
   <!-- Title -->
-  <text x="700" y="40" text-anchor="middle" class="title">Dashboard - Hovedoversikt</text>
-  <text x="700" y="65" text-anchor="middle" class="subtitle">Sentral kontrollpanel med budsjettsporing og WBS-oversikt</text>
+  <text x="700" y="40" text-anchor="middle" class="title">Dashboard - Main Overview</text>
+  <text x="700" y="65" text-anchor="middle" class="subtitle">Central control panel with budget tracking and WBS overview</text>
 
   <!-- Browser Window -->
   <rect x="50" y="100" width="1300" height="800" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="2"/>
 
   <!-- Header Bar -->
   <rect x="50" y="100" width="1300" height="60" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
-  <text x="80" y="138" class="heading">Prosjektledelsessimulator</text>
+  <text x="80" y="138" class="heading">Project Management Simulator</text>
 
   <!-- User Menu -->
   <rect x="1220" y="115" width="100" height="30" rx="4" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="1"/>
@@ -49,11 +49,11 @@
 
       <!-- Panel Content -->
       <g transform="translate(30, 30)">
-        <text x="0" y="0" class="heading">Prosjektbegrensninger</text>
+        <text x="0" y="0" class="heading">Project Constraints</text>
 
         <!-- Budget Section -->
         <g transform="translate(0, 25)">
-          <text x="0" y="0" class="label">Budsjett</text>
+          <text x="0" y="0" class="label">Budget</text>
           <text x="1150" y="0" class="code" font-weight="600">450 / 700 MNOK (64%)</text>
 
           <!-- Progress Bar -->
@@ -65,18 +65,18 @@
         <!-- Timeline Section -->
         <g transform="translate(0, 70)">
           <g>
-            <text x="0" y="0" class="label">Frist:</text>
+            <text x="0" y="0" class="label">Deadline:</text>
             <text x="120" y="0" class="code">15. mai 2026</text>
           </g>
 
           <g transform="translate(350, 0)">
-            <text x="0" y="0" class="label">Forventet ferdig:</text>
+            <text x="0" y="0" class="label">Expected completion:</text>
             <text x="170" y="0" class="code" fill="#10B981">10. april 2026 ✓</text>
           </g>
 
           <g transform="translate(700, 0)">
-            <text x="0" y="0" class="label">Kritisk sti:</text>
-            <text x="120" y="0" class="code">15 måneder</text>
+            <text x="0" y="0" class="label">Critical path:</text>
+            <text x="120" y="0" class="code">15 months</text>
           </g>
         </g>
       </g>
@@ -85,9 +85,9 @@
     <!-- Quick Stats -->
     <g transform="translate(0, 160)">
       <text x="30" y="0" class="small">
-        Fremdrift: <tspan font-weight="600">8 / 15</tspan> WBS-oppgaver fullført  |
-        <tspan font-weight="600">32</tspan> forhandlinger  |
-        <tspan font-weight="600">2</tspan> reforhandlinger
+        Progress: <tspan font-weight="600">8 / 15</tspan> WBS tasks completed  |
+        <tspan font-weight="600">32</tspan> negotiations  |
+        <tspan font-weight="600">2</tspan> renegotiations
       </text>
     </g>
 
@@ -98,7 +98,7 @@
       <g class="card-shadow">
         <rect width="880" height="450" rx="8" class="card"/>
 
-        <text x="30" y="35" class="heading">Arbeidsnedbrytningsstruktur (WBS)</text>
+        <text x="30" y="35" class="heading">Work Breakdown Structure (WBS)</text>
 
         <!-- Scrollable List Area -->
         <rect x="30" y="50" width="820" height="380" fill="#F9FAFB" rx="4"/>
@@ -110,10 +110,10 @@
           <g>
             <rect width="800" height="60" rx="4" class="wbs-pending"/>
             <circle cx="20" cy="30" r="8" fill="none" stroke="#9CA3AF" stroke-width="2"/>
-            <text x="40" y="25" class="label">1.1 - Prosjektering</text>
-            <text x="40" y="42" class="small">Grunnlag: 50 MNOK, 2 måneder</text>
+            <text x="40" y="25" class="label">1.1 - Design</text>
+            <text x="40" y="42" class="small">Baseline: 50 MNOK, 2 months</text>
             <rect x="650" y="18" width="130" height="28" rx="4" fill="#3B82F6"/>
-            <text x="715" y="37" text-anchor="middle" class="button-text">Kontakt Leverandør</text>
+            <text x="715" y="37" text-anchor="middle" class="button-text">Contact Supplier</text>
           </g>
 
           <!-- Item 2: Completed -->
@@ -121,26 +121,26 @@
             <rect width="800" height="70" rx="4" class="wbs-complete"/>
             <circle cx="20" cy="30" r="8" fill="#10B981"/>
             <path d="M 16 30 L 19 33 L 24 26" stroke="#FFFFFF" stroke-width="2" fill="none"/>
-            <text x="40" y="25" class="label" fill="#047857">1.3.1 - Grunnarbeid</text>
-            <text x="40" y="42" class="small">105 MNOK, 2.5 måneder</text>
-            <text x="40" y="57" class="small">Leverandør: Bjørn Eriksen | Start: 15. jan 2025 | Slutt: 1. apr 2025</text>
+            <text x="40" y="25" class="label" fill="#047857">1.3.1 - Foundation Work</text>
+            <text x="40" y="42" class="small">105 MNOK, 2.5 months</text>
+            <text x="40" y="57" class="small">Supplier: Bjørn Eriksen | Start: 15. jan 2025 | End: 1. apr 2025</text>
             <rect x="650" y="18" width="130" height="28" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
-            <text x="715" y="37" text-anchor="middle" class="small" fill="#374151" font-weight="600">Reforhandle</text>
+            <text x="715" y="37" text-anchor="middle" class="small" fill="#374151" font-weight="600">Renegotiate</text>
           </g>
 
           <!-- Item 3: Pending -->
           <g transform="translate(0, 150)">
             <rect width="800" height="60" rx="4" class="wbs-pending"/>
             <circle cx="20" cy="30" r="8" fill="none" stroke="#9CA3AF" stroke-width="2"/>
-            <text x="40" y="25" class="label">2.1 - Råbygg</text>
-            <text x="40" y="42" class="small">Grunnlag: 200 MNOK, 4 måneder | Avhenger av: 1.3.1</text>
+            <text x="40" y="25" class="label">2.1 - Shell Construction</text>
+            <text x="40" y="42" class="small">Baseline: 200 MNOK, 4 months | Depends on: 1.3.1</text>
             <rect x="650" y="18" width="130" height="28" rx="4" fill="#3B82F6"/>
-            <text x="715" y="37" text-anchor="middle" class="button-text">Kontakt Leverandør</text>
+            <text x="715" y="37" text-anchor="middle" class="button-text">Contact Supplier</text>
           </g>
 
           <!-- More items indicator -->
           <text x="400" y="250" text-anchor="middle" class="small" font-style="italic" fill="#9CA3AF">
-            ... 12 flere oppgaver ...
+            ... 12 more tasks ...
           </text>
         </g>
       </g>
@@ -150,44 +150,44 @@
         <rect width="390" height="450" rx="8" class="card"/>
 
         <g transform="translate(30, 30)">
-          <text x="0" y="0" class="label" font-weight="600">Handlinger</text>
+          <text x="0" y="0" class="label" font-weight="600">Actions</text>
 
           <!-- Submit Plan Button -->
           <g transform="translate(0, 25)">
             <rect width="330" height="45" rx="6" class="button"/>
-            <text x="165" y="28" text-anchor="middle" class="button-text" font-size="14">Send Inn Plan</text>
+            <text x="165" y="28" text-anchor="middle" class="button-text" font-size="14">Submit Plan</text>
             <text x="165" y="60" text-anchor="middle" class="small" fill="#9CA3AF">
-              (Krever 15/15 fullført)
+              (Requires 15/15 completed)
             </text>
           </g>
 
           <!-- Export Session Button -->
           <g transform="translate(0, 100)">
             <rect width="330" height="40" rx="6" class="button-secondary"/>
-            <text x="165" y="26" text-anchor="middle" class="button-secondary-text">Eksporter Økt</text>
+            <text x="165" y="26" text-anchor="middle" class="button-secondary-text">Export Session</text>
           </g>
 
           <!-- Help Button -->
           <g transform="translate(0, 155)">
             <rect width="330" height="40" rx="6" class="button-secondary"/>
-            <text x="165" y="26" text-anchor="middle" class="button-secondary-text">Hjelp</text>
+            <text x="165" y="26" text-anchor="middle" class="button-secondary-text">Help</text>
           </g>
 
           <!-- Stats Panel -->
           <g transform="translate(0, 220)">
             <rect width="330" height="150" rx="6" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
-            <text x="165" y="25" text-anchor="middle" class="label" font-weight="600">Øktstatus</text>
+            <text x="165" y="25" text-anchor="middle" class="label" font-weight="600">Session Status</text>
 
-            <text x="20" y="55" class="small">Opprettet:</text>
+            <text x="20" y="55" class="small">Created:</text>
             <text x="310" y="55" text-anchor="end" class="small" font-weight="600">7. des 2025, 14:23</text>
 
-            <text x="20" y="80" class="small">Tid brukt:</text>
-            <text x="310" y="80" text-anchor="end" class="small" font-weight="600">47 minutter</text>
+            <text x="20" y="80" class="small">Time spent:</text>
+            <text x="310" y="80" text-anchor="end" class="small" font-weight="600">47 minutes</text>
 
-            <text x="20" y="105" class="small">Forhandlinger:</text>
+            <text x="20" y="105" class="small">Negotiations:</text>
             <text x="310" y="105" text-anchor="end" class="small" font-weight="600">32</text>
 
-            <text x="20" y="130" class="small">Lagringsplass:</text>
+            <text x="20" y="130" class="small">Storage:</text>
             <text x="310" y="130" text-anchor="end" class="small" font-weight="600">2.1 / 5.0 MB (42%)</text>
           </g>
         </g>
@@ -197,5 +197,5 @@
   </g>
 
   <!-- Footer -->
-  <text x="700" y="980" text-anchor="middle" class="small" fill="#9CA3AF">nhb-08-screen-dashboard.svg | Dashboard med budsjettsporing og WBS-liste</text>
+  <text x="700" y="980" text-anchor="middle" class="small" fill="#9CA3AF">nhb-08-screen-dashboard.svg | Dashboard with budget tracking and WBS list</text>
 </svg>

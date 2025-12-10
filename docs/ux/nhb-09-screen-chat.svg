@@ -21,8 +21,8 @@
   </defs>
 
   <!-- Title -->
-  <text x="700" y="40" text-anchor="middle" class="title">Chat-grensesnitt - AI Forhandling</text>
-  <text x="700" y="65" text-anchor="middle" class="subtitle">Sanntids forhandling med AI-leverandør (Gemini 2.0 Flash)</text>
+  <text x="700" y="40" text-anchor="middle" class="title">Chat Interface - AI Negotiation</text>
+  <text x="700" y="65" text-anchor="middle" class="subtitle">Real-time negotiation with AI supplier (Gemini 2.0 Flash)</text>
 
   <!-- Browser Window -->
   <rect x="50" y="100" width="1300" height="800" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="2"/>
@@ -31,12 +31,12 @@
   <rect x="50" y="100" width="1300" height="80" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="2"/>
 
   <g transform="translate(80, 130)">
-    <text x="0" y="0" class="label" fill="#3B82F6">← Tilbake til Oversikt</text>
-    <text x="0" y="25" class="heading">Bjørn Eriksen - Totalentreprenør</text>
-    <text x="0" y="45" class="small">WBS 1.3.1 - Grunnarbeid | Eriksen Bygg AS</text>
+    <text x="0" y="0" class="label" fill="#3B82F6">← Back to Overview</text>
+    <text x="0" y="25" class="heading">Bjørn Eriksen - General Contractor</text>
+    <text x="0" y="45" class="small">WBS 1.3.1 - Foundation Work | Eriksen Bygg AS</text>
   </g>
 
-  <!-- Main Chat Layout -->
+  <!-- Mayn Chat Layout -->
   <g transform="translate(50, 190)">
 
     <!-- Chat Window (Left - 3/4 width) -->
@@ -48,42 +48,42 @@
       <!-- AI Message 1: Initial greeting -->
       <g>
         <rect width="600" height="80" rx="8" class="ai-bubble"/>
-        <text x="20" y="25" class="message-text">Hei! Jeg er Bjørn fra Eriksen Bygg.</text>
-        <text x="20" y="45" class="message-text">Jeg har mottatt WBS 1.3.1 Grunnarbeid. Dette inkluderer masseutskifting,</text>
-        <text x="20" y="65" class="message-text">grunnmur, drenering og fundamenter.</text>
+        <text x="20" y="25" class="message-text">Hi! I'm Bjørn from Eriksen Bygg.</text>
+        <text x="20" y="45" class="message-text">I have received WBS 1.3.1 Foundation Work. This includes masseutskifting,</text>
+        <text x="20" y="65" class="message-text">grunnmur, drenering and fundamenter.</text>
         <text x="580" y="75" text-anchor="end" class="small">14:23</text>
       </g>
 
       <!-- User Message 1 -->
       <g transform="translate(315, 100)">
         <rect width="600" height="60" rx="8" class="user-bubble"/>
-        <text x="20" y="25" class="message-user">Hei Bjørn! Jeg trenger et pristilbud for denne oppgaven.</text>
-        <text x="20" y="45" class="message-user">Hva kan dere tilby når det gjelder kostnad og varighet?</text>
+        <text x="20" y="25" class="message-user">Hi Bjørn! I need a price quote for this task.</text>
+        <text x="20" y="45" class="message-user">What can you offer in terms of cost and duration?</text>
         <text x="580" y="55" text-anchor="end" class="small" fill="#DBEAFE">14:24</text>
       </g>
 
       <!-- AI Message 2: Initial offer -->
       <g transform="translate(0, 180)">
         <rect width="650" height="100" rx="8" class="ai-bubble"/>
-        <text x="20" y="25" class="message-text">Basert på spesifikasjonene og nåværende markedspriser, estimerer jeg</text>
-        <text x="20" y="45" class="message-text" font-weight="600">120 MNOK og 3 måneder</text>
-        <text x="20" y="65" class="message-text">for Grunnarbeid. Dette dekker alle krav i F-003 og K-023, og sikrer</text>
-        <text x="20" y="85" class="message-text">kvalitet og fremdrift.</text>
+        <text x="20" y="25" class="message-text">Based on specifications and current market prices, I estimate</text>
+        <text x="20" y="45" class="message-text" font-weight="600">120 MNOK and 3 months</text>
+        <text x="20" y="65" class="message-text">for Foundation Work. This covers all requirements in F-003 and K-023, and ensures</text>
+        <text x="20" y="85" class="message-text">quality and prandress.</text>
         <text x="630" y="95" text-anchor="end" class="small">14:24</text>
 
         <!-- Accept Offer Button -->
         <rect x="20" y="110" width="250" height="35" rx="6" class="accept-button"/>
         <text x="145" y="132" text-anchor="middle" font-size="13" font-weight="600" fill="#FFFFFF">
-          Godta: 120 MNOK, 3 måneder
+          Accept: 120 MNOK, 3 months
         </text>
       </g>
 
       <!-- User Message 2: Counter-offer -->
       <g transform="translate(315, 310)">
         <rect width="600" height="80" rx="8" class="user-bubble"/>
-        <text x="20" y="25" class="message-user">Takk for tilbudet. 120 MNOK er litt høyt for vårt budsjett.</text>
-        <text x="20" y="45" class="message-user">Kan dere gå ned i pris hvis vi er fleksible på tidslinje?</text>
-        <text x="20" y="65" class="message-user">F-003 krever kun standard grunnarbeid.</text>
+        <text x="20" y="25" class="message-user">Thank you for the offer. 120 MNOK is a bit high for our budget.</text>
+        <text x="20" y="45" class="message-user">Can you reduce the price if we are flexible on timeline?</text>
+        <text x="20" y="65" class="message-user">F-003 only requires standard grunnarbeid.</text>
         <text x="580" y="75" text-anchor="end" class="small" fill="#DBEAFE">14:26</text>
       </g>
 
@@ -91,7 +91,7 @@
       <g transform="translate(0, 410)">
         <rect width="300" height="50" rx="8" class="typing-bubble"/>
         <text x="20" y="30" class="small" fill="#6B7280" font-style="italic">
-          Bjørn ser gjennom spesifikasjonene...
+          Bjørn is reviewing specifications...
         </text>
         <!-- Animated dots could be added with CSS animation -->
         <circle cx="250" cy="25" r="3" fill="#9CA3AF"/>
@@ -105,7 +105,7 @@
       <rect width="975" height="100" rx="8" class="input-area"/>
 
       <rect x="20" y="15" width="855" height="70" rx="6" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1"/>
-      <text x="30" y="40" class="small" fill="#9CA3AF">Skriv melding...</text>
+      <text x="30" y="40" class="small" fill="#9CA3AF">Type message...</text>
       <text x="30" y="75" class="small" fill="#9CA3AF" font-style="italic">Shift + Enter for ny linje</text>
 
       <rect x="890" y="30" width="65" height="40" rx="6" fill="#3B82F6"/>
@@ -117,66 +117,66 @@
       <rect width="295" height="660" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
 
       <g transform="translate(25, 25)">
-        <text x="0" y="0" class="label" font-weight="600">Dokumenter</text>
+        <text x="0" y="0" class="label" font-weight="600">Documents</text>
 
         <!-- Document Links -->
         <g transform="translate(0, 30)">
           <rect width="245" height="45" rx="6" fill="#F3F4F6"/>
-          <text x="15" y="28" class="small" fill="#3B82F6">📄 WBS 1.3.1 - Detaljer</text>
+          <text x="15" y="28" class="small" fill="#3B82F6">📄 WBS 1.3.1 - Details</text>
         </g>
 
         <g transform="translate(0, 85)">
           <rect width="245" height="45" rx="6" fill="#F3F4F6"/>
-          <text x="15" y="28" class="small" fill="#3B82F6">📄 Kravspesifikasjon</text>
+          <text x="15" y="28" class="small" fill="#3B82F6">📄 Requirements Specification</text>
         </g>
 
         <g transform="translate(0, 140)">
           <rect width="245" height="45" rx="6" fill="#F3F4F6"/>
-          <text x="15" y="28" class="small" fill="#3B82F6">📄 Prosjektbeskrivelse</text>
+          <text x="15" y="28" class="small" fill="#3B82F6">📄 Project Deccription</text>
         </g>
 
         <!-- Supplier Info -->
         <g transform="translate(0, 210)">
-          <text x="0" y="0" class="label" font-weight="600">Leverandørinformasjon</text>
+          <text x="0" y="0" class="label" font-weight="600">Supplier Information</text>
 
           <rect x="0" y="15" width="245" height="180" rx="6" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
 
           <g transform="translate(15, 35)">
             <text x="0" y="0" class="small" font-weight="600">Bjørn Eriksen</text>
             <text x="0" y="20" class="small">Eriksen Bygg AS</text>
-            <text x="0" y="40" class="small" fill="#6B7280">Totalentreprenør</text>
+            <text x="0" y="40" class="small" fill="#6B7280">General Contractor</text>
 
-            <text x="0" y="70" class="small" font-weight="600">Spesialiteter:</text>
-            <text x="0" y="88" class="small">• Grunnarbeid</text>
-            <text x="0" y="104" class="small">• Råbygg</text>
+            <text x="0" y="70" class="small" font-weight="600">Specialties:</text>
+            <text x="0" y="88" class="small">• Foundation Work</text>
+            <text x="0" y="104" class="small">• Shell Construction</text>
             <text x="0" y="120" class="small">• Prosjektledelse</text>
 
             <text x="0" y="145" class="small" font-style="italic" fill="#6B7280">
-              "Pragmatisk og erfaren,
+              "Pragmatisk and erfaren,
             </text>
             <text x="0" y="161" class="small" font-style="italic" fill="#6B7280">
-              fokusert på kvalitet"
+              fokusert på quality"
             </text>
           </g>
         </g>
 
         <!-- Chat Stats -->
         <g transform="translate(0, 420)">
-          <text x="0" y="0" class="label" font-weight="600">Forhandlingsstatus</text>
+          <text x="0" y="0" class="label" font-weight="600">Negotiation Status</text>
 
           <rect x="0" y="15" width="245" height="100" rx="6" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
 
           <g transform="translate(15, 35)">
-            <text x="0" y="0" class="small">Meldinger:</text>
+            <text x="0" y="0" class="small">Messages:</text>
             <text x="215" y="0" text-anchor="end" class="small" font-weight="600">4</text>
 
             <text x="0" y="25" class="small">Tilbud mottatt:</text>
             <text x="215" y="25" text-anchor="end" class="small" font-weight="600">1</text>
 
-            <text x="0" y="50" class="small">Siste tilbud:</text>
+            <text x="0" y="50" class="small">Latest offer:</text>
             <text x="215" y="50" text-anchor="end" class="small" font-weight="600">120 MNOK</text>
 
-            <text x="0" y="75" class="small">Tålmodighet:</text>
+            <text x="0" y="75" class="small">Patience:</text>
             <text x="215" y="75" text-anchor="end" class="small" font-weight="600">●●● (3/3)</text>
           </g>
         </g>
@@ -185,5 +185,5 @@
   </g>
 
   <!-- Footer -->
-  <text x="700" y="980" text-anchor="middle" class="small" fill="#9CA3AF">nhb-09-screen-chat.svg | AI Chat-grensesnitt med sanntids forhandling</text>
+  <text x="700" y="980" text-anchor="middle" class="small" fill="#9CA3AF">nhb-09-screen-chat.svg | AI Chat-grensesnitt with sanntids forhandling</text>
 </svg>
