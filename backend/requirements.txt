@@ -8,3 +8,5 @@ python-dotenv
 pydantic-settings
 python-jose[cryptography]
 requests
+uvicorn
+google-generativeai
