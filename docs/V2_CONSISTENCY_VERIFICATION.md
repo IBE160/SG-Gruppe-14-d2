@@ -34,7 +34,7 @@ ALL relevant documentation files have been successfully updated to reflect the v
 4. **product-brief.md** (v2.0) - Product Brief
    - POC scope: 3 negotiable + 12 locked WBS
    - 4 AI agents table with negotiation powers
-   - 310/650/700 budget model
+   - 310/390/700 budget model
    - 16 must-have features
 
 5. **README.md** - Repository overview
@@ -52,7 +52,7 @@ ALL relevant documentation files have been successfully updated to reflect the v
    - Fixed line 851: "all 3 negotiable WBS items committed"
 
 7. **ux-design-specification.md** (v2.0) - UX Design
-   - Dashboard with 310/650/700 budget display
+   - Dashboard with 310/390/700 budget display
    - WBS list: 3 negotiable (blue) + 12 locked (gray)
    - Accept/Reject button specifications
    - New Section 3.3.1: Supplier/Owner Selection Modal
@@ -72,7 +72,7 @@ ALL relevant documentation files have been successfully updated to reflect the v
 13. **research-report-2025-12-07.md**
 
 ### ✅ SVG Mockups Created (NEW):
-14. **nhb-21-v2-budget-panel-310-650-700.svg** - Budget panel mockup
+14. **nhb-21-v2-budget-panel-310-390-700.svg** - Budget panel mockup
 15. **nhb-22-v2-chat-accept-reject-buttons.svg** - Chat interface with explicit buttons
 16. **nhb-23-v2-wbs-list-3-negotiable-12-locked.svg** - WBS list mockup
 
@@ -131,7 +131,7 @@ These documents represent historical v1.0 planning and have been marked with cle
 
 - [x] All references to "15 negotiable WBS" updated to "3 negotiable + 12 locked"
 - [x] All references to "5 suppliers" updated to "4 AI agents (Owner + 3 suppliers)"
-- [x] Budget model consistently shows 310/650/700 MNOK
+- [x] Budget model consistently shows 310/390/700 MNOK
 - [x] Owner AI always shown as NEVER extending time
 - [x] Explicit accept/reject flow documented throughout
 - [x] Data file names updated: suppliers.json → agents.json

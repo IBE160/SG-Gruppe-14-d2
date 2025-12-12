@@ -221,7 +221,7 @@ This document provides a revised, actionable implementation plan to build the Ny
     - ✅ Negotiate with 3 suppliers to stay within 310 MNOK available budget
     - ✅ Verify explicit accept/reject flow (two buttons: "✓ Godta" and "✗ Avslå")
     - ✅ Verify no automatic acceptance of offers (user must click button)
-    - ✅ Verify budget display shows 3-tier breakdown: 310 available, 650 locked, 700 total
+    - ✅ Verify budget display shows 3-tier breakdown: 310 available, 390 locked, 700 total
     - ✅ Verify WBS list shows 3 negotiable (blue) and 12 locked (gray) items
 *   Fix any bugs found during testing.
 

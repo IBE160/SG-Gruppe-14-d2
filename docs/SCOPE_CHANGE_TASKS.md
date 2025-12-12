@@ -366,7 +366,7 @@ CREATE TABLE game_sessions (
 
   -- Budget tracking
   total_budget DECIMAL(10, 2) DEFAULT 700.00, -- MNOK
-  locked_budget DECIMAL(10, 2) DEFAULT 650.00,
+  locked_budget DECIMAL(10, 2) DEFAULT 390.00,
   available_budget DECIMAL(10, 2) DEFAULT 310.00,
   current_budget_used DECIMAL(10, 2) DEFAULT 0.00,
 
@@ -594,7 +594,7 @@ CREATE POLICY "Users can update their own sessions"
 - [ ] Update `PRD.md`:
   - [ ] FR-3: WBS Management → 3 negotiable items only
   - [ ] FR-4: AI Supplier Negotiation → 4 agents (Owner + 3 suppliers)
-  - [ ] FR-5: Budget model → 310 MNOK available, 650 locked
+  - [ ] FR-5: Budget model → 310 MNOK available, 390 locked
   - [ ] FR-6: Time constraint → Inflexible 15 months
   - [ ] FR-7: Negotiation types → 3 strategies documented
 
@@ -672,7 +672,7 @@ CREATE POLICY "Users can update their own sessions"
 
 - [ ] **Documentation consistency check:**
   - [ ] All docs reference 3 suppliers, 3 WBS
-  - [ ] Budget model consistent across all files (310/650/700)
+  - [ ] Budget model consistent across all files (310/390/700)
   - [ ] Time constraint documented as inflexible
   - [ ] Owner role clearly defined
 

@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" style="background:#f9fafb;font-family:'Inter',-apple-system,sans-serif">
+  <defs>
+    <style>
+      .flow-title{font-size:24px;font-weight:700;fill:#111827}
+      .flow-subtitle{font-size:14px;fill:#6b7280}
+      .flow-box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:8}
+      .flow-box-blue{fill:#eff6ff;stroke:#3b82f6;stroke-width:2;rx:8}
+      .flow-box-green{fill:#f0fdf4;stroke:#10b981;stroke-width:2;rx:8}
+      .flow-text{font-size:13px;fill:#111827;font-weight:500}
+      .flow-desc{font-size:11px;fill:#6b7280}
+      .flow-arrow{fill:none;stroke:#9ca3af;stroke-width:2;marker-end:url(#arrowhead)}
+      .decision-box{fill:#fef3c7;stroke:#f59e0b;stroke-width:2}
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="700" y="40" text-anchor="middle" class="flow-title">Komplett brukerreise - Nye Hædda Barneskole</text>
+  <text x="700" y="65" text-anchor="middle" class="flow-subtitle">POC v2.0: 3 forhandlbare pakker, 4 AI-agenter (Eier + 3 leverandører)</text>
+
+  <!-- START -->
+  <circle cx="100" cy="120" r="30" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="100" y="127" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">START</text>
+
+  <!-- Step 1: Authentication -->
+  <rect x="30" y="180" width="140" height="70" class="flow-box"/>
+  <text x="100" y="210" text-anchor="middle" class="flow-text">Autentisering</text>
+  <text x="100" y="228" text-anchor="middle" class="flow-desc">Logg inn /</text>
+  <text x="100" y="242" text-anchor="middle" class="flow-desc">Registrer</text>
+
+  <!-- Arrow -->
+  <path d="M 100 150 L 100 180" class="flow-arrow"/>
+
+  <!-- Step 2: Dashboard -->
+  <rect x="30" y="280" width="140" height="90" class="flow-box-blue"/>
+  <text x="100" y="310" text-anchor="middle" class="flow-text">Dashboard</text>
+  <text x="100" y="328" text-anchor="middle" class="flow-desc">Se budsjett:</text>
+  <text x="100" y="342" text-anchor="middle" class="flow-desc">310 MNOK tilgj.</text>
+  <text x="100" y="356" text-anchor="middle" class="flow-desc">390 MNOK låst</text>
+
+  <!-- Arrow -->
+  <path d="M 100 250 L 100 280" class="flow-arrow"/>
+
+  <!-- Step 3: Select WBS -->
+  <rect x="30" y="400" width="140" height="80" class="flow-box-blue"/>
+  <text x="100" y="430" text-anchor="middle" class="flow-text">Velg WBS-pakke</text>
+  <text x="100" y="448" text-anchor="middle" class="flow-desc">3 forhandlbare</text>
+  <text x="100" y="462" text-anchor="middle" class="flow-desc">(blå fremhevet)</text>
+
+  <!-- Arrow -->
+  <path d="M 100 370 L 100 400" class="flow-arrow"/>
+
+  <!-- Step 4: Select Partner -->
+  <rect x="30" y="510" width="140" height="90" class="flow-box-blue"/>
+  <text x="100" y="540" text-anchor="middle" class="flow-text">Velg partner</text>
+  <text x="100" y="558" text-anchor="middle" class="flow-desc">LEVERANDØR:</text>
+  <text x="100" y="572" text-anchor="middle" class="flow-desc">pris/tid/kvalitet</text>
+  <text x="100" y="590" text-anchor="middle" class="flow-desc">EIER: budsjett/scope</text>
+
+  <!-- Arrow -->
+  <path d="M 100 480 L 100 510" class="flow-arrow"/>
+
+  <!-- Branch: Supplier or Owner -->
+  <path d="M 170 555 L 250 555" class="flow-arrow"/>
+  <path d="M 170 575 L 250 680" class="flow-arrow"/>
+
+  <!-- Supplier Path -->
+  <rect x="280" y="520" width="160" height="70" class="flow-box"/>
+  <text x="360" y="545" text-anchor="middle" class="flow-text">Chat: Leverandør</text>
+  <text x="360" y="563" text-anchor="middle" class="flow-desc">Bjørn/Kari/Per</text>
+  <text x="360" y="577" text-anchor="middle" class="flow-desc">Forhandle pris/tid/kval.</text>
+
+  <!-- Owner Path -->
+  <rect x="280" y="650" width="160" height="70" class="flow-box"/>
+  <text x="360" y="675" text-anchor="middle" class="flow-text">Chat: Eier</text>
+  <text x="360" y="693" text-anchor="middle" class="flow-desc">Anne-Lise Berg</text>
+  <text x="360" y="707" text-anchor="middle" class="flow-desc">Budsjett ↑ / Scope ↓</text>
+
+  <!-- Converge to Offer -->
+  <path d="M 440 555 L 520 620" class="flow-arrow"/>
+  <path d="M 440 685 L 520 650" class="flow-arrow"/>
+
+  <!-- Step 5: Receive Offer -->
+  <rect x="550" y="605" width="140" height="70" class="flow-box-green"/>
+  <text x="620" y="630" text-anchor="middle" class="flow-text">Motta tilbud</text>
+  <text x="620" y="648" text-anchor="middle" class="flow-desc">Kost + Varighet</text>
+  <text x="620" y="662" text-anchor="middle" class="flow-desc">ELLER budsjettøkning</text>
+
+  <!-- Step 6: Decision -->
+  <polygon points="780,585 850,640 780,695 710,640" class="decision-box"/>
+  <text x="780" y="638" text-anchor="middle" class="flow-text">Godta</text>
+  <text x="780" y="653" text-anchor="middle" class="flow-text">tilbud?</text>
+
+  <!-- Arrow to Decision -->
+  <path d="M 690 640 L 710 640" class="flow-arrow"/>
+
+  <!-- NO: Renegotiate -->
+  <path d="M 780 695 L 780 750 L 360 750 L 360 600" class="flow-arrow"/>
+  <text x="570" y="768" text-anchor="middle" class="flow-desc" font-weight="600">NEI: Avslå → Reforhandle</text>
+
+  <!-- YES: Commit -->
+  <rect x="920" y="605" width="140" height="70" class="flow-box-green"/>
+  <text x="990" y="630" text-anchor="middle" class="flow-text">Forplikt til plan</text>
+  <text x="990" y="648" text-anchor="middle" class="flow-desc">Oppdater budsjett</text>
+  <text x="990" y="662" text-anchor="middle" class="flow-desc">+ tidslinje</text>
+
+  <!-- Arrow YES -->
+  <path d="M 850 640 L 920 640" class="flow-arrow"/>
+  <text x="885" y="630" text-anchor="middle" class="flow-desc" font-weight="600">JA</text>
+
+  <!-- Step 7: Check Complete -->
+  <polygon points="1130,585 1200,640 1130,695 1060,640" class="decision-box"/>
+  <text x="1130" y="638" text-anchor="middle" class="flow-text">3 pakker</text>
+  <text x="1130" y="653" text-anchor="middle" class="flow-text">fullført?</text>
+
+  <!-- Arrow to Check -->
+  <path d="M 1060 640 L 1060 640" class="flow-arrow"/>
+
+  <!-- NO: Return to Select -->
+  <path d="M 1130 585 L 1130 440 L 100 440 L 100 480" class="flow-arrow"/>
+  <text x="620" y="425" text-anchor="middle" class="flow-desc" font-weight="600">NEI: Velg neste WBS</text>
+
+  <!-- YES: Submit -->
+  <rect x="1270" y="605" width="110" height="70" class="flow-box-blue"/>
+  <text x="1325" y="630" text-anchor="middle" class="flow-text">Send inn</text>
+  <text x="1325" y="648" text-anchor="middle" class="flow-text">plan</text>
+  <text x="1325" y="662" text-anchor="middle" class="flow-desc">Valider</text>
+
+  <!-- Arrow YES -->
+  <path d="M 1200 640 L 1270 640" class="flow-arrow"/>
+  <text x="1235" y="630" text-anchor="middle" class="flow-desc" font-weight="600">JA</text>
+
+  <!-- Step 8: Validation -->
+  <polygon points="1325,310 1395,365 1325,420 1255,365" class="decision-box"/>
+  <text x="1325" y="360" text-anchor="middle" class="flow-text">Bestått?</text>
+  <text x="1325" y="375" text-anchor="middle" class="flow-desc">≤700 MNOK</text>
+  <text x="1325" y="388" text-anchor="middle" class="flow-desc">≤15. mai 2026</text>
+
+  <!-- Arrow to Validation -->
+  <path d="M 1325 605 L 1325 420" class="flow-arrow"/>
+
+  <!-- NO: Renegotiate All -->
+  <path d="M 1255 365 L 100 365 L 100 400" class="flow-arrow"/>
+  <text x="680" y="350" text-anchor="middle" class="flow-desc" font-weight="600">FEIL: Reforhandle</text>
+
+  <!-- YES: Success -->
+  <rect x="1255" y="180" width="140" height="70" class="flow-box-green"/>
+  <text x="1325" y="205" text-anchor="middle" class="flow-text">SUKSESS!</text>
+  <text x="1325" y="223" text-anchor="middle" class="flow-desc">Eksporter økt</text>
+  <text x="1325" y="237" text-anchor="middle" class="flow-desc">Se statistikk</text>
+
+  <!-- Arrow YES -->
+  <path d="M 1325 310 L 1325 250" class="flow-arrow"/>
+  <text x="1335" y="280" text-anchor="start" class="flow-desc" font-weight="600">JA</text>
+
+  <!-- END -->
+  <circle cx="1325" cy="120" r="30" fill="#ef4444" stroke="#dc2626" stroke-width="2"/>
+  <text x="1325" y="127" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">SLUTT</text>
+
+  <!-- Arrow to END -->
+  <path d="M 1325 180 L 1325 150" class="flow-arrow"/>
+
+  <!-- Legend -->
+  <rect x="50" y="820" width="1300" height="60" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+  <text x="70" y="840" class="flow-text">Nøkkelkonsepter v2.0:</text>
+  <rect x="70" y="850" width="12" height="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1"/>
+  <text x="90" y="860" class="flow-desc">= Brukerinteraksjon</text>
+  <rect x="230" y="850" width="12" height="12" fill="#f0fdf4" stroke="#10b981" stroke-width="1"/>
+  <text x="250" y="860" class="flow-desc">= AI-generert respons</text>
+  <rect x="410" y="850" width="12" height="12" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="430" y="860" class="flow-desc">= Beslutningspunkt (eksplisitt valg)</text>
+  <text x="670" y="860" class="flow-desc" font-weight="600">• 3 forhandlbare WBS (blå) + 12 låste (grå)</text>
+  <text x="950" y="860" class="flow-desc" font-weight="600">• 4 AI-agenter: Eier + 3 leverandører</text>
+</svg>

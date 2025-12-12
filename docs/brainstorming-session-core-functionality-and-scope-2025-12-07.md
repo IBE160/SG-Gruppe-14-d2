@@ -2,7 +2,7 @@
 
 > **⚠️ HISTORICAL DOCUMENT:** This brainstorming session reflects the original v1.0 scope (15 negotiable WBS, 5 suppliers). For current POC scope, see:
 > - **PRD.md (v2.0):** 3 negotiable + 12 locked WBS, 4 AI agents (Owner + 3 suppliers)
-> - **product-brief.md (v2.0):** 310/650/700 MNOK budget model, inflexible time constraint
+> - **product-brief.md (v2.0):** 310/390/700 MNOK budget model, inflexible time constraint
 > - **AI_AGENT_SYSTEM_PROMPTS.md:** Complete v2.0 AI agent specifications
 
 - **Date:** 2025-12-07

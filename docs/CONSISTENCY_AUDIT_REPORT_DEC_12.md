@@ -19,7 +19,7 @@ This audit verifies that all documentation in `/docs` is consistent with the sco
 - ⚠️ 2 documents contain historical v1.0 scope but have clear warning banners
 - ✅ All critical planning documents (PRD, Product Brief, Epics, UX Design) are v2.0
 - ✅ AI agent system prompts are complete and accurate
-- ✅ Budget model (310/650/700 MNOK) is correctly reflected everywhere
+- ✅ Budget model (310/390/700 MNOK) is correctly reflected everywhere
 - ✅ 4 AI agent roles (Owner + 3 Suppliers) are consistently documented
 - ✅ Inflexible time constraint is emphasized throughout
 
@@ -81,7 +81,7 @@ This audit verifies that all documentation in `/docs` is consistent with the sco
 **Verified Elements:**
 - ✅ 3 negotiable + 12 locked WBS packages
 - ✅ 4 AI agent roles (Owner + 3 suppliers)
-- ✅ Budget model: 310/650/700 MNOK
+- ✅ Budget model: 310/390/700 MNOK
 - ✅ Owner time rejection rule documented
 - ✅ Explicit accept/reject flow
 - ✅ No contract signing mentioned
@@ -180,7 +180,7 @@ Line 82-89: "| **Anne-Lise Berg** | Owner (Municipality) |
 - ✅ 4 AI agents documented (line 49)
 - ✅ Story E4.7: Owner agent negotiation (8 points) - lines 622-664
 - ✅ Explicit accept/reject flow (line 50, Epic 5)
-- ✅ Budget model 310/650/700 documented (line 48)
+- ✅ Budget model 310/390/700 documented (line 48)
 - ✅ Time rejection testing in E4.7 acceptance criteria (line 647)
 
 **Sample Verification:**
@@ -202,7 +202,7 @@ Line 647-651: "Test scenarios:
 
 **Verified Elements:**
 - ✅ Version 2.0 changelog (lines 9-10)
-- ✅ Budget display: 310/650/700 MNOK (lines 296-303, 339-353)
+- ✅ Budget display: 310/390/700 MNOK (lines 296-303, 339-353)
 - ✅ WBS list: 3 negotiable (blue) + 12 locked (gray) (lines 303-385)
 - ✅ Explicit accept/reject buttons in chat (lines 465-485)
 - ✅ Owner option in chat interface (lines 410-411)
@@ -284,7 +284,7 @@ Note: This file already exists and documents the v2.0 consistency check from an 
 > the original v1.0 scope (15 negotiable WBS, 5 suppliers).
 > For current POC scope, see:
 > - **PRD.md (v2.0):** 3 negotiable + 12 locked WBS, 4 AI agents
-> - **product-brief.md (v2.0):** 310/650/700 MNOK budget model
+> - **product-brief.md (v2.0):** 310/390/700 MNOK budget model
 > - **AI_AGENT_SYSTEM_PROMPTS.md:** Complete v2.0 AI agent specifications
 ```
 
@@ -309,7 +309,7 @@ Note: This file already exists and documents the v2.0 consistency check from an 
 - epics.md ✅ (E4.7: Owner agent story)
 - product-brief.md ✅
 
-### ✅ Requirement 3: Budget Model (310/650/700 MNOK)
+### ✅ Requirement 3: Budget Model (310/390/700 MNOK)
 **Status:** VERIFIED in all v2.0 documents
 - PRD.md ✅
 - product-brief.md ✅
@@ -416,7 +416,7 @@ The documentation ecosystem is in excellent shape:
 - 8 of 10 major documents are fully updated to v2.0 scope
 - 2 historical documents have clear warning banners directing to v2.0 docs
 - All critical requirements from the reference document are consistently reflected
-- Budget model (310/650/700) is accurate everywhere
+- Budget model (310/390/700) is accurate everywhere
 - 4 AI agent roles are well-defined with complete system prompts
 - Inflexible time constraint is properly emphasized
 - Explicit accept/reject flow is documented throughout

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" style="background:#f9fafb">
+  <defs>
+    <style>
+      .chat-title{font-family:'Inter',-apple-system,sans-serif;font-size:18px;font-weight:700;fill:#111827}
+      .chat-subtitle{font-family:'Inter',-apple-system,sans-serif;font-size:14px;fill:#6b7280}
+      .chat-text{font-family:'Inter',-apple-system,sans-serif;font-size:13px;fill:#374151;font-weight:500}
+      .chat-desc{font-family:'Inter',-apple-system,sans-serif;font-size:12px;fill:#6b7280}
+      .chat-small{font-family:'Inter',-apple-system,sans-serif;font-size:11px;fill:#9ca3af}
+      .chat-btn-text{font-family:'Inter',-apple-system,sans-serif;font-size:13px;font-weight:600}
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1400" height="900" fill="#f9fafb"/>
+
+  <!-- Top Navigation -->
+  <rect x="0" y="0" width="1400" height="60" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+  <text x="30" y="38" class="chat-title">← Tilbake til Dashboard</text>
+  <text x="1250" y="38" class="chat-text">Bruker: Test</text>
+
+  <!-- Main Chat Area -->
+  <rect x="30" y="80" width="900" height="800" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="8"/>
+
+  <!-- Chat Header -->
+  <rect x="30" y="80" width="900" height="80" fill="#f9fafb" stroke="#d1d5db" stroke-width="1" rx="8"/>
+  <circle cx="70" cy="120" r="25" fill="#3b82f6"/>
+  <text x="70" y="128" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">KA</text>
+
+  <text x="110" y="115" class="chat-title">Kari Andersen</text>
+  <text x="110" y="135" class="chat-desc">Leverandør 2: Fundamentering (WBS 1.3.2)</text>
+
+  <!-- Toggle: Forhandler med -->
+  <rect x="700" y="100" width="200" height="40" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="6"/>
+  <text x="720" y="117" class="chat-desc">Forhandler med:</text>
+  <rect x="720" y="120" width="85" height="20" fill="#3b82f6" rx="4"/>
+  <text x="762" y="134" text-anchor="middle" class="chat-desc" fill="#fff" font-weight="600">Leverandør</text>
+  <rect x="810" y="120" width="60" height="20" fill="#f3f4f6" rx="4"/>
+  <text x="840" y="134" text-anchor="middle" class="chat-desc">Eier</text>
+
+  <!-- Message 1: User -->
+  <rect x="150" y="190" width="700" height="70" fill="#eff6ff" stroke="#3b82f6" stroke-width="1" rx="6"/>
+  <text x="170" y="210" class="chat-text">Hei Kari, jeg ser at baseline estimatet for fundamentering er 60 MNOK med</text>
+  <text x="170" y="228" class="chat-text">2.5 måneders varighet. Vi har et stramt budsjett. Kan du tilby en bedre pris?</text>
+  <text x="830" y="253" text-anchor="end" class="chat-small">Du, 10:34</text>
+
+  <!-- Message 2: AI Response -->
+  <rect x="50" y="280" width="700" height="110" fill="#f9fafb" stroke="#d1d5db" stroke-width="1" rx="6"/>
+  <text x="70" y="300" class="chat-text">Hei! Jeg forstår at budsjettet er utfordrende. Jeg kan tilby noen alternativer:</text>
+  <text x="70" y="325" class="chat-text">1. Standardløsning: 55 MNOK, 2.5 måneder (opprinnelig kvalitet)</text>
+  <text x="70" y="343" class="chat-text">2. Budsjettløsning: 48 MNOK, 2.5 måneder (enklere materialer)</text>
+  <text x="70" y="361" class="chat-text">3. Ekspressløsning: 72 MNOK, 1.8 måneder (overtidskostnader)</text>
+  <text x="730" y="383" text-anchor="end" class="chat-small">Kari Andersen, 10:35</text>
+
+  <!-- Message 3: User -->
+  <rect x="150" y="410" width="700" height="50" fill="#eff6ff" stroke="#3b82f6" stroke-width="1" rx="6"/>
+  <text x="170" y="430" class="chat-text">Alternativ 1 høres bra ut. Kan du bekrefte detaljer for 55 MNOK tilbudet?</text>
+  <text x="830" y="453" text-anchor="end" class="chat-small">Du, 10:36</text>
+
+  <!-- Message 4: AI Final Offer -->
+  <rect x="50" y="480" width="700" height="130" fill="#f0fdf4" stroke="#10b981" stroke-width="2" rx="6"/>
+  <text x="70" y="503" class="chat-text" font-weight="700">✓ TILBUD KLAR</text>
+  <text x="70" y="528" class="chat-text">Pakke: WBS 1.3.2 Fundamentering</text>
+  <text x="70" y="546" class="chat-text">Kostnad: 55 MNOK (spart 5 MNOK fra baseline)</text>
+  <text x="70" y="564" class="chat-text">Varighet: 2.5 måneder</text>
+  <text x="70" y="582" class="chat-text">Kvalitet: Standard (som spesifisert i dokumentasjon)</text>
+  <text x="730" y="603" text-anchor="end" class="chat-small">Kari Andersen, 10:37</text>
+
+  <!-- Accept/Reject Buttons -->
+  <rect x="100" y="635" width="280" height="50" fill="#10b981" rx="6" style="cursor:pointer"/>
+  <text x="240" y="665" text-anchor="middle" class="chat-btn-text" fill="#fff" font-size="15">✓ Godta tilbud: 55 MNOK, 2.5 mnd</text>
+
+  <rect x="400" y="635" width="180" height="50" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1" rx="6" style="cursor:pointer"/>
+  <text x="490" y="665" text-anchor="middle" class="chat-btn-text" fill="#374151">✗ Avslå og reforhandle</text>
+
+  <text x="100" y="705" class="chat-desc" fill="#059669">Ved å godta, oppdateres budsjettet ditt automatisk</text>
+
+  <!-- Input Field (disabled during offer) -->
+  <rect x="50" y="740" width="800" height="50" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1" rx="6" opacity="0.5"/>
+  <text x="70" y="770" class="chat-desc" fill="#9ca3af">Du må godta eller avslå tilbudet før du kan fortsette...</text>
+
+  <!-- Right Sidebar -->
+  <rect x="950" y="80" width="420" height="800" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="8"/>
+
+  <!-- Current WBS Info -->
+  <rect x="970" y="100" width="380" height="150" fill="#eff6ff" stroke="#3b82f6" stroke-width="1" rx="6"/>
+  <text x="990" y="125" class="chat-title">WBS 1.3.2 Fundamentering</text>
+  <text x="990" y="150" class="chat-desc">Baseline estimat: 60 MNOK | 2.5 mnd</text>
+  <text x="990" y="170" class="chat-desc">Leverandør: Kari Andersen</text>
+  <text x="990" y="190" class="chat-desc">Kritisk sti: Ja ⚠</text>
+  <text x="990" y="210" class="chat-desc">Status: Under forhandling...</text>
+
+  <!-- Budget Impact Preview -->
+  <rect x="970" y="270" width="380" height="140" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="6"/>
+  <text x="990" y="295" class="chat-title">Budsjettvirkning</text>
+
+  <text x="990" y="320" class="chat-text">Hvis godtatt (55 MNOK):</text>
+  <text x="990" y="340" class="chat-desc">• Tilgjengelig: 55/310 MNOK (18%)</text>
+  <text x="990" y="355" class="chat-desc">• Låst: 390 MNOK</text>
+  <text x="990" y="370" class="chat-desc">• Totalt: 445/700 MNOK (64%)</text>
+  <text x="990" y="390" class="chat-text" fill="#92400e">Gjenstår: 255 MNOK for 2 pakker</text>
+
+  <!-- Negotiation Capabilities -->
+  <rect x="970" y="430" width="380" height="200" fill="#f9fafb" stroke="#d1d5db" stroke-width="1" rx="6"/>
+  <text x="990" y="455" class="chat-title">Forhandlingsmuligheter</text>
+
+  <text x="990" y="480" class="chat-text">Kari Andersen kan:</text>
+  <text x="1000" y="500" class="chat-desc">✓ Redusere pris (mot kvalitet)</text>
+  <text x="1000" y="515" class="chat-desc">✓ Endre varighet (mot kostnad)</text>
+  <text x="1000" y="530" class="chat-desc">✓ Justere materialer/metoder</text>
+
+  <text x="990" y="555" class="chat-text">Kari Andersen kan IKKE:</text>
+  <text x="1000" y="575" class="chat-desc" fill="#ef4444">✗ Forlenge prosjektdeadline</text>
+  <text x="1000" y="590" class="chat-desc" fill="#ef4444">✗ Endre scope (kun eier)</text>
+  <text x="1000" y="605" class="chat-desc" fill="#ef4444">✗ Øke total budsjett (kun eier)</text>
+
+  <!-- Documents -->
+  <rect x="970" y="650" width="380" height="220" fill="#f9fafb" stroke="#d1d5db" stroke-width="1" rx="6"/>
+  <text x="990" y="675" class="chat-title">Dokumenter</text>
+
+  <rect x="990" y="690" width="340" height="35" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+  <text x="1010" y="713" class="chat-desc">📄 WBS 1.3.2 Spesifikasjon.pdf</text>
+
+  <rect x="990" y="735" width="340" height="35" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+  <text x="1010" y="758" class="chat-desc">📊 Fundamentering Kostnadsestim.</text>
+
+  <rect x="990" y="780" width="340" height="35" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+  <text x="1010" y="803" class="chat-desc">🗓 Prosjekttidsplan.xlsx</text>
+
+  <text x="990" y="840" class="chat-small" fill="#059669">💡 Tip: Du kan alltid bytte til Eier for scope/budsjett</text>
+</svg>

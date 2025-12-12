@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" style="background:#f9fafb">
+  <defs>
+    <style>
+      .strat-title{font-family:'Inter',-apple-system,sans-serif;font-size:22px;font-weight:700;fill:#111827}
+      .strat-subtitle{font-family:'Inter',-apple-system,sans-serif;font-size:13px;fill:#6b7280}
+      .strat-box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:8}
+      .strat-supplier{fill:#dbeafe;stroke:#3b82f6;stroke-width:2;rx:8}
+      .strat-owner{fill:#fef3c7;stroke:#f59e0b;stroke-width:2;rx:8}
+      .strat-text{font-family:'Inter',-apple-system,sans-serif;font-size:13px;fill:#111827;font-weight:600}
+      .strat-desc{font-family:'Inter',-apple-system,sans-serif;font-size:11px;fill:#6b7280}
+      .strat-arrow{fill:none;stroke:#9ca3af;stroke-width:2;marker-end:url(#arrow3)}
+    </style>
+    <marker id="arrow3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="35" text-anchor="middle" class="strat-title">Forhandlingsstrategier - 3 hovedveier</text>
+  <text x="600" y="55" text-anchor="middle" class="strat-subtitle">v2.0: 4 AI-agenter med distinkte forhandlingsmuligheter</text>
+
+  <!-- Problem Statement -->
+  <rect x="400" y="90" width="400" height="110" fill="#fee2e2" stroke="#ef4444" stroke-width="2" rx="8"/>
+  <text x="600" y="115" text-anchor="middle" class="strat-text" font-size="15">UTFORDRING</text>
+  <text x="600" y="135" text-anchor="middle" class="strat-desc">Total budsjett: 700 MNOK</text>
+  <text x="600" y="150" text-anchor="middle" class="strat-desc">Låst (12 pakker): 390 MNOK | Tilgjengelig: 310 MNOK</text>
+  <text x="600" y="170" text-anchor="middle" class="strat-desc">3 WBS-pakker baseline estimat: 345 MNOK</text>
+  <text x="600" y="190" text-anchor="middle" class="strat-text" fill="#ef4444" font-size="14">⚠ UNDERSKUDD FRA START: 35 MNOK</text>
+
+  <!-- Three Strategy Paths -->
+
+  <!-- STRATEGY 1: Reduced Quality -->
+  <rect x="50" y="250" width="300" height="480" class="strat-supplier"/>
+  <text x="200" y="280" text-anchor="middle" class="strat-text" font-size="16">STRATEGI 1: Redusert kvalitet</text>
+  <text x="200" y="300" text-anchor="middle" class="strat-desc">Forhandle med LEVERANDØR</text>
+
+  <!-- Partner Box -->
+  <rect x="70" y="320" width="260" height="60" fill="#fff" stroke="#3b82f6" stroke-width="1" rx="4"/>
+  <text x="200" y="340" text-anchor="middle" class="strat-text">Partner: Bjørn Eriksen</text>
+  <text x="200" y="356" text-anchor="middle" class="strat-desc">Leverandør 1 (Grunnarbeid)</text>
+  <text x="200" y="372" text-anchor="middle" class="strat-desc">Rolle: Pris/kvalitet-forhandling</text>
+
+  <!-- Negotiation Points -->
+  <text x="70" y="405" class="strat-text">Forhandlingspunkter:</text>
+  <text x="80" y="425" class="strat-desc">✓ Billigere materialer</text>
+  <text x="80" y="442" class="strat-desc">✓ Enklere spesifikasjoner</text>
+  <text x="80" y="459" class="strat-desc">✓ Redusere sikkerhetsmarginer</text>
+
+  <!-- Expected Result -->
+  <rect x="70" y="480" width="260" height="80" fill="#f0fdf4" stroke="#10b981" stroke-width="1" rx="4"/>
+  <text x="200" y="502" text-anchor="middle" class="strat-text">Forventet resultat:</text>
+  <text x="200" y="520" text-anchor="middle" class="strat-desc">Pris reduksjon: 10-15%</text>
+  <text x="200" y="536" text-anchor="middle" class="strat-desc">Kvalitet reduksjon: Liten-moderat</text>
+  <text x="200" y="552" text-anchor="middle" class="strat-text" fill="#10b981">Spare 10-16 MNOK</text>
+
+  <!-- Risks -->
+  <text x="70" y="585" class="strat-text">Risikoer:</text>
+  <text x="80" y="605" class="strat-desc" fill="#ef4444">⚠ Kvalitetsproblemer senere</text>
+  <text x="80" y="622" class="strat-desc" fill="#ef4444">⚠ Høyere vedlikeholdskostnader</text>
+
+  <text x="70" y="655" class="strat-text" fill="#059669">✓ Anbefalt for ikke-kritiske pakker</text>
+
+  <!-- Arrow from problem -->
+  <path d="M 500 200 L 200 250" class="strat-arrow"/>
+
+  <!-- STRATEGY 2: Reduced Scope -->
+  <rect x="450" y="250" width="300" height="480" class="strat-owner"/>
+  <text x="600" y="280" text-anchor="middle" class="strat-text" font-size="16">STRATEGI 2: Redusert scope</text>
+  <text x="600" y="300" text-anchor="middle" class="strat-desc">Forhandle med EIER</text>
+
+  <!-- Partner Box -->
+  <rect x="470" y="320" width="260" height="60" fill="#fff" stroke="#f59e0b" stroke-width="1" rx="4"/>
+  <text x="600" y="340" text-anchor="middle" class="strat-text">Partner: Anne-Lise Berg</text>
+  <text x="600" y="356" text-anchor="middle" class="strat-desc">Prosjekteier (Kommune)</text>
+  <text x="600" y="372" text-anchor="middle" class="strat-desc">Rolle: Godkjenne scope-endringer</text>
+
+  <!-- Negotiation Points -->
+  <text x="470" y="405" class="strat-text">Forhandlingspunkter:</text>
+  <text x="480" y="425" class="strat-desc">✓ Fjerne nice-to-have funksjoner</text>
+  <text x="480" y="442" class="strat-desc">✓ Utsette ikke-essensielle rom</text>
+  <text x="480" y="459" class="strat-desc">✓ Forenkle byggedesign</text>
+
+  <!-- Expected Result -->
+  <rect x="470" y="480" width="260" height="80" fill="#f0fdf4" stroke="#10b981" stroke-width="1" rx="4"/>
+  <text x="600" y="502" text-anchor="middle" class="strat-text">Forventet resultat:</text>
+  <text x="600" y="520" text-anchor="middle" class="strat-desc">Scope reduksjon: 10-20%</text>
+  <text x="600" y="536" text-anchor="middle" class="strat-desc">Funksjonalitet: Redusert</text>
+  <text x="600" y="552" text-anchor="middle" class="strat-text" fill="#10b981">Spare 15-25 MNOK</text>
+
+  <!-- Risks -->
+  <text x="470" y="585" class="strat-text">Risikoer:</text>
+  <text x="480" y="605" class="strat-desc" fill="#ef4444">⚠ Mindre fleksibel skole</text>
+  <text x="480" y="622" class="strat-desc" fill="#ef4444">⚠ Politisk motstand</text>
+
+  <text x="470" y="655" class="strat-text" fill="#059669">✓ Beste for store underskudd</text>
+
+  <!-- Arrow from problem -->
+  <path d="M 600 200 L 600 250" class="strat-arrow"/>
+
+  <!-- STRATEGY 3: Faster + Budget Increase -->
+  <rect x="850" y="250" width="300" height="480" class="strat-supplier"/>
+  <text x="1000" y="280" text-anchor="middle" class="strat-text" font-size="16">STRATEGI 3: Raskere + Økt kost</text>
+  <text x="1000" y="300" text-anchor="middle" class="strat-desc">Forhandle med LEVERANDØR → EIER</text>
+
+  <!-- Step 1: Supplier -->
+  <rect x="870" y="320" width="260" height="70" fill="#fff" stroke="#3b82f6" stroke-width="1" rx="4"/>
+  <text x="1000" y="340" text-anchor="middle" class="strat-text">Steg 1: Kari Andersen</text>
+  <text x="1000" y="356" text-anchor="middle" class="strat-desc">Leverandør 2 (Fundamentering)</text>
+  <text x="1000" y="372" text-anchor="middle" class="strat-desc">Tilby raskere levering mot overtidskost</text>
+
+  <!-- Step 2: Owner -->
+  <rect x="870" y="405" width="260" height="70" fill="#fff" stroke="#f59e0b" stroke-width="1" rx="4"/>
+  <text x="1000" y="425" text-anchor="middle" class="strat-text">Steg 2: Anne-Lise Berg</text>
+  <text x="1000" y="441" text-anchor="middle" class="strat-desc">Eier (Kommune)</text>
+  <text x="1000" y="457" text-anchor="middle" class="strat-desc">Be om budsjettøkning for overtid</text>
+
+  <!-- Expected Result -->
+  <rect x="870" y="490" width="260" height="80" fill="#f0fdf4" stroke="#10b981" stroke-width="1" rx="4"/>
+  <text x="1000" y="512" text-anchor="middle" class="strat-text">Forventet resultat:</text>
+  <text x="1000" y="530" text-anchor="middle" class="strat-desc">Tid reduksjon: 25%</text>
+  <text x="1000" y="546" text-anchor="middle" class="strat-desc">Kost økning: +30%</text>
+  <text x="1000" y="562" text-anchor="middle" class="strat-text" fill="#f59e0b">Krever +20-30 MNOK</text>
+
+  <!-- Risks -->
+  <text x="870" y="595" class="strat-text">Risikoer:</text>
+  <text x="880" y="615" class="strat-desc" fill="#ef4444">⚠ Må overbevise eier (vanskelig)</text>
+  <text x="880" y="632" class="strat-desc" fill="#ef4444">⚠ Total budsjett øker</text>
+
+  <text x="870" y="665" class="strat-text" fill="#059669">✓ Bruk kun hvis kritisk sti truet</text>
+
+  <!-- Arrow from problem -->
+  <path d="M 700 200 L 1000 250" class="strat-arrow"/>
+
+  <!-- CRITICAL RULE -->
+  <rect x="350" y="760" width="500" height="30" fill="#fee2e2" stroke="#ef4444" stroke-width="2" rx="4"/>
+  <text x="600" y="780" text-anchor="middle" class="strat-text" fill="#ef4444">⚠ KRITISK REGEL: Eier kan ALDRI forlenge tid (15. mai 2026 er ufravikelig)</text>
+</svg>

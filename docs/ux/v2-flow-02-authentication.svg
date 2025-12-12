@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" style="background:#f9fafb;font-family:'Inter',-apple-system,sans-serif">
+  <defs>
+    <style>
+      .auth-title{font-size:22px;font-weight:700;fill:#111827}
+      .auth-subtitle{font-size:13px;fill:#6b7280}
+      .auth-box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:8}
+      .auth-box-blue{fill:#eff6ff;stroke:#3b82f6;stroke-width:2;rx:8}
+      .auth-text{font-size:13px;fill:#111827;font-weight:500}
+      .auth-desc{font-size:11px;fill:#6b7280}
+      .auth-arrow{fill:none;stroke:#9ca3af;stroke-width:2;marker-end:url(#arrow2)}
+      .auth-decision{fill:#fef3c7;stroke:#f59e0b;stroke-width:2}
+    </style>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" class="auth-title">Autentiseringsflyt</text>
+  <text x="450" y="55" text-anchor="middle" class="auth-subtitle">Supabase Auth - E-post og passord</text>
+
+  <!-- START -->
+  <circle cx="450" cy="100" r="25" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="450" y="106" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">START</text>
+
+  <!-- Decision: Existing User? -->
+  <polygon points="450,150 540,200 450,250 360,200" class="auth-decision"/>
+  <text x="450" y="198" text-anchor="middle" class="auth-text">Har du</text>
+  <text x="450" y="213" text-anchor="middle" class="auth-text">konto?</text>
+
+  <!-- Arrow to Decision -->
+  <path d="M 450 125 L 450 150" class="auth-arrow"/>
+
+  <!-- YES Branch: Login -->
+  <rect x="600" y="170" width="250" height="220" class="auth-box-blue"/>
+  <text x="725" y="195" text-anchor="middle" class="auth-text" font-weight="700">EKSISTERENDE BRUKER</text>
+
+  <!-- Login Form -->
+  <text x="625" y="225" class="auth-text">1. Åpne innloggingsskjerm</text>
+  <rect x="625" y="235" width="200" height="30" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+  <text x="635" y="255" class="auth-desc">E-post</text>
+
+  <rect x="625" y="275" width="200" height="30" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+  <text x="635" y="295" class="auth-desc">Passord</text>
+
+  <rect x="625" y="320" width="200" height="36" fill="#3b82f6" stroke="#2563eb" stroke-width="1" rx="4"/>
+  <text x="725" y="343" text-anchor="middle" fill="#fff" class="auth-text">Logg inn</text>
+
+  <text x="625" y="375" class="auth-desc">2. Verifiser legitimasjon</text>
+
+  <!-- Arrow YES -->
+  <path d="M 540 200 L 600 200" class="auth-arrow"/>
+  <text x="570" y="190" text-anchor="middle" class="auth-desc" font-weight="600">JA</text>
+
+  <!-- NO Branch: Register -->
+  <rect x="50" y="170" width="250" height="280" class="auth-box-blue"/>
+  <text x="175" y="195" text-anchor="middle" class="auth-text" font-weight="700">NY BRUKER</text>
+
+  <!-- Registration Form -->
+  <text x="75" y="225" class="auth-text">1. Åpne registreringsskjerm</text>
+  <rect x="75" y="235" width="200" height="30" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+  <text x="85" y="255" class="auth-desc">Fullt navn</text>
+
+  <rect x="75" y="275" width="200" height="30" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+  <text x="85" y="295" class="auth-desc">E-post (universitets-e-post)</text>
+
+  <rect x="75" y="315" width="200" height="30" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+  <text x="85" y="335" class="auth-desc">Passord (min. 8 tegn)</text>
+
+  <rect x="75" y="360" width="200" height="36" fill="#3b82f6" stroke="#2563eb" stroke-width="1" rx="4"/>
+  <text x="175" y="383" text-anchor="middle" fill="#fff" class="auth-text">Registrer deg</text>
+
+  <text x="75" y="415" class="auth-desc">2. Send verifiseringslenke</text>
+  <text x="75" y="435" class="auth-desc">3. Bekreft e-post (klikk lenke)</text>
+
+  <!-- Arrow NO -->
+  <path d="M 360 200 L 300 200" class="auth-arrow"/>
+  <text x="330" y="190" text-anchor="middle" class="auth-desc" font-weight="600">NEI</text>
+
+  <!-- Converge: Auth Success -->
+  <rect x="350" y="485" width="200" height="60" fill="#f0fdf4" stroke="#10b981" stroke-width="2" rx="8"/>
+  <text x="450" y="510" text-anchor="middle" class="auth-text">Autentisering vellykket</text>
+  <text x="450" y="528" text-anchor="middle" class="auth-desc">JWT-token lagret</text>
+
+  <!-- Arrow from Login -->
+  <path d="M 725 390 L 725 515 L 550 515" class="auth-arrow"/>
+
+  <!-- Arrow from Register -->
+  <path d="M 175 450 L 175 515 L 350 515" class="auth-arrow"/>
+
+  <!-- Redirect to Dashboard -->
+  <rect x="350" y="580" width="200" height="60" class="auth-box-blue"/>
+  <text x="450" y="605" text-anchor="middle" class="auth-text" font-weight="700">Omdiriger til Dashboard</text>
+  <text x="450" y="623" text-anchor="middle" class="auth-desc">Session initialisert</text>
+
+  <!-- Arrow -->
+  <path d="M 450 545 L 450 580" class="auth-arrow"/>
+
+  <!-- END -->
+  <circle cx="450" cy="675" r="25" fill="#ef4444" stroke="#dc2626" stroke-width="2"/>
+  <text x="450" y="681" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">SLUTT</text>
+
+  <!-- Arrow to END -->
+  <path d="M 450 640 L 450 650" class="auth-arrow"/>
+
+  <!-- Security Note -->
+  <rect x="50" y="20" width="300" height="50" fill="#fef3c7" stroke="#f59e0b" stroke-width="1" rx="4"/>
+  <text x="60" y="38" class="auth-text">🔒 Sikkerhet:</text>
+  <text x="60" y="55" class="auth-desc">• Passord hashet med bcrypt</text>
+  <text x="60" y="67" class="auth-desc">• JWT-token utløper etter 24 timer</text>
+</svg>

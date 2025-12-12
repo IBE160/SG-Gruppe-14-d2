@@ -6,7 +6,7 @@
 **Status:** Updated for POC Scope (3 Negotiable WBS + 4 AI Agents)
 **UX Designer:** [To be assigned]
 **Changelog:**
-- v2.0: POC scope - 3 negotiable + 12 locked WBS, 4 AI agents (Owner + 3 suppliers), explicit accept/reject flow, budget display (310/650/700)
+- v2.0: POC scope - 3 negotiable + 12 locked WBS, 4 AI agents (Owner + 3 suppliers), explicit accept/reject flow, budget display (310/390/700)
 - v1.1: Added sections 3.7-3.9 for Gantt chart, precedence diagram, and history/timeline views
 
 ---

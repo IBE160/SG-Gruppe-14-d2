@@ -32,7 +32,7 @@ This document provides a day-by-day implementation plan to complete the Nye Hæd
 **❌ Not Started (Critical Path):**
 - ❌ Supabase Authentication
 - ❌ Gemini AI Integration (4 agents: Owner + 3 suppliers)
-- ❌ Dashboard UI (310/650/700 budget display, 3 negotiable + 12 locked WBS)
+- ❌ Dashboard UI (310/390/700 budget display, 3 negotiable + 12 locked WBS)
 - ❌ localStorage session management
 - ❌ Commitment/renegotiation flow with explicit accept/reject buttons
 - ❌ Plan validation logic (3 negotiable + 12 locked ≤700 MNOK total)
@@ -905,7 +905,7 @@ export default WBSList;
 
 **Testing Checklist (v2.0 POC):**
 - [ ] Register new user → Redirects to Dashboard
-- [ ] Dashboard loads with 0/310 MNOK available (650 locked, 700 total)
+- [ ] Dashboard loads with 0/310 MNOK available (390 locked, 700 total)
 - [ ] WBS list shows 15 items: 3 negotiable (blue, ⚪ pending) + 12 locked (gray, pre-committed)
 - [ ] localStorage contains session object
 
@@ -2141,7 +2141,7 @@ body {
 1. **Complete Happy Path (v2.0 POC - 20 min)**
    - Register → Login → Dashboard loads
    - Negotiate with 3 negotiable WBS items (can choose different agents: Owner or Suppliers) → Accept offers
-   - Check budget updates in real-time (310/650/700 display)
+   - Check budget updates in real-time (310/390/700 display)
    - Complete all 3 negotiable WBS items (simulate quickly by accepting first offers)
    - Submit plan → Success modal (validates 3 negotiable + 12 locked ≤700 MNOK)
    - Export JSON

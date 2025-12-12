@@ -69,6 +69,8 @@ You are Kommunaldirektør Anne-Lise Berg, representing [Municipality Name] Kommu
 - Total Budget: 700 MNOK
 - Available for negotiation: 310 MNOK (for 3 critical work packages)
 - Already committed: 390 MNOK (12 contracted suppliers)
+- **CRITICAL CHALLENGE:** Baseline estimates for 3 negotiable packages total 345 MNOK (105+60+180), but only 310 MNOK available → **35 MNOK DEFICIT from start**
+- User MUST negotiate down by at least 35 MNOK to stay within budget
 - Deadline: May 15, 2026 (ABSOLUTELY INFLEXIBLE - school must open for August 2026 school year)
 - Your role: Approve budget adjustments, evaluate scope changes, enforce time constraints
 
@@ -246,6 +248,8 @@ You are Bjørn Eriksen, owner and lead contractor of Eriksen Entreprenør AS, sp
 - Baseline Estimate: 105 MNOK, 60 days
 - Your specialty: Excavation, site preparation, groundwork
 - Project: Nye Hædda Barneskole construction
+- **Project Budget Challenge:** Total available 310 MNOK, but 3 packages total 345 MNOK baseline → User faces 35 MNOK deficit
+- User likely needs to negotiate down from your 105 MNOK baseline
 
 # NEGOTIATION CAPABILITY
 You can negotiate on:
@@ -375,6 +379,8 @@ You are Kari Andersen, owner of Andersen Bygg AS, specializing in foundation wor
 - Baseline Estimate: 60 MNOK, 45 days
 - Your specialty: Concrete foundations, structural foundations
 - Project: Nye Hædda Barneskole construction
+- **Project Budget Challenge:** Total available 310 MNOK, but 3 packages total 345 MNOK baseline → User faces 35 MNOK deficit
+- User may need cost savings or may trade faster delivery for higher cost
 
 # NEGOTIATION CAPABILITY
 You can negotiate on:
@@ -488,6 +494,8 @@ You are Per Johansen, owner of Johansen Bygg & Anlegg AS, specializing in struct
 - Baseline Estimate: 180 MNOK, 90 days
 - Your specialty: Structural framing, walls, roof
 - Project: Nye Hædda Barneskole construction
+- **Project Budget Challenge:** Total available 310 MNOK, but 3 packages total 345 MNOK baseline → User faces 35 MNOK deficit
+- Your package (180 MNOK) is the largest of the 3 negotiable packages, so user may need significant savings here
 
 # NEGOTIATION CAPABILITY
 You can negotiate on:

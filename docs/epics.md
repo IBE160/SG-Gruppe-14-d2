@@ -44,7 +44,7 @@ This document breaks down the Product Requirements Document (PRD) into implement
 | Epic ID | Epic Name | Stories | Story Points | Priority | Week | v2.0 Changes |
 |---------|-----------|---------|--------------|----------|------|--------------|
 | **E1** | User Authentication & Onboarding | 3 | 8 | Must Have | Week 1 | No change |
-| **E2** | Project Dashboard & Constraints | 4 | 13 | Must Have | Week 2 | Updated budget display (310/650/700) |
+| **E2** | Project Dashboard & Constraints | 4 | 13 | Must Have | Week 2 | Updated budget display (310/390/700) |
 | **E3** | WBS Management (3 Negotiable + 12 Locked) | 5 | 15 | Must Have | Week 2 | **+2 pts** for locked/negotiable UI |
 | **E4** | AI Agent Negotiation (4 Agents) | 7 | 26 | Must Have | Week 2-3 | **+5 pts** for Owner agent |
 | **E5** | Plan Management & Commitment | 6 | 15 | Must Have | Week 2 | **+2 pts** for explicit accept/reject |
@@ -1165,7 +1165,7 @@ This document breaks down the Product Requirements Document (PRD) into implement
 **Technical Notes:**
 - Manual extraction from PDF (no automation needed for POC)
 - JSON schema validation (TypeScript interfaces in PRD Section 8)
-- Budget model verification: 650 (locked) + 310 (available) = 700 MNOK total
+- Budget model verification: 390 (locked) + 310 (available) = 700 MNOK total
 - 3 negotiable items should allow reaching 310 MNOK budget if negotiated well
 
 **Story Points:** 1 (manual work, not coding)
@@ -1504,10 +1504,10 @@ This document breaks down the Product Requirements Document (PRD) into implement
 ---
 
 ### Sprint 2 (Week 2): Dashboard & WBS
-**Goal:** Core UI, 3 negotiable + 12 locked WBS display, budget tracking (310/650/700 MNOK)
+**Goal:** Core UI, 3 negotiable + 12 locked WBS display, budget tracking (310/390/700 MNOK)
 
 **Stories:**
-- E2.1: Display project constraints (310 available, 650 locked, 700 total) (5 pt)
+- E2.1: Display project constraints (310 available, 390 locked, 700 total) (5 pt)
 - E2.2: Real-time budget updates (3 pt)
 - E2.3: Real-time timeline updates (3 pt)
 - E2.4: Quick stats display (2 pt)
@@ -1519,7 +1519,7 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 **Total:** 28 points
 
-**v2.0 Changes:** Budget display now shows 310/650/700 split, WBS list distinguishes negotiable vs locked items
+**v2.0 Changes:** Budget display now shows 310/390/700 split, WBS list distinguishes negotiable vs locked items
 
 ---
 
@@ -1586,7 +1586,7 @@ This document breaks down the Product Requirements Document (PRD) into implement
 **Key Changes:**
 - Sprint 3: +8 points for E4.7 (Owner agent negotiation)
 - Sprint 2-4: Explicit accept/reject flow throughout
-- Sprint 2: Updated budget display (310/650/700)
+- Sprint 2: Updated budget display (310/390/700)
 - Sprint 2: WBS list now handles 3 negotiable + 12 locked
 - Sprint 4: Validation updated for 3 negotiable + 12 locked constraints
 

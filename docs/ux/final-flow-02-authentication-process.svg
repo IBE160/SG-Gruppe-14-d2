@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 700" style="background:#f9fafb">
+  <defs>
+    <style>
+      .auth-title{font-family:'Inter',-apple-system,sans-serif;font-size:22px;font-weight:700;fill:#111827}
+      .auth-subtitle{font-family:'Inter',-apple-system,sans-serif;font-size:13px;fill:#6b7280}
+      .auth-box{fill:#fff;stroke:#d1d5db;stroke-width:2;rx:8}
+      .auth-box-blue{fill:#eff6ff;stroke:#3b82f6;stroke-width:2;rx:8}
+      .auth-box-green{fill:#f0fdf4;stroke:#10b981;stroke-width:2;rx:8}
+      .auth-text{font-family:'Inter',-apple-system,sans-serif;font-size:13px;fill:#111827;font-weight:600}
+      .auth-desc{font-family:'Inter',-apple-system,sans-serif;font-size:11px;fill:#6b7280}
+      .auth-arrow{fill:none;stroke:#9ca3af;stroke-width:2;marker-end:url(#arrow2)}
+      .decision{fill:#fef3c7;stroke:#f59e0b;stroke-width:2}
+    </style>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" class="auth-title">Autentiseringsflyt - Supabase Auth</text>
+  <text x="400" y="55" text-anchor="middle" class="auth-subtitle">Login og registrering for Nye Hædda Barneskole POC</text>
+
+  <!-- START -->
+  <circle cx="400" cy="100" r="25" fill="#10b981" stroke="#059669" stroke-width="2"/>
+  <text x="400" y="106" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">START</text>
+
+  <!-- Landing Page -->
+  <rect x="330" y="150" width="140" height="60" class="auth-box-blue"/>
+  <text x="400" y="175" text-anchor="middle" class="auth-text">Landingsside</text>
+  <text x="400" y="193" text-anchor="middle" class="auth-desc">Velg: Logg inn</text>
+  <text x="400" y="206" text-anchor="middle" class="auth-desc">eller Registrer</text>
+  <path d="M 400 125 L 400 150" class="auth-arrow"/>
+
+  <!-- Decision: Login or Register -->
+  <polygon points="400,250 460,290 400,330 340,290" class="decision"/>
+  <text x="400" y="288" text-anchor="middle" class="auth-text">Har</text>
+  <text x="400" y="303" text-anchor="middle" class="auth-text">konto?</text>
+  <path d="M 400 210 L 400 250" class="auth-arrow"/>
+
+  <!-- NO: Register -->
+  <rect x="520" y="260" width="140" height="80" class="auth-box"/>
+  <text x="590" y="285" text-anchor="middle" class="auth-text">Registrer</text>
+  <text x="590" y="303" text-anchor="middle" class="auth-desc">Navn, e-post,</text>
+  <text x="590" y="317" text-anchor="middle" class="auth-desc">passord</text>
+  <text x="590" y="331" text-anchor="middle" class="auth-desc">→ Supabase Auth</text>
+  <path d="M 460 290 L 520 290" class="auth-arrow"/>
+  <text x="490" y="280" text-anchor="middle" class="auth-desc" font-weight="600">NEI</text>
+
+  <!-- Email Verification -->
+  <rect x="520" y="370" width="140" height="70" class="auth-box-blue"/>
+  <text x="590" y="395" text-anchor="middle" class="auth-text">E-postbekreftelse</text>
+  <text x="590" y="413" text-anchor="middle" class="auth-desc">Sjekk innboks</text>
+  <text x="590" y="427" text-anchor="middle" class="auth-desc">Klikk bekreftelseslenke</text>
+  <path d="M 590 340 L 590 370" class="auth-arrow"/>
+
+  <!-- Verification Complete -->
+  <rect x="520" y="470" width="140" height="60" class="auth-box-green"/>
+  <text x="590" y="495" text-anchor="middle" class="auth-text">Bekreftet!</text>
+  <text x="590" y="513" text-anchor="middle" class="auth-desc">Konto opprettet</text>
+  <path d="M 590 440 L 590 470" class="auth-arrow"/>
+
+  <!-- Return to Login -->
+  <path d="M 520 500 L 240 500 L 240 390 L 330 390" class="auth-arrow"/>
+  <text x="320" y="490" text-anchor="end" class="auth-desc">Logg inn med</text>
+  <text x="320" y="503" text-anchor="end" class="auth-desc">ny konto</text>
+
+  <!-- YES: Login -->
+  <rect x="140" y="360" width="140" height="80" class="auth-box"/>
+  <text x="210" y="385" text-anchor="middle" class="auth-text">Logg inn</text>
+  <text x="210" y="403" text-anchor="middle" class="auth-desc">E-post + passord</text>
+  <text x="210" y="417" text-anchor="middle" class="auth-desc">→ Supabase Auth</text>
+  <text x="210" y="431" text-anchor="middle" class="auth-desc">Get session token</text>
+  <path d="M 340 290 L 280 290 L 280 360" class="auth-arrow"/>
+  <text x="320" y="280" text-anchor="start" class="auth-desc" font-weight="600">JA</text>
+
+  <!-- Auth Check -->
+  <polygon points="210,480 270,520 210,560 150,520" class="decision"/>
+  <text x="210" y="520" text-anchor="middle" class="auth-text">Gyldig?</text>
+  <path d="M 210 440 L 210 480" class="auth-arrow"/>
+
+  <!-- NO: Error -->
+  <rect x="40" y="490" width="100" height="60" fill="#fee2e2" stroke="#ef4444" stroke-width="2" rx="8"/>
+  <text x="90" y="515" text-anchor="middle" class="auth-text" fill="#ef4444">Feil!</text>
+  <text x="90" y="533" text-anchor="middle" class="auth-desc">Ugyldig</text>
+  <text x="90" y="545" text-anchor="middle" class="auth-desc">pålogging</text>
+  <path d="M 150 520 L 140 520" class="auth-arrow"/>
+  <text x="145" y="510" text-anchor="middle" class="auth-desc" font-weight="600">NEI</text>
+
+  <!-- Loop back -->
+  <path d="M 90 490 L 90 400 L 140 400" class="auth-arrow"/>
+
+  <!-- YES: Dashboard -->
+  <rect x="310" y="580" width="180" height="80" class="auth-box-green"/>
+  <text x="400" y="605" text-anchor="middle" class="auth-text">Dashboard</text>
+  <text x="400" y="623" text-anchor="middle" class="auth-desc">Session opprettet</text>
+  <text x="400" y="637" text-anchor="middle" class="auth-desc">Budsjett: 390 MNOK låst</text>
+  <text x="400" y="651" text-anchor="middle" class="auth-desc">310 MNOK tilgjengelig</text>
+  <path d="M 210 560 L 210 620 L 310 620" class="auth-arrow"/>
+  <text x="230" y="590" text-anchor="start" class="auth-desc" font-weight="600">JA</text>
+
+  <!-- END -->
+  <circle cx="550" cy="620" r="25" fill="#ef4444" stroke="#dc2626" stroke-width="2"/>
+  <text x="550" y="626" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">SLUTT</text>
+  <path d="M 490 620 L 525 620" class="auth-arrow"/>
+</svg>
