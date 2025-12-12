@@ -1,8 +1,13 @@
 # COMPREHENSIVE CONSISTENCY AUDIT REPORT
 ## Nye Hædda Barneskole Project Documentation Review
+
+> **⚠️ HISTORICAL DOCUMENT:** This consistency audit was performed on v1.0 documentation (15 negotiable WBS, 5 suppliers). For current v2.0 POC scope consistency, see:
+> - **SCOPE_CHANGE_TASKS.md:** Complete v2.0 change tracking
+> - **PRD.md (v2.0), product-brief.md (v2.0), epics.md (v2.0):** Updated documentation
+
 **Date:** 2025-12-07
 **Reviewer:** Documentation Consistency Analyst
-**Documents Reviewed:** 13 core documents + validation reports
+**Documents Reviewed:** 13 core documents + validation reports (v1.0)
 
 ---
 

@@ -1,11 +1,13 @@
 # UX Design Specification
 ## Nye Hædda Barneskole - Project Management Simulation
 
-**Document Version:** 1.1
-**Date:** 2025-12-08
-**Status:** Updated with Visualization Features
+**Document Version:** 2.0
+**Date:** 2025-12-11
+**Status:** Updated for POC Scope (3 Negotiable WBS + 4 AI Agents)
 **UX Designer:** [To be assigned]
-**Changelog:** Added sections 3.7-3.9 for Gantt chart, precedence diagram, and history/timeline views
+**Changelog:**
+- v2.0: POC scope - 3 negotiable + 12 locked WBS, 4 AI agents (Owner + 3 suppliers), explicit accept/reject flow, budget display (310/650/700)
+- v1.1: Added sections 3.7-3.9 for Gantt chart, precedence diagram, and history/timeline views
 
 ---
 
@@ -278,7 +280,7 @@ w-8 h-8:   32px  - Extra large (empty states)
 
 ---
 
-### 3.2 Dashboard (Main Game View)
+### 3.2 Dashboard (Main Game View - v2.0 POC Scope)
 
 **Layout (Desktop):**
 ```
@@ -289,27 +291,36 @@ w-8 h-8:   32px  - Extra large (empty states)
 │                                                                    │
 │  Prosjektbegrensninger                                             │
 │  ┌────────────────────────────────────────────────────────────┐   │
-│  │ Budsjett:  [=========>          ] 450 / 700 MNOK (64%)     │   │
-│  │ Frist:     15. mai 2026                                    │   │
-│  │ Forventet: 10. april 2026  ✓                               │   │
+│  │ Tilgjengelig: [=====>       ] 105 / 310 MNOK (34%)        │   │
+│  │ Låst:         650 MNOK (12 kontraktfestede leverandører)   │   │
+│  │ Totalt:       755 / 700 MNOK ❌ (overskredet med 55 MNOK)  │   │
+│  │ Frist:        15. mai 2026                                 │   │
+│  │ Forventet:    10. april 2026  ✓                            │   │
 │  └────────────────────────────────────────────────────────────┘   │
 │                                                                    │
-│  Fremdrift:  8 / 15 WBS-oppgaver fullført  |  32 forhandlinger    │
+│  Fremdrift:  1 / 3 forhandlbare pakker fullført  |  5 forhandlinger│
 │                                                                    │
 │  ┌─WBS-liste──────────────────────┐  ┌──────────────────────┐     │
-│  │                                │  │ [Send Inn Plan]      │     │
-│  │ ⚪ 1.1 Prosjektering           │  │                      │     │
-│  │    [Kontakt Leverandør]       │  │ [Eksporter Økt]      │     │
+│  │ FORHANDLBARE (3)               │  │ [Send Inn Plan]      │     │
 │  │                                │  │                      │     │
-│  │ 🟢 1.3.1 Grunnarbeid           │  │ [Hjelp]              │     │
-│  │    105 MNOK, 2.5 mnd           │  └──────────────────────┘     │
-│  │    Bjørn Eriksen               │                               │
+│  │ 🔵 ⚪ 1.3.1 Grunnarbeid        │  │ [Eksporter Økt]      │     │
+│  │    💬 Kan forhandles           │  │                      │     │
+│  │    [Kontakt Leverandør/Eier]  │  │ [Hjelp]              │     │
+│  │                                │  └──────────────────────┘     │
+│  │ 🔵 🟢 2.1 Fundamentering       │                               │
+│  │    105 MNOK, 2.5 mnd           │                               │
+│  │    Kari Andersen               │                               │
 │  │    [Reforhandle]               │                               │
 │  │                                │                               │
-│  │ ⚪ 2.1 Råbygg                  │                               │
-│  │    [Kontakt Leverandør]       │                               │
+│  │ 🔵 ⚪ 3.2 Råbygg                │                               │
+│  │    💬 Kan forhandles           │                               │
+│  │    [Kontakt Leverandør/Eier]  │                               │
 │  │                                │                               │
-│  │ ... (scrollable)               │                               │
+│  │ KONTRAKTFESTET (12)            │                               │
+│  │ 🔒 1.1 Prosjektering           │                               │
+│  │    50 MNOK, 2 mnd              │                               │
+│  │    Arkitekt AS (forhåndsbestilt)│                              │
+│  │ ... (10 more locked, scrollable)│                              │
 │  └────────────────────────────────┘                               │
 │                                                                    │
 └────────────────────────────────────────────────────────────────────┘
@@ -325,32 +336,52 @@ w-8 h-8:   32px  - Extra large (empty states)
 - User menu: Dropdown (UserCircle icon + name)
   - Dropdown items: "Min Profil", "Logg Ut"
 
-**Constraint Panel:**
+**Constraint Panel (v2.0 - 3-Tier Budget Display):**
 - Background: White, rounded-md, shadow, p-6, mb-6
-- Budget Progress Bar:
-  - Height: 24px, rounded-full
-  - Background: gray-200
-  - Fill: Green (0-680 MNOK), yellow (680-700), red (>700)
-  - Label above: "Budsjett: 450 / 700 MNOK (64%)" - text-sm font-medium
+- **Budget Display (3 rows):**
+  1. **Tilgjengelig (Available)** - For 3 negotiable WBS:
+     - Height: 20px, rounded-full progress bar
+     - Background: gray-200
+     - Fill: Green (0-300 MNOK), yellow (300-310), red (>310)
+     - Label: "Tilgjengelig: 105 / 310 MNOK (34%)"
+  2. **Låst (Locked)** - For 12 contracted WBS:
+     - Text display only (no bar): "Låst: 650 MNOK (12 kontraktfestede leverandører)"
+     - text-sm text-gray-600
+  3. **Totalt (Total)** - Sum validation:
+     - Text display: "Totalt: 755 / 700 MNOK ❌ (overskredet med 55 MNOK)"
+     - Color: Red if >700, yellow if >680, green if ≤680
+     - Checkmark (✓) or X (❌) icon
 - Deadline & Projected:
   - Grid layout: 2 columns
   - Labels: text-sm font-medium text-gray-700
   - Values: text-base font-semibold
-  - Green checkmark if projected < deadline, red X if late
+  - Green checkmark if projected ≤ May 15 2026, red X if late
 
 **Quick Stats:**
 - text-sm text-gray-600
 - Separated by " | " (vertical divider)
 
-**WBS List:**
+**WBS List (v2.0 - 3 Negotiable + 12 Locked):**
 - Background: White, rounded-md, shadow, p-6
 - Max-height: 500px, overflow-y: auto (scrollable)
-- Each WBS Item:
-  - Padding: py-3, border-bottom: 1px gray-200 (except last)
-  - Status icon: w-5 h-5, inline
+- **Section Headers:**
+  - "FORHANDLBARE (3)" - text-sm font-bold text-blue-600, mb-2
+  - "KONTRAKTFESTET (12)" - text-sm font-bold text-gray-500, mt-4, mb-2
+- **Negotiable WBS Items (3):**
+  - Padding: py-3, border-bottom: 1px gray-200
+  - **Blue indicator:** Blue circle (🔵) or blue left border (4px solid blue-500)
+  - Status icon: ⚪ (pending) or 🟢 (completed), w-5 h-5
+  - Badge: "💬 Kan forhandles" - bg-blue-100, text-blue-700, text-xs, px-2 py-1, rounded
   - WBS code + name: text-sm font-medium text-gray-900
-  - Details (if completed): text-xs text-gray-600, pl-6 (indented)
-  - Button: text-xs, px-3 py-1, rounded, secondary or primary
+  - Button: "Kontakt Leverandør/Eier" (pending) or "Reforhandle" (completed)
+  - Interactive: Hover bg-blue-50, cursor-pointer
+- **Locked WBS Items (12):**
+  - Padding: py-2, border-bottom: 1px gray-100
+  - **Lock indicator:** 🔒 icon or gray left border (2px solid gray-300)
+  - Badge: "Kontraktfestet" - bg-gray-100, text-gray-600, text-xs, px-2 py-1, rounded
+  - WBS code + name: text-sm font-normal text-gray-600
+  - Pre-committed details: "50 MNOK, 2 mnd | Arkitekt AS (forhåndsbestilt)"
+  - Non-interactive: No hover state, no buttons, opacity-75
 
 **Action Buttons Sidebar:**
 - Sticky position (remains visible on scroll)
@@ -360,13 +391,13 @@ w-8 h-8:   32px  - Extra large (empty states)
 
 ---
 
-### 3.3 Chat/Negotiation Page
+### 3.3 Chat/Negotiation Page (v2.0 - Explicit Accept/Reject + Owner Option)
 
 **Layout (Desktop):**
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│ [← Tilbake til Oversikt]    Bjørn Eriksen - Totalentreprenør       │
-│                             WBS 1.3.1 Grunnarbeid                  │
+│ [← Tilbake til Oversikt]    Kari Andersen - Fundamentering         │
+│                             WBS 2.1 | 💬 Kan forhandles            │
 ├────────────────────────────────────────────────────────────────────┤
 │                                                                    │
 │ ┌─Chat Window──────────────────────┐  ┌─Dokumenter────────────┐  │
@@ -375,13 +406,13 @@ w-8 h-8:   32px  - Extra large (empty states)
 │ │          ┌───────────────────┐   │  │ 📄 Kravspesifikasjon   │  │
 │ │          │ Bruker: Jeg trenger│  │  │ 📄 Prosjektbeskrivelse │  │
 │ │          │ et pristilbud...  │   │  │                        │  │
-│ │          └───────────────────┘   │  └────────────────────────┘  │
-│ │                                  │                               │
-│ │ ┌───────────────────┐            │                               │
-│ │ │ AI: Basert på...  │            │                               │
+│ │          └───────────────────┘   │  │ Forhandler med:        │  │
+│ │                                  │  │ [X] Leverandør         │  │
+│ │ ┌───────────────────┐            │  │ [ ] Eier (Kommune)     │  │
+│ │ │ AI: Basert på...  │            │  └────────────────────────┘  │
 │ │ │ 120 MNOK, 3 mnd   │            │                               │
 │ │ └───────────────────┘            │                               │
-│ │ [Godta: 120 MNOK, 3 mnd]         │                               │
+│ │ [✓ Godta: 120 MNOK] [✗ Avslå]   │                               │
 │ │                                  │                               │
 │ │          ┌───────────────────┐   │                               │
 │ │          │ Bruker: For høyt..│   │                               │
@@ -391,7 +422,7 @@ w-8 h-8:   32px  - Extra large (empty states)
 │ │ │ AI: Jeg kan gjøre │            │                               │
 │ │ │ 105 MNOK, 2.5 mnd │            │                               │
 │ │ └───────────────────┘            │                               │
-│ │ [Godta: 105 MNOK, 2.5 mnd]       │                               │
+│ │ [✓ Godta: 105 MNOK] [✗ Avslå]   │                               │
 │ │                                  │                               │
 │ │ ... (more messages)              │                               │
 │ └──────────────────────────────────┘                               │
@@ -431,11 +462,26 @@ w-8 h-8:   32px  - Extra large (empty states)
   - Background: gray-200, text-gray-700
   - Padding: px-3 py-1, rounded, text-xs, italic
 
-**Accept Offer Button:**
-- Appears below AI message when offer detected
-- Background: green-600, text-white, text-xs
-- px-3 py-1, rounded, mt-2
-- Hover: green-700
+**Accept/Reject Offer Buttons (v2.0 - Explicit Action Required):**
+- Appears below AI message when offer detected (cost + duration OR budget adjustment)
+- **Two buttons side-by-side:**
+  1. **✓ Godta Button:**
+     - Background: green-600, text-white, text-xs, font-semibold
+     - px-3 py-1, rounded, mt-2, mr-2
+     - Hover: green-700
+     - Label: "✓ Godta: 105 MNOK, 2.5 mnd" (shows offer details)
+  2. **✗ Avslå Button:**
+     - Background: gray-300, text-gray-700, text-xs, font-semibold
+     - px-3 py-1, rounded, mt-2
+     - Hover: gray-400
+     - Label: "✗ Avslå"
+- **Behavior:**
+  - "Godta" triggers confirmation modal (Section 3.4)
+  - "Avslå" dismisses offer, hides buttons, chat continues
+  - NO automatic acceptance - user MUST click one of the buttons
+- **Owner Offers (Budget Increase):**
+  - Godta label: "✓ Godta: +15 MNOK budsjett" (for budget increase)
+  - Same button styling as supplier offers
 
 **Document Sidebar:**
 - Background: white, rounded-md, shadow, p-4
@@ -452,6 +498,85 @@ w-8 h-8:   32px  - Extra large (empty states)
 
 **Loading State (AI Typing):**
 - Gray bubble with animated dots: "Bjørn ser gjennom spesifikasjonene..."
+
+---
+
+### 3.3.1 Modal: Supplier/Owner Selection (v2.0 - NEW)
+
+**Layout:**
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                             [X] │
+│  Velg Forhandlingspartner                                       │
+│  WBS 1.3.1 - Grunnarbeid                                        │
+│                                                                 │
+│  Hvem vil du forhandle med for denne pakken?                   │
+│                                                                 │
+│  ┌─LEVERANDØRER────────────────────────────────────────────┐   │
+│  │                                                          │   │
+│  │  ┌──Bjørn Eriksen─────────────────────────────────┐     │   │
+│  │  │ 🏗️ Grunnarbeid-specialist                      │     │   │
+│  │  │ Strategi: Pris/kvalitet-avveining               │     │   │
+│  │  │ "Kan redusere pris ved kvalitetsjustering"      │     │   │
+│  │  │                            [Velg Leverandør →]  │     │   │
+│  │  └─────────────────────────────────────────────────┘     │   │
+│  │                                                          │   │
+│  │  ┌──Kari Andersen─────────────────────────────────┐     │   │
+│  │  │ 🏗️ Fundamentering-specialist                   │     │   │
+│  │  │ Strategi: Tid/kostnad-avveining                 │     │   │
+│  │  │ "Kan levere raskere mot høyere pris"            │     │   │
+│  │  │                            [Velg Leverandør →]  │     │   │
+│  │  └─────────────────────────────────────────────────┘     │   │
+│  │                                                          │   │
+│  │  ┌──Per Johansen──────────────────────────────────┐     │   │
+│  │  │ 🏗️ Råbygg-specialist                           │     │   │
+│  │  │ Strategi: Omfangsreduksjon                      │     │   │
+│  │  │ "Kan foreslå funksjonsreduksjoner for besparelse"│   │   │
+│  │  │                            [Velg Leverandør →]  │     │   │
+│  │  └─────────────────────────────────────────────────┘     │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─EIER (KOMMUNE)───────────────────────────────────────────┐   │
+│  │                                                          │   │
+│  │  ┌──Anne-Lise Berg─────────────────────────────────┐    │   │
+│  │  │ 🏛️ Prosjekteier (Kommune)                       │    │   │
+│  │  │ Makt: Budsjettøkning, omfangsreduksjon          │    │   │
+│  │  │ ⚠️ ALDRI tidsfrist-forlengelse                  │    │   │
+│  │  │ "Kan godkjenne budsjettøkning ved god begrunnelse" │  │
+│  │  │                            [Velg Eier →]        │    │   │
+│  │  └─────────────────────────────────────────────────┘    │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│                                [Avbryt]                         │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Specifications:**
+- Overlay: bg-black bg-opacity-50 (semi-transparent)
+- Modal: bg-white, rounded-lg, shadow-lg, p-8, max-w-3xl
+- Title: text-xl font-bold text-gray-900, mb-2
+- WBS context: text-sm text-gray-600, mb-4
+- Section headers:
+  - "LEVERANDØRER" - text-sm font-bold text-blue-600, mb-3
+  - "EIER (KOMMUNE)" - text-sm font-bold text-purple-600, mb-3
+- **Agent Cards:**
+  - Background: white, border border-gray-300, rounded-md, p-4, mb-3
+  - Hover: border-blue-500, bg-blue-50
+  - Name: text-base font-semibold text-gray-900
+  - Icon: 🏗️ (suppliers) or 🏛️ (owner), w-6 h-6
+  - Specialty: text-sm text-gray-700
+  - Strategy: text-sm font-medium text-blue-600
+  - Description: text-xs text-gray-600, italic
+  - Button: "Velg Leverandør →" or "Velg Eier →" - bg-blue-600, text-white, px-4 py-2, rounded, float-right
+- **Owner Card Distinction:**
+  - Border: border-purple-300
+  - Warning badge: "⚠️ ALDRI tidsfrist-forlengelse" - bg-red-100, text-red-700, text-xs, px-2 py-1, rounded, font-bold
+- Cancel button: bg-white border, bottom center
+
+**Behavior:**
+- Triggered from Dashboard when user clicks "Kontakt Leverandør/Eier" on negotiable WBS item
+- User selects one of 4 agents → navigate to Chat page with selected agent
+- Modal dismisses on selection or cancel
 
 ---
 

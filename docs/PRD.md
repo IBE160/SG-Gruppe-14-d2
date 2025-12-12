@@ -1,9 +1,9 @@
 # Product Requirements Document (PRD)
 ## Nye Hædda Barneskole - Project Management Simulation
 
-**Document Version:** 1.1
-**Date:** 2025-12-08
-**Status:** Draft - Pending Validation
+**Document Version:** 2.0
+**Date:** 2025-12-11
+**Status:** Updated for Scaled-Down POC Scope
 **Product Owner:** [To be assigned]
 **Technical Lead:** [To be assigned]
 
@@ -15,6 +15,7 @@
 |---------|------|--------|---------|
 | 1.0 | 2025-12-07 | BMAD System | Initial PRD based on Phase 0 brainstorming |
 | 1.1 | 2025-12-08 | BMAD System | Added visualization features (Gantt, precedence diagram, history/timeline) |
+| 2.0 | 2025-12-11 | BMAD System | **MAJOR SCOPE CHANGE:** Scaled down to 3 negotiable suppliers/WBS packages, 4 AI agent roles (Owner + 3 suppliers), new budget model (310 MNOK available, 650 MNOK locked), inflexible time constraint |
 
 ---
 
@@ -57,14 +58,23 @@ Students graduate understanding how to create a project plan but not how to obta
 ### 1.4 Solution Overview
 An interactive, browser-based simulation where students:
 1. Act as Project Manager for a real LOG565 case study (Hædda Barneskole construction project)
-2. Negotiate with AI suppliers (each with distinct personalities: profit-driven, quality-focused, detail-oriented)
-3. Gather cost and duration estimates for 15 WBS items
-4. Commit estimates to a project plan
-5. Validate the plan against strict constraints (700 MNOK budget, 15-month timeline ending May 15, 2026)
-6. Renegotiate when early decisions prove unsustainable (iterative planning)
-7. Export complete session history (all chat logs, all plan changes) as a portfolio artifact
+2. Negotiate with **4 AI agents** in distinct roles:
+   - **3 Supplier agents** (each with unique negotiation capabilities: price flexibility, time/cost trade-offs, scope reduction)
+   - **1 Owner agent** (Municipality - can adjust budget with strong argumentation, but **CANNOT extend time**)
+3. Gather cost and duration estimates for **3 negotiable WBS packages** (3 of 5 on critical path)
+4. Work within a challenging budget constraint: **310 MNOK available** for the 3 negotiable packages (650 MNOK already locked for 12 other contracted suppliers)
+5. Commit estimates to a project plan through **active user choice** (explicit Accept/Reject for every offer)
+6. Navigate **3 main negotiation strategies**:
+   - **Reduced quality** → negotiate with supplier for lower cost
+   - **Reduced scope** → negotiate with owner to remove features
+   - **Shorter time for higher cost** → negotiate with supplier, then owner if budget exceeded
+7. Validate the plan against strict constraints (700 MNOK total budget, **inflexible 15-month deadline** ending May 15, 2026)
+8. Renegotiate when early decisions prove unsustainable (iterative planning)
+9. Export complete session history (all chat logs, all plan changes) as a portfolio artifact
 
 **Session Duration:** 45-60 minutes (single-session, time-efficient)
+
+**Key Scope Change (v2.0):** This is a **Proof of Concept (POC)** focusing on AI agent negotiation mechanics. The remaining 12 WBS packages are pre-contracted and non-negotiable, allowing students to experience realistic negotiation complexity without overwhelming scope.
 
 ### 1.5 Key Differentiators
 
@@ -77,12 +87,13 @@ An interactive, browser-based simulation where students:
 | **Realism** | Real LOG565 case, authentic documents | Generic or historical cases | Abstract scenarios |
 | **Feedback** | Real-time (immediate budget/timeline updates) | Delayed (exam results) | End-of-simulation only |
 
-### 1.6 Success Criteria (MVP)
-- ✅ **60%+ completion rate** - Students can succeed with effort (not too hard)
-- ✅ **40%+ renegotiation rate** - Students experience iterative planning
-- ✅ **45-60 min completion time** - Time-efficient, single-session
-- ✅ **4.0+/5.0 satisfaction** - Students find it valuable
-- ✅ **50%+ document usage** - Students reference requirements in negotiations
+### 1.6 Success Criteria (POC)
+- ✅ **70%+ completion rate** - Students can successfully negotiate all 3 packages (POC scope is more manageable)
+- ✅ **60%+ renegotiation rate** - Students experience iterative planning (higher rate due to budget challenge)
+- ✅ **40-50 min completion time** - Time-efficient, focused on core negotiation (reduced from 45-60 due to smaller scope)
+- ✅ **4.0+/5.0 satisfaction** - Students find AI negotiation realistic and valuable
+- ✅ **80%+ Owner interaction rate** - Students engage with Owner AI for budget negotiation
+- ✅ **100% time rejection rate** - Owner AI successfully rejects ALL time extension requests (validates inflexible constraint)
 
 ---
 
@@ -124,14 +135,17 @@ An interactive, browser-based simulation where students:
 - Prove simplified architecture (localStorage + AI) is sustainable
 - Success Metric: <2 NOK per session (AI API costs), 99%+ uptime
 
-### 2.3 Non-Goals (Out of Scope for MVP)
+### 2.3 Non-Goals (Out of Scope for POC)
 
 - ❌ Execution phase simulation (monitoring, controlling, risk management during construction)
 - ❌ Multiplayer/collaborative mode
 - ❌ Instructor analytics dashboard (students export JSON, instructors review manually)
 - ❌ Mobile native app (responsive web app is sufficient)
 - ❌ Integration with LMS (Canvas, Blackboard) - students access directly via URL
-- ❌ Multiple scenarios (only Hædda Barneskole for MVP)
+- ❌ Multiple scenarios (only Hædda Barneskole for POC)
+- ❌ **Negotiating all 15 WBS packages** - POC focuses on 3 negotiable packages only
+- ❌ **Contract signing** - No formal contract creation, only commitment to plan
+- ❌ **Automatic offer acceptance** - All offers require explicit user action (Accept/Reject)
 
 ---
 
@@ -305,28 +319,32 @@ An interactive, browser-based simulation where students:
 
 **US-2.3: View WBS Items**
 - **As** Sara
-- **I want to** browse all WBS items and see their status
-- **So that** I can decide which items to negotiate next
+- **I want to** browse all WBS items and see their status (negotiable vs locked)
+- **So that** I can decide which items to negotiate and understand the overall project
 - **Acceptance Criteria:**
-  - WBS items displayed in hierarchical or flat list
-  - Each item shows: WBS code (e.g., 1.3.1), name (e.g., "Grunnarbeid"), status
-  - Status indicators: ⚪ Pending, 🟢 Completed
-  - Completed items show committed values (cost, duration, supplier)
-  - User can click item to expand details (description, dependencies, baseline estimate)
+  - **15 total WBS items** displayed in hierarchical or flat list
+  - **3 negotiable items** clearly highlighted (e.g., blue border, "Kan forhandles" badge)
+  - **12 locked items** shown as gray/disabled with "Kontraktfestet" badge
+  - Each negotiable item shows: WBS code (e.g., 1.3.1), name (e.g., "Grunnarbeid"), status
+  - Status indicators for negotiable items: ⚪ Pending, 🟢 Completed
+  - Locked items show: Pre-committed cost, duration, contractor name (read-only)
+  - User can click negotiable item to expand details (description, dependencies, baseline estimate)
+  - User CANNOT interact with locked items (no "Contact Supplier" button)
 
 ---
 
 ### 4.3 Epic: Supplier Selection & Chat
 
-**US-3.1: Browse Suppliers**
+**US-3.1: Browse Suppliers and Owner**
 - **As** Sara
-- **I want to** see which suppliers are appropriate for a specific WBS item
-- **So that** I don't waste time contacting the wrong supplier
+- **I want to** see which negotiation partners are available (3 suppliers + 1 owner)
+- **So that** I can choose the right partner for my negotiation goal
 - **Acceptance Criteria:**
-  - Clicking "Contact Supplier" on a WBS item shows relevant suppliers
-  - Supplier cards show: Name, role (e.g., "Totalentreprenør"), specialty
-  - Suggested suppliers are filtered by WBS item relevance
-  - User can view supplier persona summary (e.g., "Profit-driven negotiator")
+  - Clicking "Kontakt Leverandør" on a negotiable WBS item shows **3 relevant suppliers**
+  - Supplier cards show: Name, role (e.g., "Totalentreprenør"), specialty, negotiation strength (e.g., "Kan redusere pris")
+  - **Owner card** always visible with label: "Eier (Kommunen)" and negotiation power: "Kan øke budsjett (men ikke tid)"
+  - User can select: Supplier (for cost/time/quality negotiation) OR Owner (for budget/scope adjustments)
+  - User can view persona summary for each partner
 
 **US-3.2: Initiate Chat**
 - **As** Magnus
@@ -363,22 +381,68 @@ An interactive, browser-based simulation where students:
 
 ---
 
-### 4.4 Epic: Plan Management
+### 4.4 Epic: Owner (Municipality) Negotiation
 
-**US-4.1: Accept Quote**
-- **As** Magnus
-- **I want to** accept a negotiated offer from the supplier
-- **So that** I can lock in the terms and move to the next WBS item
+**US-4.1: Request Budget Increase from Owner**
+- **As** Sara
+- **I want to** negotiate with the Owner AI to increase the available budget
+- **So that** I can accept a supplier's higher-cost offer when necessary
 - **Acceptance Criteria:**
-  - When AI makes an offer (e.g., "105 MNOK, 2.5 months"), "Accept Offer" button appears
-  - Clicking button shows confirmation modal with terms
-  - User confirms acceptance
+  - "Kontakt Eier" button visible when user needs budget approval
+  - Chat interface opens with Owner AI (Kommunaldirektør persona)
+  - User can request budget increase with argumentation
+  - Owner AI evaluates arguments and responds within character:
+    - Weak argument → "Vi har allerede stramme rammer. Kan dere finne billigere løsning?"
+    - Strong argument → "Jeg forstår. Vi kan godkjenne [X] MNOK ekstra, men dette krever god dokumentasjon."
+  - Owner AI has concession_rate (3-5% increases max per round)
+  - Budget increase logged to plan_history
+
+**US-4.2: Attempt Time Extension (Always Rejected)**
+- **As** Magnus
+- **I want to** try requesting a timeline extension from the Owner
+- **So that** I can see if there's flexibility (learning that there isn't)
+- **Acceptance Criteria:**
+  - User can request time extension in Owner chat
+  - Owner AI **ALWAYS rejects** with consistent explanation:
+    - "Tidsfristen er ufravikelig. Skolen må stå klar til skolestart i august."
+    - "Samfunnskostnaden ved forsinkelse er høyere enn økt budsjett."
+  - Owner AI suggests alternatives: "Vurder å redusere scope eller akseptere høyere kostnad for raskere levering."
+  - System prompt ensures 100% rejection rate for time extension requests
+
+**US-4.3: Negotiate Scope Reduction**
+- **As** Sara
+- **I want to** propose removing features/scope to reduce cost
+- **So that** I can stay within budget by simplifying the project
+- **Acceptance Criteria:**
+  - User proposes scope reduction (e.g., "Kan vi fjerne [feature]?")
+  - Owner AI evaluates impact and responds:
+    - If critical feature → "Dette er helt nødvendig for skolen. Ikke mulig."
+    - If non-critical → "Vi kan vurdere dette. Hvor mye sparer det?"
+  - Scope reduction approved → baseline_cost reduces, logged to plan_history
+  - User can then re-negotiate with supplier based on reduced scope
+
+---
+
+### 4.5 Epic: Plan Management
+
+**US-5.1: Accept Quote with Explicit User Action**
+- **As** Magnus
+- **I want to** explicitly accept or reject a negotiated offer
+- **So that** I maintain full control over commitments (no automatic acceptance)
+- **Acceptance Criteria:**
+  - When AI makes an offer (e.g., "105 MNOK, 2.5 months"), **TWO buttons appear**: "✓ Godta" (Accept) and "✗ Avslå" (Reject)
+  - **CRITICAL:** User must actively click one button - NO automatic acceptance ever
+  - Clicking "Godta" shows confirmation modal with full terms:
+    - WBS item, Supplier/Owner name, Cost, Duration
+    - "Dette vil oppdatere prosjektplanen din. Er du sikker?"
+  - User has final confirmation step before commitment
+  - Clicking "Avslå" returns to chat with message: "Tilbudet ble avslått. Du kan fortsette å forhandle."
   - Plan entry created in localStorage
   - Dashboard updates immediately
   - WBS item status changes to 🟢 Completed
   - Chat shows system message: "✅ Offer accepted and committed to plan"
 
-**US-4.2: View Current Plan**
+**US-5.2: View Current Plan**
 - **As** Sara
 - **I want to** see all my committed WBS items in one place
 - **So that** I can review my overall plan and budget
@@ -388,7 +452,7 @@ An interactive, browser-based simulation where students:
   - Table is sortable (by cost, date, WBS code)
   - Total cost and projected end date displayed prominently
 
-**US-4.3: Renegotiate Item**
+**US-5.3: Renegotiate Item**
 - **As** Sara
 - **I want to** go back and renegotiate a committed WBS item
 - **So that** I can reduce costs after realizing my plan is over budget
@@ -404,9 +468,9 @@ An interactive, browser-based simulation where students:
 
 ---
 
-### 4.5 Epic: Validation & Submission
+### 4.6 Epic: Validation & Submission
 
-**US-5.1: Continuous Validation Feedback**
+**US-6.1: Continuous Validation Feedback**
 - **As** Magnus
 - **I want to** see warnings if my plan is approaching limits
 - **So that** I can proactively adjust before final submission
@@ -415,20 +479,20 @@ An interactive, browser-based simulation where students:
   - If close to limits, yellow warning banner: "⚠️ Budget at 95% - limited flexibility remaining"
   - Warnings are non-blocking (user can continue)
 
-**US-5.2: Submit Plan for Validation**
+**US-6.2: Submit Plan for Validation**
 - **As** Sara
 - **I want to** submit my completed plan for final validation
 - **So that** I can find out if I successfully met all constraints
 - **Acceptance Criteria:**
   - "Submit Plan" button enabled when ≥1 WBS item committed
   - Clicking button triggers full validation:
-    - Completeness: All 15 WBS items committed?
-    - Budget: Total cost ≤700 MNOK?
-    - Timeline: Projected end date ≤May 15, 2026?
-    - Dependencies: All dependencies satisfied?
+    - **Completeness:** All 3 negotiable WBS items committed? (12 locked items already committed)
+    - **Budget:** Total cost (3 negotiable + 12 locked) ≤700 MNOK?
+    - **Timeline:** Projected end date ≤May 15, 2026 (inflexible)?
+    - **Dependencies:** All dependencies satisfied?
   - Validation runs in <1 second
 
-**US-5.3: Receive Clear Error Feedback**
+**US-6.3: Receive Clear Error Feedback**
 - **As** Sara
 - **I want to** see exactly what's wrong if my plan fails validation
 - **So that** I know how to fix it
@@ -439,7 +503,7 @@ An interactive, browser-based simulation where students:
   - Suggestions provided: "Renegotiate these high-cost items: 2.1 (250 MNOK), 3.4 (180 MNOK)"
   - User can close modal and return to planning
 
-**US-5.4: Celebrate Success**
+**US-6.4: Celebrate Success**
 - **As** Magnus
 - **I want to** see a clear success message when my plan passes validation
 - **So that** I feel a sense of accomplishment
@@ -452,9 +516,9 @@ An interactive, browser-based simulation where students:
 
 ---
 
-### 4.6 Epic: Export & Persistence
+### 4.7 Epic: Export & Persistence
 
-**US-6.1: Export Complete Session**
+**US-7.1: Export Complete Session**
 - **As** Sara
 - **I want to** download my complete session history as a file
 - **So that** I can submit it for coursework or save it for my portfolio
@@ -471,7 +535,7 @@ An interactive, browser-based simulation where students:
   - File is valid JSON (parseable)
   - File size typically 200-500 KB
 
-**US-6.2: Save Progress Automatically**
+**US-7.2: Save Progress Automatically**
 - **As** Magnus
 - **I want to** have my session auto-saved after every action
 - **So that** I don't lose progress if my browser crashes
@@ -483,9 +547,9 @@ An interactive, browser-based simulation where students:
 
 ---
 
-### 4.7 Epic: Help & Support
+### 4.8 Epic: Help & Support
 
-**US-7.1: Access Help Documentation**
+**US-8.1: Access Help Documentation**
 - **As** Ingrid (self-learner)
 - **I want to** access help documentation if I'm confused
 - **So that** I can understand how the simulation works
@@ -499,7 +563,7 @@ An interactive, browser-based simulation where students:
     - FAQ section
   - Help modal closeable without losing state
 
-**US-7.2: Report Issues**
+**US-8.2: Report Issues**
 - **As** Sara
 - **I want to** report a bug or incorrect AI response
 - **So that** the developers can improve the simulation
@@ -640,25 +704,35 @@ An interactive, browser-based simulation where students:
 
 ---
 
-**FR-3.2: Display WBS Items**
+**FR-3.2: Display WBS Items (3 Negotiable + 12 Locked)**
 - **Priority:** Must Have
-- **Description:** Dashboard displays all WBS items with status
+- **Description:** Dashboard displays all 15 WBS items with clear distinction between negotiable and locked
 - **Detailed Requirements:**
   - WBS items loaded from `/data/wbs.json` (static file)
+  - **15 total items:** 3 marked `negotiable: true`, 12 marked `negotiable: false, status: "contracted"`
   - Display format: List or tree view (hierarchical if parent_id exists)
-  - Each item shows:
-    - WBS code (e.g., "1.3.1")
-    - Name (e.g., "Grunnarbeid")
+  - **3 Negotiable items styling:**
+    - Blue border or highlight
+    - Badge: "Kan forhandles" or blue dot indicator
+    - WBS code (e.g., "1.3.1"), Name (e.g., "Grunnarbeid")
     - Status icon: ⚪ Pending (not in current_plan) or 🟢 Completed (in current_plan)
-  - Clicking item expands details:
+    - "Kontakt Leverandør" button (if pending) or "Reforhandle" button (if completed)
+  - **12 Locked items styling:**
+    - Gray background, lower opacity (60%)
+    - Badge: "Kontraktfestet" or lock icon 🔒
+    - Show pre-committed values: Cost, Duration, Contractor name
+    - **NOT clickable** - no interaction, no expansion
+  - Clicking negotiable item expands details:
     - Description
-    - Dependencies (e.g., "Requires 1.2 to be completed first")
+    - Dependencies
     - Baseline estimate (reference only)
     - If completed: Committed cost, duration, supplier, dates
-  - "Contact Supplier" button (if pending) or "Renegotiate" button (if completed)
 - **Acceptance Test:**
-  - User sees 15 WBS items, initially all ⚪ Pending
-  - After committing 1.3.1, it shows 🟢 Completed with values
+  - User sees 15 WBS items total: 3 highlighted as negotiable (blue), 12 grayed out as locked
+  - 3 negotiable items show ⚪ Pending initially
+  - 12 locked items show pre-committed cost/duration/contractor (read-only)
+  - After committing negotiable 1.3.1, it shows 🟢 Completed with values
+  - User cannot click or interact with locked items
 
 ---
 
@@ -678,21 +752,32 @@ An interactive, browser-based simulation where students:
 
 ---
 
-### 5.4 Supplier Interaction
+### 5.4 Supplier and Owner Interaction
 
-**FR-4.1: Display Supplier Directory**
+**FR-4.1: Display Negotiation Partner Directory (3 Suppliers + 1 Owner)**
 - **Priority:** Must Have
-- **Description:** Users can browse available suppliers filtered by WBS item
+- **Description:** Users can browse available negotiation partners: 3 suppliers + 1 owner
 - **Detailed Requirements:**
-  - Suppliers loaded from `/data/suppliers.json` (static file)
-  - When user clicks "Contact Supplier" on WBS item X, show suppliers where `specialty` includes X
-  - Supplier card shows:
+  - **Suppliers** loaded from `/data/suppliers.json` (static file) - **3 total**
+  - **Owner** loaded from `/data/owner.json` or embedded in suppliers.json with `type: "owner"`
+  - When user clicks "Kontakt Leverandør" on negotiable WBS item X, show:
+    - **3 Supplier cards** where `specialty` includes X
+    - **1 Owner card** always available (for budget/scope negotiation)
+  - **Supplier card shows:**
     - Name (e.g., "Bjørn Eriksen")
-    - Role (e.g., "Totalentreprenør")
-    - Persona summary (e.g., "Profit-driven, shrewd negotiator")
-  - "Start Chat" button on each card
+    - Role (e.g., "Totalentreprenør for Grunnarbeid")
+    - Persona summary (e.g., "Kan forhandle pris og kvalitet")
+    - Negotiation capability badge: "Pris" / "Tid/Kostnad" / "Scope"
+    - "Start Chat" button
+  - **Owner card shows:**
+    - Name: "Kommunaldirektør [Name]" (e.g., "Anne-Lise Berg")
+    - Role: "Eier (Kommunen)"
+    - Persona summary: "Kan øke budsjett, men ikke tid"
+    - Warning badge: "⏰ Tiden kan IKKE forlenges"
+    - "Kontakt Eier" button
 - **Acceptance Test:**
-  - User clicks "Contact Supplier" for WBS 1.3.1 → sees Bjørn Eriksen (Totalentreprenør) and Kari Jensen (Groundwork Specialist)
+  - User clicks "Kontakt Leverandør" for WBS 1.3.1 → sees 3 supplier cards + 1 owner card
+  - Owner card always shows time constraint warning
 
 ---
 
@@ -771,6 +856,54 @@ An interactive, browser-based simulation where students:
 - **Acceptance Test:**
   - AI says "I can do 105 MNOK for 2.5 months" → "Accept Offer" button appears
   - User clicks button → commitment flow triggers
+
+---
+
+**FR-4.5: Owner AI Agent (Municipality) - Budget and Scope Negotiation**
+- **Priority:** Must Have
+- **Description:** Owner AI agent represents municipality, can adjust budget but NEVER time
+- **Detailed Requirements:**
+  - Owner persona: Kommunaldirektør (e.g., "Anne-Lise Berg")
+  - Owner has distinct system prompt (stored in `/backend/prompts/owner.md`)
+  - **Negotiation Powers:**
+    - ✅ **Can approve budget increases** (with strong user argumentation)
+    - ✅ **Can approve scope reductions** (removing non-critical features)
+    - ❌ **CANNOT extend time** under ANY circumstances (system prompt enforces this)
+  - **Budget Negotiation Flow:**
+    1. User requests budget increase: "Vi trenger 15 MNOK ekstra for å sikre kvalitet på grunnarbeidet"
+    2. Owner evaluates argumentation quality (via AI reasoning)
+    3. Weak argument → Rejection: "Vi har allerede stramme rammer. Kan dere finne billigere løsning?"
+    4. Strong argument → Conditional approval: "Jeg forstår. Vi kan godkjenne 10 MNOK ekstra, men dette krever god dokumentasjon i prosjektrapporten."
+    5. Budget increase: `available_budget += approved_amount`
+    6. Logged to plan_history: `{action: "budget_increase", amount: 10, approved_by: "owner"}`
+  - **Time Negotiation Flow (Always Rejected):**
+    1. User requests time extension: "Kan vi få 2 ekstra måneder?"
+    2. Owner **ALWAYS responds** with inflexible rejection:
+       - "Tidsfristen er ufravikelig. Skolen må stå klar til skolestart i august."
+       - "Samfunnskostnaden ved forsinkelse er høyere enn økt budsjett."
+    3. Owner suggests alternatives: "Vurder å redusere scope eller akseptere høyere kostnad for raskere levering."
+    4. **CRITICAL:** System prompt must enforce 100% rejection rate for time extension requests
+  - **Scope Reduction Flow:**
+    1. User proposes scope reduction: "Kan vi fjerne utendørs lekeplass for å spare kostnader?"
+    2. Owner evaluates criticality (via system prompt with predefined critical features list)
+    3. If critical → Rejection: "Dette er helt nødvendig for skolen. Ikke mulig."
+    4. If non-critical → Approval: "Vi kan vurdere dette. Hvor mye sparer det? Send meg et oppdatert tilbud."
+    5. Scope reduction approved → `wbs_item.baseline_cost *= reduction_factor`
+- **Hidden Parameters (Owner):**
+  ```json
+  {
+    "max_budget_increase_per_round": 0.03-0.05,  // 3-5% of available budget
+    "total_max_budget_increase": 0.15,  // Can approve up to 15% total increase
+    "time_extension_allowed": false,  // ALWAYS false
+    "patience": 5,  // Will engage for 5+ rounds of negotiation
+    "argumentation_quality_threshold": 0.7  // Requires strong arguments
+  }
+  ```
+- **Acceptance Test:**
+  - User requests budget increase with good argument → Owner approves 3-5% increase
+  - User requests budget increase with weak argument → Owner rejects, suggests alternatives
+  - User requests time extension → Owner ALWAYS rejects with standard explanation
+  - Owner chat includes personality: professional, budget-conscious, firm on deadlines
 
 ---
 
@@ -877,8 +1010,8 @@ An interactive, browser-based simulation where students:
 - **Detailed Requirements:**
   - User clicks "Submit Plan" button
   - System runs validation checks:
-    1. **Completeness:** `Object.keys(current_plan).length === wbs_items.length` (all 15 items committed)
-    2. **Budget:** `total_budget_used <= 700`
+    1. **Completeness:** `Object.keys(current_plan).length === wbs_items.length` (all 15 items committed: 3 negotiable by user + 12 pre-committed locked)
+    2. **Budget:** `total_budget_used <= 700` (sum of 3 negotiable + 12 locked)
     3. **Timeline:** `projected_end_date <= new Date('2026-05-15')`
     4. **Dependencies:** For each committed item, all dependencies are committed and end before this item starts
   - If any check fails, collect errors array
@@ -998,9 +1131,9 @@ An interactive, browser-based simulation where students:
 
 ### 5.8 Static Data & Documents
 
-**FR-8.1: WBS Data Loading**
+**FR-8.1: WBS Data Loading (3 Negotiable + 12 Locked)**
 - **Priority:** Must Have
-- **Description:** WBS items loaded from static JSON file
+- **Description:** WBS items loaded from static JSON file with negotiable/locked distinction
 - **Detailed Requirements:**
   - File location: `/public/data/wbs.json`
   - File structure:
@@ -1009,50 +1142,110 @@ An interactive, browser-based simulation where students:
       {
         "id": "1.3.1",
         "name": "Grunnarbeid",
-        "description": "Site preparation...",
-        "baseline_cost": 100,
-        "baseline_duration": 2,
+        "description": "Site preparation and excavation...",
+        "baseline_cost": 105,
+        "baseline_duration": 60,
         "dependencies": ["1.2"],
-        "suggested_suppliers": ["bjorn-eriksen", "kari-jensen"]
+        "negotiable": true,
+        "on_critical_path": true,
+        "suggested_suppliers": ["bjorn-eriksen", "supplier-2", "supplier-3"]
+      },
+      {
+        "id": "1.2",
+        "name": "Arkitekt",
+        "description": "Architectural design...",
+        "baseline_cost": 25,
+        "baseline_duration": 20,
+        "dependencies": [],
+        "negotiable": false,
+        "status": "contracted",
+        "contractor": "Locked Contractor AS",
+        "committed_cost": 25,
+        "committed_duration": 20
       }
-      // ... all 15 WBS items
+      // ... 15 total items (3 negotiable, 12 locked)
     ]
     ```
+  - **3 negotiable items:** `negotiable: true`, on critical path
+  - **12 locked items:** `negotiable: false, status: "contracted"`, pre-committed values
   - Loaded on session initialization
   - Stored in `session.wbs_items`
 - **Acceptance Test:**
   - Dashboard displays all 15 WBS items from wbs.json
+  - 3 items are interactive, 12 are read-only with pre-committed values
 
 ---
 
-**FR-8.2: Supplier Data Loading**
+**FR-8.2: Supplier and Owner Data Loading (3 Suppliers + 1 Owner)**
 - **Priority:** Must Have
-- **Description:** Supplier personas loaded from static JSON file
+- **Description:** Supplier and Owner personas loaded from static JSON files
 - **Detailed Requirements:**
-  - File location: `/public/data/suppliers.json`
-  - File structure:
+  - File location: `/public/data/suppliers.json` and `/public/data/owner.json` (or combined)
+  - **File structure (suppliers.json):**
     ```json
     [
       {
         "id": "bjorn-eriksen",
         "name": "Bjørn Eriksen",
-        "role": "Totalentreprenør",
-        "specialty": ["1.3.1", "2.1"],
-        "persona_summary": "Profit-driven, shrewd negotiator",
+        "type": "supplier",
+        "role": "Totalentreprenør for Grunnarbeid",
+        "specialty": ["1.3.1"],
+        "persona_summary": "Kan forhandle pris og kvalitet",
+        "negotiation_capability": "price_quality",
         "system_prompt": "You are Bjørn Eriksen, a general contractor...",
         "hidden_params": {
+          "initial_margin": 1.20,
           "min_cost_multiplier": 0.88,
-          "min_duration_multiplier": 0.92
+          "concession_rate": 0.05,
+          "patience": 3
         }
+      },
+      {
+        "id": "supplier-2",
+        "name": "Kari Andersen",
+        "type": "supplier",
+        "role": "Entreprenør for Fundamentering",
+        "specialty": ["1.3.2"],
+        "negotiation_capability": "time_cost_tradeoff",
+        "hidden_params": {
+          "initial_margin": 1.15,
+          "time_reduction_cost_multiplier": 1.30
+        }
+      },
+      {
+        "id": "supplier-3",
+        "name": "Per Johansen",
+        "type": "supplier",
+        "role": "Entreprenør for Råbygg",
+        "specialty": ["1.4.1"],
+        "negotiation_capability": "scope_reduction"
       }
-      // ... 5-10 suppliers
+      // 3 suppliers total
     ]
     ```
+  - **File structure (owner.json):**
+    ```json
+    {
+      "id": "owner-municipality",
+      "name": "Anne-Lise Berg",
+      "type": "owner",
+      "role": "Kommunaldirektør",
+      "persona_summary": "Kan øke budsjett, men ikke tid",
+      "system_prompt": "You are Anne-Lise Berg, representing the municipality...",
+      "hidden_params": {
+        "max_budget_increase_per_round": 0.05,
+        "total_max_budget_increase": 0.15,
+        "time_extension_allowed": false,
+        "patience": 5
+      }
+    }
+    ```
   - Loaded on session initialization
-  - Stored in `session.suppliers`
+  - Stored in `session.suppliers` and `session.owner`
   - `system_prompt` and `hidden_params` sent to backend API (not displayed to user)
 - **Acceptance Test:**
-  - Supplier directory shows all suppliers from suppliers.json
+  - Supplier directory shows 3 suppliers + 1 owner
+  - Owner card shows time constraint warning
 
 ---
 
@@ -2625,7 +2818,7 @@ This appendix provides examples of localStorage data structure at different stag
   ],
   "chatLogs": [
     ...
-    // (Full negotiation history for 15 suppliers, ~30-50 messages total)
+    // (Full negotiation history for 3 negotiable WBS items with 4 agents, ~10-20 messages total)
   ],
   "validationResult": {
     "budgetValid": true,

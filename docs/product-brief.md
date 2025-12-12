@@ -1,24 +1,32 @@
 # Product Brief
 ## Nye Hædda Barneskole - Project Management Simulation
 
-**Document Version:** 1.0
-**Date:** 2025-12-07
-**Status:** Final
-**Project Phase:** Phase 0 Complete, Ready for Solutioning
+**Document Version:** 2.0
+**Date:** 2025-12-11
+**Status:** Updated for POC Scope
+**Project Phase:** Phase 0 Complete, POC Scope Defined
 
 ---
 
 ## Executive Overview
 
-**Nye Hædda Barneskole** is an AI-powered project management simulation that teaches university students the critical planning phase of construction projects through realistic negotiation with AI supplier personas. The MVP will be delivered in **4-5 weeks** with a focus on Norwegian university students learning procurement, constraint balancing, and negotiation skills.
+**Nye Hædda Barneskole** is an AI-powered project management simulation that teaches university students the critical planning phase of construction projects through realistic negotiation with **4 distinct AI agent roles** (3 suppliers + 1 owner). The **POC (Proof of Concept)** focuses on core negotiation mechanics with **3 negotiable work packages** within a challenging budget constraint.
 
 **Key Differentiators:**
 - ✅ **Only PM simulation focused on PLANNING** (vs execution)
-- ✅ **AI-powered negotiation** with 5 realistic supplier personas
+- ✅ **4 AI agent roles** with distinct negotiation powers:
+  - 3 Supplier agents (price/quality, time/cost, scope reduction)
+  - 1 Owner agent (budget approval, **inflexible time constraint**)
 - ✅ **Norwegian language** and construction context
-- ✅ **45-60 minute experience** (fits within single lecture)
+- ✅ **40-50 minute POC experience** (focused on core mechanics)
+- ✅ **Challenging budget constraint:** 310 MNOK available vs 345 MNOK baseline (user must negotiate)
 
-**Market Opportunity:** Norwegian universities (NTNU, UiO, UiB, HiOA) teaching PM courses to ~500-1,000 students annually. Potential expansion to Nordic region and other industries.
+**POC Scope Change (v2.0):**
+- **From:** 15 negotiable WBS packages, 5 supplier personas
+- **To:** 3 negotiable + 12 locked packages, 4 AI agents (Owner + 3 suppliers)
+- **Rationale:** Focus on AI negotiation quality over quantity; prove concept with manageable scope
+
+**Market Opportunity:** Norwegian universities (NTNU, UiO, UiB, HiOA) teaching PM courses to ~500-1,000 students annually. POC validates AI negotiation mechanics before expanding to full 15-package simulation.
 
 ---
 
@@ -45,26 +53,40 @@ Students need a **safe space to practice planning decisions** before entering th
 
 ## 2. Solution Overview
 
-### Core Concept
-Students play the role of project manager for Nye Hædda Barneskole (New Hædda Elementary School), a 700 MNOK construction project with a May 15, 2026 deadline. Their task: **negotiate with AI suppliers to procure 15 WBS items within budget and timeline constraints.**
+### Core Concept (POC)
+Students play the role of project manager for Nye Hædda Barneskole (New Hædda Elementary School), a 700 MNOK construction project with a May 15, 2026 **inflexible deadline**. Their task: **negotiate with 4 AI agents (3 suppliers + 1 owner) to procure 3 negotiable WBS packages within a challenging budget constraint.**
 
-### Gameplay Loop
-1. **Review Constraints** - Budget: 700 MNOK, Deadline: May 15, 2026
-2. **Select WBS Item** - Choose from 15 construction tasks (Grunnarbeid, Råbygg, etc.)
-3. **Negotiate with AI Supplier** - Chat with realistic AI persona (Bjørn Eriksen, Kari Andersen, etc.)
-4. **Commit to Plan** - Accept offer, update budget/timeline
-5. **Repeat** - Complete all 15 WBS items
-6. **Submit Plan** - Validate against constraints (budget ≤700 MNOK, deadline ≤May 15)
-7. **Receive Feedback** - Pass (export session) or Fail (renegotiate)
+**Budget Challenge:**
+- **Total project:** 700 MNOK
+- **Already locked:** 650 MNOK (12 contracted suppliers - non-negotiable)
+- **Available for 3 negotiable packages:** 310 MNOK
+- **Baseline estimates for 3 packages:** 345 MNOK (105 + 60 + 180)
+- **Challenge:** User must negotiate to reduce costs by 35-45 MNOK OR convince Owner to approve budget increase
 
-### Key Innovation: AI Supplier Personas
-5 distinct AI suppliers powered by Gemini 2.5, each with:
-- **Unique personality** (skeptical, optimistic, pragmatic)
-- **Hidden negotiation parameters** (initial_margin: 1.15-1.30, concession_rate: 0.03-0.07)
-- **Realistic behavior** (walk away if demands unreasonable, reference past projects)
+### Gameplay Loop (POC)
+1. **Review Constraints** - Budget: 310 MNOK available (of 700 total), Deadline: May 15, 2026 (inflexible)
+2. **Select Negotiable WBS Item** - Choose from **3 blue-highlighted negotiable packages** (12 locked shown as gray/read-only)
+3. **Choose Negotiation Partner** - Select **Supplier** (for cost/time/quality) OR **Owner** (for budget/scope)
+4. **Negotiate with AI Agent** - Chat with realistic AI persona with distinct powers
+5. **Explicit Accept/Reject** - User must actively click "Godta" or "Avslå" (NO automatic acceptance)
+6. **Commit to Plan** - Update budget/timeline
+7. **Repeat** - Complete all 3 negotiable WBS items
+8. **Submit Plan** - Validate against constraints (3 negotiable + 12 locked ≤700 MNOK total, deadline ≤May 15)
+9. **Receive Feedback** - Pass (export session) or Fail (renegotiate)
 
-**Example:**
-> **Bjørn Eriksen** (Totalentreprenør): Skeptical, values quality over speed, starts at 1.20 margin, willing to reduce 5% per round, walks away after 3 rounds.
+### Key Innovation: 4 AI Agent Roles
+Powered by Gemini 2.5, each with **distinct negotiation capabilities:**
+
+| Agent | Role | Negotiation Powers | Hidden Parameters |
+|-------|------|-------------------|-------------------|
+| **Anne-Lise Berg** | Owner (Municipality) | ✅ Budget increase (strong arguments required)<br>✅ Scope reduction approval<br>❌ **NEVER extends time** | max_budget_increase: 15% total<br>time_extension_allowed: **false** |
+| **Bjørn Eriksen** | Supplier 1 (Grunnarbeid) | ✅ Price reduction<br>✅ Quality reduction | initial_margin: 1.20<br>min_cost: 88% baseline |
+| **Kari Andersen** | Supplier 2 (Fundamentering) | ✅ Faster delivery for higher cost<br>✅ Time/cost tradeoffs | time_reduction_cost: +30% per 25% time reduction |
+| **Per Johansen** | Supplier 3 (Råbygg) | ✅ Scope reduction proposals<br>✅ Price flexibility | scope_reduction_savings: 10-18 MNOK per feature |
+
+**Example - Owner Negotiation:**
+> **User:** "Can we extend deadline by 2 months?"
+> **Anne-Lise Berg:** "Tidsfristen er ufravikelig. Skolen må stå klar til skolestart i august. Samfunnskostnaden ved forsinkelse er høyere enn økt budsjett." (Time is inflexible. School must be ready for August start. Societal cost of delay exceeds budget overruns.)
 
 ---
 
@@ -90,31 +112,39 @@ Students play the role of project manager for Nye Hædda Barneskole (New Hædda 
 
 ---
 
-## 4. MVP Scope (4-5 Weeks)
+## 4. POC Scope (3-4 Weeks)
 
-### Must-Have Features (15 items)
+### Must-Have Features (16 items)
 1. User authentication (Supabase JWT)
-2. View project constraints (budget, deadline)
-3. View WBS list (15 items from PDF)
-4. Select WBS item → view requirements
-5. **Choose supplier** from 3-5 AI personas
-6. **Chat interface** with AI supplier (Norwegian)
-7. **AI generates realistic offers** (cost, duration)
-8. Accept offer → commit to plan
-9. Real-time budget/timeline updates
-10. **Renegotiation** (reopen completed WBS item)
-11. Submit plan for validation
-12. **Validation feedback** (budget/timeline pass/fail)
-13. Success modal with session stats
-14. **Export session** (JSON download with full history)
-15. Help/documentation
+2. View project constraints (310 MNOK available, 700 MNOK total, May 15 deadline)
+3. **View WBS list (15 total: 3 negotiable + 12 locked)**
+   - 3 negotiable: Blue highlight, "Kan forhandles" badge, interactive
+   - 12 locked: Gray, "Kontraktfestet" badge, read-only with pre-committed values
+4. Select negotiable WBS item → view requirements
+5. **Choose negotiation partner:** 3 suppliers OR 1 owner
+6. **Chat interface** with AI agent (Norwegian)
+7. **AI generates realistic offers** (cost, duration) based on agent role
+8. **Explicit Accept/Reject** - User must click "✓ Godta" or "✗ Avslå" (NO automatic acceptance)
+9. Accept offer → commit to plan
+10. Real-time budget/timeline updates (tracks 3 negotiable + 12 locked)
+11. **Renegotiation** (reopen completed WBS item)
+12. **Owner AI negotiation:**
+    - Budget increase requests (with argumentation quality evaluation)
+    - Time extension requests (**100% rejection rate** with explanation)
+    - Scope reduction approval
+13. Submit plan for validation
+14. **Validation feedback** (3 negotiable + 12 locked ≤700 MNOK, deadline ≤May 15)
+15. Success modal with session stats
+16. **Export session** (JSON download with full history, chat logs)
 
-### Out of Scope (Post-MVP)
+### Out of Scope (Post-POC)
+- ❌ Negotiating all 15 WBS packages (POC: only 3 negotiable)
 - ❌ Execution phase (construction progress simulation)
-- ❌ Precedence diagram visualization (beyond Gantt chart)
+- ❌ Contract signing (commitment only, no formal contracts)
 - ❌ Multi-user collaboration
 - ❌ 3D building visualization
 - ❌ VR/AR interface
+- ❌ Automatic offer acceptance (must be explicit user action)
 
 ### Technical Architecture
 - **Frontend:** React + TypeScript + Tailwind CSS + Shadcn UI

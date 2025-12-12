@@ -1,10 +1,13 @@
 # Research Report: Technical Validation and Competitive Analysis
 ## Nye Hædda Barneskole - Project Management Simulation
 
+> **⚠️ HISTORICAL DOCUMENT:** This research was conducted for v1.0 scope (5 suppliers). The technical findings remain valid for v2.0 (4 AI agents: Owner + 3 suppliers). For v2.0 AI agent specifications, see:
+> - **AI_AGENT_SYSTEM_PROMPTS.md:** Complete system prompts for all 4 v2.0 agents
+
 **Document Version:** 1.0
 **Research Date:** 2025-12-07
 **Researcher:** Technical Analyst
-**Status:** Complete
+**Status:** Complete (Technical findings applicable to v2.0)
 
 ---
 

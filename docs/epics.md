@@ -1,11 +1,13 @@
 # Epics and User Stories
 ## Nye Hædda Barneskole - Project Management Simulation
 
-**Document Version:** 1.1
-**Date:** 2025-12-08
-**Status:** Ready for Sprint Planning
-**Total Story Points:** 89 (estimated)
-**Changelog:** Added Epic 10 for advanced visualization features (Gantt, precedence diagram, history/timeline)
+**Document Version:** 2.0
+**Date:** 2025-12-11
+**Status:** Updated for POC Scope (3 Negotiable WBS + 4 AI Agents)
+**Total Story Points:** 98 (estimated)
+**Changelog:**
+- v2.0: Updated for POC scope - 3 negotiable + 12 locked WBS, 4 AI agents (Owner + 3 suppliers), inflexible time constraint, explicit accept/reject
+- v1.1: Added Epic 10 for advanced visualization features (Gantt, precedence diagram, history/timeline)
 
 ---
 
@@ -39,19 +41,19 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 ## Epic Summary
 
-| Epic ID | Epic Name | Stories | Story Points | Priority | Week |
-|---------|-----------|---------|--------------|----------|------|
-| **E1** | User Authentication & Onboarding | 3 | 8 | Must Have | Week 1 |
-| **E2** | Project Dashboard & Constraints | 4 | 13 | Must Have | Week 2 |
-| **E3** | WBS Management | 5 | 13 | Must Have | Week 2 |
-| **E4** | AI Supplier Negotiation | 6 | 21 | Must Have | Week 2-3 |
-| **E5** | Plan Management & Commitment | 5 | 13 | Must Have | Week 2 |
-| **E6** | Plan Validation & Submission | 4 | 8 | Must Have | Week 3 |
-| **E7** | Session Export & Data Management | 3 | 5 | Must Have | Week 4 |
-| **E8** | Help & Documentation | 2 | 3 | Should Have | Week 4 |
-| **E9** | Infrastructure & DevOps | 4 | 5 | Must Have | Week 1 |
-| **E10** | Visualization & Analysis | 4 | 27 | Must Have | Week 3-4 |
-| **TOTAL** | **10 Epics** | **40 Stories** | **116 Points*** | - | **4-5 Weeks** |
+| Epic ID | Epic Name | Stories | Story Points | Priority | Week | v2.0 Changes |
+|---------|-----------|---------|--------------|----------|------|--------------|
+| **E1** | User Authentication & Onboarding | 3 | 8 | Must Have | Week 1 | No change |
+| **E2** | Project Dashboard & Constraints | 4 | 13 | Must Have | Week 2 | Updated budget display (310/650/700) |
+| **E3** | WBS Management (3 Negotiable + 12 Locked) | 5 | 15 | Must Have | Week 2 | **+2 pts** for locked/negotiable UI |
+| **E4** | AI Agent Negotiation (4 Agents) | 7 | 26 | Must Have | Week 2-3 | **+5 pts** for Owner agent |
+| **E5** | Plan Management & Commitment | 6 | 15 | Must Have | Week 2 | **+2 pts** for explicit accept/reject |
+| **E6** | Plan Validation & Submission | 4 | 8 | Must Have | Week 3 | No change |
+| **E7** | Session Export & Data Management | 3 | 5 | Must Have | Week 4 | No change |
+| **E8** | Help & Documentation | 2 | 3 | Should Have | Week 4 | No change |
+| **E9** | Infrastructure & DevOps | 4 | 5 | Must Have | Week 1 | No change |
+| **E10** | Visualization & Analysis | 4 | 27 | Must Have | Week 3-4 | No change |
+| **TOTAL** | **10 Epics** | **42 Stories** | **125 Points*** | - | **3-4 Weeks** | **POC scope (+9 pts, -1 week)** |
 
 ***Note:** Sprint planning allocates 116 total points across 4-5 weeks. The addition of Epic 10 (Visualization & Analysis: 27 points) extends the timeline from the original 3-4 weeks to 4-5 weeks, including buffer for testing and integration.
 
@@ -138,8 +140,8 @@ This document breaks down the Product Requirements Document (PRD) into implement
   - `user_id`: from JWT
   - `created_at`: timestamp
   - `status`: 'in_progress'
-  - `wbs_items`: loaded from wbs.json (15 items)
-  - `suppliers`: loaded from suppliers.json (5 suppliers)
+  - `wbs_items`: loaded from wbs.json (15 items: 3 negotiable + 12 locked)
+  - `agents`: loaded from agents.json (4 agents: 1 Owner + 3 Suppliers) [v2.0: was suppliers.json]
   - `current_plan`: empty object
   - `metrics`: initial values (0 budget, 0 negotiations)
 - [ ] Save session to localStorage
@@ -273,25 +275,31 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 ---
 
-## Epic 3: WBS Management
+## Epic 3: WBS Management (3 Negotiable + 12 Locked)
 
-**Epic Goal:** Display WBS list, allow selection, view requirements, and show status.
+**Epic Goal:** Display WBS list with clear distinction between 3 negotiable and 12 locked items, allow selection of negotiable items only.
 
 **Priority:** Must Have (Week 2)
 
-**Dependencies:** E1 (Session), E9 (wbs.json)
+**Dependencies:** E1 (Session), E9 (wbs.json with negotiable flags)
+
+**v2.0 Scope Change:**
+- **15 total WBS items:** 3 marked `negotiable: true` (interactive), 12 marked `negotiable: false, status: "contracted"` (read-only)
+- **3 Negotiable items** (blue highlight, "Kan forhandles" badge): User can select, negotiate, commit
+- **12 Locked items** (gray, "Kontraktfestet" badge, lock icon): Display pre-committed cost/duration/contractor, NOT clickable
+- User CANNOT interact with locked items (no negotiation, no changes)
 
 ---
 
 ### Story E3.1: Load and Display WBS List
 
 **As a** user
-**I want to** see all 15 WBS items in a list
-**So that** I can choose which one to work on
+**I want to** see all 15 WBS items (3 negotiable + 12 locked) in a list
+**So that** I can choose which negotiable one to work on
 
 **Acceptance Criteria:**
 - [ ] WBS list loads from session data (`session.wbs_items`)
-- [ ] Display 15 items in scrollable list (max-height: 500px)
+- [ ] Display 15 items in scrollable list (max-height: 500px) - 3 negotiable (blue) + 12 locked (gray)
 - [ ] Each item shows:
   - Status icon (⚪ pending, 🟢 completed)
   - WBS code and name (e.g., "1.3.1 - Grunnarbeid")
@@ -414,15 +422,26 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 ---
 
-## Epic 4: AI Supplier Negotiation
+## Epic 4: AI Agent Negotiation (4 Distinct Roles)
 
-**Epic Goal:** Enable realistic chat-based negotiation with AI supplier personas.
+**Epic Goal:** Enable realistic chat-based negotiation with 4 AI agents: 3 suppliers + 1 owner, each with distinct negotiation powers.
 
 **Priority:** Must Have (Week 2-3)
 
 **Dependencies:** E3 (WBS selection), E9 (FastAPI backend, Gemini API)
 
-**CRITICAL PATH:** Week 3 prompt engineering
+**CRITICAL PATH:** Week 3 prompt engineering for all 4 agents
+
+**v2.0 Scope Change - 4 AI Agent Roles:**
+
+| Agent | Role | Negotiation Powers | Key Constraint |
+|-------|------|-------------------|----------------|
+| **Owner** (Anne-Lise Berg) | Municipality | ✅ Budget increase (strong arguments)<br>✅ Scope reduction<br>❌ **NEVER time extension** | Time inflexible (100% rejection) |
+| **Supplier 1** (Bjørn Eriksen) | Grunnarbeid | ✅ Price/quality tradeoffs | Min cost: 88% baseline |
+| **Supplier 2** (Kari Andersen) | Fundamentering | ✅ Time/cost tradeoffs | Faster = +30% cost |
+| **Supplier 3** (Per Johansen) | Råbygg | ✅ Scope reduction proposals | Feature removal savings |
+
+**New Story Required:** E4.7 - Owner AI Agent Negotiation (8 points)
 
 ---
 
@@ -513,36 +532,38 @@ This document breaks down the Product Requirements Document (PRD) into implement
 ### Story E4.4: AI Prompt Engineering (System Prompts)
 
 **As a** developer
-**I want** detailed system prompts for each supplier
+**I want** detailed system prompts for all 4 AI agents (1 Owner + 3 Suppliers)
 **So that** AI negotiations feel realistic and challenging
 
 **Acceptance Criteria:**
-- [ ] Create 5 system prompts using template from Research Report Section 1.4:
-  - Bjørn Eriksen (Totalentreprenør)
-  - Kari Andersen (Rørlegger)
-  - Per Johansen (Elektriker)
-  - Silje Henriksen (Arkitekt)
-  - Tor Kristoffersen (Maler)
+- [ ] Create 4 system prompts using template from AI_AGENT_SYSTEM_PROMPTS.md:
+  - **Owner:** Anne-Lise Berg (Municipality - budget/scope approval, NEVER time extension)
+  - **Supplier 1:** Bjørn Eriksen (Grunnarbeid - price/quality tradeoffs)
+  - **Supplier 2:** Kari Andersen (Fundamentering - time/cost tradeoffs)
+  - **Supplier 3:** Per Johansen (Råbygg - scope reduction proposals)
 - [ ] Each prompt includes:
   - Role and identity
   - Personality and communication style (tone, voice, philosophy)
-  - Hidden negotiation parameters (initial_margin, concession_rate, patience)
+  - Hidden negotiation parameters (initial_margin, concession_rate, patience, time_extension_allowed)
   - Task instructions (7-step process)
   - Reasoning structure (internal)
   - Output format (Norwegian, cost/duration format)
+  - **Owner-specific:** Budget increase approval logic, 100% time rejection rule
 - [ ] Test each prompt with 10 sample negotiations
 - [ ] Tune concession_rate and patience based on test results
+- [ ] Verify Owner NEVER approves time extensions in any test scenario
 
 **Technical Notes:**
-- Store prompts in `/backend/prompts/{supplier_id}.md`
+- Store prompts in `/backend/prompts/{agent_id}.md`
 - Load dynamically in FastAPI `/api/chat` endpoint
-- Use Gemini 2.5 Flash (fast, cost-effective for MVP)
+- Use Gemini 2.5 Flash (fast, cost-effective for POC)
+- Owner prompt must enforce: `time_extension_allowed: false`
 
 **Story Points:** 8 (CRITICAL PATH, HIGH COMPLEXITY)
 
 **Priority:** Must Have
 
-**Reference:** Research Report Section 1.4, PRD FR-4.4
+**Reference:** AI_AGENT_SYSTEM_PROMPTS.md, PRD FR-4.4, FR-4.5
 
 ---
 
@@ -598,50 +619,107 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 ---
 
-## Epic 5: Plan Management & Commitment
+### Story E4.7: Owner AI Agent Negotiation
 
-**Epic Goal:** Allow users to commit quotes to their plan and manage renegotiations.
+**As a** user
+**I want to** negotiate with the Owner (Municipality) for budget increases or scope changes
+**So that** I can get approval when I cannot meet constraints with supplier negotiations alone
+
+**Acceptance Criteria:**
+- [ ] User can select "Eier (Anne-Lise Berg)" as negotiation partner from WBS or Dashboard
+- [ ] Chat interface displays Owner role clearly: "Anne-Lise Berg - Prosjekteier (Kommune)"
+- [ ] Owner responds to 3 negotiation types:
+  - **Budget increase requests:** Evaluates argumentation quality, max 15% total increase (~47 MNOK)
+  - **Time extension requests:** 100% rejection rate with explanation: "Tidsfristen er ufravikelig. Skolen må stå klar til skolestart i august."
+  - **Scope reduction proposals:** Evaluates impact, may approve 10-18 MNOK savings per feature
+- [ ] Owner AI uses system prompt with hidden parameters:
+  - `max_budget_increase: 15%` (of total 700 MNOK)
+  - `time_extension_allowed: false`
+  - `budget_increase_threshold: "strong_arguments_required"`
+- [ ] Budget increase requires strong justification:
+  - Cost-benefit analysis
+  - Societal value arguments
+  - Risk mitigation rationale
+- [ ] If budget approved → `available_budget` increases (reflected in Dashboard)
+- [ ] If scope reduction approved → affected WBS items marked, requirements updated
+- [ ] Chat history persisted like supplier negotiations
+- [ ] Test scenarios:
+  - User requests 2-month delay → Owner refuses (100%)
+  - User requests 20 MNOK increase with weak argument → Owner refuses
+  - User requests 15 MNOK increase with strong argument → Owner approves
+  - User proposes removing 2 classrooms → Owner evaluates and may approve
+
+**Technical Notes:**
+- Owner agent accessed via special route or agent selector UI
+- System prompt stored in `/backend/prompts/owner_anne_lise_berg.md`
+- Budget increase tracked separately: `session.budget_adjustments[]`
+- Owner responses should reference municipal budget processes and societal responsibility
+- Norwegian persona: Professional but accessible, focused on community needs
+
+**Story Points:** 8 (CRITICAL - new agent type with complex negotiation logic)
+
+**Priority:** Must Have
+
+**Reference:** AI_AGENT_SYSTEM_PROMPTS.md (Owner section), PRD FR-4.5
+
+---
+
+## Epic 5: Plan Management & Commitment (Explicit Accept/Reject)
+
+**Epic Goal:** Allow users to commit quotes to their plan and manage renegotiations with explicit user action required.
 
 **Priority:** Must Have (Week 2)
 
 **Dependencies:** E4 (AI negotiation)
 
+**v2.0 Scope Change - Explicit Accept/Reject Flow:**
+- **NO automatic offer acceptance** - User must explicitly click "✓ Godta" or "✗ Avslå" buttons
+- Every AI offer requires explicit user decision (no implicit acceptance by continuing conversation)
+- "Godta" button triggers confirmation modal before commitment
+- "Avslå" button allows user to continue negotiating without accepting offer
+- Clear visual distinction between pending offers and committed items
+- Commitment flow: Offer → Explicit Accept → Confirmation Modal → Commit to Plan
+
 ---
 
-### Story E5.1: Commit Quote to Plan
+### Story E5.1: Commit Quote to Plan (Explicit Accept)
 
 **As a** user
-**I want to** accept an AI offer and add it to my project plan
+**I want to** explicitly accept an AI offer and add it to my project plan
 **So that** I can track my budget and timeline
 
 **Acceptance Criteria:**
-- [ ] User clicks "Godta" button on AI offer
-- [ ] Confirmation modal appears with:
+- [ ] AI offer message displays two buttons: "✓ Godta" (green) and "✗ Avslå" (gray)
+- [ ] **User clicks "✓ Godta"** → Confirmation modal appears with:
   - WBS item name
-  - Supplier name
+  - Supplier/Owner name
   - Cost
-  - Duration
+  - Duration (or budget increase if Owner)
   - Message: "Dette vil oppdatere prosjektplanen din. Fortsette?"
   - Buttons: "Avbryt" | "Bekreft"
-- [ ] User clicks "Bekreft" → plan updated:
+- [ ] **User clicks "✗ Avslå"** → Offer dismissed, chat continues without commitment
+- [ ] User clicks "Bekreft" in modal → plan updated:
   - Calculate `start_date` based on dependencies
   - Calculate `end_date` = start_date + duration
-  - Add entry to `current_plan[wbs_code]`: `{ supplier_id, cost, duration, start_date, end_date }`
+  - Add entry to `current_plan[wbs_code]`: `{ supplier_id, cost, duration, start_date, end_date, accepted_at: timestamp }`
   - Add entry to `plan_history`: `{ timestamp, action: 'commit', wbs_code, supplier_id, cost, duration }`
 - [ ] System message in chat: "✅ Tilbud godtatt og forpliktet til plan"
 - [ ] Dashboard updates (budget, timeline, WBS status)
 - [ ] Toast notification: "1.3.1 Grunnarbeid lagt til i plan"
+- [ ] **NO automatic acceptance** - offer remains pending until explicit "Godta" click
 
 **Technical Notes:**
 - Modal: Shadcn `<Dialog>` component (UX Section 3.4)
 - Dependency resolution: Check `wbs_items[wbs_code].dependencies`
 - Update localStorage: `session.current_plan`, `session.plan_history`, `session.metrics`
+- Button styling: Godta (green-600 bg, white text), Avslå (gray-300 bg, gray-700 text)
+- Offer state tracking: `pending_offers[]` in session until accepted/rejected
 
 **Story Points:** 5
 
 **Priority:** Must Have
 
-**Reference:** PRD FR-5.1, UX Section 3.4 Confirmation Modal
+**Reference:** PRD FR-5.1, FR-5.2, UX Section 3.4 Confirmation Modal
 
 ---
 
@@ -770,10 +848,10 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 **Acceptance Criteria:**
 - [ ] "Send Inn Plan" button visible in Dashboard sidebar
-- [ ] Button enabled only when all 15 WBS items committed
+- [ ] Button enabled only when all 3 negotiable WBS items committed (12 locked items are pre-committed)
 - [ ] User clicks button → loading overlay appears: "Validerer..."
 - [ ] System validates:
-  - Budget: total_cost ≤ 700 MNOK (with 3% tolerance: ≤721 MNOK)
+  - Budget: total_cost (3 negotiable + 12 locked) ≤ 700 MNOK (with 3% tolerance: ≤721 MNOK)
   - Timeline: projected_end_date ≤ May 15, 2026
 - [ ] Validation completes (<1 second)
 - [ ] Show success or error modal
@@ -1059,30 +1137,41 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 ---
 
-### Story E9.1: Static Data File Preparation
+### Story E9.1: Static Data File Preparation (3 Negotiable + 12 Locked)
 
 **As a** developer
-**I want** WBS and supplier data in JSON format
+**I want** WBS and AI agent data in JSON format with negotiable/locked flags
 **So that** I can load them into the application
 
 **Acceptance Criteria:**
 - [ ] Extract WBS from proposal PDF → `wbs.json`:
-  - 15 items with: `{ code, name, description, baseline_cost, baseline_duration, dependencies, requirements }`
-- [ ] Create supplier personas → `suppliers.json`:
-  - 5 suppliers with: `{ id, name, company, role, personality, specialties, initial_margin, concession_rate, patience }`
-- [ ] Files stored in `/public/data/` (accessible via `/data/wbs.json`)
+  - **15 total items** with: `{ code, name, description, baseline_cost, baseline_duration, dependencies, requirements, negotiable, status, contractor }`
+  - **3 items marked** `negotiable: true` (interactive, user can negotiate)
+  - **12 items marked** `negotiable: false, status: "contracted"` with pre-committed values:
+    - `committed_cost`: Pre-contracted cost (read-only)
+    - `committed_duration`: Pre-contracted duration (read-only)
+    - `contractor`: Pre-assigned contractor name
+  - **12 locked items total cost:** 650 MNOK (sum of committed_cost)
+  - **3 negotiable items baseline:** 345 MNOK total (105 + 60 + 180)
+- [ ] Create AI agent personas → `agents.json`:
+  - **4 agents** (1 Owner + 3 Suppliers):
+    - Owner: `{ id: "owner_anne_lise", name: "Anne-Lise Berg", role: "Prosjekteier", company: "Kommune", negotiation_powers: ["budget_increase", "scope_reduction"], time_extension_allowed: false }`
+    - 3 Suppliers with: `{ id, name, company, role, personality, specialties, initial_margin, concession_rate, patience, negotiation_strategy }`
+- [ ] Files stored in `/public/data/` (accessible via `/data/wbs.json`, `/data/agents.json`)
 - [ ] Validate JSON structure (no syntax errors)
+- [ ] TypeScript interfaces match data structure
 
 **Technical Notes:**
-- Manual extraction from PDF (no automation needed for MVP)
-- JSON schema validation (TypeScript interfaces)
-- Baseline costs should total ~650-680 MNOK (leaving room for negotiation upwards)
+- Manual extraction from PDF (no automation needed for POC)
+- JSON schema validation (TypeScript interfaces in PRD Section 8)
+- Budget model verification: 650 (locked) + 310 (available) = 700 MNOK total
+- 3 negotiable items should allow reaching 310 MNOK budget if negotiated well
 
 **Story Points:** 1 (manual work, not coding)
 
 **Priority:** Must Have (CRITICAL PATH—blocks Week 2 frontend)
 
-**Reference:** PRD Section 8 Data Requirements, Research Report
+**Reference:** PRD Section 8 Data Requirements (FR-8.1, FR-8.2), product-brief.md Budget Model
 
 ---
 
@@ -1395,13 +1484,13 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 ---
 
-## Sprint Planning Recommendation
+## Sprint Planning Recommendation (v2.0 - POC Scope)
 
 ### Sprint 1 (Week 1): Foundation
 **Goal:** Infrastructure, auth, static data ready
 
 **Stories:**
-- E9.1: Static data preparation (1 pt)
+- E9.1: Static data preparation (3 negotiable + 12 locked WBS, 4 agents) (1 pt)
 - E9.2: Supabase auth setup (1 pt)
 - E9.3: FastAPI backend deployment (2 pt)
 - E9.4: Frontend deployment (1 pt)
@@ -1414,73 +1503,93 @@ This document breaks down the Product Requirements Document (PRD) into implement
 ---
 
 ### Sprint 2 (Week 2): Dashboard & WBS
-**Goal:** Core UI, WBS display, budget tracking
+**Goal:** Core UI, 3 negotiable + 12 locked WBS display, budget tracking (310/650/700 MNOK)
 
 **Stories:**
-- E2.1: Display project constraints (5 pt)
+- E2.1: Display project constraints (310 available, 650 locked, 700 total) (5 pt)
 - E2.2: Real-time budget updates (3 pt)
 - E2.3: Real-time timeline updates (3 pt)
 - E2.4: Quick stats display (2 pt)
-- E3.1: Load and display WBS list (3 pt)
-- E3.2: WBS item selection (3 pt)
+- E3.1: Load and display WBS list (3 negotiable blue + 12 locked gray) (3 pt)
+- E3.2: WBS item selection (negotiable items only) (3 pt)
 - E3.3: View WBS requirements (2 pt)
 - E3.4: WBS status indicators (2 pt)
 - E4.1: Chat interface UI (5 pt)
 
 **Total:** 28 points
 
+**v2.0 Changes:** Budget display now shows 310/650/700 split, WBS list distinguishes negotiable vs locked items
+
 ---
 
-### Sprint 3 (Week 3): AI Negotiation & Plan Management
-**Goal:** AI chat working, commitment flow, validation
+### Sprint 3 (Week 3): AI Negotiation (4 Agents) & Plan Management
+**Goal:** AI chat working (3 suppliers + 1 owner), explicit accept/reject flow, commitment logic
 
 **Stories:**
 - E4.2: Send message to AI (5 pt)
-- E4.3: AI offer detection (3 pt)
-- **E4.4: AI prompt engineering (8 pt)** ← CRITICAL PATH
+- E4.3: AI offer detection with Accept/Reject buttons (3 pt)
+- **E4.4: AI prompt engineering (4 agents: Owner + 3 suppliers) (8 pt)** ← CRITICAL PATH
 - E4.5: Negotiation history (2 pt)
-- E5.1: Commit quote to plan (5 pt)
+- **E4.7: Owner AI agent negotiation (budget/scope, NEVER time) (8 pt)** ← NEW for v2.0
+- E5.1: Commit quote to plan (explicit accept/reject) (5 pt)
 - E5.2: Renegotiation (3 pt)
-- E5.3: Plan history tracking (1 pt)
-- E5.4: Dependency validation (2 pt)
-- E5.5: Visual feedback (2 pt)
 
-**Total:** 31 points (deferred E4.6 to Week 4)
+**Total:** 34 points (deferred E5.3-E5.5 and E4.6 to Week 4)
+
+**v2.0 Changes:** Added E4.7 for Owner agent (+8 pt), updated E4.4 for 4 agents, explicit accept/reject flow
 
 ---
 
 ### Sprint 4 (Week 4): Validation & Visualization Foundation
-**Goal:** Plan validation, Gantt chart, navigation
+**Goal:** Plan validation (3 negotiable + 12 locked ≤700 MNOK), Gantt chart, navigation
 
 **Stories:**
 - E4.6: Document sidebar (3 pt) ← deferred from Week 3
-- E6.1: Submit plan for validation (3 pt)
+- E5.3: Plan history tracking (1 pt) ← deferred from Week 3
+- E5.4: Dependency validation (2 pt) ← deferred from Week 3
+- E5.5: Visual feedback (2 pt) ← deferred from Week 3
+- E6.1: Submit plan for validation (3 negotiable + 12 locked) (3 pt)
 - E6.2: Validation success modal (2 pt)
 - E6.3: Validation error modal (2 pt)
 - E6.4: Validation logic (1 pt)
-- **E10.1: Gantt Chart View (8 pt)** ← HIGH PRIORITY visualization
+- **E10.1: Gantt Chart View (3 negotiable blue, 12 locked gray) (8 pt)** ← HIGH PRIORITY
 - E10.4: Navigation Between Views (3 pt)
-- E7.1: Export session as JSON (2 pt)
 
-**Total:** 24 points
+**Total:** 27 points
 
 ---
 
 ### Sprint 5 (Week 5): Advanced Visualization & Polish
-**Goal:** Precedence diagram, history, export, testing, launch
+**Goal:** Precedence diagram, export, testing, launch
 
 **Stories:**
 - **E10.2: Precedence Diagram (8 pt)** ← HIGH PRIORITY visualization
 - **E10.3: History/Timeline View (8 pt)** ← Should Have (can defer if needed)
+- E7.1: Export session as JSON (2 pt)
 - E7.2: Clear session data (2 pt)
 - E7.3: Storage quota monitoring (1 pt)
 - E8.1: In-app help documentation (2 pt)
 - **Integration Testing** (3 pt buffer)
 - **Bug Fixes & Polish** (3 pt buffer)
 
-**Total:** 27 points
+**Total:** 29 points
 
-**Note:** If timeline is tight, E10.3 (History/Timeline View - 8 pt) can be deferred to post-MVP as it's marked "Should Have" priority.
+**Note:** If timeline is tight, E10.3 (History/Timeline View - 8 pt) can be deferred to post-POC as it's marked "Should Have" priority.
+
+---
+
+## v2.0 Sprint Changes Summary
+
+**Total Story Points:** 125 (up from 116 due to POC scope adjustments)
+
+**Key Changes:**
+- Sprint 3: +8 points for E4.7 (Owner agent negotiation)
+- Sprint 2-4: Explicit accept/reject flow throughout
+- Sprint 2: Updated budget display (310/650/700)
+- Sprint 2: WBS list now handles 3 negotiable + 12 locked
+- Sprint 4: Validation updated for 3 negotiable + 12 locked constraints
+
+**Timeline:** 3-4 weeks for POC (down from 4-5 weeks for full 15-package version)
 
 ---
 

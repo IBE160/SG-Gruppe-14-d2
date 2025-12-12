@@ -9,3 +9,51 @@ To update the remote repository:
 3.  Commit your changes: git commit -m "A brief description of my changes"
 
 4.  Send your changes: git push
+
+
+
+Claude commands
+
+
+PERMISSIONS
+You can start a session with bypassPermissions mode using a command-line flag:
+
+  claude --dangerously-skip-permissions
+
+  Or alternatively:
+
+  claude --permission-mode bypassPermissions
+
+  Both of these will skip all permission prompts for just that session without changing your permanent settings. The session-specific flag overrides any settings in your config files and only applies to that one session.
+
+
+FILE USAGE IN PROMPTING
+● Here are the ways you can provide files to me in Claude Code:
+
+  Quick Methods
+
+  1. Use the @ symbol (easiest):
+  @/path/to/document.pdf - add some text to this
+  Or with relative paths:
+  @./document.pdf - add a header to this
+
+  2. Drag and drop:
+  - Simply drag a file into the Claude Code terminal window
+
+  3. Copy and paste:
+  - Copy a file and paste it with Ctrl+V (Windows/Linux)
+
+  4. Just mention the file path:
+  Read this PDF and add text: C:\Users\morte\Documents\myfile.pdf
+
+  For PDFs Specifically
+
+  I can read PDFs directly using my Read tool. Once you reference a PDF file (using any method above), I can:
+  - Extract and analyze the text content
+  - Help you create modified versions
+  - Generate new files with added text
+
+  For example, you could say:
+  @C:\Users\morte\Documents\report.pdf - add a title page with "Annual Report 2025"
+
+  The @ symbol method is usually the most convenient for interactive sessions.

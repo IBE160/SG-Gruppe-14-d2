@@ -1,9 +1,14 @@
 # Brainstorming Executive Summary
 ## Nye Hædda Barneskole - Project Management Simulation
 
+> **⚠️ HISTORICAL DOCUMENT:** This executive summary synthesizes original brainstorming sessions (v1.0 scope). For current POC scope, see:
+> - **README.md:** Project overview with v2.0 scope
+> - **product-brief.md (v2.0):** POC scope - 3 negotiable + 12 locked WBS, 4 AI agents
+> - **PRD.md (v2.0):** Complete functional requirements for POC
+
 **Document Version:** 1.0
 **Date:** 2025-12-07
-**Status:** Phase 0 Complete - Ready for PRD Development
+**Status:** Phase 0 Complete - Ready for PRD Development (NOTE: PRD has been updated to v2.0)
 
 ---
 

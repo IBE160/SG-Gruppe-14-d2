@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440" height="900" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Overlay -->
+  <rect width="1440" height="900" fill="#000000" opacity="0.5"/>
+
+  <!-- Modal -->
+  <g transform="translate(370, 150)">
+    <!-- Modal Shadow -->
+    <rect x="4" y="4" width="700" height="600" fill="#000000" opacity="0.2" rx="12"/>
+    <!-- Modal Background -->
+    <rect width="700" height="600" fill="#FFFFFF" rx="12"/>
+
+    <!-- Success Icon -->
+    <circle cx="350" cy="100" r="50" fill="#D1FAE5"/>
+    <text x="350" y="120" font-family="Arial, sans-serif" font-size="50" fill="#10B981" text-anchor="middle">
+      ✓
+    </text>
+
+    <!-- Title -->
+    <text x="350" y="200" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#10B981" text-anchor="middle">
+      🎉 Plan Godkjent!
+    </text>
+
+    <!-- Message -->
+    <text x="350" y="240" font-family="Arial, sans-serif" font-size="15" fill="#374151" text-anchor="middle">
+      Gratulerer! Du har lykkes med å fullføre planleggingsfasen.
+    </text>
+
+    <!-- Stats Table -->
+    <rect x="60" y="270" width="580" height="220" fill="#F9FAFB" rx="8"/>
+
+    <g transform="translate(80, 300)">
+      <text x="0" y="0" font-family="Arial, sans-serif" font-size="14" fill="#6B7280">
+        Total Kostnad:
+      </text>
+      <text x="540" y="0" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#111827" text-anchor="end">
+        685 MNOK
+      </text>
+
+      <line x1="0" y1="20" x2="540" y2="20" stroke="#E5E7EB" stroke-width="1"/>
+
+      <text x="0" y="50" font-family="Arial, sans-serif" font-size="14" fill="#6B7280">
+        Budsjett (grense):
+      </text>
+      <text x="540" y="50" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#10B981" text-anchor="end">
+        700 MNOK ✓
+      </text>
+
+      <line x1="0" y1="70" x2="540" y2="70" stroke="#E5E7EB" stroke-width="1"/>
+
+      <text x="0" y="100" font-family="Arial, sans-serif" font-size="14" fill="#6B7280">
+        Fullføringsdato:
+      </text>
+      <text x="540" y="100" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#111827" text-anchor="end">
+        12. april 2026
+      </text>
+
+      <line x1="0" y1="120" x2="540" y2="120" stroke="#E5E7EB" stroke-width="1"/>
+
+      <text x="0" y="150" font-family="Arial, sans-serif" font-size="14" fill="#6B7280">
+        Frist:
+      </text>
+      <text x="540" y="150" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#10B981" text-anchor="end">
+        15. mai 2026 ✓
+      </text>
+
+      <line x1="0" y1="170" x2="540" y2="170" stroke="#E5E7EB" stroke-width="1"/>
+
+      <text x="0" y="200" font-family="Arial, sans-serif" font-size="14" fill="#6B7280">
+        Antall forhandlinger:
+      </text>
+      <text x="540" y="200" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#111827" text-anchor="end">
+        12
+      </text>
+    </g>
+
+    <!-- Buttons -->
+    <rect x="60" y="520" width="580" height="50" fill="#3B82F6" rx="6" cursor="pointer"/>
+    <text x="350" y="550" font-family="Arial, sans-serif" font-size="15" font-weight="600" fill="#FFFFFF" text-anchor="middle">
+      Eksporter Økt (JSON)
+    </text>
+
+    <!-- Close Button -->
+    <text x="660" y="40" font-family="Arial, sans-serif" font-size="32" fill="#9CA3AF" cursor="pointer">
+      ✕
+    </text>
+  </g>
+</svg>

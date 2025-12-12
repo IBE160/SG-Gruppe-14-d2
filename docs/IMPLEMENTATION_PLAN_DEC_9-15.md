@@ -1,11 +1,18 @@
 # Implementation Plan: Nye Hædda Barneskole PM Simulator
 ## Development Sprint: December 9-15, 2025
 
-**Document Version:** 1.0
-**Date:** December 9, 2025
+**Document Version:** 2.0 (POC Scope)
+**Date:** December 11, 2025 (Updated for v2.0)
 **Target Completion:** December 15, 2025 (23:59)
 **Realistic Target:** December 14, 2025 (EOD) with December 16 for polish
 **Team:** SG-Gruppe-14-d2
+
+**v2.0 Scope Changes:**
+- 3 negotiable + 12 locked WBS packages (down from 15 negotiable)
+- 4 AI agents: 1 Owner + 3 Suppliers (down from 5 suppliers)
+- Budget model: 310 MNOK available, 650 MNOK locked, 700 MNOK total
+- Owner AI with inflexible time constraint (100% rejection rate for time extensions)
+- Explicit accept/reject flow (no automatic acceptance)
 
 ---
 
@@ -24,15 +31,15 @@ This document provides a day-by-day implementation plan to complete the Nye Hæd
 
 **❌ Not Started (Critical Path):**
 - ❌ Supabase Authentication
-- ❌ Gemini AI Integration
-- ❌ Dashboard UI (budget tracking, constraints)
+- ❌ Gemini AI Integration (4 agents: Owner + 3 suppliers)
+- ❌ Dashboard UI (310/650/700 budget display, 3 negotiable + 12 locked WBS)
 - ❌ localStorage session management
-- ❌ Commitment/renegotiation flow
-- ❌ Plan validation logic
+- ❌ Commitment/renegotiation flow with explicit accept/reject buttons
+- ❌ Plan validation logic (3 negotiable + 12 locked ≤700 MNOK total)
 - ❌ Visualization features (Gantt, Precedence, History)
-- ❌ Static data files (wbs.json, suppliers.json)
+- ❌ Static data files (wbs.json, agents.json with negotiable/locked flags)
 
-**Estimated Work Remaining:** 116 story points (originally 4-5 weeks) → **Compressed to 7 days**
+**Estimated Work Remaining:** 125 story points (POC scope: v2.0) → **Compressed to 7 days**
 
 ### Scope Adjustment Recommendation
 
@@ -184,11 +191,13 @@ This document provides a day-by-day implementation plan to complete the Nye Hæd
 
 ---
 
-#### Task 1.3: Prepare Static Data Files (1 hour)
+#### Task 1.3: Prepare Static Data Files (v2.0 - 3 Negotiable + 12 Locked + 4 Agents) (1 hour)
 
-**Goal:** Create `wbs.json` and `suppliers.json` from PRD specifications
+**Goal:** Create `wbs.json` and `agents.json` with negotiable/locked flags
 
 1. **Create `frontend/public/data/wbs.json`**
+
+   **v2.0 POC Scope:** 15 total WBS items - 3 negotiable + 12 locked (pre-contracted)
 
    Extract 15 WBS items from the project proposal PDF. Based on PRD Section 8, create:
 
@@ -349,17 +358,43 @@ This document provides a day-by-day implementation plan to complete the Nye Hæd
 
    **Total Baseline:** 925 MNOK (allows negotiation down to ~680-700 MNOK)
 
-2. **Create `frontend/public/data/suppliers.json`**
+   **⚠️ v2.0 UPDATE REQUIRED:**
+   For POC scope, modify the above structure:
+   - Mark 3 items as `"negotiable": true` (e.g., 1.3.1 Grunnarbeid, 2.1 Fundamentering, 3.2 Råbygg)
+   - Remaining 12 items: `"negotiable": false`, `"status": "contracted"`, add:
+     - `"committed_cost": [value]` (pre-contracted cost)
+     - `"committed_duration": [value]` (pre-contracted duration)
+     - `"contractor": "Contractor Name"` (pre-assigned)
+   - **Budget split:** 12 locked items total = 650 MNOK, 3 negotiable baseline = 345 MNOK (105+60+180)
+   - See `docs/AI_AGENT_SYSTEM_PROMPTS.md` for detailed POC data structure
+
+2. **Create `frontend/public/data/agents.json`** (v2.0: was `suppliers.json`)
+
+   **v2.0 POC Scope:** 4 AI agents - 1 Owner (Municipality) + 3 Suppliers
 
    ```json
    [
      {
+       "id": "owner_anne_lise",
+       "name": "Anne-Lise Berg",
+       "company": "Hædda Kommune",
+       "role": "Prosjekteier",
+       "agent_type": "owner",
+       "personality": "Profesjonell og samfunnsbevisst. Fokusert på kommunebudsjett og samfunnsnytte. Tidsfristen er ufravikelig.",
+       "negotiation_powers": ["budget_increase", "scope_reduction"],
+       "time_extension_allowed": false,
+       "max_budget_increase": 0.15,
+       "budget_increase_threshold": "strong_arguments_required"
+     },
+     {
        "id": "bjorn",
        "name": "Bjørn Eriksen",
        "company": "Eriksen Bygg AS",
-       "role": "Totalentreprenør",
+       "role": "Grunnarbeid-specialist",
+       "agent_type": "supplier",
        "personality": "Pragmatisk og erfaren, fokusert på kvalitet og sikkerhet. Skeptisk til for stramme budsjetter.",
-       "specialties": ["Grunnarbeid", "Råbygg", "Prosjektledelse"],
+       "specialties": ["Grunnarbeid"],
+       "negotiation_strategy": "price_quality_tradeoff",
        "initial_margin": 1.20,
        "concession_rate": 0.05,
        "patience": 3
@@ -367,49 +402,39 @@ This document provides a day-by-day implementation plan to complete the Nye Hæd
      {
        "id": "kari",
        "name": "Kari Andersen",
-       "company": "Andersen Rør og Varme",
-       "role": "Rørlegger",
-       "personality": "Detaljorientert og teknisk dyktig. Setter pris på presisjon i spesifikasjoner.",
-       "specialties": ["VVS-installasjon", "Sanitæranlegg"],
+       "company": "Andersen Fundamentering",
+       "role": "Fundamentering-specialist",
+       "agent_type": "supplier",
+       "personality": "Detaljorientert og teknisk dyktig. Kan levere raskere mot høyere pris.",
+       "specialties": ["Fundamentering"],
+       "negotiation_strategy": "time_cost_tradeoff",
        "initial_margin": 1.18,
        "concession_rate": 0.03,
-       "patience": 4
+       "patience": 4,
+       "time_reduction_cost": 0.30
      },
      {
        "id": "per",
        "name": "Per Johansen",
-       "company": "Johansen Elektro",
-       "role": "Elektriker",
-       "personality": "Direkte og effektiv. Liker å jobbe raskt og forventer klare krav.",
-       "specialties": ["Elektrisk installasjon", "Brannalarm"],
+       "company": "Johansen Råbygg",
+       "role": "Råbygg-specialist",
+       "agent_type": "supplier",
+       "personality": "Direkte og effektiv. Kan foreslå omfangsreduksjoner for å spare kostnader.",
+       "specialties": ["Råbygg"],
+       "negotiation_strategy": "scope_reduction",
        "initial_margin": 1.25,
        "concession_rate": 0.07,
-       "patience": 2
-     },
-     {
-       "id": "silje",
-       "name": "Silje Henriksen",
-       "company": "Henriksen Arkitekter",
-       "role": "Arkitekt",
-       "personality": "Kreativ og visjonær. Forsvarer designintegritet, men åpen for konstruktiv dialog.",
-       "specialties": ["Prosjektering", "Estetikk"],
-       "initial_margin": 1.15,
-       "concession_rate": 0.04,
-       "patience": 5
-     },
-     {
-       "id": "tor",
-       "name": "Tor Kristoffersen",
-       "company": "Kristoffersen Malermester",
-       "role": "Maler",
-       "personality": "Vennlig og fleksibel. Tilpasningsdyktig, men krever respekt for fagkompetanse.",
-       "specialties": ["Maling", "Overflatebehandling"],
-       "initial_margin": 1.22,
-       "concession_rate": 0.06,
-       "patience": 3
+       "patience": 2,
+       "scope_reduction_savings": [10, 18]
      }
    ]
    ```
+
+   **⚠️ v2.0 KEY CHANGES:**
+   - **Owner agent added** with `"agent_type": "owner"` and `"time_extension_allowed": false`
+   - Only 3 suppliers (down from 5): Bjørn, Kari, Per
+   - Each supplier has distinct `"negotiation_strategy"` matching their WBS package
+   - See `docs/AI_AGENT_SYSTEM_PROMPTS.md` for complete system prompts for all 4 agents
 
 3. **Validation**
    - Total baseline costs: Sum all `baseline_cost` values = 925 MNOK ✓
@@ -877,10 +902,10 @@ export default WBSList;
 - ✅ Basic Dashboard UI with budget tracking
 - ✅ WBS list display
 
-**Testing Checklist:**
+**Testing Checklist (v2.0 POC):**
 - [ ] Register new user → Redirects to Dashboard
-- [ ] Dashboard loads with 0/700 MNOK budget
-- [ ] WBS list shows 15 items with ⚪ pending status
+- [ ] Dashboard loads with 0/310 MNOK available (650 locked, 700 total)
+- [ ] WBS list shows 15 items: 3 negotiable (blue, ⚪ pending) + 12 locked (gray, pre-committed)
 - [ ] localStorage contains session object
 
 ---
@@ -2112,12 +2137,12 @@ body {
 
 **Test Scenarios:**
 
-1. **Complete Happy Path (30 min)**
+1. **Complete Happy Path (v2.0 POC - 20 min)**
    - Register → Login → Dashboard loads
-   - Negotiate with 5 suppliers → Accept offers
-   - Check budget updates in real-time
-   - Complete all 15 WBS items (simulate quickly by accepting first offers)
-   - Submit plan → Success modal
+   - Negotiate with 3 negotiable WBS items (can choose different agents: Owner or Suppliers) → Accept offers
+   - Check budget updates in real-time (310/650/700 display)
+   - Complete all 3 negotiable WBS items (simulate quickly by accepting first offers)
+   - Submit plan → Success modal (validates 3 negotiable + 12 locked ≤700 MNOK)
    - Export JSON
 
 2. **Budget Overrun Scenario (15 min)**
@@ -2487,10 +2512,11 @@ SG-Gruppe-14-d2/
 
 #### Task 6.5: Final Testing & Bug Bash (3 hours)
 
-**Comprehensive Test:**
-- [ ] Complete simulation 3 times with different strategies
+**Comprehensive Test (v2.0 POC):**
+- [ ] Complete simulation 3 times with different strategies (negotiate with different agents)
 - [ ] Test all error scenarios
-- [ ] Verify all 15 WBS items negotiable
+- [ ] Verify all 3 negotiable WBS items work correctly (blue highlight, interactive)
+- [ ] Verify 12 locked WBS items are non-interactive (gray, read-only)
 - [ ] Check localStorage doesn't exceed 5MB
 - [ ] Test on mobile (basic check - full responsive not MVP)
 
