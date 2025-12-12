@@ -12,8 +12,10 @@ To update the remote repository:
 
 
 
-Claude commands
 
+
+
+Claude commands
 
 PERMISSIONS
 You can start a session with bypassPermissions mode using a command-line flag:
@@ -25,7 +27,6 @@ You can start a session with bypassPermissions mode using a command-line flag:
   claude --permission-mode bypassPermissions
 
   Both of these will skip all permission prompts for just that session without changing your permanent settings. The session-specific flag overrides any settings in your config files and only applies to that one session.
-
 
 FILE USAGE IN PROMPTING
 ● Here are the ways you can provide files to me in Claude Code:

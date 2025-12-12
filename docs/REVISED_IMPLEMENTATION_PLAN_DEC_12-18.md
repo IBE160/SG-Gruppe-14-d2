@@ -57,10 +57,18 @@ This document provides a revised, actionable implementation plan to build the Ny
 4. **Important:** Add `.env.local` to the `frontend/.gitignore` file if it's not already there.
 
 #### Task 1.2: Prepare Static Data Files (1 hour)
-**Status: Unchanged from original plan.**
+**Status: Updated for v2.0 POC scope.**
 1. Create `frontend/public/data/wbs.json`.
+   - **15 total WBS items:** 3 marked as `negotiable: true`, 12 marked as `negotiable: false, status: "contracted"`
+   - Reference: `docs/SCOPE_CHANGE_TASKS.md` for budget breakdown
 2. Create `frontend/public/data/agents.json`.
-   *Use the JSON content provided in `docs/IMPLEMENTATION_PLAN_DEC_9-15.md` for both files.*
+   - **4 agents** (1 Owner + 3 Suppliers) as specified in `docs/AI_AGENT_SYSTEM_PROMPTS.md`
+   - **Owner:** Anne-Lise Berg (Municipality)
+     - `time_extension_allowed: false` (CRITICAL: 100% rejection of time extensions)
+     - Can approve budget increases with strong argumentation
+   - **Supplier 1:** Bjørn Eriksen (Grunnarbeid) - Price/quality negotiation
+   - **Supplier 2:** Kari Andersen (Fundamentering) - Time/cost trade-offs
+   - **Supplier 3:** Per Johansen (Råbygg) - Scope reduction proposals
 
 #### Task 1.3: Create Supabase Clients (1 hour)
 1. **Client Component Client:** Create `frontend/lib/supabase/client.ts`. This client is for use in Client Components.
@@ -207,6 +215,14 @@ This document provides a revised, actionable implementation plan to build the Ny
 
 #### Task 5.3: End-to-End Testing (2 hours)
 *   Manually run through the entire simulation loop: Register -> Login -> Negotiate -> Commit -> Renegotiate -> Submit -> Validate -> Export.
+*   **Critical v2.0 test cases:**
+    - ✅ Negotiate with Owner AI, request time extension → Verify 100% rejection with explanation
+    - ✅ Negotiate with Owner AI, request budget increase with strong argument → Verify conditional approval
+    - ✅ Negotiate with 3 suppliers to stay within 310 MNOK available budget
+    - ✅ Verify explicit accept/reject flow (two buttons: "✓ Godta" and "✗ Avslå")
+    - ✅ Verify no automatic acceptance of offers (user must click button)
+    - ✅ Verify budget display shows 3-tier breakdown: 310 available, 650 locked, 700 total
+    - ✅ Verify WBS list shows 3 negotiable (blue) and 12 locked (gray) items
 *   Fix any bugs found during testing.
 
 ---

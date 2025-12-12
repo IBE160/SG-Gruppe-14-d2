@@ -2,7 +2,20 @@
   "permissions": {
     "allow": [
       "Bash(python translate_svgs.py:*)",
-      "Bash(tee:*)"
+      "Bash(tee:*)",
+      "Bash(git checkout:*)",
+      "Bash(python translate_to_english.py:*)",
+      "Bash(python fix_translation.py:*)",
+      "Bash(python final_translation_fix.py:*)",
+      "Bash(python proper_translation.py:*)",
+      "Bash(python final_cleanup.py:*)",
+      "Bash(python final_norwegian_fix.py:*)",
+      "Bash(python final_comprehensive_fix.py:*)",
+      "Bash(python ultra_final_fix.py:*)",
+      "Bash(python:*)",
+      "Bash(grep:*)",
+      "Bash(git status:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
