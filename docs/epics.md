@@ -1151,8 +1151,9 @@ This document breaks down the Product Requirements Document (PRD) into implement
     - `committed_cost`: Pre-contracted cost (read-only)
     - `committed_duration`: Pre-contracted duration (read-only)
     - `contractor`: Pre-assigned contractor name
-  - **12 locked items total cost:** 650 MNOK (sum of committed_cost)
+  - **12 locked items total cost:** 390 MNOK (sum of committed_cost)
   - **3 negotiable items baseline:** 345 MNOK total (105 + 60 + 180)
+  - **Budget model verification:** 390 (locked) + 310 (available) = 700 MNOK total ✅
 - [ ] Create AI agent personas → `agents.json`:
   - **4 agents** (1 Owner + 3 Suppliers):
     - Owner: `{ id: "owner_anne_lise", name: "Anne-Lise Berg", role: "Prosjekteier", company: "Kommune", negotiation_powers: ["budget_increase", "scope_reduction"], time_extension_allowed: false }`

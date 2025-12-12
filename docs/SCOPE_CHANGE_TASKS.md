@@ -16,7 +16,7 @@ This document tracks the major scope changes from the original plan (15 supplier
 - **Suppliers:** 15 → 3 negotiable suppliers
 - **WBS Packages:** 15 → 3 negotiable packages (3 of 5 on critical path)
 - **AI Agent Roles:** 5 supplier personas → 4 distinct roles (Owner + 3 suppliers)
-- **Budget Model:** 700 MNOK total → 310 MNOK available for 3 negotiable packages (650 MNOK locked)
+- **Budget Model:** 700 MNOK total → 310 MNOK available for 3 negotiable packages (390 MNOK locked)
 - **Negotiation Types:** 3 main strategies (quality, scope, time/cost trade-offs)
 - **Time Constraint:** 15 months INFLEXIBLE (enforced via system prompts)
 - **Owner Role:** New AI agent representing municipality (budget negotiation only)
@@ -125,7 +125,7 @@ The focus is on proving the AI agent negotiation concept, not on building a comp
 
 | Category | Amount | Status |
 |----------|--------|--------|
-| 12 "Gray" Suppliers (locked) | ~650 MNOK | Already contracted, 13 months |
+| 12 "Gray" Suppliers (locked) | 390 MNOK | Already contracted, 13 months |
 | **3 Negotiable Packages** | **310 MNOK available** | User must negotiate within this |
 | **Total** | **700 MNOK** | **15 months deadline** |
 
@@ -147,7 +147,7 @@ User MUST negotiate to reduce costs or get Owner to approve budget increase.
 ### 3.3 Budget Flexibility
 
 **From Bård (stakeholder):**
-> "Dersom de tre kritiske WBS-pakkene samlet blir større enn det vi klarer å «hente inn» innenfor 50 MNOK, kan vi justere rammene slik: vi senker de 650 MNOK som ligger på de grå/kontraktfestede leverandørene tilsvarende."
+> "Dersom de tre kritiske WBS-pakkene samlet blir større enn det vi klarer å «hente inn» innenfor 50 MNOK, kan vi justere rammene slik: vi senker de 390 MNOK som ligger på de grå/kontraktfestede leverandørene tilsvarende."
 
 **Acceptable Total Budget:**
 - Slightly over 700 MNOK is acceptable
@@ -542,7 +542,7 @@ CREATE POLICY "Users can update their own sessions"
 
 **Dashboard:**
 - Show **Owner perspective** prominently
-- Budget display: "310 MNOK available for 3 packages | 650 MNOK locked"
+- Budget display: "310 MNOK available for 3 packages | 390 MNOK locked"
 - WBS list: Highlight 3 negotiable items, show 12 as "gray/contracted"
 
 **Chat Interface:**
@@ -638,8 +638,8 @@ CREATE POLICY "Users can update their own sessions"
 
 - [ ] Create `/public/data/budget_model.json`:
   - [ ] Total: 700 MNOK
-  - [ ] Locked: 650 MNOK
-  - [ ] Available: 310 MNOK
+  - [ ] Locked: 390 MNOK (12 contracted packages)
+  - [ ] Available: 310 MNOK (for 3 negotiable packages)
   - [ ] Baseline_needed: 345 MNOK
   - [ ] Deficit: 35 MNOK
 
@@ -754,8 +754,9 @@ Before starting implementation, confirm these details:
    - Confirm these are 3 of the 5 on critical path
 
 2. **Exact budget breakdown:**
-   - Locked: 650 MNOK or 655 MNOK? (depends on whether 50 MNOK or 45 MNOK available)
-   - Available: 310 MNOK confirmed?
+   - Locked: 390 MNOK (12 contracted packages, already spent)
+   - Available: 310 MNOK (confirmed for 3 negotiable packages)
+   - Math check: 390 + 310 = 700 MNOK ✅
 
 3. **Supplier personas:**
    - Can we reuse Bjørn, Kari, Per from original? Or create new ones?

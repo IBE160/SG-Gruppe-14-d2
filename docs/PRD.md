@@ -15,7 +15,7 @@
 |---------|------|--------|---------|
 | 1.0 | 2025-12-07 | BMAD System | Initial PRD based on Phase 0 brainstorming |
 | 1.1 | 2025-12-08 | BMAD System | Added visualization features (Gantt, precedence diagram, history/timeline) |
-| 2.0 | 2025-12-11 | BMAD System | **MAJOR SCOPE CHANGE:** Scaled down to 3 negotiable suppliers/WBS packages, 4 AI agent roles (Owner + 3 suppliers), new budget model (310 MNOK available, 650 MNOK locked), inflexible time constraint |
+| 2.0 | 2025-12-11 | BMAD System | **MAJOR SCOPE CHANGE:** Scaled down to 3 negotiable suppliers/WBS packages, 4 AI agent roles (Owner + 3 suppliers), new budget model (310 MNOK available, 390 MNOK locked), inflexible time constraint |
 
 ---
 
@@ -62,7 +62,7 @@ An interactive, browser-based simulation where students:
    - **3 Supplier agents** (each with unique negotiation capabilities: price flexibility, time/cost trade-offs, scope reduction)
    - **1 Owner agent** (Municipality - can adjust budget with strong argumentation, but **CANNOT extend time**)
 3. Gather cost and duration estimates for **3 negotiable WBS packages** (3 of 5 on critical path)
-4. Work within a challenging budget constraint: **310 MNOK available** for the 3 negotiable packages (650 MNOK already locked for 12 other contracted suppliers)
+4. Work within a challenging budget constraint: **310 MNOK available** for the 3 negotiable packages (390 MNOK already locked for 12 other contracted suppliers)
 5. Commit estimates to a project plan through **active user choice** (explicit Accept/Reject for every offer)
 6. Navigate **3 main negotiation strategies**:
    - **Reduced quality** → negotiate with supplier for lower cost

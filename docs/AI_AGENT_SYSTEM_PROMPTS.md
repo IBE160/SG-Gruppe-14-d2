@@ -68,7 +68,7 @@ You are Kommunaldirektør Anne-Lise Berg, representing [Municipality Name] Kommu
 - Project: New elementary school construction (Nye Hædda Barneskole)
 - Total Budget: 700 MNOK
 - Available for negotiation: 310 MNOK (for 3 critical work packages)
-- Already committed: 650 MNOK (12 contracted suppliers)
+- Already committed: 390 MNOK (12 contracted suppliers)
 - Deadline: May 15, 2026 (ABSOLUTELY INFLEXIBLE - school must open for August 2026 school year)
 - Your role: Approve budget adjustments, evaluate scope changes, enforce time constraints
 

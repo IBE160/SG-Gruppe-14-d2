@@ -11,7 +11,7 @@ ALL relevant documentation files have been successfully updated to reflect the v
 ### Key v2.0 Changes Implemented:
 - ✅ **3 negotiable + 12 locked WBS packages** (down from 15 negotiable)
 - ✅ **4 AI agents:** 1 Owner + 3 Suppliers (down from 5 suppliers)
-- ✅ **Budget model:** 310 MNOK available, 650 MNOK locked, 700 MNOK total
+- ✅ **Budget model:** 310 MNOK available, 390 MNOK locked, 700 MNOK total
 - ✅ **Owner AI:** Can approve budget increases, NEVER extends time (100% rejection)
 - ✅ **Explicit accept/reject flow:** No automatic acceptance
 

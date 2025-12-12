@@ -292,8 +292,8 @@ w-8 h-8:   32px  - Extra large (empty states)
 │  Prosjektbegrensninger                                             │
 │  ┌────────────────────────────────────────────────────────────┐   │
 │  │ Tilgjengelig: [=====>       ] 105 / 310 MNOK (34%)        │   │
-│  │ Låst:         650 MNOK (12 kontraktfestede leverandører)   │   │
-│  │ Totalt:       755 / 700 MNOK ❌ (overskredet med 55 MNOK)  │   │
+│  │ Låst:         390 MNOK (12 kontraktfestede leverandører)   │   │
+│  │ Totalt:       495 / 700 MNOK ✓ (70%)                       │   │
 │  │ Frist:        15. mai 2026                                 │   │
 │  │ Forventet:    10. april 2026  ✓                            │   │
 │  └────────────────────────────────────────────────────────────┘   │
@@ -345,10 +345,10 @@ w-8 h-8:   32px  - Extra large (empty states)
      - Fill: Green (0-300 MNOK), yellow (300-310), red (>310)
      - Label: "Tilgjengelig: 105 / 310 MNOK (34%)"
   2. **Låst (Locked)** - For 12 contracted WBS:
-     - Text display only (no bar): "Låst: 650 MNOK (12 kontraktfestede leverandører)"
+     - Text display only (no bar): "Låst: 390 MNOK (12 kontraktfestede leverandører)"
      - text-sm text-gray-600
   3. **Totalt (Total)** - Sum validation:
-     - Text display: "Totalt: 755 / 700 MNOK ❌ (overskredet med 55 MNOK)"
+     - Text display: "Totalt: 495 / 700 MNOK ✓ (70%)" (example with 105 MNOK negotiated)
      - Color: Red if >700, yellow if >680, green if ≤680
      - Checkmark (✓) or X (❌) icon
 - Deadline & Projected:

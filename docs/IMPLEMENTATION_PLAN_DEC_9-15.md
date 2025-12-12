@@ -10,7 +10,7 @@
 **v2.0 Scope Changes:**
 - 3 negotiable + 12 locked WBS packages (down from 15 negotiable)
 - 4 AI agents: 1 Owner + 3 Suppliers (down from 5 suppliers)
-- Budget model: 310 MNOK available, 650 MNOK locked, 700 MNOK total
+- Budget model: 310 MNOK available, 390 MNOK locked, 700 MNOK total
 - Owner AI with inflexible time constraint (100% rejection rate for time extensions)
 - Explicit accept/reject flow (no automatic acceptance)
 
@@ -365,7 +365,8 @@ This document provides a day-by-day implementation plan to complete the Nye Hæd
      - `"committed_cost": [value]` (pre-contracted cost)
      - `"committed_duration": [value]` (pre-contracted duration)
      - `"contractor": "Contractor Name"` (pre-assigned)
-   - **Budget split:** 12 locked items total = 650 MNOK, 3 negotiable baseline = 345 MNOK (105+60+180)
+   - **Budget split:** 12 locked items total = 390 MNOK, 3 negotiable baseline = 345 MNOK (105+60+180)
+   - **Budget model verification:** 390 (locked) + 310 (available) = 700 MNOK total ✅
    - See `docs/AI_AGENT_SYSTEM_PROMPTS.md` for detailed POC data structure
 
 2. **Create `frontend/public/data/agents.json`** (v2.0: was `suppliers.json`)

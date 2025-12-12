@@ -706,18 +706,18 @@ pytest tests/ --cov=app       # With coverage report
 
 ### 9.1 Static Test Data
 
-**wbs.json (15 items):**
-- WBS codes: 1.1, 1.3.1, 2.1, 2.2, 3.1, 3.2, 3.3, 3.4, 4.1, 4.2, 4.3, 5.1, 5.2, 6.1, 6.2
-- Baseline costs: Range from 20-250 MNOK (total ~650 MNOK)
+**wbs.json (15 items - v2.0 POC scope):**
+- **3 negotiable items** (marked `negotiable: true`): 105 + 60 + 180 = 345 MNOK baseline
+- **12 locked items** (marked `negotiable: false, status: "contracted"`): 390 MNOK total (already spent)
+- Budget model: 390 (locked) + 310 (available) = 700 MNOK total
 - Baseline durations: Range from 1-6 months
 - Dependencies: 2-3 items have dependencies (e.g., 2.1 depends on 1.3.1)
 
-**suppliers.json (5 suppliers):**
-- Bjørn Eriksen (Totalentreprenør): initial_margin 1.20, concession_rate 0.05, patience 3
-- Kari Andersen (Rørlegger): initial_margin 1.18, concession_rate 0.03, patience 4
-- Per Johansen (Elektriker): initial_margin 1.25, concession_rate 0.07, patience 2
-- Silje Henriksen (Arkitekt): initial_margin 1.15, concession_rate 0.04, patience 5
-- Tor Kristoffersen (Maler): initial_margin 1.22, concession_rate 0.06, patience 3
+**agents.json (4 agents - v2.0 POC scope):**
+- **Owner:** Anne-Lise Berg (Municipality): time_extension_allowed: false
+- **Supplier 1:** Bjørn Eriksen (Grunnarbeid): price/quality negotiation
+- **Supplier 2:** Kari Andersen (Fundamentering): time/cost trade-offs
+- **Supplier 3:** Per Johansen (Råbygg): scope reduction
 
 ---
 

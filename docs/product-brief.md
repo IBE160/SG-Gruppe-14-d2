@@ -58,10 +58,10 @@ Students play the role of project manager for Nye Hædda Barneskole (New Hædda 
 
 **Budget Challenge:**
 - **Total project:** 700 MNOK
-- **Already locked:** 650 MNOK (12 contracted suppliers - non-negotiable)
+- **Already locked:** 390 MNOK (12 contracted suppliers - non-negotiable)
 - **Available for 3 negotiable packages:** 310 MNOK
 - **Baseline estimates for 3 packages:** 345 MNOK (105 + 60 + 180)
-- **Challenge:** User must negotiate to reduce costs by 35-45 MNOK OR convince Owner to approve budget increase
+- **Challenge:** User must negotiate to reduce costs by 35 MNOK OR convince Owner to approve budget increase
 
 ### Gameplay Loop (POC)
 1. **Review Constraints** - Budget: 310 MNOK available (of 700 total), Deadline: May 15, 2026 (inflexible)

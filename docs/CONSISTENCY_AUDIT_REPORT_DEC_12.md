@@ -35,10 +35,11 @@ This audit verifies that all documentation in `/docs` is consistent with the sco
 
 ### 2. Budget Model
 - **Total Project:** 700 MNOK, 15 months
-- **Locked Budget:** 650 MNOK (12 pre-contracted suppliers, 13 months)
+- **Locked Budget:** 390 MNOK (12 pre-contracted suppliers, 13 months)
 - **Available for Negotiation:** 310 MNOK (for 3 negotiable packages)
 - **Baseline Estimate for 3 Packages:** 345 MNOK (105 + 60 + 180)
-- **Challenge:** 35-45 MNOK shortfall requiring negotiation
+- **Challenge:** 35 MNOK shortfall requiring negotiation
+- **Math Verification:** 390 (locked) + 310 (available) = 700 MNOK ✅
 
 ### 3. AI Agent Roles (4 Total)
 1. **Owner (Municipality)** - Anne-Lise Berg
@@ -129,9 +130,9 @@ This audit verifies that all documentation in `/docs` is consistent with the sco
 
 **Sample Verification:**
 ```markdown
-Line 64: "4. Work within a challenging budget constraint:
+Line 65: "4. Work within a challenging budget constraint:
          **310 MNOK available** for the 3 negotiable packages
-         (650 MNOK already locked for 12 other contracted suppliers)"
+         (390 MNOK already locked for 12 other contracted suppliers)"
 
 Line 71: "7. Validate the plan against strict constraints
          (700 MNOK total budget, **inflexible 15-month deadline**)"
@@ -209,13 +210,13 @@ Line 647-651: "Test scenarios:
 
 **Sample Verification:**
 ```markdown
-Lines 342-353: "**Budget Display (3 rows):**
+Lines 347-351: "**Budget Display (3 rows):**
 1. **Tilgjengelig (Available)** - For 3 negotiable WBS:
    - Label: 'Tilgjengelig: 105 / 310 MNOK (34%)'
 2. **Låst (Locked)** - For 12 contracted WBS:
-   - Text display only: 'Låst: 650 MNOK (12 kontraktfestede leverandører)'
+   - Text display only: 'Låst: 390 MNOK (12 kontraktfestede leverandører)'
 3. **Totalt (Total)** - Sum validation:
-   - Text display: 'Totalt: 755 / 700 MNOK ❌'"
+   - Text display: 'Totalt: 495 / 700 MNOK ✓ (70%)'"
 ```
 
 **Findings:** UX specification includes detailed v2.0 UI requirements.
