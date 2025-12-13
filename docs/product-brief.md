@@ -148,17 +148,19 @@ Powered by Gemini 2.5, each with **distinct negotiation capabilities:**
 
 ### Technical Architecture
 - **Frontend:** React + TypeScript + Tailwind CSS + Shadcn UI
-- **Backend:** FastAPI (3 endpoints: auth, AI chat proxy, validation)
-- **Storage:** localStorage (browser-based, no database)
+- **Backend:** FastAPI (REST API with multiple endpoints for sessions, commitments, negotiation)
+- **Database:** Supabase PostgreSQL (game sessions, WBS commitments, negotiation history, user data)
 - **AI:** Gemini 2.5 via PydanticAI (Google AI Studio API)
-- **Auth:** Supabase (JWT-based, no database tables)
+- **Auth:** Supabase Auth (JWT-based authentication with row-level security)
 - **Hosting:** Vercel (frontend + serverless backend)
 
-**Why localStorage?**
-- Single-session focus (45-60 min)
-- No cross-device resume needed (export-first design)
-- Saves 1-2 weeks development time (no database setup)
-- 5 MB limit sufficient for 40+ sessions (current usage: 62 KB)
+**Why Supabase Database?**
+- **Persistent storage** across devices and browser sessions
+- **Secure authentication** with JWT tokens and row-level security policies
+- **Data integrity** with relational database constraints
+- **Scalability** for future features (leaderboards, analytics, multi-user scenarios)
+- **Professional database solution** for production readiness
+- **Real-time capabilities** for potential future enhancements
 
 ---
 

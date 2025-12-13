@@ -90,8 +90,8 @@ An AI-powered educational simulation teaching project management negotiation ski
 - **Frontend:** React 18 + TypeScript + Tailwind CSS + Shadcn UI
 - **Backend:** FastAPI (Python 3.11+) + PydanticAI
 - **AI:** Google Gemini 2.5 Flash
-- **Auth:** Supabase (JWT-based)
-- **Storage:** localStorage (browser-based, no database)
+- **Auth:** Supabase Auth (JWT-based authentication)
+- **Database:** Supabase PostgreSQL (game sessions, user data, negotiation history)
 - **Hosting:** Vercel (frontend + serverless backend)
 
 ---

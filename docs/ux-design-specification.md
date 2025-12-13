@@ -965,9 +965,9 @@ w-8 h-8:   32px  - Extra large (empty states)
 - Export: "Eksporter historikk (JSON)" or "(PDF)" (primary button)
 
 **Data Management:**
-- Maximum 50 versions stored (auto-prune oldest)
-- Each version ~5-10 KB (snapshot of current_plan)
-- Storage warning if approaching localStorage limit
+- Maximum 50 versions stored in database (auto-prune oldest via cron job or trigger)
+- Each version stored in `session_snapshots` table
+- Database handles storage limits automatically (no manual monitoring needed)
 
 **Reference:** mockup-10-history-timeline-pane.svg, PRD FR-9.3
 
@@ -1632,8 +1632,9 @@ Gray 600 (#4B5563) on White:
 - Shadcn UI (for complex components: modals, dropdowns)
 
 **State Management:**
-- React Context for UI state (modal open/close)
-- localStorage for session data (direct read/write)
+- React Context for transient UI state (modal open/close, loading states)
+- Supabase client library (@supabase/supabase-js) for session data (API calls to PostgreSQL database)
+- Zustand or React Query for optimistic UI updates and caching
 
 **Utilities:**
 - `clsx` or `classnames` for conditional classes
@@ -1743,7 +1744,7 @@ const nb_NO = {
 - [ ] Review complete UX spec with team
 - [ ] Set up Tailwind + Shadcn
 - [ ] Create base components (Button, Input, Modal)
-- [ ] Set up TypeScript interfaces matching localStorage schema
+- [ ] Set up TypeScript interfaces matching Supabase database schema (GameSession, WBSCommitment, NegotiationHistory)
 - [ ] Prepare static data files (wbs.json, suppliers.json)
 
 **During Implementation:**
@@ -1870,7 +1871,7 @@ This appendix provides development time estimates for implementing the component
 |---------|----------------|-------|
 | **Modal System (Base)** | 3-4 hours | Reusable modal wrapper, overlay, close handlers, focus trap |
 | **Form Validation** | 2-3 hours | Email validation, password strength, error display patterns |
-| **Real-time Updates** | 4-5 hours | Budget/deadline recalculation on plan changes, localStorage sync |
+| **Real-time Updates** | 4-5 hours | Budget/deadline recalculation on plan changes, optimistic UI updates with database sync |
 | **Loading States** | 2-3 hours | Skeleton screens, spinner components, button loading states |
 
 **Subtotal:** 11-15 hours
@@ -1913,7 +1914,7 @@ This appendix provides development time estimates for implementing the component
 - **Week 3 (AI Integration):** 24-30 hours (Chat interface, WBS interaction, Modal system)
 - **Week 4 (Polish):** 19-33 hours (Responsive, Accessibility, Testing, Bug fixes)
 
-**Note:** These estimates exclude backend integration time (API calls, authentication, localStorage logic), which is covered in the Epic story point estimates in `epics.md`. Estimates assume working in 4-hour focused blocks per day (half-day sprints).
+**Note:** These estimates exclude backend integration time (API calls, authentication, Supabase database operations), which is covered in the Epic story point estimates in `epics.md`. Estimates assume working in 4-hour focused blocks per day (half-day sprints).
 
 ---
 

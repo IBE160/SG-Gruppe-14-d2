@@ -788,6 +788,373 @@ Before starting implementation, confirm these details:
 
 ---
 
+## 10. Additional Database Use Cases (Future Enhancements)
+
+Based on the Supabase database capabilities, the following additional use cases are recommended for future versions:
+
+### 10.1 User Analytics & Progress Tracking
+
+**Purpose:** Track student learning progress over multiple sessions
+
+**Database Schema:**
+```sql
+CREATE TABLE user_analytics (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+
+  -- Session statistics
+  total_sessions_played INTEGER DEFAULT 0,
+  total_sessions_completed INTEGER DEFAULT 0,
+  total_sessions_failed INTEGER DEFAULT 0,
+
+  -- Performance metrics
+  average_budget_accuracy DECIMAL(5, 2), -- % within target (e.g., 95% if 665 MNOK used vs 700 target)
+  average_negotiation_rounds DECIMAL(5, 2), -- Avg negotiations per WBS item
+  best_completion_time_minutes INTEGER,
+  average_cost_savings DECIMAL(10, 2), -- MNOK saved vs baseline
+
+  -- Learning indicators
+  budget_constraint_awareness_score DECIMAL(5, 2), -- 0-100 score
+  negotiation_quality_score DECIMAL(5, 2), -- 0-100 score based on offer quality
+
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**Use Cases:**
+- Instructors view individual student progress
+- Students track their own improvement over time
+- Identify struggling students who need help
+
+---
+
+### 10.2 Leaderboard System
+
+**Purpose:** Gamification for classroom competitions
+
+**Database Schema:**
+```sql
+CREATE TABLE leaderboard (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_display_name VARCHAR(255),
+
+  -- Competition metrics
+  best_budget_efficiency DECIMAL(10, 2), -- MNOK under baseline (e.g., -25 MNOK = 25 MNOK saved)
+  best_time_minutes INTEGER, -- Fastest completion
+  total_successful_negotiations INTEGER,
+  perfect_budget_count INTEGER, -- # of sessions within 1% of target
+
+  -- Ranking
+  ranking_score DECIMAL(10, 2), -- Calculated: weighted score of all metrics
+  rank_position INTEGER, -- Current rank in leaderboard
+
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+
+  UNIQUE(user_id)
+);
+```
+
+**Use Cases:**
+- Classroom competitions ("Best negotiator of the week")
+- Motivate students with rankings
+- Public leaderboard display
+
+---
+
+### 10.3 Session Templates & Scenarios
+
+**Purpose:** Instructors create different difficulty scenarios
+
+**Database Schema:**
+```sql
+CREATE TABLE session_templates (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  template_name VARCHAR(255) NOT NULL,
+  description TEXT,
+  created_by_user_id UUID REFERENCES auth.users(id),
+
+  -- Difficulty settings
+  difficulty_level VARCHAR(50), -- 'easy', 'medium', 'hard', 'expert'
+
+  -- Budget configuration
+  total_budget DECIMAL(10, 2) DEFAULT 700.00,
+  available_budget DECIMAL(10, 2) DEFAULT 310.00,
+  baseline_cost DECIMAL(10, 2) DEFAULT 345.00,
+  budget_deficit DECIMAL(10, 2) DEFAULT 35.00,
+
+  -- Time configuration
+  deadline_months INTEGER DEFAULT 15,
+  time_flexibility BOOLEAN DEFAULT false, -- Can time be extended?
+
+  -- WBS configuration
+  wbs_configuration JSONB, -- Which WBS items are negotiable (array of WBS IDs)
+  negotiable_count INTEGER DEFAULT 3, -- How many items are negotiable
+
+  -- AI agent difficulty
+  agent_difficulty_settings JSONB, -- Override concession_rate, patience, min_cost for each agent
+
+  is_public BOOLEAN DEFAULT false, -- Can other instructors use this template?
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**Use Cases:**
+- "Easy Mode": 350 MNOK available (no deficit)
+- "Hard Mode": 280 MNOK available (65 MNOK deficit)
+- "Expert Mode": 5 negotiable WBS items, aggressive AI agents
+- Instructors share templates with colleagues
+
+---
+
+### 10.4 Multi-User/Classroom Management
+
+**Purpose:** Instructors track student progress across a class
+
+**Database Schema:**
+```sql
+CREATE TABLE classrooms (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  classroom_name VARCHAR(255) NOT NULL,
+  instructor_user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  academic_year VARCHAR(50), -- e.g., "2025-2026"
+  university VARCHAR(255), -- e.g., "NTNU"
+
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE classroom_members (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  classroom_id UUID REFERENCES classrooms(id) ON DELETE CASCADE,
+  student_user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+
+  enrolled_at TIMESTAMP DEFAULT NOW(),
+
+  UNIQUE(classroom_id, student_user_id)
+);
+
+CREATE TABLE classroom_assignments (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  classroom_id UUID REFERENCES classrooms(id) ON DELETE CASCADE,
+  template_id UUID REFERENCES session_templates(id),
+
+  assignment_name VARCHAR(255),
+  description TEXT,
+  due_date TIMESTAMP,
+  assigned_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**Use Cases:**
+- Instructor creates "PM 101 Fall 2025" classroom
+- Students enroll via invitation code
+- Instructor assigns specific templates as homework
+- Instructor views class statistics (avg completion rate, avg budget accuracy)
+
+---
+
+### 10.5 AI Agent Performance Tracking
+
+**Purpose:** Monitor AI realism and tune system prompts
+
+**Database Schema:**
+```sql
+CREATE TABLE agent_performance_metrics (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  agent_id VARCHAR(100) NOT NULL, -- e.g., 'bjorn_eriksen', 'owner_anne_lise'
+
+  -- Negotiation statistics
+  total_negotiations INTEGER DEFAULT 0,
+  successful_deals INTEGER DEFAULT 0, -- User accepted offer
+  walkaway_count INTEGER DEFAULT 0, -- Agent refused unreasonable demand
+
+  -- Concession analysis
+  average_concession_percentage DECIMAL(5, 2), -- Avg % price reduction per round
+  average_rounds_to_deal DECIMAL(5, 2),
+
+  -- Realism score (from user feedback)
+  realism_score DECIMAL(3, 2), -- 0.00 to 5.00 (avg of user ratings)
+  total_ratings INTEGER DEFAULT 0,
+
+  updated_at TIMESTAMP DEFAULT NOW(),
+
+  UNIQUE(agent_id)
+);
+
+CREATE TABLE agent_realism_feedback (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  session_id UUID REFERENCES game_sessions(id) ON DELETE CASCADE,
+  agent_id VARCHAR(100) NOT NULL,
+  user_id UUID REFERENCES auth.users(id),
+
+  realism_rating INTEGER, -- 1-5 stars
+  feedback_comment TEXT,
+
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**Use Cases:**
+- Track which agents feel unrealistic (low realism_score)
+- Identify agents that concede too easily (high average_concession_percentage)
+- A/B test different system prompts
+
+---
+
+### 10.6 Session Snapshots/Versioning
+
+**Purpose:** Allow undo/redo and history review
+
+**Database Schema:**
+```sql
+CREATE TABLE session_snapshots (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  session_id UUID REFERENCES game_sessions(id) ON DELETE CASCADE,
+  snapshot_version INTEGER NOT NULL, -- Incremental version number
+
+  -- Snapshot data
+  budget_snapshot JSONB, -- { total_budget, locked_budget, available_budget, current_budget_used }
+  commitments_snapshot JSONB, -- Array of { wbs_id, supplier_id, cost, duration }
+  timeline_snapshot JSONB, -- { projected_completion_date, critical_path }
+
+  snapshot_trigger VARCHAR(100), -- 'commitment', 'uncommitment', 'manual_save'
+  created_at TIMESTAMP DEFAULT NOW(),
+
+  UNIQUE(session_id, snapshot_version)
+);
+```
+
+**Use Cases:**
+- User commits WBS 1.3.1 → auto-save snapshot v1
+- User uncommits WBS 1.3.1 → auto-save snapshot v2
+- User clicks "View History" → see all snapshots
+- User clicks "Restore to v1" → rollback to previous state
+
+---
+
+### 10.7 Enhanced Export/Import (Cloud-Based)
+
+**Purpose:** Cross-device session management
+
+**Database Schema:**
+```sql
+CREATE TABLE exported_sessions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  original_session_id UUID,
+
+  export_name VARCHAR(255), -- User-provided name
+  session_data JSONB, -- Full session export (same as JSON download)
+
+  exported_at TIMESTAMP DEFAULT NOW(),
+  imported_count INTEGER DEFAULT 0, -- How many times re-imported
+
+  UNIQUE(user_id, export_name)
+);
+```
+
+**Use Cases:**
+- User exports session on laptop → stored in database
+- User logs in on desktop → clicks "Import Session" → resumes from cloud
+- Instructor exports "Example Perfect Negotiation" → shares with class
+- Students import instructor's example session for reference
+
+---
+
+### 10.8 Real-Time Collaboration (Multiplayer Mode)
+
+**Purpose:** Team-based gameplay (future enhancement)
+
+**Database Schema:**
+```sql
+CREATE TABLE multiplayer_sessions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  session_id UUID REFERENCES game_sessions(id) ON DELETE CASCADE,
+  owner_user_id UUID REFERENCES auth.users(id),
+
+  team_size INTEGER DEFAULT 2, -- 2-4 players
+  current_turn_user_id UUID REFERENCES auth.users(id), -- Whose turn is it?
+
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE multiplayer_participants (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  multiplayer_session_id UUID REFERENCES multiplayer_sessions(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id),
+
+  role VARCHAR(50), -- 'project_manager', 'procurement_specialist', 'budget_analyst'
+  joined_at TIMESTAMP DEFAULT NOW(),
+
+  UNIQUE(multiplayer_session_id, user_id)
+);
+```
+
+**Use Cases:**
+- Team of 3 students work together
+- PM negotiates with suppliers, Budget Analyst approves decisions
+- Real-time updates via Supabase Realtime subscriptions
+- Instructor observes team collaboration patterns
+
+---
+
+### 10.9 Implementation Priority
+
+**Phase 1 (MVP):** None - focus on core single-player functionality
+
+**Phase 2 (Post-MVP):**
+- 10.1 User Analytics & Progress Tracking (HIGH)
+- 10.5 AI Agent Performance Tracking (HIGH)
+- 10.6 Session Snapshots/Versioning (MEDIUM)
+
+**Phase 3 (Classroom Features):**
+- 10.2 Leaderboard System (HIGH)
+- 10.3 Session Templates & Scenarios (HIGH)
+- 10.4 Multi-User/Classroom Management (HIGH)
+
+**Phase 4 (Advanced Features):**
+- 10.7 Enhanced Export/Import (MEDIUM)
+- 10.8 Real-Time Collaboration (LOW - significant complexity)
+
+---
+
+## 11. Database Migration Checklist
+
+For implementing the Supabase database (from localStorage):
+
+**Pre-Migration:**
+- [ ] Set up Supabase project and configure environment variables
+- [ ] Create database tables (`game_sessions`, `wbs_commitments`, `negotiation_history`)
+- [ ] Enable Row-Level Security (RLS) policies
+- [ ] Test authentication flow (signup, login, JWT validation)
+
+**API Development:**
+- [ ] Implement session CRUD endpoints (`POST /api/sessions`, `GET /api/sessions`, etc.)
+- [ ] Implement commitment endpoints (`POST /api/sessions/:id/commitments`, etc.)
+- [ ] Implement negotiation endpoint (`POST /api/sessions/:id/negotiate`)
+- [ ] Implement export endpoint (`GET /api/sessions/:id/export`)
+
+**Frontend Updates:**
+- [ ] Replace all `localStorage.getItem/setItem` with API calls
+- [ ] Update Zustand/Context stores to fetch from database
+- [ ] Implement optimistic UI updates (update local state, then sync with DB)
+- [ ] Add loading states for database operations
+
+**Testing:**
+- [ ] Unit tests for all API endpoints
+- [ ] Integration tests for session lifecycle (create → negotiate → commit → validate)
+- [ ] Test RLS policies (ensure users can't access other users' data)
+- [ ] Performance testing (API response times <500ms)
+
+**Documentation:**
+- [x] Update all documentation to reflect Supabase usage (COMPLETED)
+- [ ] Update README with database setup instructions
+- [ ] Create API endpoint documentation (OpenAPI/Swagger)
+
+---
+
 **End of Task Reference Document**
 
 **Next Steps:**

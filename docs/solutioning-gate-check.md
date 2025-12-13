@@ -1,6 +1,8 @@
 # Solutioning Gate Check
 ## Nye Hædda Barneskole - Project Management Simulation
 
+> **⚠️ DATABASE ARCHITECTURE CHANGE:** This gate check references `localStorage` for session management. The final architecture uses **Supabase PostgreSQL database** (see `docs/SCOPE_CHANGE_TASKS.md` Section 5 for database schema: `game_sessions`, `wbs_commitments`, `negotiation_history` tables).
+
 **Document Version:** 1.0
 **Review Date:** 2025-12-07
 **Reviewer:** Solutions Architect

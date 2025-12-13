@@ -4,11 +4,13 @@
 > - **PRD.md (v2.0):** 3 negotiable + 12 locked WBS, 4 AI agents (Owner + 3 suppliers)
 > - **product-brief.md (v2.0):** 310/390/700 MNOK budget model, inflexible time constraint
 > - **AI_AGENT_SYSTEM_PROMPTS.md:** Complete v2.0 AI agent specifications
+>
+> **⚠️ DATABASE ARCHITECTURE CHANGE:** This document references `localStorage` for session management, which has been **replaced with Supabase PostgreSQL database** in the final architecture. All `localStorage` operations should be replaced with database API calls. See `docs/SCOPE_CHANGE_TASKS.md` Section 5 for complete database schema and API endpoints.
 
 - **Date:** 2025-12-07
 - **Facilitator:** Solution Architect & Business Analyst
 - **Topic:** Core Functionality Definition and MVP Scope
-- **Session Goals:** Define MVP features with simplified architecture using localStorage, establish data flow, identify visualization needs, and create clear scope boundaries
+- **Session Goals:** Define MVP features with simplified architecture using localStorage (SUPERSEDED: now Supabase database), establish data flow, identify visualization needs, and create clear scope boundaries
 
 ---
 

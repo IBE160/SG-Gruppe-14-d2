@@ -5,6 +5,8 @@
 > - **README.md:** Project overview with v2.0 scope
 > - **product-brief.md (v2.0):** POC scope - 3 negotiable + 12 locked WBS, 4 AI agents
 > - **PRD.md (v2.0):** Complete functional requirements for POC
+>
+> **⚠️ DATABASE ARCHITECTURE CHANGE:** This document references `localStorage` for session management, which has been **replaced with Supabase PostgreSQL database** in the final architecture. See `docs/SCOPE_CHANGE_TASKS.md` Section 5 for database schema (`game_sessions`, `wbs_commitments`, `negotiation_history` tables).
 
 **Document Version:** 1.0
 **Date:** 2025-12-07

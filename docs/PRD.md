@@ -276,7 +276,7 @@ An interactive, browser-based simulation where students:
 - **So that** I can resume my session if I refresh the page or return later
 - **Acceptance Criteria:**
   - User can log in with verified email and password
-  - JWT token stored in localStorage
+  - JWT token managed by Supabase Auth client (stored securely, NOT in localStorage for security)
   - Token persists across page refreshes
   - User redirected to Dashboard after successful login
   - Invalid credentials show clear error: "Incorrect email or password"
@@ -286,7 +286,7 @@ An interactive, browser-based simulation where students:
 - **I want to** automatically resume my in-progress session when I log back in
 - **So that** I don't lose my progress if I close the browser
 - **Acceptance Criteria:**
-  - On login, if in-progress session exists in localStorage, load it
+  - On login, backend fetches in-progress session from Supabase database (`GET /api/sessions?status=in_progress`)
   - Dashboard shows current state (budget used, WBS items completed)
   - All chat history preserved
   - User sees confirmation: "Resuming session from [timestamp]"
@@ -631,25 +631,26 @@ An interactive, browser-based simulation where students:
 - **Description:** User can start a new simulation session
 - **Detailed Requirements:**
   - "Start New Game" button on Dashboard (if no active session)
-  - Clicking creates new session object in localStorage:
+  - Clicking creates new session in Supabase database via API (`POST /api/sessions`):
     ```javascript
     {
+      id: UUID (auto-generated),
       user_id: from JWT,
-      game_id: UUID,
-      created_at: ISO timestamp,
+      created_at: timestamp (auto-generated),
       status: "in_progress",
-      wbs_items: loaded from /data/wbs.json,
-      suppliers: loaded from /data/suppliers.json,
-      chat_logs: [],
-      plan_history: [],
-      current_plan: {},
-      metrics: {total_budget_used: 0, projected_end_date: null, ...}
+      total_budget: 700.00,
+      locked_budget: 390.00,
+      available_budget: 310.00,
+      current_budget_used: 0.00,
+      deadline_date: '2026-05-15',
+      projected_completion_date: null
     }
     ```
+  - Static data loaded from files: `/data/wbs.json` (15 WBS items), `/data/agents.json` (4 AI agents)
   - If active session exists, prompt: "You have an in-progress session. Resume or start new?"
-  - Starting new session archives old session (optional: move to `nye-haedda-archive-{game_id}`)
+  - Starting new session marks old session as completed in database (`PUT /api/sessions/:id` with status='completed')
 - **Acceptance Test:**
-  - User clicks "Start New Game" → session created in localStorage, Dashboard loads with 0/700 MNOK budget
+  - User clicks "Start New Game" → session created in database, Dashboard loads with 0/310 MNOK used, 700 MNOK total budget
 
 ---
 
@@ -657,27 +658,29 @@ An interactive, browser-based simulation where students:
 - **Priority:** Must Have
 - **Description:** On login, user automatically resumes in-progress session
 - **Detailed Requirements:**
-  - On Dashboard load, check localStorage for `nye-haedda-session-{user_id}`
-  - If exists and status="in_progress", load session
-  - Dashboard displays current state (budget used, completed WBS items, chat history)
+  - On Dashboard load, API call to fetch active session: `GET /api/sessions?status=in_progress&user_id={user_id}`
+  - If exists and status="in_progress", load session from database
+  - Dashboard displays current state (budget used from `game_sessions` table, completed WBS items from `wbs_commitments` table, chat history from `negotiation_history` table)
   - User sees confirmation message: "Resuming session from [created_at]"
 - **Acceptance Test:**
-  - User logs in with in-progress session → Dashboard shows current progress
+  - User logs in with in-progress session → Dashboard shows current progress from database
   - User logs in with no session → "Start New Game" screen
 
 ---
 
 **FR-2.3: Auto-Save Session**
 - **Priority:** Must Have
-- **Description:** Session automatically saves to localStorage after every user action
+- **Description:** Session automatically saves to Supabase database after every user action
 - **Detailed Requirements:**
-  - After every action (send message, commit quote, uncommit), call `saveSession()`
-  - `saveSession()` serializes session object to JSON and writes to localStorage
-  - No user-visible "Save" button (automatic)
-  - Session persists across page refreshes
+  - After every action (send message, commit quote, uncommit), API calls update database:
+    - Send message: `POST /api/sessions/:id/negotiate` stores in `negotiation_history` table
+    - Commit quote: `POST /api/sessions/:id/commitments` stores in `wbs_commitments` table and updates `game_sessions.current_budget_used`
+    - Uncommit: `DELETE /api/sessions/:id/commitments/:wbs_id` removes from database
+  - No user-visible "Save" button (automatic persistence via API)
+  - Session persists across page refreshes and devices via database
 - **Acceptance Test:**
-  - User sends chat message, refreshes page → message still visible
-  - User commits quote, closes browser, reopens → commitment still in plan
+  - User sends chat message, refreshes page → message loaded from `negotiation_history` table
+  - User commits quote, closes browser, reopens → commitment loaded from `wbs_commitments` table
 
 ---
 
@@ -1637,8 +1640,9 @@ An interactive, browser-based simulation where students:
 - **Fonts:** System fonts or Google Fonts (Inter, Open Sans)
 
 **TR-1.3: State Management**
-- **Session Data:** localStorage (direct read/write, no library needed)
-- **UI State:** React Context API or Zustand (lightweight)
+- **Session Data:** Supabase PostgreSQL database (via REST API and Supabase client library)
+- **Database Client:** `@supabase/supabase-js` for authentication and API calls
+- **UI State:** React Context API or Zustand (lightweight, for transient UI state only)
 - **Form State:** React Hook Form (if complex forms needed)
 
 **TR-1.4: Utilities**
@@ -1677,9 +1681,9 @@ An interactive, browser-based simulation where students:
 - **Token Format:** JWT (signed by Supabase, verified client-side and server-side)
 
 **TR-3.2: JWT Handling**
-- **Storage:** localStorage['auth-token']
-- **Expiration:** Configurable (default 1 hour, refresh token for longer sessions)
-- **Validation:** Every backend API call validates JWT in Authorization header
+- **Storage:** Managed by Supabase Auth client (stored securely in memory or httpOnly cookies, NOT localStorage to prevent XSS attacks)
+- **Expiration:** Configurable (default 1 hour, refresh token for longer sessions handled by Supabase Auth)
+- **Validation:** Every backend API call validates JWT in Authorization header using JWKS from Supabase
 
 ---
 

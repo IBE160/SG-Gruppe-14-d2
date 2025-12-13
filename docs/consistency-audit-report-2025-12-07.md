@@ -4,6 +4,8 @@
 > **⚠️ HISTORICAL DOCUMENT:** This consistency audit was performed on v1.0 documentation (15 negotiable WBS, 5 suppliers). For current v2.0 POC scope consistency, see:
 > - **SCOPE_CHANGE_TASKS.md:** Complete v2.0 change tracking
 > - **PRD.md (v2.0), product-brief.md (v2.0), epics.md (v2.0):** Updated documentation
+>
+> **⚠️ DATABASE ARCHITECTURE UPDATE (Dec 2025):** This audit documents the original `localStorage → Supabase PostgreSQL` decision. This has been **REVERSED**: The final architecture uses **Supabase PostgreSQL database** for all data persistence (not localStorage). See `docs/SCOPE_CHANGE_TASKS.md` Section 5 for current database schema.
 
 **Date:** 2025-12-07
 **Reviewer:** Documentation Consistency Analyst

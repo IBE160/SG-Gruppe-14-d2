@@ -1,11 +1,21 @@
 # Test Design and Strategy
 ## Nye Hædda Barneskole - Project Management Simulation
 
-**Document Version:** 1.1
-**Date:** 2025-12-08
-**Status:** Updated with Visualization Test Cases
+**Document Version:** 1.2
+**Date:** 2025-12-13
+**Status:** Updated for Supabase Database Architecture
 **Test Analyst:** QA Team
-**Changelog:** Added section 3.9 with 28 test cases for Epic 10 (Visualization & Analysis)
+**Changelog:**
+- v1.2: Updated for Supabase database architecture (localStorage → database API calls)
+- v1.1: Added section 3.9 with 28 test cases for Epic 10 (Visualization & Analysis)
+
+**⚠️ DATABASE ARCHITECTURE CHANGE:**
+This document contains references to `localStorage` which have been replaced with **Supabase PostgreSQL database** in the final architecture. Test cases involving data persistence should now verify:
+- Database API calls (`POST /api/sessions`, `GET /api/sessions`, etc.)
+- Supabase authentication (JWT tokens managed by Supabase Auth client)
+- Database tables: `game_sessions`, `wbs_commitments`, `negotiation_history`
+- Row-level security policies
+- See `docs/SCOPE_CHANGE_TASKS.md` Section 5 for full database schema
 
 ---
 
@@ -67,7 +77,7 @@ This test design defines the comprehensive testing strategy, test cases, and qua
        /________\
       /          \ Integration Tests (30%)
      /            \ - API endpoints
-    /______________\ - localStorage operations
+    /______________\ - Database operations (Supabase)
    /                \
   /                  \ Unit Tests (60%)
  /                    \ - React components
@@ -77,7 +87,7 @@ This test design defines the comprehensive testing strategy, test cases, and qua
 
 **Testing Types:**
 - **Unit Testing:** 60% coverage—React components, utility functions
-- **Integration Testing:** 30%—API calls, localStorage, Supabase auth
+- **Integration Testing:** 30%—API calls, Supabase database, Supabase auth
 - **End-to-End Testing:** 10%—Critical user flows (login → negotiate → submit)
 - **Manual Testing:** AI quality, UX/UI, Norwegian language
 - **User Acceptance Testing (UAT):** 5-10 students, real-world usage
@@ -150,15 +160,15 @@ describe('calculateTotalCost', () => {
 
 ### 2.2 Integration Testing
 
-**Scope:** Component interactions, API calls, localStorage operations
+**Scope:** Component interactions, API calls, Supabase database operations
 
 **Coverage Target:** 30% (focus on critical paths)
 
 **Scenarios to Test:**
-- Auth flow: Register → JWT stored → Dashboard loads session
-- Chat flow: Send message → API call → AI response → localStorage updated
-- Commit flow: Accept offer → localStorage updated → Dashboard refreshed
-- Renegotiation flow: Remove item → plan updated → dependencies recalculated
+- Auth flow: Register → JWT stored (Supabase Auth) → Dashboard loads session from database
+- Chat flow: Send message → API call → AI response → Database updated (`negotiation_history` table)
+- Commit flow: Accept offer → Database updated (`wbs_commitments` table) → Dashboard refreshed
+- Renegotiation flow: Remove item → plan updated in database → dependencies recalculated
 
 **Example Integration Test (React Testing Library):**
 ```typescript
@@ -168,7 +178,7 @@ import Dashboard from './Dashboard';
 
 describe('Dashboard Integration', () => {
   it('should update budget when quote committed', async () => {
-    // Mock localStorage
+    // Mock Supabase database response
     const mockSession = {
       current_plan: {},
       metrics: { budget_used: 0 }
@@ -261,11 +271,11 @@ test('complete game flow - happy path', async ({ page }) => {
 
 | Test ID | Test Case | Steps | Expected Result | Priority |
 |---------|-----------|-------|-----------------|----------|
-| **TC-E1-001** | User registration with valid email | 1. Go to Login page<br>2. Click "Registrer deg"<br>3. Enter email: test@example.com<br>4. Enter password: password123<br>5. Click "Registrer" | User account created, JWT stored in localStorage, redirected to Dashboard | High |
+| **TC-E1-001** | User registration with valid email | 1. Go to Login page<br>2. Click "Registrer deg"<br>3. Enter email: test@example.com<br>4. Enter password: password123<br>5. Click "Registrer" | User account created in Supabase Auth, JWT managed by Supabase client, redirected to Dashboard | High |
 | **TC-E1-002** | User registration with existing email | 1-4. Same as TC-E1-001<br>5. Use email that already exists | Error message: "E-postadressen er allerede registrert" | High |
-| **TC-E1-003** | User login with valid credentials | 1. Go to Login page<br>2. Enter email: test@example.com<br>3. Enter password: password123<br>4. Click "Logg Inn" | JWT stored, redirected to Dashboard | High |
+| **TC-E1-003** | User login with valid credentials | 1. Go to Login page<br>2. Enter email: test@example.com<br>3. Enter password: password123<br>4. Click "Logg Inn" | JWT managed by Supabase Auth, redirected to Dashboard | High |
 | **TC-E1-004** | User login with invalid credentials | 1-3. Same as TC-E1-003<br>4. Use wrong password | Error message: "Feil e-post eller passord" | High |
-| **TC-E1-005** | Session initialization on login | 1. Login with valid credentials<br>2. Dashboard loads | If no session → new session created with 15 WBS items, 0 budget. If session exists → loaded from localStorage | High |
+| **TC-E1-005** | Session initialization on login | 1. Login with valid credentials<br>2. Dashboard loads | If no session in database → API call `POST /api/sessions` creates new session. If session exists → `GET /api/sessions` loads from database | High |
 
 ---
 
@@ -341,7 +351,7 @@ test('complete game flow - happy path', async ({ page }) => {
 | **TC-E7-001** | Export session after success | 1. Pass validation<br>2. Click "Eksporter Økt" in success modal | JSON file downloads: `nye_haedda_session_[timestamp].json`, Contains full GameSession object | High |
 | **TC-E7-002** | Export session mid-game | 1. Commit 5/15 items<br>2. Click "Eksporter Økt" in sidebar | JSON file downloads with current state (5 items in current_plan) | Medium |
 | **TC-E7-003** | Start new game | 1. In success modal, click "Start Nytt Spill" | Confirmation: "Dette vil slette nåværende økt. Er du sikker?" | High |
-| **TC-E7-004** | Confirm new game | 1. Click "Ja" in confirmation | localStorage cleared, Dashboard reloads with new session (0/15 items, 0 budget) | High |
+| **TC-E7-004** | Confirm new game | 1. Click "Ja" in confirmation | Database session status set to 'completed', new session created via API (`POST /api/sessions`), Dashboard reloads with new session (0/15 items, 0 budget) | High |
 | **TC-E7-005** | Storage quota warning | 1. Manually fill localStorage to 85% capacity<br>2. Reload app | Warning toast: "⚠️ Lagring 80% full..." | Low |
 
 ---
@@ -384,9 +394,9 @@ test('complete game flow - happy path', async ({ page }) => {
 | **TC-E10-023** | Compare with current | 1. Select old version 3<br>2. Click "Sammenlign med nåværende" | Comparison shows: "Før (Versjon 3)" vs "Etter (Versjon 10 - Nåværende)" | Medium |
 | **TC-E10-024** | Export history as JSON | 1. Click "Eksporter historikk (JSON)" | JSON file downloads: `nye_haedda_history_[timestamp].json`, Contains version_history array | Low |
 | **TC-E10-025** | Close History panel | 1. Click "✕ Lukk historikk" or click backdrop | Panel slides out to right (300ms), Dashboard/current view visible | Medium |
-| **TC-E10-026** | History storage limit (50 versions) | 1. Manually create 55 versions<br>2. Check version_history in localStorage | Only last 50 versions stored, Oldest 5 versions pruned | Low |
+| **TC-E10-026** | History storage limit (50 versions) | 1. Manually create 55 versions<br>2. Check `session_snapshots` table in database | Only last 50 versions stored in database, Oldest 5 versions pruned | Low |
 | **TC-E10-027** | Navigation state persistence | 1. Navigate to Gantt<br>2. Refresh page | Returns to Gantt view (not Dashboard), Active tab highlighted | Medium |
-| **TC-E10-028** | Real-time sync across views | 1. Open Gantt view<br>2. In another tab, commit WBS item on Dashboard<br>3. Return to Gantt tab | Gantt automatically updates (localStorage listener), New task bar appears | High |
+| **TC-E10-028** | Real-time sync across views | 1. Open Gantt view<br>2. In another tab, commit WBS item on Dashboard<br>3. Return to Gantt tab | Gantt automatically updates (Supabase Realtime subscription or polling), New task bar appears | High |
 
 ---
 
@@ -399,7 +409,7 @@ test('complete game flow - happy path', async ({ page }) => {
 | **TC-NFR-001** | Page load time (Dashboard) | <2 seconds | Lighthouse, Chrome DevTools | High |
 | **TC-NFR-002** | AI response time | 1-3 seconds | Backend logs, Gemini API latency | Critical |
 | **TC-NFR-003** | Budget update animation | 500ms | Browser performance timeline | Medium |
-| **TC-NFR-004** | localStorage read/write | <100ms | Console.time() benchmarks | Low |
+| **TC-NFR-004** | Database API call latency | <500ms | Backend API logs, Supabase dashboard | Medium |
 | **TC-NFR-005** | Chat message rendering (100 messages) | <1 second | React Profiler | Medium |
 
 **Performance Test Script (Lighthouse CI):**
@@ -441,11 +451,12 @@ npx lighthouse https://nye-haedda.vercel.app --output=json --output-path=./light
 | **TC-SEC-001** | JWT token expiration | Unauthorized access | Manually expire token, attempt API call | High |
 | **TC-SEC-002** | CORS configuration | Cross-origin attacks | Test API from different origin | Medium |
 | **TC-SEC-003** | Input sanitization (chat) | XSS attacks | Send `<script>alert('XSS')</script>` in chat | High |
-| **TC-SEC-004** | localStorage data exposure | Sensitive data leak | Check if passwords/secrets stored in localStorage | High |
+| **TC-SEC-004** | JWT token storage security | XSS attacks, token theft | Verify JWT NOT stored in localStorage (managed by Supabase Auth client securely) | High |
 | **TC-SEC-005** | API rate limiting (Gemini) | DoS prevention | Send 100 chat requests in 1 second | Low |
+| **TC-SEC-006** | Row-level security (RLS) | Unauthorized data access | Attempt to access another user's session via API | High |
 
 **Security Best Practices Validation:**
-- [ ] No passwords stored in localStorage (only JWT)
+- [ ] JWT NOT stored in localStorage (managed by Supabase Auth client)
 - [ ] Gemini API key not exposed in frontend (backend proxy)
 - [ ] HTTPS enforced in production (Vercel default)
 - [ ] Content Security Policy (CSP) headers set
@@ -660,14 +671,14 @@ pytest tests/ --cov=app       # With coverage report
 **Setup:**
 - **Frontend:** `npm run dev` (localhost:5173)
 - **Backend:** `uvicorn main:app --reload` (localhost:8000)
-- **Database:** None (localStorage only)
-- **Auth:** Supabase (shared dev project)
+- **Database:** Supabase PostgreSQL (shared dev project, `game_sessions`, `wbs_commitments`, `negotiation_history` tables)
+- **Auth:** Supabase Auth (JWT-based authentication)
 - **AI:** Gemini API (dev API key, rate-limited)
 
 **Test Data:**
-- wbs.json with 15 items (static)
-- suppliers.json with 5 suppliers (static)
-- Mock localStorage sessions for testing
+- wbs.json with 15 items (3 negotiable, 12 locked - static files)
+- agents.json with 4 AI agents (1 Owner + 3 Suppliers - static)
+- Mock Supabase database responses for testing
 
 ---
 
