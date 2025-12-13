@@ -10,14 +10,34 @@ To update the remote repository:
 
 4.  Send your changes: git push
 
+---
+
+FIL ELLER MAPPE ER ØDELAGT - SKAL IKKE TIL MAIN BRANCH
+SCENARIO: Du har gjort feil på en mappe lokalt som har ødelagt hele flyten og det er behov for å slette den lokalt og pulle den fra main branch repositoriet. Tips til dette:
+
+For at en fil skal slettes i GitHub-repoet, må slettingen bli en del av en commit som du pusher. Å slette lokalt alene påvirker ikke remote. 
+
+Anbefalt (renest): slett med git rm
+git switch main              # eller riktig branch
+git rm path/til/fil.ext
+git commit -m "Delete fil.ext"
+git push
+
+Hvis du allerede har slettet filen i Filutforsker/VS Code
+git switch main              # eller riktig branch
+git add -A                   # (stager også slettinger)
+git commit -m "Delete fil.ext"
+git push
+
+Hvis dere jobber med PR-flyt: gjør dette i en feature-branch, push, og lag PR til main (da skjer slettingen i main når PR merges).
+
+---
 
 
-  
 
+CLAUDE COMMANDS CHEATSHEET
 
-Claude commands
-
-PERMISSIONS
+PERMISSIONS (du stoler på at AIen kan løse det for deg)
 You can start a session with bypassPermissions mode using a command-line flag:
 
   claude --dangerously-skip-permissions
