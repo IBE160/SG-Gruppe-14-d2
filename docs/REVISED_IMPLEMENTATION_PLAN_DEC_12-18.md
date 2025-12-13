@@ -33,7 +33,7 @@ This document provides a revised, actionable implementation plan to build the Ny
 - ❌ Supabase Authentication (sign-up, sign-in, protected routes).
 - ❌ Gemini AI Integration.
 - ❌ Dashboard UI (Budget display, WBS list).
-- ❌ Session management (state, localStorage).
+- ❌ Session management (state, Supabase database).
 - ❌ Core simulation loop (negotiation, commitment, validation).
 - ❌ Static data integration (`wbs.json`, `agents.json`).
 
@@ -138,8 +138,8 @@ This document provides a revised, actionable implementation plan to build the Ny
 **Goal:** A logged-in user can see the main dashboard with budget and WBS information.
 
 #### Task 2.1: Session Management Hooks (1 hour)
-1.  **Create a Zustand store** for client-side session state management: `frontend/lib/store/session-store.ts`. This will hold the game session data loaded from `localStorage`.
-    *   `initializeSession`, `loadSession`, `saveSession` functions can be adapted from the original plan and integrated with the store.
+1.  **Create a Zustand store** for client-side session state management: `frontend/lib/store/session-store.ts`. This will hold the game session data fetched from Supabase database via API calls.
+    *   `initializeSession`, `loadSession`, `saveSession` functions will use Supabase client to interact with `game_sessions` table (see `docs/SCOPE_CHANGE_TASKS.md` Section 5.4 for schema).
 
 #### Task 2.2: Build Dashboard Page (3 hours)
 1. **Flesh out `frontend/app/dashboard/page.tsx`**:
@@ -147,7 +147,7 @@ This document provides a revised, actionable implementation plan to build the Ny
    *   It will read the static `wbs.json` and `agents.json` files from the `public` directory using `fs/promises`.
    *   It will render the main layout of the dashboard.
 2. **Create `GameSessionProvider` Client Component**:
-   *   This component will run on the client and will be responsible for loading the game session from `localStorage` into the Zustand store.
+   *   This component will run on the client and will be responsible for loading the game session from Supabase database (via API call to `GET /api/sessions`) into the Zustand store.
    *   It will wrap the main content of the dashboard page.
 3. **Create `ConstraintPanel` Component**:
    *   Create `frontend/components/dashboard/constraint-panel.tsx`.

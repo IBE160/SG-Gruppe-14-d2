@@ -87,8 +87,9 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 **Technical Notes:**
 - Use Supabase `auth.signUp()` API
-- Store JWT in localStorage: `supabase_auth_token`
-- No user profile table needed (JWT contains user_id)
+- JWT managed by Supabase Auth client (stored securely in memory, NOT localStorage for security)
+- User data stored in Supabase Auth `users` table automatically
+- No additional user profile table needed (JWT contains user_id)
 
 **Story Points:** 3
 
@@ -133,30 +134,35 @@ This document breaks down the Product Requirements Document (PRD) into implement
 **So that** I can start playing immediately
 
 **Acceptance Criteria:**
-- [ ] On Dashboard load, check localStorage for `current_session_id`
-- [ ] If session exists → load session data from localStorage
-- [ ] If no session → create new session with:
-  - `game_id`: UUID
+- [ ] On Dashboard load, check Supabase database for active session (`GET /api/sessions`)
+- [ ] If session exists → load session data from `game_sessions` table
+- [ ] If no session → create new session via API (`POST /api/sessions`):
+  - `id`: UUID (auto-generated)
   - `user_id`: from JWT
-  - `created_at`: timestamp
+  - `created_at`: timestamp (auto-generated)
   - `status`: 'in_progress'
-  - `wbs_items`: loaded from wbs.json (15 items: 3 negotiable + 12 locked)
-  - `agents`: loaded from agents.json (4 agents: 1 Owner + 3 Suppliers) [v2.0: was suppliers.json]
-  - `current_plan`: empty object
-  - `metrics`: initial values (0 budget, 0 negotiations)
-- [ ] Save session to localStorage
-- [ ] Render Dashboard with session data
+  - `total_budget`: 700 MNOK
+  - `locked_budget`: 390 MNOK
+  - `available_budget`: 310 MNOK
+  - `current_budget_used`: 0 MNOK
+  - `deadline_date`: '2026-05-15'
+- [ ] Load WBS items from static file: `/data/wbs.json` (15 items: 3 negotiable + 12 locked)
+- [ ] Load AI agents from static file: `/data/agents.json` (4 agents: 1 Owner + 3 Suppliers)
+- [ ] Render Dashboard with session data from database
 
 **Technical Notes:**
-- localStorage key: `nye_haedda_session_{user_id}`
-- Load static files: `/data/wbs.json`, `/data/suppliers.json`
+- Database table: `game_sessions` with user_id foreign key to auth.users(id)
+- API endpoint: `POST /api/sessions` creates session, returns session object
+- API endpoint: `GET /api/sessions?status=in_progress` retrieves active session
+- Load static files: `/data/wbs.json`, `/data/agents.json`
 - TypeScript interface: `GameSession` (from PRD Section 8)
+- Row-level security ensures users only see their own sessions
 
 **Story Points:** 2
 
 **Priority:** Must Have
 
-**Reference:** PRD FR-2.1, localStorage schema
+**Reference:** PRD FR-2.1, Supabase database schema
 
 ---
 
@@ -205,16 +211,19 @@ This document breaks down the Product Requirements Document (PRD) into implement
 **So that** I can see the impact of my decisions in real-time
 
 **Acceptance Criteria:**
-- [ ] When user commits quote → `current_plan` updated in localStorage
-- [ ] Budget recalculated: sum all `cost` values
+- [ ] When user commits quote → `wbs_commitments` table updated in Supabase (`POST /api/sessions/:id/commitments`)
+- [ ] `game_sessions.current_budget_used` updated via API (`PUT /api/sessions/:id`)
+- [ ] Frontend refetches session data and recalculates budget
 - [ ] Progress bar animates to new percentage (500ms transition)
 - [ ] Toast notification shown: "[WBS code] [name] lagt til i plan"
 - [ ] If budget >680 MNOK (97%) → warning toast: "⚠️ Budsjett på 97%..."
 
 **Technical Notes:**
-- Use React state + localStorage sync
+- Use React state + API calls to Supabase backend
+- Optimistic UI updates: Update local state immediately, then sync with database
 - Animation: `transition: width 500ms ease-in-out` (UX Section 6.1)
 - Toast: Shadcn `toast()` API, 3-second auto-dismiss
+- Database trigger or application logic calculates `current_budget_used` from sum of wbs_commitments
 
 **Story Points:** 3
 
@@ -463,9 +472,10 @@ This document breaks down the Product Requirements Document (PRD) into implement
 - [ ] Timestamps shown (optional)
 
 **Technical Notes:**
-- Route: `/wbs/:wbs_code/chat/:supplier_id`
+- Route: `/wbs/:wbs_code/chat/:agent_id`
 - Chat window: Shadcn `<ScrollArea>` component
-- Messages: Array in React state, persisted to localStorage
+- Messages: Array in React state, persisted to `negotiation_history` table via API
+- Load chat history: `GET /api/sessions/:id/history?wbs_id=:wbs_code&agent_id=:agent_id`
 
 **Story Points:** 5
 
@@ -491,9 +501,12 @@ This document breaks down the Product Requirements Document (PRD) into implement
 - [ ] Loading indicator: "Bjørn ser gjennom spesifikasjonene..." (typing bubble)
 
 **Technical Notes:**
-- POST `/api/chat`: `{ wbs_code, supplier_id, message, chat_history }`
-- Response: `{ message, offer: { cost, duration } | null }`
-- Store message in `session.chat_logs` (localStorage)
+- POST `/api/sessions/:session_id/negotiate`: `{ wbs_code, agent_id, user_message }`
+- Backend fetches chat history from `negotiation_history` table
+- Backend calls Gemini API with system prompt + chat history
+- Response: `{ agent_response, offer: { cost, duration } | null }`
+- Store user message and agent response in `negotiation_history` table
+- INSERT INTO negotiation_history (session_id, wbs_id, agent_id, user_message, agent_response, offer_cost, offer_duration_days)
 
 **Story Points:** 5
 
@@ -574,15 +587,17 @@ This document breaks down the Product Requirements Document (PRD) into implement
 **So that** I can review past negotiations and the AI remembers context
 
 **Acceptance Criteria:**
-- [ ] All messages stored in `session.chat_logs` array
-- [ ] Each message: `{ timestamp, wbs_code, supplier_id, sender: 'user'|'ai', message, offer }`
-- [ ] When reopening chat → load history from localStorage
-- [ ] AI receives full chat history in API call (context for negotiation)
-- [ ] History persists across page refreshes
+- [ ] All messages stored in `negotiation_history` table
+- [ ] Each record: `{ id, session_id, wbs_id, agent_id, user_message, agent_response, offer_cost, offer_duration_days, created_at }`
+- [ ] When reopening chat → load history from database (`GET /api/sessions/:id/history?wbs_id=:wbs_code&agent_id=:agent_id`)
+- [ ] AI receives full chat history from database in API call (backend fetches, provides context)
+- [ ] History persists permanently in database
 
 **Technical Notes:**
-- localStorage update on every message send/receive
+- Database INSERT on every message exchange
+- Backend queries: `SELECT * FROM negotiation_history WHERE session_id = ? AND wbs_id = ? AND agent_id = ? ORDER BY created_at ASC`
 - Limit history sent to AI: Last 20 messages (token limit management)
+- Row-level security ensures users only see their own negotiation history
 
 **Story Points:** 2
 
@@ -710,10 +725,13 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 **Technical Notes:**
 - Modal: Shadcn `<Dialog>` component (UX Section 3.4)
-- Dependency resolution: Check `wbs_items[wbs_code].dependencies`
-- Update localStorage: `session.current_plan`, `session.plan_history`, `session.metrics`
+- Dependency resolution: Check `wbs_items[wbs_code].dependencies` from static wbs.json
+- Update database via API:
+  - `POST /api/sessions/:id/commitments` - Insert into `wbs_commitments` table
+  - `PUT /api/sessions/:id` - Update `game_sessions.current_budget_used`
+  - `POST /api/sessions/:id/accept-offer` - Update `negotiation_history.offer_accepted = true`
 - Button styling: Godta (green-600 bg, white text), Avslå (gray-300 bg, gray-700 text)
-- Offer state tracking: `pending_offers[]` in session until accepted/rejected
+- Offer state tracking: `offer_accepted` boolean in `negotiation_history` table
 
 **Story Points:** 5
 
@@ -985,17 +1003,24 @@ This document breaks down the Product Requirements Document (PRD) into implement
 - [ ] "Eksporter Økt" button available:
   - In success modal (after validation pass)
   - In Dashboard sidebar (at any time)
-- [ ] User clicks button → JSON file downloads:
+- [ ] User clicks button → Backend fetches full session data and generates JSON export:
   - Filename: `nye_haedda_session_[timestamp].json`
-  - Content: Full `GameSession` object (all fields from localStorage)
+  - Content: Full session object from database (game_sessions + wbs_commitments + negotiation_history)
 - [ ] JSON includes:
-  - `wbs_items`, `suppliers`, `current_plan`, `plan_history`, `chat_logs`, `metrics`
-- [ ] File size: ~50-100 KB (compressed chat history)
+  - Session metadata (id, user_id, status, budgets, deadlines, timestamps)
+  - WBS commitments (all committed packages with costs, durations, suppliers)
+  - Negotiation history (all chat messages and offers)
+  - Static data (wbs_items from wbs.json, agents from agents.json)
+- [ ] File size: ~50-200 KB depending on negotiation length
 
 **Technical Notes:**
-- Use `JSON.stringify(session, null, 2)` for readable formatting
-- Trigger download: `<a href="data:text/json;charset=utf-8,{json}" download="{filename}" />`
-- No backend needed (client-side download)
+- API endpoint: `GET /api/sessions/:id/export` returns complete JSON
+- Backend queries:
+  - SELECT * FROM game_sessions WHERE id = :id
+  - SELECT * FROM wbs_commitments WHERE session_id = :id
+  - SELECT * FROM negotiation_history WHERE session_id = :id
+- Frontend triggers download with blob URL
+- Row-level security ensures users can only export their own sessions
 
 **Story Points:** 2
 
@@ -1014,15 +1039,17 @@ This document breaks down the Product Requirements Document (PRD) into implement
 **Acceptance Criteria:**
 - [ ] "Start Nytt Spill" button in success modal
 - [ ] Confirmation dialog: "Dette vil slette nåværende økt. Er du sikker?"
-- [ ] User confirms → clear localStorage:
-  - Delete `current_session_id`
-  - Delete session data
-- [ ] Redirect to Dashboard → new session initialized
+- [ ] User confirms → mark current session as completed in database:
+  - API call: `PUT /api/sessions/:id` with `{ status: 'completed', completed_at: NOW() }`
+  - OR `DELETE /api/sessions/:id` to permanently delete session
+- [ ] Redirect to Dashboard → new session initialized (E1.3)
 - [ ] Optional: Prompt to export before clearing
 
 **Technical Notes:**
-- `localStorage.removeItem('nye_haedda_session_{user_id}')`
-- After clearing, trigger E1.3 (Session Initialization)
+- API endpoint: `PUT /api/sessions/:id` updates session status
+- Alternative: `DELETE /api/sessions/:id` with CASCADE to remove all commitments and history
+- Row-level security prevents users from deleting other users' sessions
+- After clearing, trigger E1.3 (Session Initialization) which creates new session in database
 
 **Story Points:** 2
 
@@ -1032,27 +1059,28 @@ This document breaks down the Product Requirements Document (PRD) into implement
 
 ---
 
-### Story E7.3: Storage Quota Monitoring
+### Story E7.3: Session Management Dashboard
 
 **As a** user
-**I want** to be warned if storage is running low
-**So that** I can export sessions before data is lost
+**I want** to view and manage my past sessions
+**So that** I can review my learning progress and re-export old sessions
 
 **Acceptance Criteria:**
-- [ ] On app load, check localStorage usage:
-  - Calculate: `JSON.stringify(localStorage).length`
-  - Limit: 5,000,000 bytes (5 MB)
-  - Percentage: `(used / limit) * 100`
-- [ ] If >80% full → show warning toast:
-  - "⚠️ Lagring 80% full. Vurder å eksportere og slette gamle økter."
-  - Button: "Eksporter Nå"
-- [ ] If >95% full → show error modal:
-  - "Lagring nesten full. Eksporter økt og start ny."
-  - Button: "Eksporter og Slett"
+- [ ] "Tidligere Økter" page accessible from navigation
+- [ ] List all user's sessions from database (`GET /api/sessions`)
+  - Display: Session name, created date, status (in_progress/completed/failed), final budget used, completion percentage
+  - Sort by: Most recent first
+  - Color coding: Green (completed), Yellow (in_progress), Red (failed)
+- [ ] Actions for each session:
+  - "Fortsett" button for in_progress sessions (load session)
+  - "Eksporter" button for completed sessions
+  - "Slett" button for old sessions (with confirmation)
+- [ ] Click on session → view detailed summary (budget breakdown, WBS commitments, negotiation stats)
 
 **Technical Notes:**
-- Run check on Dashboard mount (useEffect)
-- Research recommendation: Add storage monitoring (Research Report Section 2.5)
+- API endpoint: `GET /api/sessions` returns all user's sessions
+- Frontend component: SessionHistoryTable with pagination (10 sessions per page)
+- No storage quota monitoring needed (Supabase handles database limits)
 
 **Story Points:** 1
 

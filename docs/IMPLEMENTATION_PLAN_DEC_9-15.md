@@ -6,6 +6,16 @@
 **Target Completion:** December 15, 2025 (23:59)
 **Realistic Target:** December 14, 2025 (EOD) with December 16 for polish
 **Team:** SG-Gruppe-14-d2
+**Status:** ⚠️ **SUPERSEDED** - See `REVISED_IMPLEMENTATION_PLAN_DEC_12-18.md` for current plan
+
+**⚠️ CRITICAL NOTICE - DATABASE ARCHITECTURE CHANGE:**
+This document contains references to `localStorage` for session management, which has been **replaced with Supabase PostgreSQL database** in the final architecture. For the correct database implementation:
+- **See:** `docs/SCOPE_CHANGE_TASKS.md` Section 5 (Supabase Database Integration)
+- **Database Schema:** `game_sessions`, `wbs_commitments`, `negotiation_history` tables
+- **API Endpoints:** `POST /api/sessions`, `GET /api/sessions`, etc.
+- **Updated Plan:** `REVISED_IMPLEMENTATION_PLAN_DEC_12-18.md` (reflects database architecture)
+
+All `localStorage` operations in this document should be replaced with Supabase database API calls in actual implementation.
 
 **v2.0 Scope Changes:**
 - 3 negotiable + 12 locked WBS packages (down from 15 negotiable)
