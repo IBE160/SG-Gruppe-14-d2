@@ -47,3 +47,6 @@ backend/app/__pycache__/
 
 # frontend
 frontend/package-lock.json
+
+# Ignorer gamle UI og UX prosesskart og eksempler
+docs/ux/OldUiFlows/
