@@ -1,0 +1,227 @@
+<svg viewBox="0 0 1600 1800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 700; fill: #111827; }
+      .subtitle { font-family: 'Inter', sans-serif; font-size: 14px; fill: #6B7280; }
+      .heading { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; fill: #111827; }
+      .body-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #374151; }
+      .small-text { font-family: 'Inter', sans-serif; font-size: 11px; fill: #6B7280; }
+      .state-box { fill: #E0E7FF; stroke: #6366F1; stroke-width: 2; }
+      .frontend-box { fill: #DBEAFE; stroke: #3B82F6; stroke-width: 2; }
+      .backend-box { fill: #FEF3C7; stroke: #F59E0B; stroke-width: 2; }
+      .db-box { fill: #F3F4F6; stroke: #6B7280; stroke-width: 2; }
+      .sync-box { fill: #D1FAE5; stroke: #10B981; stroke-width: 2; }
+      .code-text { font-family: 'Courier New', monospace; font-size: 10px; fill: #1F2937; }
+      .arrow { stroke: #6B7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-bi { stroke: #3B82F6; stroke-width: 2; fill: none; marker-end: url(#arrowhead-bi); marker-start: url(#arrowhead-bi-start); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
+    </marker>
+    <marker id="arrowhead-bi" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#3B82F6" />
+    </marker>
+    <marker id="arrowhead-bi-start" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto">
+      <polygon points="10 0, 0 3, 10 6" fill="#3B82F6" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="800" y="40" class="title" text-anchor="middle">State Management Arkitektur</text>
+  <text x="800" y="65" class="subtitle" text-anchor="middle">Frontend State, Backend API, og Databasesynkronisering</text>
+
+  <!-- Architecture Overview -->
+  <rect x="50" y="100" width="1500" height="200" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="2"/>
+  <text x="800" y="130" class="heading" text-anchor="middle">🏗️ ARKITEKTUR OVERSIKT</text>
+
+  <!-- Frontend -->
+  <rect x="100" y="150" width="400" height="120" rx="6" class="frontend-box"/>
+  <text x="300" y="175" class="heading" text-anchor="middle" fill="#3B82F6">FRONTEND (React)</text>
+  <text x="120" y="200" class="body-text">• React State (useState/useReducer)</text>
+  <text x="120" y="220" class="body-text">• Real-time UI updates</text>
+  <text x="120" y="240" class="body-text">• Optimistic updates</text>
+  <text x="120" y="260" class="body-text">• Local validation</text>
+
+  <path d="M 500 210 L 600 210" class="arrow-bi"/>
+  <text x="550" y="200" class="small-text" text-anchor="middle">API</text>
+
+  <!-- Backend -->
+  <rect x="600" y="150" width="400" height="120" rx="6" class="backend-box"/>
+  <text x="800" y="175" class="heading" text-anchor="middle" fill="#F59E0B">BACKEND (Next.js API)</text>
+  <text x="620" y="200" class="body-text">• Business logic</text>
+  <text x="620" y="220" class="body-text">• Validation rules</text>
+  <text x="620" y="240" class="body-text">• AI agent communication</text>
+  <text x="620" y="260" class="body-text">• Data persistence</text>
+
+  <path d="M 1000 210 L 1100 210" class="arrow-bi"/>
+  <text x="1050" y="200" class="small-text" text-anchor="middle">SQL</text>
+
+  <!-- Database -->
+  <rect x="1100" y="150" width="400" height="120" rx="6" class="db-box"/>
+  <text x="1300" y="175" class="heading" text-anchor="middle" fill="#6B7280">DATABASE (Supabase)</text>
+  <text x="1120" y="200" class="body-text">• PostgreSQL</text>
+  <text x="1120" y="220" class="body-text">• Persistent storage</text>
+  <text x="1120" y="240" class="body-text">• Session history</text>
+  <text x="1120" y="260" class="body-text">• User data</text>
+
+  <!-- Frontend State Structure -->
+  <rect x="50" y="340" width="750" height="620" rx="8" class="frontend-box"/>
+  <text x="425" y="375" class="heading" text-anchor="middle" fill="#3B82F6">💻 FRONTEND STATE STRUCTURE</text>
+
+  <text x="70" y="405" class="body-text" font-weight="600">Global App State:</text>
+  <text x="90" y="425" class="code-text">interface AppState {</text>
+  <text x="110" y="440" class="code-text">  // User Session</text>
+  <text x="110" y="455" class="code-text">  user: {</text>
+  <text x="130" y="470" class="code-text">    id: string</text>
+  <text x="130" y="485" class="code-text">    email: string</text>
+  <text x="130" y="500" class="code-text">    session_id: string  // Current simulation session</text>
+  <text x="110" y="515" class="code-text">  }</text>
+  <text x="110" y="530" class="code-text"></text>
+  <text x="110" y="545" class="code-text">  // WBS Items (3 negotiable packages)</text>
+  <text x="110" y="560" class="code-text">  wbsItems: WBSItem[]  // [{id: "1.3.1", ...}, {id: "1.3.2", ...}, ...]</text>
+  <text x="110" y="575" class="code-text"></text>
+  <text x="110" y="590" class="code-text">  // Budget State (3-tier model)</text>
+  <text x="110" y="605" class="code-text">  budget: {</text>
+  <text x="130" y="620" class="code-text">    tier1: { used: number, remaining: number, percentage: number }</text>
+  <text x="130" y="635" class="code-text">    tier2: { locked: 390, count: 12 }  // Read-only</text>
+  <text x="130" y="650" class="code-text">    tier3: { total: number, remaining: number, percentage: number }</text>
+  <text x="130" y="665" class="code-text">    status: 'good' | 'warning' | 'critical' | 'over_budget'</text>
+  <text x="110" y="680" class="code-text">  }</text>
+  <text x="110" y="695" class="code-text"></text>
+  <text x="110" y="710" class="code-text">  // Timeline State</text>
+  <text x="110" y="725" class="code-text">  timeline: {</text>
+  <text x="130" y="740" class="code-text">    start_date: "2025-02-15"</text>
+  <text x="130" y="755" class="code-text">    deadline: "2026-05-15"  // Inflexible</text>
+  <text x="130" y="770" class="code-text">    estimated_end: Date  // Calculated from critical path</text>
+  <text x="130" y="785" class="code-text">    is_valid: boolean  // true if estimated_end &lt;= deadline</text>
+  <text x="110" y="800" class="code-text">  }</text>
+  <text x="110" y="815" class="code-text"></text>
+  <text x="110" y="830" class="code-text">  // Active Chat</text>
+  <text x="110" y="845" class="code-text">  activeChat: {</text>
+  <text x="130" y="860" class="code-text">    wbs_id: string | null  // "1.3.2" or null</text>
+  <text x="130" y="875" class="code-text">    agent_type: 'supplier' | 'owner' | null</text>
+  <text x="130" y="890" class="code-text">    messages: Message[]</text>
+  <text x="130" y="905" class="code-text">    pending_offer: Offer | null  // Current offer awaiting decision</text>
+  <text x="110" y="920" class="code-text">  }</text>
+  <text x="110" y="935" class="code-text"></text>
+  <text x="110" y="950" class="code-text">  // UI State</text>
+
+  <!-- Backend State and Logic -->
+  <rect x="850" y="340" width="700" height="620" rx="8" class="backend-box"/>
+  <text x="1200" y="375" class="heading" text-anchor="middle" fill="#F59E0B">⚙️ BACKEND STATE &amp; LOGIC</text>
+
+  <text x="870" y="405" class="body-text" font-weight="600">Session State (per user):</text>
+  <text x="890" y="425" class="code-text">interface SessionState {</text>
+  <text x="910" y="440" class="code-text">  session_id: string</text>
+  <text x="910" y="455" class="code-text">  user_id: string</text>
+  <text x="910" y="470" class="code-text">  created_at: timestamp</text>
+  <text x="910" y="485" class="code-text">  status: 'active' | 'completed' | 'abandoned'</text>
+  <text x="910" y="500" class="code-text"></text>
+  <text x="910" y="515" class="code-text">  // WBS commitments (persisted)</text>
+  <text x="910" y="530" class="code-text">  wbs_commitments: {</text>
+  <text x="930" y="545" class="code-text">    "1.3.1": { cost: 98, duration: 60, status: "committed" }</text>
+  <text x="930" y="560" class="code-text">    "1.3.2": { cost: 55, duration: 2.5, status: "committed" }</text>
+  <text x="930" y="575" class="code-text">    "1.4.1": { cost: null, duration: null, status: "pending" }</text>
+  <text x="910" y="590" class="code-text">  }</text>
+  <text x="910" y="605" class="code-text"></text>
+  <text x="910" y="620" class="code-text">  // Negotiation history (all chats)</text>
+  <text x="910" y="635" class="code-text">  negotiation_history: {</text>
+  <text x="930" y="650" class="code-text">    "1.3.1-supplier": Message[]</text>
+  <text x="930" y="665" class="code-text">    "1.3.2-supplier": Message[]</text>
+  <text x="930" y="680" class="code-text">    "owner": Message[]  // Conversations with owner</text>
+  <text x="910" y="695" class="code-text">  }</text>
+  <text x="910" y="710" class="code-text"></text>
+  <text x="910" y="725" class="code-text">  // AI Agent state (tracks negotiation rounds)</text>
+  <text x="910" y="740" class="code-text">  agent_state: {</text>
+  <text x="930" y="755" class="code-text">    "supplier-1": { rounds: 2, current_offer: 102 }</text>
+  <text x="930" y="770" class="code-text">    "supplier-2": { rounds: 1, current_offer: 58 }</text>
+  <text x="930" y="785" class="code-text">    "owner": { budget_approved: 12 }  // Total approved</text>
+  <text x="910" y="800" class="code-text">  }</text>
+  <text x="910" y="815" class="code-text"></text>
+  <text x="910" y="830" class="code-text">  // Validation results (cached)</text>
+  <text x="910" y="845" class="code-text">  validation: {</text>
+  <text x="930" y="860" class="code-text">    budget_valid: boolean</text>
+  <text x="930" y="875" class="code-text">    time_valid: boolean</text>
+  <text x="930" y="890" class="code-text">    errors: ValidationError[]</text>
+  <text x="930" y="905" class="code-text">    last_validated: timestamp</text>
+  <text x="910" y="920" class="code-text">  }</text>
+  <text x="890" y="935" class="code-text">}</text>
+
+  <!-- State Synchronization Flow -->
+  <rect x="50" y="1000" width="1500" height="380" rx="8" class="sync-box"/>
+  <text x="800" y="1035" class="heading" text-anchor="middle" fill="#10B981">🔄 STATE SYNKRONISERING</text>
+
+  <text x="70" y="1070" class="body-text" font-weight="600">Scenario 1: User commits WBS item</text>
+
+  <rect x="100" y="1085" width="300" height="80" rx="6" class="frontend-box"/>
+  <text x="250" y="1110" class="heading" text-anchor="middle">1. Frontend</text>
+  <text x="120" y="1130" class="code-text">setWbsItems(prev => </text>
+  <text x="120" y="1145" class="code-text">  update(prev, id, </text>
+  <text x="120" y="1160" class="code-text">    {status: 'committed'})</text>
+
+  <path d="M 400 1125 L 500 1125" class="arrow"/>
+  <text x="450" y="1115" class="small-text" text-anchor="middle">POST /api/wbs/:id/commit</text>
+
+  <rect x="500" y="1085" width="300" height="80" rx="6" class="backend-box"/>
+  <text x="650" y="1110" class="heading" text-anchor="middle">2. Backend</text>
+  <text x="520" y="1130" class="code-text">Validate commitment</text>
+  <text x="520" y="1145" class="code-text">Update session state</text>
+  <text x="520" y="1160" class="code-text">Calculate new budget</text>
+
+  <path d="M 800 1125 L 900 1125" class="arrow"/>
+  <text x="850" y="1115" class="small-text" text-anchor="middle">INSERT/UPDATE</text>
+
+  <rect x="900" y="1085" width="300" height="80" rx="6" class="db-box"/>
+  <text x="1050" y="1110" class="heading" text-anchor="middle">3. Database</text>
+  <text x="920" y="1130" class="code-text">Save to wbs_commitments</text>
+  <text x="920" y="1145" class="code-text">Update session status</text>
+  <text x="920" y="1160" class="code-text">Log to history</text>
+
+  <path d="M 900 1180 L 800 1210" class="arrow"/>
+  <text x="850" y="1195" class="small-text" text-anchor="middle">Response</text>
+
+  <rect x="500" y="1210" width="300" height="60" rx="6" class="backend-box"/>
+  <text x="650" y="1235" class="heading" text-anchor="middle">4. Return new state</text>
+  <text x="520" y="1255" class="code-text">{ success: true, budget: {...} }</text>
+
+  <path d="M 500 1240 L 400 1240" class="arrow"/>
+
+  <rect x="100" y="1210" width="300" height="60" rx="6" class="frontend-box"/>
+  <text x="250" y="1235" class="heading" text-anchor="middle">5. Update UI</text>
+  <text x="120" y="1255" class="code-text">setBudget(response.budget)</text>
+
+  <text x="70" y="1305" class="body-text" font-weight="600">Scenario 2: User opens chat (load history)</text>
+
+  <rect x="100" y="1320" width="300" height="50" rx="6" class="frontend-box"/>
+  <text x="250" y="1345" class="heading" text-anchor="middle">Request chat history</text>
+
+  <path d="M 400 1345 L 500 1345" class="arrow"/>
+  <text x="450" y="1335" class="small-text" text-anchor="middle">GET /api/chat/:wbs_id/history</text>
+
+  <rect x="500" y="1320" width="300" height="50" rx="6" class="backend-box"/>
+  <text x="650" y="1345" class="heading" text-anchor="middle">Fetch from DB</text>
+
+  <path d="M 800 1345 L 900 1345" class="arrow"/>
+
+  <rect x="900" y="1320" width="300" height="50" rx="6" class="db-box"/>
+  <text x="1050" y="1345" class="heading" text-anchor="middle">Return messages</text>
+
+  <!-- Footer: Best Practices -->
+  <rect x="50" y="1420" width="1500" height="330" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="2"/>
+  <text x="800" y="1455" class="heading" text-anchor="middle">✅ BESTE PRAKSIS</text>
+
+  <text x="70" y="1490" class="body-text" font-weight="600">1. OPTIMISTIC UPDATES:</text>
+  <text x="90" y="1510" class="body-text">• Oppdater UI umiddelbart (optimistic)</text>
+  <text x="90" y="1530" class="body-text">• Send request til backend asynkront</text>
+  <text x="90" y="1550" class="body-text">• Hvis backend feiler: Reverter UI til forrige tilstand</text>
+
+  <text x="70" y="1580" class="body-text" font-weight="600">2. SINGLE SOURCE OF TRUTH:</text>
+  <text x="90" y="1600" class="body-text">• Database = autorativ kilde</text>
+  <text x="90" y="1620" class="body-text">• Backend validerer ALLTID før lagring</text>
+  <text x="90" y="1640" class="body-text">• Frontend synkroniserer fra backend ved page load</text>
+
+  <text x="70" y="1670" class="body-text" font-weight="600">3. ERROR HANDLING:</text>
+  <text x="90" y="1690" class="body-text">• Network errors: Retry med exponential backoff</text>
+  <text x="90" y="1710" class="body-text">• Validation errors: Vis brukermelding, ikke commit</text>
+  <text x="90" y="1730" class="body-text">• Database errors: Log til Sentry, vis generisk feilmelding</text>
+</svg>

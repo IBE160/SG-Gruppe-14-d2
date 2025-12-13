@@ -1,0 +1,228 @@
+<svg viewBox="0 0 1600 2200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 700; fill: #111827; }
+      .subtitle { font-family: 'Inter', sans-serif; font-size: 14px; fill: #6B7280; }
+      .heading { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; fill: #111827; }
+      .body-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #374151; }
+      .small-text { font-family: 'Inter', sans-serif; font-size: 11px; fill: #6B7280; }
+      .agent-supplier { fill: #EFF6FF; stroke: #3B82F6; stroke-width: 2; }
+      .agent-owner { fill: #FEF3C7; stroke: #F59E0B; stroke-width: 2; }
+      .decision-box { fill: #FEF3C7; stroke: #F59E0B; stroke-width: 2; }
+      .rule-box { fill: #FFFFFF; stroke: #D1D5DB; stroke-width: 2; }
+      .code-text { font-family: 'Courier New', monospace; font-size: 11px; fill: #1F2937; }
+      .arrow { stroke: #6B7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-yes { stroke: #10B981; stroke-width: 2; fill: none; marker-end: url(#arrowhead-yes); }
+      .arrow-no { stroke: #EF4444; stroke-width: 2; fill: none; marker-end: url(#arrowhead-no); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
+    </marker>
+    <marker id="arrowhead-yes" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#10B981" />
+    </marker>
+    <marker id="arrowhead-no" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#EF4444" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="800" y="40" class="title" text-anchor="middle">AI-Agent Forhandlingslogikk</text>
+  <text x="800" y="65" class="subtitle" text-anchor="middle">Regelmotor for 4 AI Agenter (3 Leverandører + 1 Eier)</text>
+
+  <!-- 4 Agents Overview -->
+  <rect x="50" y="100" width="1500" height="140" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="2"/>
+  <text x="800" y="130" class="heading" text-anchor="middle">🤖 4 AI AGENTER</text>
+
+  <!-- Supplier 1 -->
+  <rect x="80" y="150" width="300" height="70" rx="6" class="agent-supplier"/>
+  <text x="230" y="175" class="heading" text-anchor="middle" fill="#3B82F6">Bjørn Eriksen</text>
+  <text x="100" y="195" class="small-text">WBS 1.3.1 Grunnarbeid</text>
+  <text x="100" y="210" class="small-text">Baseline: 105 MNOK, 60 dager</text>
+
+  <!-- Supplier 2 -->
+  <rect x="420" y="150" width="300" height="70" rx="6" class="agent-supplier"/>
+  <text x="570" y="175" class="heading" text-anchor="middle" fill="#3B82F6">Kari Andersen</text>
+  <text x="440" y="195" class="small-text">WBS 1.3.2 Fundamentering</text>
+  <text x="440" y="210" class="small-text">Baseline: 60 MNOK, 45 dager</text>
+
+  <!-- Supplier 3 -->
+  <rect x="760" y="150" width="300" height="70" rx="6" class="agent-supplier"/>
+  <text x="910" y="175" class="heading" text-anchor="middle" fill="#3B82F6">Per Johansen</text>
+  <text x="780" y="195" class="small-text">WBS 1.4.1 Råbygg</text>
+  <text x="780" y="210" class="small-text">Baseline: 180 MNOK, 90 dager</text>
+
+  <!-- Owner -->
+  <rect x="1100" y="150" width="380" height="70" rx="6" class="agent-owner"/>
+  <text x="1290" y="175" class="heading" text-anchor="middle" fill="#F59E0B">Anne-Lise Berg (Eier)</text>
+  <text x="1120" y="195" class="small-text">Kan: Budsjett ↑ (maks 47 MNOK), Scope ↓</text>
+  <text x="1120" y="210" class="small-text" fill="#EF4444">Kan IKKE: Tid ↗ (15 mai 2026 ufravikelig)</text>
+
+  <!-- Negotiation Flow -->
+  <text x="800" y="290" class="heading" text-anchor="middle">🔄 FORHANDLINGSFLYT</text>
+
+  <!-- Step 1: User starts chat -->
+  <rect x="600" y="310" width="400" height="60" rx="8" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="800" y="335" class="heading" text-anchor="middle">1. Bruker starter chat</text>
+  <text x="800" y="355" class="body-text" text-anchor="middle">Velger WBS pakke + Agent type</text>
+
+  <path d="M 800 370 L 800 410" class="arrow"/>
+
+  <!-- Step 2: Agent determines context -->
+  <rect x="600" y="410" width="400" height="80" rx="8" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="800" y="435" class="heading" text-anchor="middle">2. Agent laster kontekst</text>
+  <text x="800" y="455" class="code-text" text-anchor="middle">agent.wbs_item = selected_wbs</text>
+  <text x="800" y="470" class="code-text" text-anchor="middle">agent.baseline = get_baseline(wbs)</text>
+  <text x="800" y="485" class="code-text" text-anchor="middle">agent.hidden_params = load_rules()</text>
+
+  <path d="M 800 490 L 800 540" class="arrow"/>
+
+  <!-- Decision: Supplier or Owner -->
+  <polygon points="800,540 950,610 800,680 650,610" class="decision-box"/>
+  <text x="800" y="605" class="heading" text-anchor="middle">Agent type?</text>
+  <text x="800" y="625" class="small-text" text-anchor="middle">Leverandør / Eier</text>
+
+  <!-- LEFT: Supplier Flow -->
+  <path d="M 650 610 L 400 610" class="arrow"/>
+  <text x="525" y="600" class="body-text" fill="#3B82F6">LEVERANDØR</text>
+
+  <rect x="50" y="700" width="600" height="800" rx="8" class="agent-supplier"/>
+  <text x="350" y="735" class="heading" text-anchor="middle" fill="#3B82F6">LEVERANDØR FORHANDLING</text>
+
+  <text x="70" y="765" class="body-text" font-weight="600">Forhandlingsmuligheter:</text>
+  <text x="90" y="785" class="body-text">✅ Pris (opp/ned basert på kvalitet)</text>
+  <text x="90" y="805" class="body-text">✅ Varighet (raskere = dyrere, tregere = billigere)</text>
+  <text x="90" y="825" class="body-text">✅ Kvalitet (standard, redusert, premium)</text>
+  <text x="90" y="845" class="body-text" fill="#EF4444">❌ IKKE scope (kun Eier kan endre)</text>
+
+  <text x="70" y="875" class="body-text" font-weight="600">Skjulte Parametere:</text>
+  <text x="90" y="895" class="code-text">initial_margin: 1.15-1.20 (starter 15-20% høyere)</text>
+  <text x="90" y="910" class="code-text">min_cost_multiplier: 0.85-0.88 (går ikke under 85%)</text>
+  <text x="90" y="925" class="code-text">concession_rate: 0.03-0.05 (reduserer 3-5% per runde)</text>
+  <text x="90" y="940" class="code-text">patience: 3-4 runder (blir fastere etter 3-4 runder)</text>
+
+  <text x="70" y="970" class="body-text" font-weight="600">Forhandlingslogikk - Bjørn (Pris/Kvalitet):</text>
+  <text x="90" y="990" class="code-text">function negotiate(user_request) {</text>
+  <text x="110" y="1005" class="code-text">  IF request.type === "lower_price":</text>
+  <text x="130" y="1020" class="code-text">    current_offer = baseline * initial_margin</text>
+  <text x="130" y="1035" class="code-text">    IF rounds_negotiated &lt; patience:</text>
+  <text x="150" y="1050" class="code-text">      new_offer = current_offer * (1 - concession_rate)</text>
+  <text x="150" y="1065" class="code-text">      IF new_offer >= (baseline * min_cost_multiplier):</text>
+  <text x="170" y="1080" class="code-text">        return offer_with_warning(new_offer)</text>
+  <text x="150" y="1095" class="code-text">      ELSE:</text>
+  <text x="170" y="1110" class="code-text">        return reject("Kan ikke gå lavere")</text>
+  <text x="130" y="1125" class="code-text">    ELSE:</text>
+  <text x="150" y="1140" class="code-text">      return firm_offer("Dette er mitt siste tilbud")</text>
+  <text x="90" y="1155" class="code-text">}</text>
+
+  <text x="70" y="1185" class="body-text" font-weight="600">Eksempel - Bjørn (WBS 1.3.1):</text>
+  <text x="90" y="1205" class="code-text">Baseline: 105 MNOK</text>
+  <text x="90" y="1220" class="code-text">Initial offer: 112 MNOK (105 * 1.20 = 126, men starter 112)</text>
+  <text x="90" y="1235" class="code-text">Runde 1: Bruker ber om lavere → 105 MNOK</text>
+  <text x="90" y="1250" class="code-text">Runde 2: Bruker ber om 100 → 102 MNOK (med advarsel)</text>
+  <text x="90" y="1265" class="code-text">Runde 3: Bruker ber om 95 → 98 MNOK (absolutt minimum)</text>
+  <text x="90" y="1280" class="code-text">Runde 4: Bruker ber om 90 → AVSLÅR (under minimum)</text>
+
+  <text x="70" y="1310" class="body-text" font-weight="600">Forhandlingslogikk - Kari (Tid/Kost):</text>
+  <text x="90" y="1330" class="code-text">Spesialitet: Bytte tid mot kostnad</text>
+  <text x="90" y="1345" class="code-text">Raskere levering: cost * (1 + time_reduction * 0.30)</text>
+  <text x="90" y="1360" class="code-text">Eksempel: 25% raskere (45→34 dager) = 60 * 1.075 = 64.5 MNOK</text>
+
+  <text x="70" y="1390" class="body-text" font-weight="600">Forhandlingslogikk - Per (Scope):</text>
+  <text x="90" y="1410" class="code-text">Spesialitet: Redusere scope for lavere pris</text>
+  <text x="90" y="1425" class="code-text">Fjerne lagerrom: -10 MNOK</text>
+  <text x="90" y="1440" class="code-text">Forenkle tak: -15 MNOK</text>
+  <text x="90" y="1455" class="code-text">Redusere klasserom: -18 MNOK</text>
+  <text x="90" y="1470" class="code-text">MEN: Krever godkjenning fra Eier (Anne-Lise)</text>
+
+  <!-- RIGHT: Owner Flow -->
+  <path d="M 950 610 L 1150 610" class="arrow"/>
+  <text x="1050" y="600" class="body-text" fill="#F59E0B">EIER</text>
+
+  <rect x="950" y="700" width="600" height="800" rx="8" class="agent-owner"/>
+  <text x="1250" y="735" class="heading" text-anchor="middle" fill="#F59E0B">EIER (KOMMUNE) FORHANDLING</text>
+
+  <text x="970" y="765" class="body-text" font-weight="600">Forhandlingsmuligheter:</text>
+  <text x="990" y="785" class="body-text">✅ Budsjettøkning (maks 15% = 47 MNOK totalt)</text>
+  <text x="990" y="805" class="body-text">✅ Scope-reduksjon (godkjenne fjerne features)</text>
+  <text x="990" y="825" class="body-text" fill="#EF4444">❌ ALDRI tidsforlengelse (ufravikelig regel)</text>
+
+  <text x="970" y="855" class="body-text" font-weight="600">Skjulte Parametere:</text>
+  <text x="990" y="875" class="code-text">max_budget_increase_per_round: 0.05 (5% av 310 = 15.5 MNOK)</text>
+  <text x="990" y="890" class="code-text">total_max_budget_increase: 0.15 (15% av 310 = 46.5 MNOK)</text>
+  <text x="990" y="905" class="code-text">budget_approved_so_far: 0 (spores per sesjon)</text>
+  <text x="990" y="920" class="code-text">time_extension_allowed: false (HARD-KODET)</text>
+
+  <text x="970" y="950" class="body-text" font-weight="600">Forhandlingslogikk - Anne-Lise:</text>
+  <text x="990" y="970" class="code-text">function negotiateBudget(user_request) {</text>
+  <text x="1010" y="985" class="code-text">  IF request.type === "budget_increase":</text>
+  <text x="1030" y="1000" class="code-text">    IF request.has_strong_justification():</text>
+  <text x="1050" y="1015" class="code-text">      requested = request.amount</text>
+  <text x="1050" y="1030" class="code-text">      IF requested &lt;= max_per_round:</text>
+  <text x="1070" y="1045" class="code-text">        IF (budget_approved + requested) &lt;= total_max:</text>
+  <text x="1090" y="1060" class="code-text">          budget_approved += requested</text>
+  <text x="1090" y="1075" class="code-text">          return approve_with_conditions(requested)</text>
+  <text x="1070" y="1090" class="code-text">        ELSE:</text>
+  <text x="1090" y="1105" class="code-text">          return reject("Over maksgrense")</text>
+  <text x="1050" y="1120" class="code-text">      ELSE:</text>
+  <text x="1070" y="1135" class="code-text">        return counter_offer(max_per_round)</text>
+  <text x="1030" y="1150" class="code-text">    ELSE:</text>
+  <text x="1050" y="1165" class="code-text">      return ask_for_justification()</text>
+  <text x="1010" y="1180" class="code-text"></text>
+  <text x="1010" y="1195" class="code-text">  IF request.type === "time_extension":</text>
+  <text x="1030" y="1210" class="code-text">    return HARD_REJECT("Tiden kan IKKE forlenges")</text>
+  <text x="990" y="1225" class="code-text">}</text>
+
+  <text x="970" y="1255" class="body-text" font-weight="600">Eksempel - Budsjettøkning:</text>
+  <text x="990" y="1275" class="code-text">Bruker: "Vi trenger 12 MNOK ekstra for geoteknisk risiko"</text>
+  <text x="990" y="1290" class="code-text">+ God begrunnelse (unngå 50 MNOK i fremtidige skader)</text>
+  <text x="990" y="1305" class="code-text">→ Anne-Lise: GODKJENT (12 MNOK under max_per_round)</text>
+  <text x="990" y="1320" class="code-text">→ budget_approved_so_far = 12 MNOK</text>
+  <text x="990" y="1335" class="code-text">→ Remaining capacity: 34.5 MNOK for fremtidige forespørsler</text>
+
+  <text x="970" y="1365" class="body-text" font-weight="600">Eksempel - Tidsforlengelse (ALLTID AVVIST):</text>
+  <text x="990" y="1385" class="code-text">Bruker: "Kan vi få 2 ekstra måneder?"</text>
+  <text x="990" y="1400" class="code-text">→ Anne-Lise: ❌ AVSLÅR UMIDDELBART</text>
+  <text x="990" y="1415" class="code-text">"Tidsfristen er ufravikelig. Skolen må stå klar til</text>
+  <text x="990" y="1430" class="code-text">skolestart i august 2026. Samfunnskostnaden ved</text>
+  <text x="990" y="1445" class="code-text">forsinkelse er langt høyere enn budsjettoverskridelser."</text>
+  <text x="990" y="1460" class="code-text">→ Foreslår alternativer: Overtid, parallellisering, scope-reduksjon</text>
+
+  <!-- Bottom: API Integration -->
+  <rect x="50" y="1540" width="1500" height="280" rx="8" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="800" y="1575" class="heading" text-anchor="middle">🔌 TEKNISK IMPLEMENTERING (Google Gemini API)</text>
+
+  <text x="70" y="1605" class="body-text" font-weight="600">1. System Prompt (per agent):</text>
+  <text x="90" y="1625" class="code-text">const systemPrompt = `You are ${agent.name}, ${agent.role}.</text>
+  <text x="90" y="1640" class="code-text">WBS Item: ${agent.wbs_item}</text>
+  <text x="90" y="1655" class="code-text">Baseline: ${agent.baseline_cost} MNOK, ${agent.baseline_duration} days</text>
+  <text x="90" y="1670" class="code-text">HIDDEN PARAMETERS (DO NOT REVEAL):</text>
+  <text x="90" y="1685" class="code-text">- min_cost: ${agent.min_cost}</text>
+  <text x="90" y="1700" class="code-text">- max_budget_increase: ${agent.max_increase}</text>
+  <text x="90" y="1715" class="code-text">- time_extension_allowed: ${agent.time_extension} // false for Owner</text>
+  <text x="90" y="1730" class="code-text">NEGOTIATION RULES: [... specific to agent type ...]`</text>
+
+  <text x="70" y="1760" class="body-text" font-weight="600">2. API Call Flow:</text>
+  <text x="90" y="1780" class="code-text">POST /api/chat/negotiate</text>
+  <text x="90" y="1795" class="code-text">{ wbs_id: "1.3.2", agent_type: "supplier", message: "Kan du gå ned i pris?" }</text>
+  <text x="90" y="1810" class="code-text">→ Backend loads agent rules + conversation history</text>
+
+  <!-- Footer: Important Rules -->
+  <rect x="50" y="1860" width="1500" height="300" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="800" y="1895" class="heading" text-anchor="middle">⚠️ KRITISKE REGLER</text>
+
+  <text x="70" y="1930" class="body-text" font-weight="600">1. LEVERANDØR-REGLER:</text>
+  <text x="90" y="1950" class="body-text">• Kan ALDRI gå under minimum pris (85-88% av baseline)</text>
+  <text x="90" y="1970" class="body-text">• Blir mer fastlåst etter 3-4 forhandlingsrunder</text>
+  <text x="90" y="1990" class="body-text">• Advarer alltid om kvalitetsrisiko ved for lav pris</text>
+  <text x="90" y="2010" class="body-text">• Scope-reduksjon krever ALLTID godkjenning fra Eier</text>
+
+  <text x="70" y="2040" class="body-text" font-weight="600">2. EIER-REGLER:</text>
+  <text x="90" y="2060" class="body-text">• Maks budsjettøkning: 15% av 310 MNOK = 46.5 MNOK totalt</text>
+  <text x="90" y="2080" class="body-text">• Maks per runde: 5% av 310 MNOK = 15.5 MNOK</text>
+  <text x="90" y="2100" class="body-text">• Krever STERK begrunnelse for budsjettøkning</text>
+  <text x="90" y="2120" class="body-text" fill="#EF4444" font-weight="700">• ALDRI ALDRI ALDRI forlenge tid (15 mai 2026 ufravikelig)</text>
+
+  <text x="70" y="2150" class="body-text" font-weight="600">3. VALIDERING:</text>
+  <text x="90" y="2170" class="body-text">• Alle tilbud må valideres mot budsjett (≤700 MNOK) og tid (≤15 mai 2026)</text>
+</svg>

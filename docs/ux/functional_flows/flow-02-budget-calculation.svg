@@ -1,0 +1,219 @@
+<svg viewBox="0 0 1600 1900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 700; fill: #111827; }
+      .subtitle { font-family: 'Inter', sans-serif; font-size: 14px; fill: #6B7280; }
+      .heading { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; fill: #111827; }
+      .body-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #374151; }
+      .small-text { font-family: 'Inter', sans-serif; font-size: 11px; fill: #6B7280; }
+      .tier-box { fill: #FFFFFF; stroke: #3B82F6; stroke-width: 2; }
+      .locked-box { fill: #F3F4F6; stroke: #9CA3AF; stroke-width: 2; }
+      .available-box { fill: #EFF6FF; stroke: #3B82F6; stroke-width: 2; }
+      .total-box { fill: #FEF3C7; stroke: #F59E0B; stroke-width: 2; }
+      .formula-box { fill: #E0E7FF; stroke: #6366F1; stroke-width: 2; }
+      .warning-box { fill: #FEE2E2; stroke: #EF4444; stroke-width: 2; }
+      .success-box { fill: #D1FAE5; stroke: #10B981; stroke-width: 2; }
+      .code-text { font-family: 'Courier New', monospace; font-size: 11px; fill: #1F2937; }
+      .arrow { stroke: #6B7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="800" y="40" class="title" text-anchor="middle">Budsjettberegning - 3-Tier Modell</text>
+  <text x="800" y="65" class="subtitle" text-anchor="middle">Echtidsoppdatering av Budsjettforbruk og Tilgjengelighet</text>
+
+  <!-- 3-Tier Overview -->
+  <rect x="50" y="100" width="1500" height="280" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="2"/>
+  <text x="800" y="130" class="heading" text-anchor="middle">📊 3-TIER BUDSJETTSTRUKTUR</text>
+
+  <!-- Tier 1: Available -->
+  <rect x="100" y="160" width="400" height="180" rx="8" class="available-box"/>
+  <text x="300" y="190" class="heading" text-anchor="middle" fill="#3B82F6">Tier 1: TILGJENGELIG</text>
+  <text x="120" y="220" class="body-text">• Maks: 310 MNOK</text>
+  <text x="120" y="240" class="body-text">• For: 3 forhandlingsbare pakker</text>
+  <text x="120" y="260" class="body-text">• Status: Dynamisk (endres ved commit)</text>
+  <text x="120" y="280" class="code-text">used = sum(committed_costs)</text>
+  <text x="120" y="295" class="code-text">remaining = 310 - used</text>
+  <text x="120" y="315" class="small-text" fill="#EF4444">⚠️ Start: 0 MNOK brukt, 310 MNOK igjen</text>
+
+  <!-- Tier 2: Locked -->
+  <rect x="550" y="160" width="400" height="180" rx="8" class="locked-box"/>
+  <text x="750" y="190" class="heading" text-anchor="middle" fill="#6B7280">Tier 2: LÅST</text>
+  <text x="570" y="220" class="body-text">• Fast: 390 MNOK</text>
+  <text x="570" y="240" class="body-text">• For: 12 kontraktfestede pakker</text>
+  <text x="570" y="260" class="body-text">• Status: KONSTANT (endres aldri)</text>
+  <text x="570" y="280" class="code-text">locked = 390 MNOK (read-only)</text>
+  <text x="570" y="295" class="code-text">items = 12 WBS packages</text>
+  <text x="570" y="315" class="small-text" fill="#6B7280">💡 Ikke-interaktiv, kun visning</text>
+
+  <!-- Tier 3: Total -->
+  <rect x="1000" y="160" width="450" height="180" rx="8" class="total-box"/>
+  <text x="1225" y="190" class="heading" text-anchor="middle" fill="#F59E0B">Tier 3: TOTALT</text>
+  <text x="1020" y="220" class="body-text">• Maks: 700 MNOK (hard limit)</text>
+  <text x="1020" y="240" class="body-text">• Beregnet: locked + used</text>
+  <text x="1020" y="260" class="body-text">• Status: Dynamisk (følger Tier 1)</text>
+  <text x="1020" y="280" class="code-text">total = 390 + sum(committed)</text>
+  <text x="1020" y="295" class="code-text">remaining_budget = 700 - total</text>
+  <text x="1020" y="315" class="small-text" fill="#EF4444">⚠️ KRITISK: Må være ≤ 700 MNOK</text>
+
+  <!-- Budget Calculation Flow -->
+  <text x="800" y="430" class="heading" text-anchor="middle">🔄 BUDSJETTOPPDATERING VED COMMITMENT</text>
+
+  <!-- Initial State -->
+  <rect x="100" y="460" width="350" height="120" rx="8" class="tier-box"/>
+  <text x="275" y="490" class="heading" text-anchor="middle">Initial Tilstand</text>
+  <text x="120" y="515" class="code-text">committed_wbs = []</text>
+  <text x="120" y="530" class="code-text">tier1_used = 0 MNOK</text>
+  <text x="120" y="545" class="code-text">tier1_remaining = 310 MNOK</text>
+  <text x="120" y="560" class="code-text">tier2_locked = 390 MNOK</text>
+  <text x="120" y="575" class="code-text">tier3_total = 390 MNOK</text>
+
+  <path d="M 450 520 L 550 520" class="arrow"/>
+  <text x="500" y="510" class="small-text" text-anchor="middle">Bruker godtar</text>
+  <text x="500" y="525" class="small-text" text-anchor="middle">WBS 1.3.2</text>
+
+  <!-- After First Commitment -->
+  <rect x="550" y="460" width="350" height="120" rx="8" class="available-box"/>
+  <text x="725" y="490" class="heading" text-anchor="middle">Etter 1. Commitment</text>
+  <text x="570" y="515" class="code-text">committed_wbs = [WBS_1.3.2]</text>
+  <text x="570" y="530" class="code-text">tier1_used = 55 MNOK</text>
+  <text x="570" y="545" class="code-text">tier1_remaining = 255 MNOK</text>
+  <text x="570" y="560" class="code-text">tier2_locked = 390 MNOK (uendret)</text>
+  <text x="570" y="575" class="code-text">tier3_total = 445 MNOK</text>
+
+  <path d="M 900 520 L 1000 520" class="arrow"/>
+  <text x="950" y="510" class="small-text" text-anchor="middle">Bruker godtar</text>
+  <text x="950" y="525" class="small-text" text-anchor="middle">WBS 1.3.1 + 1.4.1</text>
+
+  <!-- After All Commitments -->
+  <rect x="1000" y="460" width="400" height="120" rx="8" class="success-box"/>
+  <text x="1200" y="490" class="heading" text-anchor="middle" fill="#10B981">Alle 3 Commitet</text>
+  <text x="1020" y="515" class="code-text">committed_wbs = [1.3.1, 1.3.2, 1.4.1]</text>
+  <text x="1020" y="530" class="code-text">tier1_used = 290 MNOK (98+55+137)</text>
+  <text x="1020" y="545" class="code-text">tier1_remaining = 20 MNOK ✅</text>
+  <text x="1020" y="560" class="code-text">tier2_locked = 390 MNOK</text>
+  <text x="1020" y="575" class="code-text">tier3_total = 680 MNOK ✅ (&lt;=700)</text>
+
+  <!-- Calculation Formulas -->
+  <rect x="100" y="620" width="700" height="380" rx="8" class="formula-box"/>
+  <text x="450" y="655" class="heading" text-anchor="middle">📐 BEREGNINGSFORMLER</text>
+
+  <text x="120" y="690" class="body-text" font-weight="600">1. TIER 1 - Tilgjengelig Budsjett:</text>
+  <text x="140" y="710" class="code-text">function calculateTier1() {</text>
+  <text x="160" y="725" class="code-text">  const MAX_AVAILABLE = 310  // MNOK</text>
+  <text x="160" y="740" class="code-text">  const committed = wbsItems.filter(w => w.status === 'committed')</text>
+  <text x="160" y="755" class="code-text">  const used = committed.reduce((sum, w) => sum + w.cost, 0)</text>
+  <text x="160" y="770" class="code-text">  const remaining = MAX_AVAILABLE - used</text>
+  <text x="160" y="785" class="code-text">  const percentage = (used / MAX_AVAILABLE) * 100</text>
+  <text x="160" y="800" class="code-text">  </text>
+  <text x="160" y="815" class="code-text">  return { used, remaining, percentage }</text>
+  <text x="140" y="830" class="code-text">}</text>
+
+  <text x="120" y="860" class="body-text" font-weight="600">2. TIER 2 - Låst Budsjett:</text>
+  <text x="140" y="880" class="code-text">function calculateTier2() {</text>
+  <text x="160" y="895" class="code-text">  const LOCKED = 390  // MNOK - KONSTANT</text>
+  <text x="160" y="910" class="code-text">  const locked_items = 12  // Alltid 12 pakker</text>
+  <text x="160" y="925" class="code-text">  </text>
+  <text x="160" y="940" class="code-text">  return { locked: LOCKED, count: locked_items }</text>
+  <text x="140" y="955" class="code-text">}  // Read-only, endres aldri</text>
+
+  <text x="120" y="985" class="body-text" font-weight="600">3. TIER 3 - Total Budsjett:</text>
+
+  <!-- Right side: Budget States -->
+  <rect x="850" y="620" width="700" height="380" rx="8" class="tier-box"/>
+  <text x="1200" y="655" class="heading" text-anchor="middle">🎯 BUDSJETTSTATUS &amp; VARSLER</text>
+
+  <text x="870" y="690" class="body-text" font-weight="600">Statusnivåer (basert på Tier 1 forbruk):</text>
+
+  <rect x="890" y="700" width="480" height="50" rx="6" class="success-box"/>
+  <text x="910" y="725" class="body-text" fill="#10B981">✅ GOD (0-70% brukt av 310 MNOK)</text>
+  <text x="910" y="740" class="small-text">0-217 MNOK brukt → Grønn progressbar</text>
+
+  <rect x="890" y="765" width="480" height="50" rx="6" class="warning-box" fill="#FEF3C7" stroke="#F59E0B"/>
+  <text x="910" y="790" class="body-text" fill="#F59E0B">⚠️ ADVARSEL (70-95% brukt)</text>
+  <text x="910" y="805" class="small-text">217-295 MNOK brukt → Gul progressbar</text>
+
+  <rect x="890" y="830" width="480" height="50" rx="6" class="warning-box"/>
+  <text x="910" y="855" class="body-text" fill="#EF4444">❌ KRITISK (95-100% brukt)</text>
+  <text x="910" y="870" class="small-text">295-310 MNOK brukt → Rød progressbar</text>
+
+  <rect x="890" y="895" width="480" height="50" rx="6" fill="#7F1D1D" stroke="#7F1D1D"/>
+  <text x="910" y="920" class="body-text" fill="#FFFFFF">🚫 OVER BUDSJETT (>100%)</text>
+  <text x="910" y="935" class="small-text" fill="#FEE2E2">>310 MNOK → Blokkerer validering</text>
+
+  <text x="870" y="970" class="body-text" font-weight="600">Total Budsjett Validering:</text>
+  <text x="890" y="990" class="code-text">IF (tier2_locked + tier1_used) > 700:</text>
+  <text x="910" y="1005" class="code-text">  status = "INVALID"</text>
+  <text x="910" y="1020" class="code-text">  error = "OVER_BUDGET"</text>
+  <text x="910" y="1035" class="code-text">  excess = total - 700</text>
+
+  <!-- Real-time Update Flow -->
+  <rect x="100" y="1040" width="1450" height="200" rx="8" fill="#FFF7ED" stroke="#F59E0B" stroke-width="2"/>
+  <text x="825" y="1075" class="heading" text-anchor="middle">⚡ ECHTIDSOPPDATERING (Real-time UI Update)</text>
+
+  <text x="120" y="1105" class="body-text" font-weight="600">Når bruker godtar tilbud:</text>
+  <text x="140" y="1125" class="code-text">1. User clicks "✓ Godta tilbud: 55 MNOK"</text>
+  <text x="140" y="1140" class="code-text">2. Frontend: wbsItems[1].status = 'committed', wbsItems[1].cost = 55</text>
+  <text x="140" y="1155" class="code-text">3. Recalculate: tier1 = calculateTier1(), tier3 = calculateTier3()</text>
+  <text x="140" y="1170" class="code-text">4. Update UI:</text>
+  <text x="160" y="1185" class="code-text">   - Dashboard progress bars (Tier 1: 55/310, Tier 3: 445/700)</text>
+  <text x="160" y="1200" class="code-text">   - WBS card status badge (⚪ Venter → ✅ Godkjent)</text>
+  <text x="160" y="1215" class="code-text">   - Budget warning panel (update remaining budget)</text>
+  <text x="140" y="1230" class="code-text">5. Backend: POST /api/wbs/:id/commit → Persist to database</text>
+
+  <!-- Example Scenarios -->
+  <rect x="100" y="1270" width="700" height="280" rx="8" class="tier-box"/>
+  <text x="450" y="1305" class="heading" text-anchor="middle">📝 EKSEMPELSCENARIOER</text>
+
+  <text x="120" y="1335" class="body-text" font-weight="600">Scenario 1: Suksess (Innenfor budsjett)</text>
+  <text x="140" y="1355" class="code-text">WBS 1.3.1: 98 MNOK (forhandlet ned fra 105)</text>
+  <text x="140" y="1370" class="code-text">WBS 1.3.2: 55 MNOK (forhandlet ned fra 60)</text>
+  <text x="140" y="1385" class="code-text">WBS 1.4.1: 137 MNOK (forhandlet ned fra 180)</text>
+  <text x="140" y="1400" class="code-text">────────────────────────────────────</text>
+  <text x="140" y="1415" class="code-text">Tier 1: 290 / 310 MNOK (94%) ✅</text>
+  <text x="140" y="1430" class="code-text">Tier 3: 680 / 700 MNOK (97%) ✅</text>
+  <text x="140" y="1445" class="code-text">Status: GODKJENT (20 MNOK margin)</text>
+
+  <text x="120" y="1475" class="body-text" font-weight="600">Scenario 2: Feil (Over budsjett)</text>
+  <text x="140" y="1495" class="code-text">WBS 1.3.1: 105 MNOK (baseline, ikke forhandlet)</text>
+  <text x="140" y="1510" class="code-text">WBS 1.3.2: 60 MNOK (baseline, ikke forhandlet)</text>
+  <text x="140" y="1525" class="code-text">WBS 1.4.1: 180 MNOK (baseline, ikke forhandlet)</text>
+
+  <!-- Right side examples -->
+  <rect x="850" y="1270" width="700" height="280" rx="8" class="warning-box"/>
+  <text x="1200" y="1305" class="heading" text-anchor="middle" fill="#EF4444">❌ FEIL I SCENARIO 2</text>
+
+  <text x="870" y="1335" class="code-text">────────────────────────────────────</text>
+  <text x="870" y="1350" class="code-text">Tier 1: 345 / 310 MNOK (111%) ❌</text>
+  <text x="870" y="1365" class="code-text">Tier 3: 735 / 700 MNOK (105%) ❌</text>
+  <text x="870" y="1380" class="code-text">Status: AVVIST</text>
+  <text x="870" y="1395" class="code-text">Error: "OVER_BUDGET"</text>
+  <text x="870" y="1410" class="code-text">Excess: 35 MNOK over limit</text>
+
+  <text x="870" y="1440" class="body-text" font-weight="600">Brukermelding:</text>
+  <text x="890" y="1460" class="body-text" fill="#EF4444">"Prosjektet overskrider budsjettet med 35 MNOK."</text>
+  <text x="890" y="1480" class="body-text">"Du må reforhandle for å redusere kostnadene."</text>
+  <text x="890" y="1500" class="body-text">"Forslag: Forhandle med leverandører om lavere pris"</text>
+  <text x="890" y="1520" class="body-text">"eller ta kontakt med Eier for budsjettøkning."</text>
+
+  <!-- Footer -->
+  <rect x="100" y="1580" width="1450" height="280" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="825" y="1615" class="heading" text-anchor="middle">💻 IMPLEMENTERINGSDETALJER</text>
+
+  <text x="120" y="1645" class="body-text" font-weight="600">Frontend State Management:</text>
+  <text x="140" y="1665" class="code-text">interface BudgetState {</text>
+  <text x="160" y="1680" class="code-text">  tier1: { used: number, remaining: number, percentage: number }</text>
+  <text x="160" y="1695" class="code-text">  tier2: { locked: 390, count: 12 }  // Konstant</text>
+  <text x="160" y="1710" class="code-text">  tier3: { total: number, remaining: number, percentage: number }</text>
+  <text x="160" y="1725" class="code-text">  status: 'good' | 'warning' | 'critical' | 'over_budget'</text>
+  <text x="140" y="1740" class="code-text">}</text>
+
+  <text x="120" y="1770" class="body-text" font-weight="600">API Endpoints:</text>
+  <text x="140" y="1790" class="code-text">GET /api/budget/current → Returns current BudgetState</text>
+  <text x="140" y="1805" class="code-text">POST /api/wbs/:id/commit → Updates commitment, recalculates budget</text>
+  <text x="140" y="1820" class="code-text">DELETE /api/wbs/:id/uncommit → Removes commitment, recalculates budget</text>
+  <text x="140" y="1835" class="code-text">POST /api/validate-plan → Validates entire plan (budget + time)</text>
+</svg>

@@ -1,0 +1,217 @@
+<svg viewBox="0 0 1600 1700" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 700; fill: #111827; }
+      .subtitle { font-family: 'Inter', sans-serif; font-size: 14px; fill: #6B7280; }
+      .heading { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; fill: #111827; }
+      .body-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #374151; }
+      .small-text { font-family: 'Inter', sans-serif; font-size: 11px; fill: #6B7280; }
+      .commit-box { fill: #D1FAE5; stroke: #10B981; stroke-width: 2; }
+      .uncommit-box { fill: #FEE2E2; stroke: #EF4444; stroke-width: 2; }
+      .modal-box { fill: #FFFFFF; stroke: #3B82F6; stroke-width: 3; }
+      .state-box { fill: #F3F4F6; stroke: #6B7280; stroke-width: 2; }
+      .process-box { fill: #EFF6FF; stroke: #3B82F6; stroke-width: 2; }
+      .code-text { font-family: 'Courier New', monospace; font-size: 11px; fill: #1F2937; }
+      .arrow { stroke: #6B7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .arrow-yes { stroke: #10B981; stroke-width: 2; fill: none; marker-end: url(#arrowhead-yes); }
+      .arrow-no { stroke: #EF4444; stroke-width: 2; fill: none; marker-end: url(#arrowhead-no); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
+    </marker>
+    <marker id="arrowhead-yes" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#10B981" />
+    </marker>
+    <marker id="arrowhead-no" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#EF4444" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="800" y="40" class="title" text-anchor="middle">Commitment &amp; Uncommitment Flyt</text>
+  <text x="800" y="65" class="subtitle" text-anchor="middle">Eksplisitt Accept/Reject med Statusoppdatering</text>
+
+  <!-- WBS State Diagram -->
+  <rect x="50" y="100" width="1500" height="140" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="2"/>
+  <text x="800" y="130" class="heading" text-anchor="middle">📊 WBS PAKKE STATUSER</text>
+
+  <rect x="100" y="150" width="200" height="60" rx="6" class="state-box"/>
+  <text x="200" y="175" class="heading" text-anchor="middle" fill="#6B7280">⚪ VENTER</text>
+  <text x="200" y="195" class="small-text" text-anchor="middle">Ikke forhandlet</text>
+
+  <path d="M 300 180 L 400 180" class="arrow"/>
+
+  <rect x="400" y="150" width="220" height="60" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="510" y="175" class="heading" text-anchor="middle" fill="#F59E0B">💬 FORHANDLER</text>
+  <text x="510" y="195" class="small-text" text-anchor="middle">Chat aktiv</text>
+
+  <path d="M 620 180 L 720 180" class="arrow-yes"/>
+
+  <rect x="720" y="150" width="200" height="60" rx="6" class="commit-box"/>
+  <text x="820" y="175" class="heading" text-anchor="middle" fill="#10B981">✅ GODKJENT</text>
+  <text x="820" y="195" class="small-text" text-anchor="middle">Commitet</text>
+
+  <path d="M 920 180 L 1000 180" class="arrow-no"/>
+  <text x="960" y="170" class="small-text" text-anchor="middle" fill="#EF4444">Uncommit</text>
+
+  <rect x="1000" y="150" width="220" height="60" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="1110" y="175" class="heading" text-anchor="middle" fill="#F59E0B">♻️ REFORHANDLER</text>
+  <text x="1110" y="195" class="small-text" text-anchor="middle">Uncommited, chat aktiv</text>
+
+  <path d="M 1220 180 L 1320 180" class="arrow"/>
+
+  <rect x="1320" y="150" width="200" height="60" rx="6" class="commit-box"/>
+  <text x="1420" y="175" class="heading" text-anchor="middle" fill="#10B981">✅ RE-GODKJENT</text>
+  <text x="1420" y="195" class="small-text" text-anchor="middle">Ny commitment</text>
+
+  <!-- COMMITMENT FLOW -->
+  <text x="400" y="290" class="heading" text-anchor="middle" fill="#10B981">✅ COMMITMENT FLYT (Godta Tilbud)</text>
+
+  <rect x="100" y="310" width="600" height="680" rx="8" class="commit-box"/>
+
+  <!-- Step 1: AI presents offer -->
+  <rect x="150" y="340" width="500" height="70" rx="6" class="process-box"/>
+  <text x="400" y="365" class="heading" text-anchor="middle">1. AI Agent Presenterer Tilbud</text>
+  <text x="400" y="385" class="body-text" text-anchor="middle">Chat: "55 MNOK for 2.5 måneder, standard kvalitet"</text>
+  <text x="400" y="400" class="small-text" text-anchor="middle">Bruker ser "✓ Godta tilbud" og "✗ Avslå" knapper</text>
+
+  <path d="M 400 410 L 400 440" class="arrow"/>
+
+  <!-- Step 2: User clicks Accept -->
+  <rect x="150" y="440" width="500" height="60" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="400" y="465" class="heading" text-anchor="middle">2. Bruker Klikker "✓ Godta tilbud"</text>
+  <text x="400" y="485" class="code-text" text-anchor="middle">onClick={() => handleCommit(offer)}</text>
+
+  <path d="M 400 500 L 400 535" class="arrow"/>
+
+  <!-- Step 3: Show Confirmation Modal -->
+  <rect x="150" y="535" width="500" height="120" rx="6" class="modal-box"/>
+  <text x="400" y="560" class="heading" text-anchor="middle" fill="#3B82F6">3. Vis Bekreftelsesmodal</text>
+  <text x="170" y="585" class="body-text">Tittel: "Bekreft Commitment"</text>
+  <text x="170" y="605" class="body-text">Innhold: WBS 1.3.2 Fundamentering</text>
+  <text x="170" y="620" class="body-text">Kostnad: 55 MNOK | Varighet: 2.5 mnd</text>
+  <text x="170" y="635" class="body-text">Budsjett etter: 445/700 MNOK (✅ Innenfor)</text>
+  <text x="170" y="650" class="small-text">Knapper: "Bekreft" | "Avbryt"</text>
+
+  <path d="M 400 655 L 400 690" class="arrow-yes"/>
+  <text x="420" y="675" class="small-text" fill="#10B981">Bekreft</text>
+
+  <!-- Step 4: Update State -->
+  <rect x="150" y="690" width="500" height="90" rx="6" class="process-box"/>
+  <text x="400" y="715" class="heading" text-anchor="middle">4. Oppdater Tilstand</text>
+  <text x="170" y="735" class="code-text">wbsItems[id].status = 'committed'</text>
+  <text x="170" y="750" class="code-text">wbsItems[id].committed_cost = 55</text>
+  <text x="170" y="765" class="code-text">wbsItems[id].committed_duration = 2.5</text>
+
+  <path d="M 400 780 L 400 815" class="arrow"/>
+
+  <!-- Step 5: Recalculate Budget -->
+  <rect x="150" y="815" width="500" height="70" rx="6" class="process-box"/>
+  <text x="400" y="840" class="heading" text-anchor="middle">5. Beregn Budsjett På Nytt</text>
+  <text x="170" y="860" class="code-text">budget.tier1_used += 55</text>
+  <text x="170" y="875" class="code-text">budget.tier3_total = 390 + tier1_used</text>
+
+  <path d="M 400 885 L 400 920" class="arrow"/>
+
+  <!-- Step 6: Update UI + Backend -->
+  <rect x="150" y="920" width="500" height="60" rx="6" class="commit-box"/>
+  <text x="400" y="945" class="heading" text-anchor="middle" fill="#10B981">6. Oppdater UI og Lagre</text>
+  <text x="170" y="965" class="code-text">UI: Dashboard oppdateres med nye tall</text>
+  <text x="170" y="980" class="code-text">Backend: POST /api/wbs/1.3.2/commit</text>
+
+  <!-- UNCOMMITMENT FLOW -->
+  <text x="1200" y="290" class="heading" text-anchor="middle" fill="#EF4444">❌ UNCOMMITMENT FLYT (Angre/Reforhandle)</text>
+
+  <rect x="900" y="310" width="600" height="680" rx="8" class="uncommit-box"/>
+
+  <!-- Step 1: User sees committed item -->
+  <rect x="950" y="340" width="500" height="70" rx="6" class="process-box"/>
+  <text x="1200" y="365" class="heading" text-anchor="middle">1. Bruker Ser Godkjent Pakke</text>
+  <text x="1200" y="385" class="body-text" text-anchor="middle">Dashboard: WBS 1.3.2 - Status: ✅ Godkjent (55 MNOK)</text>
+  <text x="1200" y="400" class="small-text" text-anchor="middle">Knapp: "♻️ Reforhandle"</text>
+
+  <path d="M 1200 410 L 1200 440" class="arrow"/>
+
+  <!-- Step 2: User clicks Uncommit -->
+  <rect x="950" y="440" width="500" height="60" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="1200" y="465" class="heading" text-anchor="middle">2. Bruker Klikker "♻️ Reforhandle"</text>
+  <text x="1200" y="485" class="code-text" text-anchor="middle">onClick={() => handleUncommit(wbs_id)}</text>
+
+  <path d="M 1200 500 L 1200 535" class="arrow"/>
+
+  <!-- Step 3: Show Warning Modal -->
+  <rect x="950" y="535" width="500" height="140" rx="6" class="modal-box"/>
+  <text x="1200" y="560" class="heading" text-anchor="middle" fill="#EF4444">3. Vis Advarselsmodal</text>
+  <text x="970" y="585" class="body-text">Tittel: "⚠️ Bekreft Uncommitment"</text>
+  <text x="970" y="605" class="body-text">Innhold: "Dette vil fjerne WBS 1.3.2 fra planen."</text>
+  <text x="970" y="620" class="body-text">Budsjett frigjøres: 55 MNOK</text>
+  <text x="970" y="635" class="body-text">Nytt totalt budsjett: 390/700 MNOK</text>
+  <text x="970" y="650" class="body-text">Du må forhandle på nytt for denne pakken.</text>
+  <text x="970" y="670" class="small-text">Knapper: "Ja, fjern commitment" | "Avbryt"</text>
+
+  <path d="M 1200 675 L 1200 710" class="arrow-yes"/>
+  <text x="1220" y="695" class="small-text" fill="#10B981">Bekreft</text>
+
+  <!-- Step 4: Update State to Negotiating -->
+  <rect x="950" y="710" width="500" height="90" rx="6" class="process-box"/>
+  <text x="1200" y="735" class="heading" text-anchor="middle">4. Oppdater til REFORHANDLER Status</text>
+  <text x="970" y="755" class="code-text">wbsItems[id].status = 'negotiating'</text>
+  <text x="970" y="770" class="code-text">wbsItems[id].committed_cost = null</text>
+  <text x="970" y="785" class="code-text">wbsItems[id].committed_duration = null</text>
+
+  <path d="M 1200 795 L 1200 830" class="arrow"/>
+
+  <!-- Step 5: Recalculate Budget (reduce) -->
+  <rect x="950" y="830" width="500" height="70" rx="6" class="process-box"/>
+  <text x="1200" y="855" class="heading" text-anchor="middle">5. Beregn Budsjett På Nytt</text>
+  <text x="970" y="875" class="code-text">budget.tier1_used -= 55</text>
+  <text x="970" y="890" class="code-text">budget.tier3_total = 390 + tier1_used</text>
+
+  <path d="M 1200 900 L 1200 935" class="arrow"/>
+
+  <!-- Step 6: Update UI + Backend -->
+  <rect x="950" y="935" width="500" height="55" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="1200" y="960" class="heading" text-anchor="middle" fill="#F59E0B">6. Oppdater UI og Lagre</text>
+  <text x="970" y="980" class="code-text">UI: Status → ♻️ Reforhandler, åpne chat</text>
+
+  <!-- Data Model -->
+  <rect x="50" y="1030" width="1500" height="340" rx="8" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="800" y="1065" class="heading" text-anchor="middle">💾 DATAMODELL &amp; API</text>
+
+  <text x="70" y="1100" class="body-text" font-weight="600">WBS Item State:</text>
+  <text x="90" y="1120" class="code-text">interface WBSItem {</text>
+  <text x="110" y="1135" class="code-text">  id: string  // "1.3.2"</text>
+  <text x="110" y="1150" class="code-text">  name: string  // "Fundamentering"</text>
+  <text x="110" y="1165" class="code-text">  baseline_cost: number  // 60 MNOK</text>
+  <text x="110" y="1180" class="code-text">  baseline_duration: number  // 45 days</text>
+  <text x="110" y="1195" class="code-text">  status: 'pending' | 'negotiating' | 'committed'</text>
+  <text x="110" y="1210" class="code-text">  committed_cost?: number  // 55 MNOK (null if not committed)</text>
+  <text x="110" y="1225" class="code-text">  committed_duration?: number  // 2.5 months (null if not committed)</text>
+  <text x="110" y="1240" class="code-text">  agent_id: string  // "supplier-2-kari"</text>
+  <text x="110" y="1255" class="code-text">  negotiation_history: Message[]  // Chat logs</text>
+  <text x="90" y="1270" class="code-text">}</text>
+
+  <text x="70" y="1300" class="body-text" font-weight="600">API Endpoints:</text>
+  <text x="90" y="1320" class="code-text">POST /api/wbs/:id/commit</text>
+  <text x="110" y="1335" class="code-text">Request: { cost: 55, duration: 2.5, quality: "standard" }</text>
+  <text x="110" y="1350" class="code-text">Response: { success: true, new_budget_state: {...} }</text>
+
+  <text x="600" y="1320" class="code-text">DELETE /api/wbs/:id/uncommit</text>
+  <text x="620" y="1335" class="code-text">Response: { success: true, freed_budget: 55 }</text>
+
+  <!-- Footer: Important Rules -->
+  <rect x="50" y="1410" width="1500" height="240" rx="8" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+  <text x="800" y="1445" class="heading" text-anchor="middle">⚠️ VIKTIGE REGLER</text>
+
+  <text x="70" y="1480" class="body-text" font-weight="600">1. EKSPLISITT VALG:</text>
+  <text x="90" y="1500" class="body-text">• Bruker MÅ eksplisitt klikke "✓ Godta tilbud" - ingen automatisk commitment</text>
+  <text x="90" y="1520" class="body-text">• Modal med bekreftelse vises ALLTID før commitment</text>
+
+  <text x="70" y="1550" class="body-text" font-weight="600">2. UNCOMMITMENT TILLATT:</text>
+  <text x="90" y="1570" class="body-text">• Bruker kan ALLTID uncommit en godkjent pakke for å reforhandle</text>
+  <text x="90" y="1590" class="body-text">• Budsjett frigjøres umiddelbart ved uncommit</text>
+  <text x="90" y="1610" class="body-text">• Chat gjenåpnes automatisk for reforhandling</text>
+
+  <text x="70" y="1640" class="body-text" font-weight="600">3. BUDSJETTOPPDATERING:</text>
+  <text x="90" y="1660" class="body-text">• Echtids oppdatering av progressbarer og budsjettvisning</text>
+</svg>

@@ -1,0 +1,207 @@
+<svg viewBox="0 0 1600 1900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 700; fill: #111827; }
+      .subtitle { font-family: 'Inter', sans-serif; font-size: 14px; fill: #6B7280; }
+      .heading { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; fill: #111827; }
+      .body-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #374151; }
+      .small-text { font-family: 'Inter', sans-serif; font-size: 11px; fill: #6B7280; }
+      .error-box { fill: #FEE2E2; stroke: #EF4444; stroke-width: 2; }
+      .warning-box { fill: #FEF3C7; stroke: #F59E0B; stroke-width: 2; }
+      .success-box { fill: #D1FAE5; stroke: #10B981; stroke-width: 2; }
+      .info-box { fill: #DBEAFE; stroke: #3B82F6; stroke-width: 2; }
+      .modal-box { fill: #FFFFFF; stroke: #EF4444; stroke-width: 3; }
+      .code-text { font-family: 'Courier New', monospace; font-size: 10px; fill: #1F2937; }
+      .arrow { stroke: #6B7280; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6B7280" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="800" y="40" class="title" text-anchor="middle">Feilhåndtering og Brukermeldinger</text>
+  <text x="800" y="65" class="subtitle" text-anchor="middle">Komplett Oversikt over Feiltyper og Responser</text>
+
+  <!-- Error Categories -->
+  <rect x="50" y="100" width="1500" height="140" rx="8" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="2"/>
+  <text x="800" y="130" class="heading" text-anchor="middle">⚠️ FEILKATEGORIER</text>
+
+  <rect x="100" y="150" width="320" height="70" rx="6" class="error-box"/>
+  <text x="260" y="175" class="heading" text-anchor="middle" fill="#EF4444">🚫 KRITISKE FEIL</text>
+  <text x="120" y="195" class="small-text">Blokkerer fortsettelse</text>
+  <text x="120" y="210" class="small-text">Krever brukerhandling</text>
+
+  <rect x="460" y="150" width="320" height="70" rx="6" class="warning-box"/>
+  <text x="620" y="175" class="heading" text-anchor="middle" fill="#F59E0B">⚠️ ADVARSLER</text>
+  <text x="480" y="195" class="small-text">Tillater fortsettelse</text>
+  <text x="480" y="210" class="small-text">Viser varsel til bruker</text>
+
+  <rect x="820" y="150" width="320" height="70" rx="6" class="info-box"/>
+  <text x="980" y="175" class="heading" text-anchor="middle" fill="#3B82F6">ℹ️ INFORMASJON</text>
+  <text x="840" y="195" class="small-text">Kun informativ</text>
+  <text x="840" y="210" class="small-text">Ingen handling nødvendig</text>
+
+  <rect x="1180" y="150" width="320" height="70" rx="6" class="success-box"/>
+  <text x="1340" y="175" class="heading" text-anchor="middle" fill="#10B981">✅ SUKSESS</text>
+  <text x="1200" y="195" class="small-text">Operasjon vellykket</text>
+  <text x="1200" y="210" class="small-text">Positiv tilbakemelding</text>
+
+  <!-- Error Types -->
+  <text x="800" y="280" class="heading" text-anchor="middle">🚨 FEILTYPER OG HÅNDTERING</text>
+
+  <!-- Budget Errors -->
+  <rect x="50" y="300" width="750" height="380" rx="8" class="error-box"/>
+  <text x="425" y="335" class="heading" text-anchor="middle" fill="#EF4444">1. BUDSJETFEIL</text>
+
+  <text x="70" y="365" class="body-text" font-weight="600">OVER_BUDGET (Kritisk):</text>
+  <text x="90" y="385" class="code-text">Error Code: "OVER_BUDGET"</text>
+  <text x="90" y="400" class="code-text">Trigger: (tier2_locked + tier1_used) > 700 MNOK</text>
+  <text x="90" y="415" class="code-text">Example: 390 + 345 = 735 MNOK (35 MNOK over)</text>
+
+  <text x="90" y="440" class="body-text">Brukermelding:</text>
+  <text x="110" y="460" class="body-text" fill="#EF4444">"⚠️ Prosjektet overskrider budsjettet"</text>
+  <text x="110" y="480" class="body-text">"Total: 735 MNOK / Maksimalt: 700 MNOK"</text>
+  <text x="110" y="500" class="body-text">"Overskridelse: 35 MNOK"</text>
+  <text x="110" y="520" class="body-text"></text>
+  <text x="110" y="540" class="body-text">"Du må reforhandle for å redusere kostnadene:"</text>
+  <text x="110" y="560" class="body-text">• Forhandle med leverandører om lavere pris</text>
+  <text x="110" y="580" class="body-text">• Ta kontakt med Eier for budsjettøkning</text>
+  <text x="110" y="600" class="body-text">• Redusere scope på pakker</text>
+
+  <text x="70" y="630" class="body-text" font-weight="600">Handlinger:</text>
+  <text x="90" y="650" class="code-text">- Blokkerer "Valider Plan" knapp</text>
+  <text x="90" y="665" class="code-text">- Vis rød feilmodal med handlingsforslag</text>
+
+  <!-- Time Errors -->
+  <rect x="850" y="300" width="700" height="380" rx="8" class="error-box"/>
+  <text x="1200" y="335" class="heading" text-anchor="middle" fill="#EF4444">2. TIDSFRISTFEIL</text>
+
+  <text x="870" y="365" class="body-text" font-weight="600">PAST_DEADLINE (Kritisk):</text>
+  <text x="890" y="385" class="code-text">Error Code: "PAST_DEADLINE"</text>
+  <text x="890" y="400" class="code-text">Trigger: project_end > "2026-05-15"</text>
+  <text x="890" y="415" class="code-text">Example: Estimated end = 2026-05-25 (10 days late)</text>
+
+  <text x="890" y="440" class="body-text">Brukermelding:</text>
+  <text x="910" y="460" class="body-text" fill="#EF4444">"⚠️ Prosjektet vil bli forsinket"</text>
+  <text x="910" y="480" class="body-text">"Forventet ferdig: 25. mai 2026"</text>
+  <text x="910" y="500" class="body-text">"Frist: 15. mai 2026"</text>
+  <text x="910" y="520" class="body-text">"Forsinkelse: 10 dager"</text>
+  <text x="910" y="540" class="body-text"></text>
+  <text x="910" y="560" class="body-text">"VIKTIG: Tidsfristen kan IKKE forlenges."</text>
+  <text x="910" y="580" class="body-text">"Du må reforhandle for raskere levering:"</text>
+  <text x="910" y="600" class="body-text">• Forhandle med leverandører om kortere tid</text>
+  <text x="910" y="620" class="body-text">• Parallellisere oppgaver der mulig</text>
+  <text x="910" y="640" class="body-text">• Overtid/ekstra ressurser (koster mer)</text>
+
+  <text x="870" y="670" class="body-text" font-weight="600">Handlinger:</text>
+
+  <!-- Validation Errors -->
+  <rect x="50" y="720" width="750" height="340" rx="8" class="warning-box"/>
+  <text x="425" y="755" class="heading" text-anchor="middle" fill="#F59E0B">3. VALIDERINGSFEIL</text>
+
+  <text x="70" y="785" class="body-text" font-weight="600">INCOMPLETE_PLAN (Advarsel):</text>
+  <text x="90" y="805" class="code-text">Warning Code: "INCOMPLETE_PLAN"</text>
+  <text x="90" y="820" class="code-text">Trigger: Any WBS item status === "pending"</text>
+  <text x="90" y="835" class="code-text">Example: WBS 1.4.1 status = "pending" (not negotiated)</text>
+
+  <text x="90" y="860" class="body-text">Brukermelding:</text>
+  <text x="110" y="880" class="body-text" fill="#F59E0B">"⚠️ Planen er ikke fullstendig"</text>
+  <text x="110" y="900" class="body-text">"Du har 1 pakke som ikke er forhandlet:"</text>
+  <text x="110" y="920" class="body-text">• WBS 1.4.1 Råbygg (Status: Venter)"</text>
+  <text x="110" y="940" class="body-text"></text>
+  <text x="110" y="960" class="body-text">"Du kan lagre planen som utkast eller fortsette</text>
+  <text x="110" y="980" class="body-text">forhandlingen."</text>
+
+  <text x="70" y="1010" class="body-text" font-weight="600">Handlinger:</text>
+  <text x="90" y="1030" class="code-text">- Tillater fortsettelse (ikke blokkerende)</text>
+  <text x="90" y="1045" class="code-text">- Vis gul advarselsmodal</text>
+
+  <!-- Network/API Errors -->
+  <rect x="850" y="720" width="700" height="340" rx="8" class="error-box"/>
+  <text x="1200" y="755" class="heading" text-anchor="middle" fill="#EF4444">4. NETTVERK/API FEIL</text>
+
+  <text x="870" y="785" class="body-text" font-weight="600">NETWORK_ERROR:</text>
+  <text x="890" y="805" class="code-text">Error Code: "NETWORK_ERROR"</text>
+  <text x="890" y="820" class="code-text">Trigger: fetch() fails, timeout, 500 error</text>
+
+  <text x="890" y="845" class="body-text">Brukermelding:</text>
+  <text x="910" y="865" class="body-text" fill="#EF4444">"⚠️ Tilkoblingsfeil"</text>
+  <text x="910" y="885" class="body-text">"Kunne ikke koble til serveren."</text>
+  <text x="910" y="905" class="body-text">"Sjekk internettforbindelsen din og prøv igjen."</text>
+
+  <text x="870" y="935" class="body-text" font-weight="600">AI_AGENT_ERROR:</text>
+  <text x="890" y="955" class="code-text">Error Code: "AI_AGENT_ERROR"</text>
+  <text x="890" y="970" class="code-text">Trigger: Google Gemini API fails or returns invalid response</text>
+
+  <text x="890" y="995" class="body-text">Brukermelding:</text>
+  <text x="910" y="1015" class="body-text" fill="#EF4444">"⚠️ AI-agent feil"</text>
+  <text x="910" y="1035" class="body-text">"AI-agenten svarer ikke. Vennligst prøv igjen."</text>
+
+  <!-- Error Modal Design -->
+  <rect x="50" y="1100" width="1500" height="420" rx="8" class="modal-box"/>
+  <text x="800" y="1135" class="heading" text-anchor="middle" fill="#EF4444">🖼️ FEILMODAL DESIGN</text>
+
+  <text x="70" y="1170" class="body-text" font-weight="600">Modal Struktur (Eksempel: OVER_BUDGET):</text>
+
+  <rect x="100" y="1190" width="600" height="300" rx="8" fill="#FEE2E2" stroke="#EF4444" stroke-width="2"/>
+
+  <!-- Modal Header -->
+  <rect x="100" y="1190" width="600" height="60" rx="8" fill="#DC2626"/>
+  <text x="400" y="1225" class="heading" text-anchor="middle" fill="#FFFFFF">⚠️ Budsjettoverskridelse</text>
+
+  <!-- Modal Body -->
+  <text x="120" y="1280" class="body-text" font-weight="600">Problem:</text>
+  <text x="140" y="1300" class="body-text">Prosjektet overskrider det totale budsjettet med 35 MNOK.</text>
+
+  <text x="120" y="1330" class="body-text" font-weight="600">Detaljer:</text>
+  <text x="140" y="1350" class="code-text">Total budsjett brukt: 735 MNOK</text>
+  <text x="140" y="1365" class="code-text">Maksimalt tillatt: 700 MNOK</text>
+  <text x="140" y="1380" class="code-text">Overskridelse: 35 MNOK (5%)</text>
+
+  <text x="120" y="1410" class="body-text" font-weight="600">Foreslåtte handlinger:</text>
+  <text x="140" y="1430" class="body-text">• Reforhandle med leverandører for lavere pris</text>
+  <text x="140" y="1450" class="body-text">• Ta kontakt med Eier (Kommune) for budsjettøkning</text>
+  <text x="140" y="1470" class="body-text">• Redusere scope på enkelte pakker</text>
+
+  <!-- Modal Footer (Buttons) -->
+  <rect x="400" y="1190" width="600" height="300" rx="8" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="700" y="1225" class="heading" text-anchor="middle">Modal Knapper</text>
+
+  <rect x="440" y="1250" width="240" height="50" rx="6" fill="#3B82F6"/>
+  <text x="560" y="1280" class="heading" text-anchor="middle" fill="#FFFFFF">Til Dashboard</text>
+
+  <rect x="720" y="1250" width="240" height="50" rx="6" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="2"/>
+  <text x="840" y="1280" class="heading" text-anchor="middle" fill="#374151">Se Detaljer</text>
+
+  <text x="420" y="1340" class="body-text" font-weight="600">Alternative Knapper (kontekstavhengig):</text>
+
+  <rect x="440" y="1360" width="240" height="45" rx="6" fill="#10B981"/>
+  <text x="560" y="1390" class="body-text" text-anchor="middle" fill="#FFFFFF">Reforhandle Pakker</text>
+
+  <rect x="720" y="1360" width="240" height="45" rx="6" fill="#F59E0B"/>
+  <text x="840" y="1390" class="body-text" text-anchor="middle" fill="#FFFFFF">Kontakt Eier</text>
+
+  <rect x="440" y="1420" width="240" height="45" rx="6" fill="#6B7280"/>
+  <text x="560" y="1450" class="body-text" text-anchor="middle" fill="#FFFFFF">Lukk</text>
+
+  <!-- Implementation Guide -->
+  <rect x="50" y="1560" width="1500" height="300" rx="8" fill="#E0E7FF" stroke="#6366F1" stroke-width="2"/>
+  <text x="800" y="1595" class="heading" text-anchor="middle">💻 IMPLEMENTERING</text>
+
+  <text x="70" y="1630" class="body-text" font-weight="600">Error Handling Function:</text>
+  <text x="90" y="1650" class="code-text">function handleError(error: AppError) {</text>
+  <text x="110" y="1665" class="code-text">  switch (error.code) {</text>
+  <text x="130" y="1680" class="code-text">    case "OVER_BUDGET":</text>
+  <text x="150" y="1695" class="code-text">      showModal({</text>
+  <text x="170" y="1710" class="code-text">        type: "error",</text>
+  <text x="170" y="1725" class="code-text">        title: "Budsjettoverskridelse",</text>
+  <text x="170" y="1740" class="code-text">        message: `Total: ${error.total} / Max: 700 MNOK`,</text>
+  <text x="170" y="1755" class="code-text">        actions: [</text>
+  <text x="190" y="1770" class="code-text">          { label: "Til Dashboard", onClick: () => navigate("/dashboard") },</text>
+  <text x="190" y="1785" class="code-text">          { label: "Reforhandle", onClick: () => openNegotiation() }</text>
+  <text x="170" y="1800" class="code-text">        ]</text>
+  <text x="150" y="1815" class="code-text">      })</text>
+  <text x="150" y="1830" class="code-text">      break</text>
+  <text x="130" y="1845" class="code-text">    // ... other cases</text>
+</svg>
