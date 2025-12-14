@@ -114,7 +114,7 @@ Powered by Gemini 2.5, each with **distinct negotiation capabilities:**
 
 ## 4. POC Scope (3-4 Weeks)
 
-### Must-Have Features (16 items)
+### Must-Have Features (19 items)
 1. User authentication (Supabase JWT)
 2. View project constraints (310 MNOK available, 700 MNOK total, May 15 deadline)
 3. **View WBS list (15 total: 3 negotiable + 12 locked)**
@@ -136,6 +136,9 @@ Powered by Gemini 2.5, each with **distinct negotiation capabilities:**
 14. **Validation feedback** (3 negotiable + 12 locked ≤700 MNOK, deadline ≤May 15)
 15. Success modal with session stats
 16. **Export session** (JSON download with full history, chat logs)
+17. **Gantt Chart View** - Interactive timeline visualization showing 3 negotiable (blue) + 12 locked (gray) items with critical path
+18. **Precedence Diagram View** - Network diagram (AON) showing dependencies and critical path (3 of 5 critical items negotiable)
+19. **History/Timeline View** - Version comparison and plan evolution tracking with before/after Gantt comparisons
 
 ### Out of Scope (Post-POC)
 - ❌ Negotiating all 15 WBS packages (POC: only 3 negotiable)

@@ -226,9 +226,87 @@ This document provides a revised, actionable implementation plan to build the Ny
 *   Fix any bugs found during testing.
 
 ---
-### Wednesday-Thursday, December 17-18 (Days 6-7): Buffer & Deployment
 
-**Goal:** Deploy the application and prepare for handoff.
-*   These days are reserved for bug fixing, addressing feedback, and documentation.
-*   Prepare deployment on Vercel (which is straightforward for Next.js apps).
-*   Clean up code and add comments where necessary.
+### Wednesday, December 17 (Day 6): Visualization Features - Epic 10
+
+**Goal:** Implement Gantt Chart, Precedence Diagram, and History/Timeline views.
+
+#### Task 6.1: Gantt Chart View (E10.1) (4 hours)
+1. **Create Gantt Component:** Create `frontend/components/visualization/gantt-chart.tsx`.
+   *   Install charting library (e.g., Recharts or react-gantt-timeline).
+   *   Read session data from Zustand store (15 WBS items: 3 negotiable + 12 locked).
+   *   Render task bars:
+       - Blue bars for 3 negotiable items (interactive)
+       - Gray bars for 12 locked items (read-only)
+       - Red 3px border for critical path tasks
+   *   Timeline header: January 2025 - May 2026.
+   *   "Idag" marker: Vertical red dashed line.
+   *   Zoom slider (50%-200%) and view mode dropdown (Dag/Uke/Måned).
+2. **Add Critical Path Highlighting:**
+   *   Calculate critical path using longest path algorithm.
+   *   Highlight critical tasks with red border.
+3. **Export to PNG:**
+   *   Use html2canvas to export current Gantt view as PNG.
+
+#### Task 6.2: Precedence Diagram View (E10.2) (3 hours)
+1. **Create Precedence Component:** Create `frontend/components/visualization/precedence-diagram.tsx`.
+   *   Install network diagram library (e.g., react-flow or Cytoscape.js).
+   *   Read WBS dependencies from static data + session commitments.
+   *   Render nodes (rectangles) showing WBS code, name, duration, cost.
+   *   Draw dependency arrows connecting nodes.
+   *   Highlight critical path (red borders, red arrows).
+2. **Add Interaction:**
+   *   Hover on node → Highlight incoming/outgoing arrows.
+   *   Click on node → Modal with WBS details.
+3. **Layout Controls:**
+   *   Layout dropdown: "Venstre→Høyre" / "Topp→Bunn".
+   *   Pan/zoom controls.
+
+#### Task 6.3: History/Timeline View (E10.3) (3 hours)
+1. **Create History Component:** Create `frontend/components/visualization/history-timeline.tsx`.
+   *   Implement overlay panel (slides in from right).
+   *   Left sidebar: Event timeline (chronological list of commits/removals/negotiations).
+   *   Right panel: Before/after comparison with side-by-side mini Gantt charts.
+2. **Version Storage:**
+   *   Create `session_snapshots` table in Supabase (or use `plan_history` in JSON format).
+   *   Store up to 50 versions per session.
+   *   Each snapshot includes: current_plan, metrics, timestamp, action.
+3. **Comparison Features:**
+   *   Show budget change, timeline change, cascade effects.
+   *   Navigation: "← Forrige versjon", "Neste versjon →", "Sammenlign med nåværende".
+4. **Export History:**
+   *   Download version history as JSON.
+
+---
+
+### Thursday, December 18 (Day 7): Integration, Testing & Deployment
+
+**Goal:** Integrate all Epic 10 features, test thoroughly, and deploy.
+
+#### Task 7.1: Navigation Integration (2 hours)
+1. **Add Navigation Tabs:**
+   *   Update main navigation to include:
+       - 📊 Dashbord
+       - 📈 Gantt-diagram
+       - 🔀 Presedensdiagram
+       - 🕒 Historikk (button in header)
+2. **State Persistence:**
+   *   Save current view tab in localStorage or URL params.
+   *   Restore view on page reload.
+3. **Real-time Sync:**
+   *   When commitment made on Dashboard → Update Gantt/Precedence in real-time (via database subscription or polling).
+
+#### Task 7.2: End-to-End Testing with Visualization (3 hours)
+*   Manually run through entire simulation loop including all visualization views:
+    - Register → Login → Dashboard → Negotiate → Commit → **View Gantt** → **View Precedence** → **View History** → Submit → Validate → Export.
+    - ✅ Verify Gantt shows 3 blue (negotiable) + 12 gray (locked) bars.
+    - ✅ Verify critical path highlighted in red in both Gantt and Precedence.
+    - ✅ Verify History shows before/after comparison when commitment made.
+    - ✅ Test zoom, filters, layout modes in all visualization views.
+    - ✅ Test export to PNG for Gantt and Precedence.
+*   Fix any bugs found during testing.
+
+#### Task 7.3: Deployment & Documentation (3 hours)
+*   Deploy to Vercel.
+*   Clean up code and add comments.
+*   Update README.md with Epic 10 features documentation.

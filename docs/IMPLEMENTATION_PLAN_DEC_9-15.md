@@ -43,10 +43,10 @@ This document provides a day-by-day implementation plan to complete the Nye Hæd
 - ❌ Supabase Authentication
 - ❌ Gemini AI Integration (4 agents: Owner + 3 suppliers)
 - ❌ Dashboard UI (310/390/700 budget display, 3 negotiable + 12 locked WBS)
-- ❌ localStorage session management
+- ❌ Database session management (Supabase PostgreSQL)
 - ❌ Commitment/renegotiation flow with explicit accept/reject buttons
 - ❌ Plan validation logic (3 negotiable + 12 locked ≤700 MNOK total)
-- ❌ Visualization features (Gantt, Precedence, History)
+- ❌ **Visualization features (Gantt Chart, Precedence Diagram, History/Timeline) - MUST-HAVE**
 - ❌ Static data files (wbs.json, agents.json with negotiable/locked flags)
 
 **Estimated Work Remaining:** 125 story points (POC scope: v2.0) → **Compressed to 7 days**
@@ -59,19 +59,21 @@ This document provides a day-by-day implementation plan to complete the Nye Hæd
 1. Supabase Authentication (E1)
 2. Dashboard with budget tracking (E2)
 3. WBS list and selection (E3)
-4. AI Negotiation with Gemini (E4) - **SIMPLIFIED PROMPTS**
+4. AI Negotiation with Gemini (E4)
 5. Commitment flow (E5)
 6. Basic plan validation (E6)
 7. Export session (E7)
 8. Infrastructure (E9)
+9. **Gantt Chart View (E10.1) - MUST-HAVE** - Interactive timeline with 3 negotiable (blue) + 12 locked (gray)
+10. **Precedence Diagram (E10.2) - MUST-HAVE** - Network diagram showing dependencies and critical path
+11. **History/Timeline View (E10.3) - MUST-HAVE** - Version comparison and plan evolution
 
 **⚠️ DEFER TO POST-MVP (December 16+):**
-- Gantt Chart (E10.1) - 8 story points
-- Precedence Diagram (E10.2) - 8 story points
-- History/Timeline (E10.3) - 8 story points
 - Advanced help/onboarding (E8.2)
+- Multi-user collaboration
+- Mobile app version
 
-**Justification:** Visualization features (Epic 10) are valuable but not core to the learning objectives. Students can complete the simulation without them. Focus on delivering a **working negotiation experience first**.
+**Note:** Epic 10 (Visualization & Analysis) is now classified as MUST-HAVE per stakeholder requirements. These features are essential for students to understand project planning, critical path analysis, and the impact of their negotiation decisions.
 
 ---
 
@@ -2532,7 +2534,7 @@ SG-Gruppe-14-d2/
 - [ ] Test on mobile (basic check - full responsive not MVP)
 
 **Known Issues to Document:**
-- Visualization features (Gantt, Precedence) not implemented (post-MVP)
+- Visualization features (Gantt, Precedence, History) included as MUST-HAVE
 - Mobile optimization limited (tablet minimum 768px)
 
 ---
@@ -2556,12 +2558,12 @@ SG-Gruppe-14-d2/
 | **LocalStorage Quota Exceeded** | Add storage monitoring, prompt export at 80% | Frontend dev |
 | **Dependency Calculation Bug** | Write unit tests for `commitQuote` function, manual validation | All |
 | **AI Produces Unrealistic Offers** | Test with 50 scenarios, tune prompts, add fallback logic | Backend dev |
-| **Time Overrun (Can't finish by Dec 15)** | **CRITICAL: Defer Epic 10 (Visualization) to post-MVP** | Team decision |
+| **Time Overrun (Can't finish by Dec 15)** | **CRITICAL: Prioritize Epic 10 (Visualization) as it's MUST-HAVE** | Team decision - extend timeline if needed |
 
 ### Contingency Plans
 
 **If Behind Schedule by Wednesday (Day 3):**
-- **Cut:** Gantt Chart, Precedence Diagram, History (Epic 10) → Saves 24 story points
+- **Do NOT Cut:** Gantt Chart, Precedence Diagram, History (Epic 10) → These are MUST-HAVE features
 - **Focus:** Core negotiation loop (Epics 1-7, 9)
 - **Deliver:** Working MVP without visualizations
 
@@ -2609,14 +2611,15 @@ SG-Gruppe-14-d2/
 7. Norwegian language throughout
 8. Deployed to production (Vercel)
 
-⚠️ **Should Have (Defer if Necessary):**
+✅ **MUST HAVE (Cannot Defer):**
 - Gantt Chart visualization
 - Precedence Diagram
+- History/Timeline View
 - History/Timeline view
 - Advanced help/onboarding
 
 **Stretch Goals (December 16+):**
-- Implement deferred Epic 10 features
+- Epic 10 features must be implemented in main timeline (not deferred)
 - Add mobile responsiveness (<768px)
 - Email confirmation for registration
 - Real-time collaboration (multiplayer)
@@ -2723,9 +2726,9 @@ git push origin main           # Push to GitHub
 2. Assign tasks to team members
 3. Start Day 1 (Monday, December 9) with Supabase setup
 4. Daily standups to track progress
-5. Adjust scope if falling behind (defer Epic 10)
+5. Adjust timeline if needed (Epic 10 is MUST-HAVE and cannot be deferred)
 
 **Realistic Assessment:**
-With focused effort (6-8 hours/day), this plan is **achievable** for a core MVP (Epics 1-7, 9) by December 15. Visualization features (Epic 10) should be considered **stretch goals** for December 16+.
+With focused effort (6-8 hours/day), this plan requires implementing ALL epics 1-10 including visualization features. Epic 10 (Gantt, Precedence, History) is classified as **MUST-HAVE** and must be completed as part of the core MVP. Timeline may need to be extended to December 18-20 to accommodate all required features.
 
 **Good luck! Lykke til!** 🚀
