@@ -3,7 +3,9 @@
 **Course:** IBE160 Programmering med KI
 **Group:** SG-Gruppe-14-d2
 **Project Status:** POC Development Phase
-**Last Updated:** 2025-12-11
+<!-- LAST_UPDATED_START -->
+Last Updated: 2025-12-16 00:17:09
+<!-- LAST_UPDATED_END -->
 
 ---
 
@@ -21,6 +23,84 @@ An AI-powered educational simulation teaching project management negotiation ski
 - **Inflexible Deadline:** May 15, 2026 (enforced via Owner AI)
 - **Explicit Accept/Reject:** No automatic offer acceptance
 - **Norwegian Language:** All interactions in Norwegian
+
+---
+
+---
+
+## New Files Added
+
+<!-- NEW_FILES_START -->
+- [AI_AGENT_SYSTEM_PROMPTS.md](docs/AI_AGENT_SYSTEM_PROMPTS.md)
+- [API_DATABASE_INTEGRATION_GUIDE.md](docs/API_DATABASE_INTEGRATION_GUIDE.md)
+- [BUDGET_MODEL_VERIFICATION.md](docs/BUDGET_MODEL_VERIFICATION.md)
+- [CONSISTENCY_AUDIT_REPORT_DEC_12.md](docs/CONSISTENCY_AUDIT_REPORT_DEC_12.md)
+- [DATABASE_FIX_SUMMARY.md](docs/DATABASE_FIX_SUMMARY.md)
+- [DATABASE_INCONSISTENCY_REPORT.md](docs/DATABASE_INCONSISTENCY_REPORT.md)
+- [DOCUMENTATION_UPDATE_SUMMARY_DEC_13.md](docs/DOCUMENTATION_UPDATE_SUMMARY_DEC_13.md)
+- [IMPLEMENTATION_PLAN_DEC_9-15.md](docs/IMPLEMENTATION_PLAN_DEC_9-15.md)
+- [PRD.md](docs/PRD.md)
+- [REPOSITORY_VERIFICATION_COMPLETE.md](docs/REPOSITORY_VERIFICATION_COMPLETE.md)
+- [REVISED_IMPLEMENTATION_PLAN_DEC_12-18.md](docs/REVISED_IMPLEMENTATION_PLAN_DEC_12-18.md)
+- [Refleksjonsrapport Gruppe 14-D2.pdf](docs/Refleksjonsrapport Gruppe 14-D2.pdf)
+- [SCOPE_CHANGE_TASKS.md](docs/SCOPE_CHANGE_TASKS.md)
+- [V2_CONSISTENCY_VERIFICATION.md](docs/V2_CONSISTENCY_VERIFICATION.md)
+- [VISUALIZATION_FEATURES_CONFIRMATION.md](docs/VISUALIZATION_FEATURES_CONFIRMATION.md)
+- [bmm-workflow-status.yaml](docs/bmm-workflow-status.yaml)
+- [brainstorming-executive-summary.md](docs/brainstorming-executive-summary.md)
+- [brainstorming-session-audience-and-core-value-2025-12-07.md](docs/brainstorming-session-audience-and-core-value-2025-12-07.md)
+- [brainstorming-session-core-functionality-and-scope-2025-12-07.md](docs/brainstorming-session-core-functionality-and-scope-2025-12-07.md)
+- [brainstorming-session-results-2025-12-02.md](docs/brainstorming-session-results-2025-12-02.md)
+- [brainstorming-session-results-risk-and-monitoring-2025-12-02.md](docs/brainstorming-session-results-risk-and-monitoring-2025-12-02.md)
+- [brainstorming-session-results-user-interactions-2025-12-02.md](docs/brainstorming-session-results-user-interactions-2025-12-02.md)
+- [brainstorming-technical-architecture-report.md](docs/brainstorming-technical-architecture-report.md)
+- [consistency-audit-report-2025-12-07.md](docs/consistency-audit-report-2025-12-07.md)
+- [data/Bygging.pdf](docs/data/Bygging.pdf)
+- [data/concept.pdf](docs/data/concept.pdf)
+- [data/krav-spec.pdf](docs/data/krav-spec.pdf)
+- [data/project-description.pdf](docs/data/project-description.pdf)
+- [data/prop-task.md](docs/data/prop-task.md)
+- [data/proposal-checklist.yaml](docs/data/proposal-checklist.yaml)
+- [data/proposal-example.md](docs/data/proposal-example.md)
+- [data/simulation-description.pdf](docs/data/simulation-description.pdf)
+- [data/wbs.pdf](docs/data/wbs.pdf)
+- [epics.md](docs/epics.md)
+- [images/bmad-workflow.svg](docs/images/bmad-workflow.svg)
+- [product-brief.md](docs/product-brief.md)
+- [project-plan.md](docs/project-plan.md)
+- [proposal.md](docs/proposal.md)
+- [research-report-2025-12-07.md](docs/research-report-2025-12-07.md)
+- [solutioning-gate-check.md](docs/solutioning-gate-check.md)
+- [test-design.md](docs/test-design.md)
+- [ux-design-specification.md](docs/ux-design-specification.md)
+- [ux/UI_flows/FINAL_FILES_README.md](docs/ux/UI_flows/FINAL_FILES_README.md)
+- [ux/UI_flows/FINAL_MOCKUP_INVENTORY.md](docs/ux/UI_flows/FINAL_MOCKUP_INVENTORY.md)
+- [ux/UI_flows/FLOW_DIAGRAMS_INDEX.md](docs/ux/UI_flows/FLOW_DIAGRAMS_INDEX.md)
+- [ux/UI_flows/QUALITY_CHECK_REPORT.md](docs/ux/UI_flows/QUALITY_CHECK_REPORT.md)
+- [ux/UI_flows/V2_MOCKUP_INVENTORY.md](docs/ux/UI_flows/V2_MOCKUP_INVENTORY.md)
+- [ux/UI_flows/final-flow-01-complete-user-journey.svg](docs/ux/UI_flows/final-flow-01-complete-user-journey.svg)
+- [ux/UI_flows/final-flow-02-authentication-process.svg](docs/ux/UI_flows/final-flow-02-authentication-process.svg)
+- [ux/UI_flows/final-flow-03-negotiation-strategies.svg](docs/ux/UI_flows/final-flow-03-negotiation-strategies.svg)
+- [ux/UI_flows/final-screen-01-login-page.svg](docs/ux/UI_flows/final-screen-01-login-page.svg)
+- [ux/UI_flows/final-screen-02-dashboard-main.svg](docs/ux/UI_flows/final-screen-02-dashboard-main.svg)
+- [ux/UI_flows/final-screen-03-chat-interface.svg](docs/ux/UI_flows/final-screen-03-chat-interface.svg)
+- [ux/UI_flows/v2-flow-01-complete-journey.svg](docs/ux/UI_flows/v2-flow-01-complete-journey.svg)
+- [ux/UI_flows/v2-flow-02-authentication.svg](docs/ux/UI_flows/v2-flow-02-authentication.svg)
+- [ux/UI_flows/v2-flow-03-negotiation-strategy.svg](docs/ux/UI_flows/v2-flow-03-negotiation-strategy.svg)
+- [ux/functional_flows/FLOW_CREATION_SUMMARY.md](docs/ux/functional_flows/FLOW_CREATION_SUMMARY.md)
+- [ux/functional_flows/README.md](docs/ux/functional_flows/README.md)
+- [ux/functional_flows/flow-01-validation-rules.svg](docs/ux/functional_flows/flow-01-validation-rules.svg)
+- [ux/functional_flows/flow-02-budget-calculation.svg](docs/ux/functional_flows/flow-02-budget-calculation.svg)
+- [ux/functional_flows/flow-03-ai-agent-negotiation.svg](docs/ux/functional_flows/flow-03-ai-agent-negotiation.svg)
+- [ux/functional_flows/flow-04-commitment-uncommitment.svg](docs/ux/functional_flows/flow-04-commitment-uncommitment.svg)
+- [ux/functional_flows/flow-05-state-management.svg](docs/ux/functional_flows/flow-05-state-management.svg)
+- [ux/functional_flows/flow-06-error-handling.svg](docs/ux/functional_flows/flow-06-error-handling.svg)
+- [ux/functional_flows/flow-07-critical-path-timeline.svg](docs/ux/functional_flows/flow-07-critical-path-timeline.svg)
+- [ux/functional_flows/visualization-01-gantt-chart.svg](docs/ux/functional_flows/visualization-01-gantt-chart.svg)
+- [ux/functional_flows/visualization-02-precedence-diagram.svg](docs/ux/functional_flows/visualization-02-precedence-diagram.svg)
+- [validation-report-PRD-2025-12-07.md](docs/validation-report-PRD-2025-12-07.md)
+- [validation-report-UX-Design-2025-12-07.md](docs/validation-report-UX-Design-2025-12-07.md)
+<!-- NEW_FILES_END -->
 
 ---
 
