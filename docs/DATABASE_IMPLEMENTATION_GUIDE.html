@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Implementation Guide - PM Simulator</title>
+    <style>
+        @media print {
+            @page {
+                margin: 1in;
+                size: letter;
+            }
+            body {
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none;
+            }
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            table, pre, code {
+                page-break-inside: avoid;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #95a5a6;
+            padding-bottom: 8px;
+            margin-top: 25px;
+        }
+
+        h3 {
+            color: #555;
+            margin-top: 20px;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        pre code {
+            background: none;
+            color: #ecf0f1;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .error-box {
+            background: #f8d7da;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .diagram {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+
+        .toc h2 {
+            margin-top: 0;
+            border: none;
+        }
+
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin: 8px 0;
+        }
+
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .print-button:hover {
+            background: #2980b9;
+        }
+
+        .metadata {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .metadata p {
+            margin: 5px 0;
+            font-size: 0.95em;
+        }
+
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        em {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Print to PDF</button>
+
+    <h1>Database Implementation Guide</h1>
+    <h2 style="border: none; color: #7f8c8d;">PM Simulator - Nye Hædda Barneskole</h2>
+
+    <div class="metadata">
+        <p><strong>Version:</strong> 1.0</p>
+        <p><strong>Date:</strong> December 14, 2024</p>
+        <p><strong>Target:</strong> Backend Developer / Database Administrator</p>
+        <p><strong>Database:</strong> PostgreSQL (Supabase)</p>
+    </div>
+
+    <div class="info-box no-print">
+        <strong>📖 How to create PDF:</strong> Press the "Print to PDF" button above, or press Ctrl+P and select "Save as PDF" as the destination.
+    </div>
+
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#overview">1. Overview</a></li>
+            <li><a href="#architecture">2. Database Architecture</a></li>
+            <li><a href="#tables">3. Table Definitions</a></li>
+            <li><a href="#examples">4. Example Data</a></li>
+            <li><a href="#rls">5. Row-Level Security (RLS)</a></li>
+            <li><a href="#triggers">6. Triggers and Functions</a></li>
+            <li><a href="#views">7. Views</a></li>
+            <li><a href="#implementation">8. Step-by-Step Implementation</a></li>
+            <li><a href="#testing">9. Testing the Database</a></li>
+            <li><a href="#troubleshooting">10. Troubleshooting</a></li>
+        </ul>
+    </div>
+
+    <h2 id="overview">1. Overview</h2>
+
+    <h3>Purpose</h3>
+    <p>This database supports a project management simulator where users (students) negotiate with AI agents to stay within budget constraints. The database tracks:</p>
+    <ul>
+        <li>Game sessions with 3-tier budget model</li>
+        <li>WBS (Work Breakdown Structure) commitments</li>
+        <li>Chat/negotiation history</li>
+        <li>Agent timeout mechanics</li>
+        <li>User analytics and leaderboards</li>
+    </ul>
+
+    <h3>Key Concepts</h3>
+
+    <div class="info-box">
+        <strong>3-Tier Budget Model:</strong>
+        <ul>
+            <li><strong>Tier 1 (Tilgjengelig):</strong> 310 MNOK available for 3 negotiable packages</li>
+            <li><strong>Tier 2 (Låst):</strong> 390 MNOK locked in 12 non-negotiable packages</li>
+            <li><strong>Tier 3 (Totalt):</strong> 700 MNOK total project budget</li>
+        </ul>
+    </div>
+
+    <div class="warning-box">
+        <strong>⚠️ Game Challenge:</strong>
+        <ul>
+            <li>Baseline estimates for 3 negotiable packages = <strong>345 MNOK</strong></li>
+            <li>Available budget = <strong>310 MNOK</strong></li>
+            <li><strong>Deficit = 35 MNOK</strong> → Must negotiate savings!</li>
+        </ul>
+    </div>
+
+    <div class="error-box">
+        <strong>🔒 Timeline Constraint:</strong>
+        <ul>
+            <li>Hard deadline: <strong>May 15, 2026</strong></li>
+            <li>Owner agent (Anne-Lise Berg) <strong>NEVER</strong> approves extensions</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <strong>⏱️ Timeout Mechanic:</strong>
+        <ul>
+            <li>Agents lock after <strong>6 disagreement rounds</strong></li>
+            <li>Lock duration: <strong>10 minutes</strong></li>
+            <li>Auto-unlock when timer expires</li>
+        </ul>
+    </div>
+
+    <h2 id="architecture">2. Database Architecture</h2>
+
+    <h3>Entity Relationship Diagram</h3>
+
+    <div class="diagram">
+<pre>
+┌─────────────────┐
+│   auth.users    │ (Supabase Auth - managed by Supabase)
+│   (External)    │
+└────────┬────────┘
+         │
+         │ 1:N
+         ▼
+┌─────────────────────────────────────────────────────────┐
+│              game_sessions                               │
+│ ─────────────────────────────────────────────────────── │
+│ • id (PK)                                               │
+│ • user_id (FK → auth.users)                            │
+│ • 3-tier budget (total, locked, available, used)       │
+│ • Computed budget fields (auto-calculated)              │
+│ • Timeline (deadline, projected, is_valid)             │
+│ • Status (in_progress, completed, abandoned)           │
+└────────┬────────────────────────────────┬──────────────┘
+         │                                │
+         │ 1:N                            │ 1:N
+         ▼                                ▼
+┌──────────────────────┐      ┌──────────────────────────┐
+│  wbs_commitments     │      │  negotiation_history     │
+│ ──────────────────── │      │ ──────────────────────── │
+│ • id (PK)            │      │ • id (PK)                │
+│ • session_id (FK)    │      │ • session_id (FK)        │
+│ • wbs_id (1.3.1-3)   │      │ • agent_id               │
+│ • agent_id           │      │ • user_message           │
+│ • Costs (baseline,   │      │ • agent_response         │
+│   negotiated,        │      │ • is_disagreement        │
+│   committed)         │      │ • contains_offer         │
+│ • Duration           │      │ • offer_data (JSONB)     │
+│ • Savings (computed) │      └──────────────────────────┘
+└──────────────────────┘
+         │
+         │ 1:N
+         ▼
+┌──────────────────────┐
+│   agent_timeouts     │
+│ ──────────────────── │
+│ • id (PK)            │
+│ • session_id (FK)    │
+│ • agent_id           │
+│ • locked_at          │
+│ • unlock_at          │
+│ • agent_message      │
+│ • disagreement_count │
+│ • is_active          │
+└──────────────────────┘
+
+┌──────────────────────┐
+│   user_analytics     │
+│ ──────────────────── │
+│ • id (PK)            │
+│ • user_id (FK)       │
+│ • total_sessions     │
+│ • completed_sessions │
+│ • total_budget_saved │
+│ • avg_savings_%      │
+│ • best_savings_%     │
+└──────────────────────┘
+</pre>
+    </div>
+
+    <p class="no-print"><em>For the complete detailed guide with all table definitions, examples, SQL code, and implementation steps, please refer to the markdown file: <code>DATABASE_IMPLEMENTATION_GUIDE.md</code></em></p>
+
+    <div class="success-box no-print">
+        <h3>🚀 Quick Start</h3>
+        <p>To generate a complete PDF with all content:</p>
+        <ol>
+            <li>Open <code>DATABASE_IMPLEMENTATION_GUIDE.md</code> in VS Code</li>
+            <li>Install "Markdown PDF" extension</li>
+            <li>Right-click → "Markdown PDF: Export (pdf)"</li>
+        </ol>
+        <p><strong>Or</strong> use the online converter: <a href="https://www.markdowntopdf.com/" target="_blank">https://www.markdowntopdf.com/</a></p>
+    </div>
+
+    <h2>Summary: 5 Database Tables</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Table Name</th>
+                <th>Purpose</th>
+                <th>Key Columns</th>
+                <th>Special Features</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>game_sessions</code></td>
+                <td>Track each game session</td>
+                <td>user_id, budgets (3-tier), status, deadline</td>
+                <td>Computed columns for auto-calculations</td>
+            </tr>
+            <tr>
+                <td><code>wbs_commitments</code></td>
+                <td>Store package commitments</td>
+                <td>wbs_id, costs, duration, savings</td>
+                <td>Auto-calculate savings percentage</td>
+            </tr>
+            <tr>
+                <td><code>negotiation_history</code></td>
+                <td>Log all chat messages</td>
+                <td>agent_id, messages, offers, disagreements</td>
+                <td>JSONB for structured offer data</td>
+            </tr>
+            <tr>
+                <td><code>agent_timeouts</code></td>
+                <td>Track agent lockouts</td>
+                <td>agent_id, locked_at, unlock_at, is_active</td>
+                <td>10-minute timeout after 6 disagreements</td>
+            </tr>
+            <tr>
+                <td><code>user_analytics</code></td>
+                <td>Leaderboard statistics</td>
+                <td>sessions, savings, best_percentage</td>
+                <td>Aggregated user performance data</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Quick Reference: Constants</h2>
+
+    <h3>WBS Package IDs</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>WBS ID</th>
+                <th>Name</th>
+                <th>Agent</th>
+                <th>Baseline Cost</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>1.3.1</code></td>
+                <td>Grunnarbeid</td>
+                <td>bjorn-eriksen</td>
+                <td>105 MNOK</td>
+                <td>3.5 months</td>
+            </tr>
+            <tr>
+                <td><code>1.3.2</code></td>
+                <td>Fundamentering</td>
+                <td>kari-andersen</td>
+                <td>60 MNOK</td>
+                <td>2.5 months</td>
+            </tr>
+            <tr>
+                <td><code>1.4.1</code></td>
+                <td>Råbygg</td>
+                <td>per-johansen</td>
+                <td>180 MNOK</td>
+                <td>4.0 months</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Agent IDs</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Agent ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>anne-lise-berg</code></td>
+                <td>Anne-Lise Berg</td>
+                <td>owner</td>
+                <td>Municipality Owner<br><small>(can increase budget/reduce scope, <strong>NEVER extend time</strong>)</small></td>
+            </tr>
+            <tr>
+                <td><code>bjorn-eriksen</code></td>
+                <td>Bjørn Eriksen</td>
+                <td>supplier</td>
+                <td>Supplier 1: Site Preparation (WBS 1.3.1)</td>
+            </tr>
+            <tr>
+                <td><code>kari-andersen</code></td>
+                <td>Kari Andersen</td>
+                <td>supplier</td>
+                <td>Supplier 2: Foundation (WBS 1.3.2)</td>
+            </tr>
+            <tr>
+                <td><code>per-johansen</code></td>
+                <td>Per Johansen</td>
+                <td>supplier</td>
+                <td>Supplier 3: Structural Work (WBS 1.4.1)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Budget Constants</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Constant</th>
+                <th>Value (MNOK)</th>
+                <th>Value (NOK)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Total Budget</td>
+                <td>700</td>
+                <td>700,000,000.00</td>
+            </tr>
+            <tr>
+                <td>Locked Budget</td>
+                <td>390</td>
+                <td>390,000,000.00</td>
+            </tr>
+            <tr>
+                <td>Available Budget</td>
+                <td>310</td>
+                <td>310,000,000.00</td>
+            </tr>
+            <tr>
+                <td>Baseline Total</td>
+                <td>345</td>
+                <td>345,000,000.00</td>
+            </tr>
+            <tr style="background: #fff3cd;">
+                <td><strong>Deficit (Must Save)</strong></td>
+                <td><strong>35</strong></td>
+                <td><strong>35,000,000.00</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <hr style="margin: 40px 0;">
+
+    <div class="info-box">
+        <h3>📚 Complete Documentation</h3>
+        <p>This HTML file contains a summary. For the complete implementation guide with:</p>
+        <ul>
+            <li>✅ Detailed table definitions with all columns</li>
+            <li>✅ Example data for every column</li>
+            <li>✅ Complete SQL scripts ready to copy-paste</li>
+            <li>✅ RLS policies implementation</li>
+            <li>✅ Triggers and functions code</li>
+            <li>✅ Step-by-step implementation instructions</li>
+            <li>✅ Testing procedures</li>
+            <li>✅ Troubleshooting guide</li>
+        </ul>
+        <p><strong>Please refer to:</strong> <code>DATABASE_IMPLEMENTATION_GUIDE.md</code></p>
+    </div>
+
+    <footer style="margin-top: 60px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #7f8c8d; font-size: 0.9em;">
+        <p><strong>Database Implementation Guide</strong> - PM Simulator: Nye Hædda Barneskole</p>
+        <p>Version 1.0 | December 14, 2024</p>
+        <p>For questions or issues, contact: Backend Development Team</p>
+    </footer>
+
+    <script>
+        // Enhance print experience
+        window.addEventListener('beforeprint', () => {
+            document.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+        });
+
+        window.addEventListener('afterprint', () => {
+            document.querySelectorAll('.no-print').forEach(el => el.style.display = 'block');
+        });
+    </script>
+</body>
+</html>

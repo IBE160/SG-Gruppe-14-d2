@@ -1,4 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+Good. # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
 /node_modules
@@ -44,6 +44,10 @@ next-env.d.ts
 # backend
 backend/app/__pycache__/
 .env*
+
+# Test credentials (never commit!)
+backend/TEST_CREDENTIALS.md
+TEST_CREDENTIALS.md
 
 # frontend
 frontend/package-lock.json

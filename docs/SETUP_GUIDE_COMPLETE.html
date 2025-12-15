@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM Simulator - Complete Setup Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #2563eb;
+            font-size: 2.5em;
+            margin-bottom: 0.3em;
+            border-bottom: 4px solid #2563eb;
+            padding-bottom: 0.3em;
+        }
+
+        h2 {
+            color: #1e40af;
+            font-size: 1.8em;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            padding: 0.5em;
+            background: #eff6ff;
+            border-left: 5px solid #2563eb;
+        }
+
+        h3 {
+            color: #1e3a8a;
+            font-size: 1.3em;
+            margin-top: 1.2em;
+            margin-bottom: 0.5em;
+        }
+
+        h4 {
+            color: #1e40af;
+            font-size: 1.1em;
+            margin-top: 1em;
+            margin-bottom: 0.4em;
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1.1em;
+            margin-bottom: 2em;
+        }
+
+        .metadata {
+            background: #f8fafc;
+            padding: 1em;
+            border-radius: 8px;
+            margin-bottom: 2em;
+            border: 1px solid #e2e8f0;
+        }
+
+        .metadata p {
+            margin: 0.3em 0;
+        }
+
+        .toc {
+            background: #f1f5f9;
+            padding: 1.5em;
+            border-radius: 8px;
+            margin-bottom: 2em;
+        }
+
+        .toc ol {
+            list-style-position: inside;
+            padding-left: 0;
+        }
+
+        .toc li {
+            margin: 0.5em 0;
+        }
+
+        .toc a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        .success-box {
+            background: #d1fae5;
+            border-left: 5px solid #10b981;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 4px;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border-left: 5px solid #f59e0b;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 4px;
+        }
+
+        .error-box {
+            background: #fee2e2;
+            border-left: 5px solid #ef4444;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 4px;
+        }
+
+        .info-box {
+            background: #dbeafe;
+            border-left: 5px solid #3b82f6;
+            padding: 1em;
+            margin: 1em 0;
+            border-radius: 4px;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1em;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1em 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+
+        .inline-code {
+            background: #f1f5f9;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            color: #dc2626;
+        }
+
+        ul, ol {
+            margin-left: 2em;
+            margin-bottom: 1em;
+        }
+
+        li {
+            margin-bottom: 0.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+        }
+
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 0.75em;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            font-weight: 600;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding-left: 2em;
+            position: relative;
+            margin-bottom: 0.8em;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+            color: #64748b;
+        }
+
+        .step-number {
+            background: #2563eb;
+            color: white;
+            width: 2em;
+            height: 2em;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.5em;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3em 0.6em;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 0.5em;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #e2e8f0;
+            margin: 2em 0;
+        }
+
+        .screenshot-placeholder {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            padding: 2em;
+            text-align: center;
+            color: #64748b;
+            margin: 1em 0;
+            border-radius: 8px;
+        }
+
+        strong {
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body>
+    <h1>PM Simulator - Complete Setup Guide</h1>
+    <p class="subtitle">Step-by-Step Manual Setup Instructions</p>
+
+    <div class="metadata">
+        <p><strong>Version:</strong> 1.0</p>
+        <p><strong>Date:</strong> December 14, 2024</p>
+        <p><strong>Estimated Time:</strong> 15 minutes</p>
+        <p><strong>Difficulty:</strong> Beginner-friendly</p>
+    </div>
+
+    <div class="toc">
+        <h2>📋 Table of Contents</h2>
+        <ol>
+            <li><a href="#prerequisites">Prerequisites & Accounts</a></li>
+            <li><a href="#step1">Step 1: Import Database to Supabase</a></li>
+            <li><a href="#step2">Step 2: Get Gemini API Key</a></li>
+            <li><a href="#step3">Step 3: Configure Backend</a></li>
+            <li><a href="#step4">Step 4: Test Backend</a></li>
+            <li><a href="#step5">Step 5: Start Backend Server</a></li>
+            <li><a href="#troubleshooting">Troubleshooting</a></li>
+            <li><a href="#checklist">Verification Checklist</a></li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <h2 id="prerequisites">🔧 Prerequisites & Accounts</h2>
+
+    <p>Before you begin, ensure you have:</p>
+
+    <h3>Accounts Required:</h3>
+    <ul>
+        <li><span class="badge badge-success">✅ READY</span> <strong>Supabase Account</strong>
+            <ul>
+                <li>Project: <code class="inline-code">cmntglldaqrekloixxoc</code></li>
+                <li>URL: https://supabase.com/dashboard</li>
+            </ul>
+        </li>
+        <li><span class="badge badge-error">🔴 NEEDED</span> <strong>Google Account</strong> (for Gemini API)
+            <ul>
+                <li>Any Gmail account works</li>
+                <li>Free tier available</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>Programs Required:</h3>
+    <ul>
+        <li><strong>Web Browser</strong> - Chrome, Firefox, Edge, or Safari</li>
+        <li><strong>Text Editor</strong> - VS Code, Notepad++, or Notepad</li>
+        <li><strong>Terminal/Command Prompt</strong> - For running backend server</li>
+    </ul>
+
+    <h3>Files You'll Need:</h3>
+    <ul>
+        <li><code class="inline-code">database/migrations/001_complete_schema.sql</code> (ready in your project)</li>
+        <li><code class="inline-code">backend/.env.local</code> (ready in your project)</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <h2 id="step1">📊 Step 1: Import Database Schema to Supabase</h2>
+
+    <div class="info-box">
+        <strong>⏱️ Time:</strong> 5 minutes<br>
+        <strong>🎯 Difficulty:</strong> Easy<br>
+        <strong>📝 Goal:</strong> Create 5 database tables in your Supabase project
+    </div>
+
+    <h3>1.1 Open Supabase Dashboard</h3>
+    <ol>
+        <li>Open your web browser</li>
+        <li>Go to: <strong>https://supabase.com/dashboard</strong></li>
+        <li>Log in with your Supabase credentials</li>
+        <li>You'll see your project list</li>
+    </ol>
+
+    <div class="screenshot-placeholder">
+        📸 Screenshot: Main dashboard with project tiles
+    </div>
+
+    <h3>1.2 Select Your Project</h3>
+    <ol>
+        <li>Look for project: <strong>cmntglldaqrekloixxoc</strong></li>
+        <li>Click on the project tile to open it</li>
+        <li>You'll be taken to the project overview page</li>
+    </ol>
+
+    <div class="info-box">
+        <strong>What you'll see:</strong>
+        <ul>
+            <li>Left sidebar with menu options</li>
+            <li>Project details in the center</li>
+            <li>Database, Auth, Storage icons</li>
+        </ul>
+    </div>
+
+    <h3>1.3 Navigate to SQL Editor</h3>
+    <ol>
+        <li>Look at the <strong>left sidebar</strong></li>
+        <li>Scroll down if needed</li>
+        <li>Click on <strong>"SQL Editor"</strong> icon (looks like <code>&lt;/&gt;</code>)</li>
+        <li>The SQL Editor page will open</li>
+    </ol>
+
+    <h3>1.4 Create New Query</h3>
+    <ol>
+        <li>Click the <strong>"New query"</strong> button at the top</li>
+        <li>Or click the <strong>"+"</strong> icon</li>
+        <li>A blank query editor will appear</li>
+    </ol>
+
+    <h3>1.5 Open Database Schema File</h3>
+
+    <p><strong>Using Windows File Explorer:</strong></p>
+    <ol>
+        <li>Open File Explorer (Windows key + E)</li>
+        <li>Navigate to: <code class="inline-code">C:\Users\morte\Documents\GitHub\SG-Gruppe-14-d2</code></li>
+        <li>Go to subfolder: <strong>database</strong> → <strong>migrations</strong></li>
+        <li>Find file: <strong>001_complete_schema.sql</strong></li>
+        <li>Right-click the file</li>
+        <li>Select "Open with" → Choose your text editor</li>
+    </ol>
+
+    <p><strong>OR Using VS Code:</strong></p>
+    <ol>
+        <li>Open VS Code</li>
+        <li>File → Open Folder</li>
+        <li>Select: <code class="inline-code">C:\Users\morte\Documents\GitHub\SG-Gruppe-14-d2</code></li>
+        <li>Navigate to: <code class="inline-code">database/migrations/001_complete_schema.sql</code></li>
+        <li>Click to open</li>
+    </ol>
+
+    <h3>1.6 Copy All SQL Code</h3>
+    <ol>
+        <li>In your text editor with the SQL file open</li>
+        <li>Select all content:
+            <ul>
+                <li><strong>Windows:</strong> Press <kbd>Ctrl</kbd> + <kbd>A</kbd></li>
+                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>A</kbd></li>
+            </ul>
+        </li>
+        <li>Copy the selection:
+            <ul>
+                <li><strong>Windows:</strong> Press <kbd>Ctrl</kbd> + <kbd>C</kbd></li>
+                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>C</kbd></li>
+            </ul>
+        </li>
+    </ol>
+
+    <div class="info-box">
+        <strong>What you're copying:</strong>
+        <ul>
+            <li>527 lines of SQL code</li>
+            <li>Creates 5 tables</li>
+            <li>Sets up security policies</li>
+            <li>Adds triggers and indexes</li>
+        </ul>
+    </div>
+
+    <h3>1.7 Paste SQL into Supabase Editor</h3>
+    <ol>
+        <li>Go back to your Supabase SQL Editor tab</li>
+        <li>Click inside the large text area</li>
+        <li>Paste the SQL code:
+            <ul>
+                <li><strong>Windows:</strong> Press <kbd>Ctrl</kbd> + <kbd>V</kbd></li>
+                <li><strong>Mac:</strong> Press <kbd>Cmd</kbd> + <kbd>V</kbd></li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>1.8 Run the SQL Migration</h3>
+    <ol>
+        <li>Look for the <strong>"Run"</strong> button (usually green, top-right corner)</li>
+        <li><strong>Click "Run"</strong></li>
+        <li>Wait 5-10 seconds for execution</li>
+    </ol>
+
+    <div class="success-box">
+        <strong>✅ Success Message:</strong>
+        <p>You'll see one of these messages:</p>
+        <ul>
+            <li>"Success. No rows returned"</li>
+            <li>"Success. X rows affected"</li>
+            <li>Green checkmark icon</li>
+        </ul>
+    </div>
+
+    <div class="error-box">
+        <strong>❌ Error Message:</strong>
+        <p>If you see an error:</p>
+        <ul>
+            <li>Red error box</li>
+            <li>Error message starting with "ERROR:"</li>
+            <li>See <a href="#troubleshooting">Troubleshooting Section</a></li>
+        </ul>
+    </div>
+
+    <h3>1.9 Verify Tables Were Created</h3>
+
+    <p><strong>Method 1: Using SQL Query</strong></p>
+
+    <p>In the SQL Editor, paste this verification query:</p>
+
+    <div class="code-block">SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
+  AND table_name IN (
+    'game_sessions',
+    'wbs_commitments',
+    'negotiation_history',
+    'agent_timeouts',
+    'user_analytics'
+  )
+ORDER BY table_name;</div>
+
+    <p>Click <strong>"Run"</strong></p>
+
+    <div class="success-box">
+        <strong>✅ Expected Result: 5 rows</strong>
+        <ul>
+            <li>agent_timeouts</li>
+            <li>game_sessions</li>
+            <li>negotiation_history</li>
+            <li>user_analytics</li>
+            <li>wbs_commitments</li>
+        </ul>
+    </div>
+
+    <p><strong>Method 2: Using Table Editor</strong></p>
+    <ol>
+        <li>Click <strong>"Table Editor"</strong> in the left sidebar</li>
+        <li>Verify all 5 tables appear in the list</li>
+    </ol>
+
+    <div class="success-box">
+        <h4>✅ Step 1 Complete!</h4>
+        <p>If you see all 5 tables, database import is successful!</p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2 id="step2">🔑 Step 2: Get Google Gemini API Key</h2>
+
+    <div class="info-box">
+        <strong>⏱️ Time:</strong> 3 minutes<br>
+        <strong>🎯 Difficulty:</strong> Easy<br>
+        <strong>📝 Goal:</strong> Obtain a free API key for Google's Gemini AI
+    </div>
+
+    <h3>2.1 Open Google AI Studio</h3>
+    <ol>
+        <li>Open a new browser tab</li>
+        <li>Go to: <strong>https://aistudio.google.com/apikey</strong></li>
+        <li>Sign in with your Google account if prompted</li>
+    </ol>
+
+    <h3>2.2 Sign In with Google Account</h3>
+    <ol>
+        <li>Enter your Gmail address</li>
+        <li>Enter your password</li>
+        <li>Click <strong>"Sign in"</strong></li>
+    </ol>
+
+    <div class="info-box">
+        <strong>Note:</strong> Use any Google account - personal Gmail works fine
+    </div>
+
+    <h3>2.3 Access API Key Page</h3>
+
+    <p>After signing in, you'll land on the API Keys page.</p>
+
+    <div class="info-box">
+        <strong>What you'll see:</strong>
+        <ul>
+            <li>Page title: "Get an API key"</li>
+            <li>Blue button: "Create API Key"</li>
+            <li>Or: List of existing API keys (if you have any)</li>
+        </ul>
+    </div>
+
+    <h3>2.4 Create New API Key</h3>
+
+    <p><strong>If you already have an API key:</strong></p>
+    <ul>
+        <li>Skip to step 2.7 and use your existing key</li>
+    </ul>
+
+    <p><strong>If you need a new key:</strong></p>
+    <ol>
+        <li>Click the <strong>"Create API Key"</strong> button</li>
+        <li>A dialog box will appear</li>
+    </ol>
+
+    <h3>2.5 Select Google Cloud Project</h3>
+
+    <p>The dialog asks: "Which Google Cloud project would you like to use?"</p>
+
+    <p><strong>Option A - Create new project (Recommended):</strong></p>
+    <ol>
+        <li>Click <strong>"Create API key in new project"</strong></li>
+        <li>Wait 5-10 seconds</li>
+        <li>Your API key will be generated</li>
+    </ol>
+
+    <p><strong>Option B - Use existing project:</strong></p>
+    <ol>
+        <li>Select an existing project from dropdown</li>
+        <li>Click <strong>"Create API key"</strong></li>
+    </ol>
+
+    <h3>2.6 Copy Your API Key</h3>
+
+    <div class="success-box">
+        <strong>What you'll see:</strong>
+        <ul>
+            <li>A dialog box with your API key</li>
+            <li>Key looks like: <code class="inline-code">AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</code></li>
+            <li>A "Copy" button next to the key</li>
+            <li>⚠️ Warning message about keeping it secure</li>
+        </ul>
+    </div>
+
+    <p><strong>Action:</strong></p>
+    <ol>
+        <li>Click the <strong>"Copy"</strong> button</li>
+        <li>Your API key is now in your clipboard</li>
+        <li>Click <strong>"Close"</strong> or "Got it"</li>
+    </ol>
+
+    <div class="warning-box">
+        <strong>⚠️ IMPORTANT SECURITY NOTES:</strong>
+        <ul>
+            <li>Keep this key private!</li>
+            <li>Don't share it publicly</li>
+            <li>Don't commit it to Git/GitHub</li>
+            <li>Our .env.local file is already in .gitignore (safe)</li>
+        </ul>
+    </div>
+
+    <h3>2.7 Save API Key Temporarily</h3>
+
+    <p><strong>Option A - Paste into Notepad (Recommended):</strong></p>
+    <ol>
+        <li>Open Notepad (Windows) or TextEdit (Mac)</li>
+        <li>Paste the key (<kbd>Ctrl</kbd> + <kbd>V</kbd>)</li>
+        <li>Keep this window open for next step</li>
+    </ol>
+
+    <p><strong>Option B - Leave the tab open:</strong></p>
+    <ul>
+        <li>Keep the Google AI Studio tab open</li>
+        <li>You can view your key anytime</li>
+    </ul>
+
+    <div class="success-box">
+        <h4>✅ Step 2 Complete!</h4>
+        <p>You now have a valid Gemini API key!</p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2 id="step3">⚙️ Step 3: Configure Backend Environment</h2>
+
+    <div class="info-box">
+        <strong>⏱️ Time:</strong> 2 minutes<br>
+        <strong>🎯 Difficulty:</strong> Easy<br>
+        <strong>📝 Goal:</strong> Add your Gemini API key to backend configuration
+    </div>
+
+    <h3>3.1 Open Backend Folder</h3>
+
+    <p><strong>Using File Explorer:</strong></p>
+    <ol>
+        <li>Open File Explorer (<kbd>Windows</kbd> + <kbd>E</kbd>)</li>
+        <li>Navigate to: <code class="inline-code">C:\Users\morte\Documents\GitHub\SG-Gruppe-14-d2\backend</code></li>
+        <li>You should see files including:
+            <ul>
+                <li>.env.local</li>
+                <li>main.py</li>
+                <li>config.py</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>3.2 Open .env.local File</h3>
+
+    <p><strong>Method 1 - VS Code (Recommended):</strong></p>
+    <ol>
+        <li>Right-click <code class="inline-code">.env.local</code></li>
+        <li>Select "Open with Code" or "Open with VS Code"</li>
+    </ol>
+
+    <p><strong>Method 2 - Notepad++:</strong></p>
+    <ol>
+        <li>Right-click <code class="inline-code">.env.local</code></li>
+        <li>Select "Edit with Notepad++"</li>
+    </ol>
+
+    <p><strong>Method 3 - Notepad:</strong></p>
+    <ol>
+        <li>Right-click <code class="inline-code">.env.local</code></li>
+        <li>Select "Open with" → "Notepad"</li>
+    </ol>
+
+    <div class="code-block">SUPABASE_URL=https://cmntglldaqrekloixxoc.supabase.co
+SUPABASE_ANON_KEY=sb_publishable_ChXJKjeBDhzccsllf_4d8A_MoOP3S6l
+SUPABASE_JWT_SECRET=sb_secret_kAepUmTdBY2uRhQJwOjSbw_NGESm0Pj
+
+# Gemini AI Configuration
+GEMINI_API_KEY=REPLACE_WITH_YOUR_ACTUAL_API_KEY
+GEMINI_MODEL=gemini-1.5-pro</div>
+
+    <h3>3.3 Replace Placeholder with Your API Key</h3>
+    <ol>
+        <li>Find line 6: <code class="inline-code">GEMINI_API_KEY=REPLACE_WITH_YOUR_ACTUAL_API_KEY</code></li>
+        <li>Select the text: <code class="inline-code">REPLACE_WITH_YOUR_ACTUAL_API_KEY</code></li>
+        <li>Paste your API key (<kbd>Ctrl</kbd> + <kbd>V</kbd>)</li>
+    </ol>
+
+    <div class="success-box">
+        <strong>✅ CORRECT format:</strong>
+        <div class="code-block">GEMINI_API_KEY=AIzaSyD1234567890abcdefghijklmnopqrstuvwxyz
+GEMINI_MODEL=gemini-1.5-pro</div>
+    </div>
+
+    <div class="error-box">
+        <strong>❌ WRONG formats:</strong>
+        <div class="code-block">GEMINI_API_KEY = AIza...  ❌ (spaces around =)
+GEMINI_API_KEY="AIza..."  ❌ (quotes)
+GEMINI_API_KEY=           ❌ (empty)</div>
+    </div>
+
+    <h3>3.4 Save the File</h3>
+    <ol>
+        <li>Press <kbd>Ctrl</kbd> + <kbd>S</kbd> (Windows) or <kbd>Cmd</kbd> + <kbd>S</kbd> (Mac)</li>
+        <li>Or: File → Save</li>
+        <li>File saved indicator should appear</li>
+    </ol>
+
+    <div class="success-box">
+        <h4>✅ Step 3 Complete!</h4>
+        <p>Backend is now configured with Gemini API key!</p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2 id="step4">🧪 Step 4: Test Backend Configuration</h2>
+
+    <div class="info-box">
+        <strong>⏱️ Time:</strong> 2 minutes<br>
+        <strong>🎯 Difficulty:</strong> Easy<br>
+        <strong>📝 Goal:</strong> Verify everything is set up correctly
+    </div>
+
+    <h3>4.1 Open Terminal/Command Prompt</h3>
+
+    <p><strong>Windows - Method 1 (File Explorer):</strong></p>
+    <ol>
+        <li>Open File Explorer</li>
+        <li>Navigate to backend folder</li>
+        <li>In the address bar, type: <code class="inline-code">cmd</code></li>
+        <li>Press Enter</li>
+        <li>Command Prompt opens in backend folder</li>
+    </ol>
+
+    <p><strong>Windows - Method 2 (Start Menu):</strong></p>
+    <ol>
+        <li>Press Windows key</li>
+        <li>Type: <code class="inline-code">cmd</code></li>
+        <li>Press Enter</li>
+        <li>Navigate to backend:
+            <div class="code-block">cd C:\Users\morte\Documents\GitHub\SG-Gruppe-14-d2\backend</div>
+        </li>
+    </ol>
+
+    <h3>4.2 Verify You're in Backend Folder</h3>
+
+    <p>Type this command:</p>
+    <div class="code-block">dir</div>
+
+    <div class="info-box">
+        <strong>You should see these files:</strong>
+        <ul>
+            <li>main.py</li>
+            <li>config.py</li>
+            <li>test_setup.py</li>
+            <li>.env.local</li>
+            <li>requirements.txt</li>
+        </ul>
+    </div>
+
+    <h3>4.3 Run Test Script</h3>
+
+    <p>Type this exact command:</p>
+    <div class="code-block">python test_setup.py</div>
+
+    <h3>4.4 Read Test Results</h3>
+
+    <div class="success-box">
+        <strong>✅ EXPECTED OUTPUT (Success):</strong>
+        <div class="code-block">============================================================
+PM Simulator Backend Setup Test
+============================================================
+
+Test 1: Environment Configuration
+------------------------------------------------------------
+[OK] Config loaded successfully
+   Supabase URL: https://cmntglldaqrekloixxoc.supabase.co...
+   Supabase Key: sb_publishable_ChXJK...
+[OK] Gemini API Key: AIzaSy...
+   Gemini Model: gemini-1.5-pro
+
+Test 2: Agent Prompts Loader
+------------------------------------------------------------
+[OK] Loaded 4 agent prompts:
+   - anne-lise-berg: Anne-Lise Berg
+     Prompt length: 8047 characters
+   - bjorn-eriksen: Bjørn Eriksen
+     Prompt length: 5783 characters
+   - kari-andersen: Kari Andersen
+     Prompt length: 4028 characters
+   - per-johansen: Per Johansen
+     Prompt length: 4503 characters
+[OK] Anne-Lise prompt contains 'NEVER' rule (correct)
+
+Test 3: Gemini Service
+------------------------------------------------------------
+[OK] Gemini service initialized
+   Model: models/gemini-1.5-pro
+   Temperature: 0.7
+   Max tokens: 2048
+
+Test 4: Supabase Connection
+------------------------------------------------------------
+[OK] Connected to Supabase
+[OK] game_sessions table exists
+[OK] wbs_commitments table exists
+[OK] negotiation_history table exists
+[OK] agent_timeouts table exists
+[OK] user_analytics table exists
+
+============================================================
+SUCCESS! All tests passed!
+============================================================</div>
+    </div>
+
+    <h3>4.5 Interpret Results</h3>
+
+    <table>
+        <tr>
+            <th>Result</th>
+            <th>Meaning</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td><strong>[OK]</strong></td>
+            <td>✅ Test passed</td>
+            <td>Continue to next step</td>
+        </tr>
+        <tr>
+            <td><strong>[WARN]</strong></td>
+            <td>⚠️ Warning (not critical)</td>
+            <td>Read warning message</td>
+        </tr>
+        <tr>
+            <td><strong>[FAIL]</strong></td>
+            <td>❌ Test failed</td>
+            <td>See Troubleshooting</td>
+        </tr>
+    </table>
+
+    <div class="success-box">
+        <h4>✅ Step 4 Complete!</h4>
+        <p>If all tests passed, your backend is ready!</p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2 id="step5">🚀 Step 5: Start Backend Server</h2>
+
+    <div class="info-box">
+        <strong>⏱️ Time:</strong> 1 minute<br>
+        <strong>🎯 Difficulty:</strong> Easy<br>
+        <strong>📝 Goal:</strong> Start your backend API server
+    </div>
+
+    <h3>5.1 Start the Server</h3>
+
+    <p>In your terminal (still in backend folder), type:</p>
+    <div class="code-block">uvicorn main:app --reload</div>
+
+    <h3>5.2 Server Starting</h3>
+
+    <div class="success-box">
+        <strong>✅ You'll see output like:</strong>
+        <div class="code-block">INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [12345]
+INFO:     Started server process [67890]
+INFO:     Application startup complete.</div>
+    </div>
+
+    <h3>5.3 Test in Browser</h3>
+    <ol>
+        <li>Open your web browser</li>
+        <li>Go to: <strong>http://localhost:8000</strong></li>
+    </ol>
+
+    <div class="success-box">
+        <strong>✅ You should see:</strong>
+        <div class="code-block">{
+  "message": "Welcome to the FastAPI backend with Supabase!"
+}</div>
+    </div>
+
+    <h3>5.4 View API Documentation</h3>
+    <ol>
+        <li>Go to: <strong>http://localhost:8000/docs</strong></li>
+    </ol>
+
+    <div class="success-box">
+        <strong>✅ You should see:</strong>
+        <ul>
+            <li>Interactive API documentation (Swagger UI)</li>
+            <li>List of 8 endpoints:
+                <ul>
+                    <li>GET / - Root</li>
+                    <li>GET /me - Current user</li>
+                    <li><strong>POST /api/chat</strong> - Chat with AI agents ⭐</li>
+                    <li>POST /api/sessions - Create session</li>
+                    <li>GET /api/sessions/{id} - Get session</li>
+                    <li>PUT /api/sessions/{id} - Update session</li>
+                    <li>POST /api/sessions/{id}/commitments - Create commitment</li>
+                    <li>GET /api/sessions/{id}/commitments - Get commitments</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h3>5.5 Keep Server Running</h3>
+
+    <div class="warning-box">
+        <strong>⚠️ IMPORTANT:</strong>
+        <ul>
+            <li>✅ Keep the terminal window open</li>
+            <li>✅ Keep the server running</li>
+            <li>✅ Don't close the window</li>
+        </ul>
+    </div>
+
+    <p><strong>To stop the server:</strong> Press <kbd>Ctrl</kbd> + <kbd>C</kbd></p>
+    <p><strong>To restart:</strong> Run <code class="inline-code">uvicorn main:app --reload</code> again</p>
+
+    <div class="success-box">
+        <h4>✅ Step 5 Complete!</h4>
+        <p>Your backend server is now running!</p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2 id="troubleshooting">🔧 Troubleshooting</h2>
+
+    <h3>Problem 1: "Table already exists" Error</h3>
+    <div class="error-box">
+        <strong>Error:</strong> <code class="inline-code">ERROR: relation "game_sessions" already exists</code>
+    </div>
+    <p><strong>Cause:</strong> Tables were previously imported</p>
+    <p><strong>Solution:</strong> Skip Step 1 - tables already exist. Continue to Step 2.</p>
+
+    <hr>
+
+    <h3>Problem 2: "Invalid API key" Error</h3>
+    <div class="error-box">
+        <strong>Error:</strong> <code class="inline-code">[FAIL] Gemini service error: Invalid API key</code>
+    </div>
+    <p><strong>Possible Causes:</strong></p>
+    <ul>
+        <li>Typo in API key</li>
+        <li>Extra spaces or quotes</li>
+        <li>Wrong format in .env.local</li>
+    </ul>
+    <p><strong>Solution:</strong></p>
+    <ol>
+        <li>Go to Google AI Studio and copy key again</li>
+        <li>Open backend/.env.local</li>
+        <li>Delete line 6 completely</li>
+        <li>Type fresh: <code class="inline-code">GEMINI_API_KEY=</code></li>
+        <li>Paste your key (no quotes, no spaces)</li>
+        <li>Save and test again</li>
+    </ol>
+
+    <hr>
+
+    <h3>Problem 3: "Could not find table" Error</h3>
+    <div class="error-box">
+        <strong>Error:</strong> <code class="inline-code">[FAIL] Could not find the table 'public.game_sessions'</code>
+    </div>
+    <p><strong>Cause:</strong> Database schema not imported</p>
+    <p><strong>Solution:</strong> Go back to Step 1 and import the database schema</p>
+
+    <hr>
+
+    <h3>Problem 4: "Module not found" Error</h3>
+    <div class="error-box">
+        <strong>Error:</strong> <code class="inline-code">ModuleNotFoundError: No module named 'fastapi'</code>
+    </div>
+    <p><strong>Cause:</strong> Python dependencies not installed</p>
+    <p><strong>Solution:</strong></p>
+    <div class="code-block">cd backend
+pip install -r requirements.txt</div>
+
+    <hr>
+
+    <h3>Problem 5: "uvicorn: command not found"</h3>
+    <div class="error-box">
+        <strong>Error:</strong> <code class="inline-code">'uvicorn' is not recognized</code>
+    </div>
+    <p><strong>Solution 1:</strong> Install uvicorn</p>
+    <div class="code-block">pip install uvicorn</div>
+    <p><strong>Solution 2:</strong> Run as Python module</p>
+    <div class="code-block">python -m uvicorn main:app --reload</div>
+
+    <div class="page-break"></div>
+
+    <h2 id="checklist">✅ Final Verification Checklist</h2>
+
+    <h3>Database Setup:</h3>
+    <ul class="checklist">
+        <li>Logged into Supabase dashboard</li>
+        <li>Opened SQL Editor</li>
+        <li>Ran 001_complete_schema.sql successfully</li>
+        <li>Verified 5 tables exist:
+            <ul class="checklist">
+                <li>game_sessions</li>
+                <li>wbs_commitments</li>
+                <li>negotiation_history</li>
+                <li>agent_timeouts</li>
+                <li>user_analytics</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>Gemini API:</h3>
+    <ul class="checklist">
+        <li>Visited https://aistudio.google.com/apikey</li>
+        <li>Created or retrieved API key</li>
+        <li>Copied API key to clipboard</li>
+    </ul>
+
+    <h3>Backend Configuration:</h3>
+    <ul class="checklist">
+        <li>Opened backend/.env.local</li>
+        <li>Replaced placeholder with real API key</li>
+        <li>Saved file correctly</li>
+        <li>No quotes or spaces around key</li>
+    </ul>
+
+    <h3>Testing:</h3>
+    <ul class="checklist">
+        <li>Opened terminal in backend folder</li>
+        <li>Ran python test_setup.py</li>
+        <li>All tests show [OK]</li>
+        <li>No [FAIL] messages</li>
+    </ul>
+
+    <h3>Backend Server:</h3>
+    <ul class="checklist">
+        <li>Ran uvicorn main:app --reload</li>
+        <li>Server started successfully</li>
+        <li>Visited http://localhost:8000</li>
+        <li>Saw welcome message</li>
+        <li>Visited http://localhost:8000/docs</li>
+        <li>Saw 8 API endpoints listed</li>
+    </ul>
+
+    <hr>
+
+    <div class="success-box">
+        <h2>🎉 Setup Complete!</h2>
+        <p><strong>Congratulations!</strong> Your PM Simulator backend is now fully configured and running.</p>
+
+        <h3>What You've Accomplished:</h3>
+        <ul>
+            <li>✅ Imported complete database schema (5 tables)</li>
+            <li>✅ Configured Gemini AI integration</li>
+            <li>✅ Set up backend environment</li>
+            <li>✅ Verified all components working</li>
+            <li>✅ Started backend server</li>
+        </ul>
+
+        <h3>What You Can Do Now:</h3>
+        <ol>
+            <li><strong>Chat with AI Agents:</strong> Use the /api/chat endpoint</li>
+            <li><strong>Create Game Sessions:</strong> Initialize budget tracking</li>
+            <li><strong>Track Commitments:</strong> Accept supplier offers</li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <h2>📞 Support & Resources</h2>
+
+    <h3>Documentation Files:</h3>
+    <ul>
+        <li><code class="inline-code">docs/DATABASE_IMPLEMENTATION_GUIDE.md</code> - Full database reference</li>
+        <li><code class="inline-code">docs/BACKEND_API_COMPLETED.md</code> - Complete API documentation</li>
+        <li><code class="inline-code">QUICK_START_GUIDE.md</code> - 15-minute quick start</li>
+    </ul>
+
+    <h3>Important URLs:</h3>
+    <table>
+        <tr>
+            <th>Resource</th>
+            <th>URL</th>
+        </tr>
+        <tr>
+            <td>Supabase Dashboard</td>
+            <td>https://supabase.com/dashboard</td>
+        </tr>
+        <tr>
+            <td>Google AI Studio</td>
+            <td>https://aistudio.google.com/apikey</td>
+        </tr>
+        <tr>
+            <td>API Documentation</td>
+            <td>http://localhost:8000/docs</td>
+        </tr>
+        <tr>
+            <td>Backend Root</td>
+            <td>http://localhost:8000</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <div style="text-align: center; margin-top: 3em; padding: 2em; background: #f8fafc; border-radius: 8px;">
+        <p><strong>End of Setup Guide</strong></p>
+        <p>Version 1.0 | December 14, 2024</p>
+        <p>Total Setup Time: ~15 minutes</p>
+    </div>
+</body>
+</html>

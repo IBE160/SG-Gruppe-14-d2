@@ -10,11 +10,36 @@ To update the remote repository:
 
 4.  Send your changes: git push
 
+
+
+---
+STARTE BACKEND
+
+Denne er kun nødvendig for å gå til rootmappen:
+cd C:\Users\morte\Documents\GitHub\SG-Gruppe-14-d2
+
+.\.venv\Scripts\Activate.ps1
+cd backend
+uvicorn main:app --reload
+
+
+STARTE FRONTEND
+
+cd frontend
+npm run dev
+
 ---
 
-FIL ELLER MAPPE ER ØDELAGT - SKAL IKKE TIL MAIN BRANCH
-SCENARIO: Du har gjort feil på en mappe lokalt som har ødelagt hele flyten og det er behov for å slette den lokalt og pulle den fra main branch repositoriet. Tips til dette:
 
+JEG HAR GJORT EN FEIL LOKALT - What to do?
+Så lenge man ikke begynner å skrive "git add", "git commit" eller "git push" så kan man alltids bare skrive "git reset" så er du tilbake en clean versjon av repoet slik det var før du begynte det som ødela. 
+
+---
+
+FIL ELLER MAPPE ER ØDELAGT - Men du trenger å fetche filene på nytt
+SCENARIO: Du har gjort feil på en mappe lokalt som har ødelagt hele flyten og det er behov for å slette den lokalt og pulle den fra main branch repositoriet. 
+
+Tips til dette:
 For at en fil skal slettes i GitHub-repoet, må slettingen bli en del av en commit som du pusher. Å slette lokalt alene påvirker ikke remote. 
 
 Anbefalt (renest): slett med git rm
@@ -32,6 +57,9 @@ git push
 Hvis dere jobber med PR-flyt: gjør dette i en feature-branch, push, og lag PR til main (da skjer slettingen i main når PR merges).
 
 ---
+
+
+
 
 
 
