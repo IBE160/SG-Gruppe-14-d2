@@ -348,22 +348,29 @@ The PM Simulator project has successfully implemented core functionality and is 
 3. ⚠️ **Database Import Verification** - Confirm schema imported to Supabase production (30 minutes)
 4. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
 5. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (4-6 hours)
-6. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement timeout (3 hours)
-7. ❌ **Visualizations** - Gantt chart and precedence diagram not built (16-24 hours)
-8. ❌ **Export Functionality** - No session export to JSON/PDF (4-6 hours)
-9. ⚠️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
-10. ❌ **Automated Testing** - No unit/integration/E2E test suite (40+ hours)
+6. ❌ **Visualizations** - Gantt chart and precedence diagram not built (12-16 hours)
+7. ❌ **Export Functionality** - No session export to JSON/PDF (3-4 hours)
+8. ❌ **Automated Testing** - No unit/integration/E2E test suite (8-10 hours)
+
+**Nice to Have (If Time Permits):**
+9. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
+10. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
+11. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
 
 **Next Priority Actions (MVP Completion):**
 1. Verify database schema import in Supabase production instance
 2. Implement session completion flow (`/app/complete/page.tsx` + API endpoint)
 3. Add chat history loading from `negotiation_history` table
 4. Implement uncommit functionality for renegotiation
-5. Add timeline/dependency validation
-6. Build agent timeout countdown UI
+5. Add timeline/dependency validation (critical path algorithm)
+6. Build Gantt chart and precedence diagram visualizations
+7. Implement session export functionality
+8. Write automated test suite (backend + frontend)
 
-**Estimated time to MVP:** 20-30 hours of focused development work.
-**Estimated time to full POC with visualizations:** 40-55 hours.
+**Estimated time to MVP (required features only):** 29-38 hours of focused development work.
+**Estimated time with nice-to-have features:** 40-53 hours.
+
+**Recommended approach:** Team of 2-3 developers working in parallel (see `MVP_COMPLETION_ROADMAP_REVISED.md`)
 
 ---
 
