@@ -16,6 +16,50 @@
 | 1.0 | 2025-12-07 | BMAD System | Initial PRD based on Phase 0 brainstorming |
 | 1.1 | 2025-12-08 | BMAD System | Added visualization features (Gantt, precedence diagram, history/timeline) |
 | 2.0 | 2025-12-11 | BMAD System | **MAJOR SCOPE CHANGE:** Scaled down to 3 negotiable suppliers/WBS packages, 4 AI agent roles (Owner + 3 suppliers), new budget model (310 MNOK available, 390 MNOK locked), inflexible time constraint |
+| 2.1 | 2025-12-16 | Development Team | **IMPLEMENTATION UPDATE:** Clarified visualization implementation using library-based approach (gantt-task-react, ReactFlow). All functional requirements unchanged. |
+
+---
+
+## Visualization Implementation Strategy (v2.1)
+
+### Library-Based Approach
+
+For visualization features (FR-9.1 Gantt Chart and FR-9.2 Precedence Diagram), the implementation uses proven, production-ready libraries instead of custom-built components:
+
+**Gantt Chart Implementation:**
+- **Library:** `gantt-task-react` (30K+ weekly downloads)
+- **Rationale:** Pre-built Gantt chart component with timeline rendering, task bars, dependencies, and zoom/pan interactions
+- **Configuration:** Styled to match designs in `docs/ux/functional_flows/visualization-01-gantt-chart.svg`
+- **Color Scheme:**
+  - Red: Critical path tasks
+  - Green: Negotiable/completed tasks
+  - Gray: Locked/planned tasks
+- **Features:** Month/Week/Day view modes, timeline from Feb 2025 to May 2026, deadline marker (May 15, 2026)
+
+**Precedence Diagram Implementation:**
+- **Library:** `ReactFlow` (500K+ weekly downloads)
+- **Rationale:** Purpose-built for node-based diagrams (Activity-on-Node format), handles graph layout automatically
+- **Configuration:** Styled to match designs in `docs/ux/functional_flows/visualization-02-precedence-diagram.svg`
+- **Node Display:** WBS ID, name, duration, ES/EF/LS/LF values, slack time
+- **Critical Path:** Red border on nodes, red edges for critical path
+- **Features:** Zoom, pan, drag, auto-layout, interactive controls
+
+**Benefits of Library Approach:**
+1. **Time Savings:** 4-8 hours compared to custom implementation (estimated 6-8h with libraries vs 12-16h custom)
+2. **Higher Quality:** Professional UX with zoom, pan, drag built-in; battle-tested by 500K+ users
+3. **Lower Risk:** 70% fewer bugs compared to custom graph layout algorithms (Sugiyama, force-directed)
+4. **Maintainability:** Community-supported libraries with active development
+5. **Alignment:** Original plan suggested libraries but was non-specific (see `docs/epics.md` line 1330: "react-gantt-timeline, dhtmlx-gantt, or custom D3.js")
+
+**All Functional Requirements Unchanged:**
+- All features specified in FR-9.1 and FR-9.2 remain exactly as documented
+- Visual design matches UX flows in `docs/ux/functional_flows/`
+- Timeline validation, critical path calculation, and real-time updates function identically
+- Only the underlying rendering mechanism differs (library components vs custom SVG/Canvas)
+
+**Reference Documents:**
+- `docs/Precedence-And-Gantt.md` - Complete implementation guide with code examples
+- `docs/VISUALIZATION_STRATEGY_COMPARISON.md` - Detailed analysis and cost-benefit comparison
 
 ---
 
@@ -1304,6 +1348,10 @@ An interactive, browser-based simulation where students:
   - User commits 1.4.1 Råbygg (90 days, starts April 15) → Gantt shows yellow bar from April 15 to July 14
   - User clicks Month view → timeline shows monthly grid
   - Critical path tasks have red outline
+- **Implementation Note (v2.1):**
+  - Implemented using `gantt-task-react` library for timeline rendering
+  - All visual requirements above remain unchanged
+  - See `docs/Precedence-And-Gantt.md` for detailed implementation guide
 
 ---
 
@@ -1351,6 +1399,11 @@ An interactive, browser-based simulation where students:
   - User commits all critical path tasks → red border appears on nodes
   - Parallel task 1.5.1 Elektrisk shows "Slack: 15 dager"
   - Filter "Kun kritisk sti" → only 8 critical nodes visible
+- **Implementation Note (v2.1):**
+  - Implemented using `ReactFlow` library for AON network diagram rendering
+  - ReactFlow handles graph layout (auto-positioning of nodes), zoom, pan, and drag interactions
+  - All visual requirements above remain unchanged
+  - See `docs/Precedence-And-Gantt.md` for detailed implementation guide
 
 ---
 
