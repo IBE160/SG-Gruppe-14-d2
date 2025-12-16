@@ -150,7 +150,6 @@ An interactive, browser-based simulation where students:
 ---
 
 ## 3. Target Users
-
 ### 3.1 Primary User Persona: Sara - The Academic Student
 
 **Demographics:**
