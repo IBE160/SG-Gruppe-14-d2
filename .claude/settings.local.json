@@ -17,7 +17,15 @@
       "Bash(git status:*)",
       "Bash(ls:*)",
       "Bash(xmllint:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(pandoc --version:*)",
+      "Bash(start docs/DATABASE_IMPLEMENTATION_GUIDE.html)",
+      "Bash(start docs/SETUP_GUIDE_COMPLETE.html)",
+      "Bash(taskkill //F //PID 52472)",
+      "Bash(taskkill //F //PID 48288)",
+      "Bash(uvicorn:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

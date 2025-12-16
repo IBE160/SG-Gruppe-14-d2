@@ -1,0 +1,91 @@
+{
+  "agents": [
+    {
+      "id": "anne-lise-berg",
+      "name": "Anne-Lise Berg",
+      "role": "Prosjekteier (Kommune)",
+      "type": "owner",
+      "initials": "AB",
+      "description": "Representerer kommunen som prosjekteier. Kan godkjenne budsjettøkninger og omfangsreduksjoner, men ALDRI forlenge fristen.",
+      "capabilities": {
+        "can_increase_budget": true,
+        "can_extend_deadline": false,
+        "can_reduce_scope": true,
+        "can_adjust_quality": false
+      },
+      "negotiation_style": "strict_on_time",
+      "assigned_wbs": null,
+      "avatar_color": "#1e40af"
+    },
+    {
+      "id": "bjorn-eriksen",
+      "name": "Bjørn Eriksen",
+      "role": "Leverandør - Grunnarbeid",
+      "type": "supplier",
+      "initials": "BE",
+      "description": "Spesialist på grunnarbeid og tomteforberedelse. Starter med høyt tilbud, kan forhandles ned mot kvalitetsavveininger.",
+      "capabilities": {
+        "can_increase_budget": false,
+        "can_extend_deadline": false,
+        "can_reduce_scope": false,
+        "can_adjust_quality": true,
+        "can_adjust_price": true,
+        "can_adjust_duration": true
+      },
+      "negotiation_style": "price_quality_tradeoff",
+      "assigned_wbs": "1.3.1",
+      "avatar_color": "#059669",
+      "min_cost_multiplier": 0.85,
+      "max_cost_multiplier": 1.15
+    },
+    {
+      "id": "kari-andersen",
+      "name": "Kari Andersen",
+      "role": "Leverandør - Fundamentering",
+      "type": "supplier",
+      "initials": "KA",
+      "description": "Ekspert på fundamentarbeider. Kan levere raskere mot høyere pris (overtid).",
+      "capabilities": {
+        "can_increase_budget": false,
+        "can_extend_deadline": false,
+        "can_reduce_scope": false,
+        "can_adjust_quality": true,
+        "can_adjust_price": true,
+        "can_adjust_duration": true,
+        "can_expedite_for_premium": true
+      },
+      "negotiation_style": "time_cost_specialist",
+      "assigned_wbs": "1.3.2",
+      "avatar_color": "#dc2626",
+      "min_cost_multiplier": 0.90,
+      "max_cost_multiplier": 1.20
+    },
+    {
+      "id": "per-johansen",
+      "name": "Per Johansen",
+      "role": "Leverandør - Råbygg",
+      "type": "supplier",
+      "initials": "PJ",
+      "description": "Spesialist på råbygg og konstruksjon. Kan foreslå konkrete omfangsreduksjoner for å senke pris.",
+      "capabilities": {
+        "can_increase_budget": false,
+        "can_extend_deadline": false,
+        "can_reduce_scope": true,
+        "can_adjust_quality": true,
+        "can_adjust_price": true,
+        "can_adjust_duration": true
+      },
+      "negotiation_style": "scope_reduction_specialist",
+      "assigned_wbs": "1.4.1",
+      "avatar_color": "#7c3aed",
+      "min_cost_multiplier": 0.80,
+      "max_cost_multiplier": 1.10
+    }
+  ],
+  "metadata": {
+    "total_agents": 4,
+    "owner_count": 1,
+    "supplier_count": 3,
+    "negotiable_packages": ["1.3.1", "1.3.2", "1.4.1"]
+  }
+}

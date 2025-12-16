@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { AgentPrompt } from "./page";
 import { ChatInterface } from "@/components/chat-interface";
+import { sendChatMessage } from "@/lib/api/chat";
+import { createSession } from "@/lib/api/sessions";
+import type { ChatMessage, GameContext } from "@/types";
 
 interface ChatPageClientProps {
   prompts: AgentPrompt[];
@@ -14,12 +17,51 @@ interface Message {
   sender: "user" | "agent";
 }
 
+// Map agent titles to agent IDs
+const AGENT_TITLE_TO_ID: Record<string, string> = {
+  "Anne-Lise Berg": "anne-lise-berg",
+  "Bjørn Eriksen": "bjorn-eriksen",
+  "Kari Andersen": "kari-andersen",
+  "Per Johansen": "per-johansen",
+};
+
 export function ChatPageClient({ prompts }: ChatPageClientProps) {
   const [selectedAgent, setSelectedAgent] = useState<AgentPrompt | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Create session on mount
+  useEffect(() => {
+    const initializeSession = async () => {
+      try {
+        const session = await createSession();
+        setSessionId(session.id);
+        console.log("Session created:", session.id);
+      } catch (err) {
+        console.error("Failed to create session:", err);
+        setError("Kunne ikke opprette spilløkt. Vennligst last inn siden på nytt.");
+      }
+    };
+
+    initializeSession();
+  }, []);
 
   const handleSendMessage = async (messageText: string) => {
+    if (!sessionId || !selectedAgent) {
+      console.error("No session or agent selected");
+      return;
+    }
+
+    // Get agent ID from title
+    const agentId = AGENT_TITLE_TO_ID[selectedAgent.title];
+    if (!agentId) {
+      console.error("Unknown agent:", selectedAgent.title);
+      setError(`Ukjent agent: ${selectedAgent.title}`);
+      return;
+    }
+
     // Add user message to the chat
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -28,23 +70,57 @@ export function ChatPageClient({ prompts }: ChatPageClientProps) {
     };
     setMessages((prev) => [...prev, userMessage]);
     setIsLoading(true);
+    setError(null);
 
-    // --- Backend API call will go here ---
-    // For now, we'll just log to the console and simulate a delay
-    console.log("Sending message to agent:", selectedAgent?.title);
-    console.log("User Message:", messageText);
-    console.log("System Prompt:", selectedAgent?.content);
+    try {
+      // Convert messages to API format
+      const conversationHistory: ChatMessage[] = messages.map((msg) => ({
+        id: msg.id,
+        role: msg.sender,
+        content: msg.text,
+        timestamp: new Date().toISOString(),
+      }));
 
-    // Simulate a fake agent response
-    setTimeout(() => {
+      // Build game context (basic for now)
+      const gameContext: GameContext = {
+        total_budget: 700_000_000,
+        available_budget: 310_000_000,
+        locked_budget: 390_000_000,
+        current_budget_used: 0,
+        deadline_date: "2026-05-15",
+        committed_wbs: [],
+      };
+
+      // Send message to backend
+      const response = await sendChatMessage(
+        sessionId,
+        agentId,
+        messageText,
+        conversationHistory,
+        gameContext
+      );
+
+      // Add agent response to messages
       const agentResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: "This is a simulated response. The backend is not yet connected.",
+        id: `${Date.now()}-agent`,
+        text: response.response,
         sender: "agent",
       };
       setMessages((prev) => [...prev, agentResponse]);
+
+      console.log("AI Response received:", response);
+    } catch (err: any) {
+      console.error("Failed to send message:", err);
+
+      // Handle agent locked error
+      if (err.code === 'AGENT_LOCKED') {
+        setError(`${err.message} Tilgjengelig om ${err.minutes_remaining} minutter.`);
+      } else {
+        setError(err.message || "Kunne ikke sende melding. Vennligst prøv igjen.");
+      }
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const handleSelectAgent = (agent: AgentPrompt) => {
@@ -87,6 +163,21 @@ export function ChatPageClient({ prompts }: ChatPageClientProps) {
         <h2 className="text-xl font-bold">{selectedAgent.title}</h2>
         <div className="w-24"></div> {/* Spacer */}
       </div>
+
+      {/* Error Display */}
+      {error && (
+        <div className="mx-4 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+          {error}
+        </div>
+      )}
+
+      {/* Session Status */}
+      {!sessionId && (
+        <div className="mx-4 mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-800 text-sm">
+          Oppretter spilløkt...
+        </div>
+      )}
+
       <div className="flex-1">
         <ChatInterface
           messages={messages}
