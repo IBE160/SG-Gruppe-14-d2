@@ -51,8 +51,8 @@ export async function createSession(
     );
   }
 
-  const data: CreateSessionResponse = await response.json();
-  return data.session;
+  const data: GameSession = await response.json();
+  return data;
 }
 
 /**
@@ -128,8 +128,8 @@ export async function updateSession(
     );
   }
 
-  const data = await response.json();
-  return data.session;
+  const data: GameSession = await response.json();
+  return data;
 }
 
 /**
@@ -212,8 +212,8 @@ export async function getCommitments(sessionId: string): Promise<WBSCommitment[]
     );
   }
 
-  const data = await response.json();
-  return data.commitments || [];
+  const data: WBSCommitment[] = await response.json();
+  return data;
 }
 
 /**
@@ -288,6 +288,6 @@ export async function getUserSessions(): Promise<GameSession[]> {
     );
   }
 
-  const data = await response.json();
-  return data.sessions || [];
+  const data: GameSession[] = await response.json();
+  return data;
 }

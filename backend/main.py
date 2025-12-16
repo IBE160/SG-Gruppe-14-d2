@@ -51,79 +51,40 @@ def get_jwks():
 
 # --- Dependencies ---
 
+def get_db_client(token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> Client:
+    """
+    Creates a new Supabase client authenticated with the user's token.
+    This ensures RLS policies are applied correctly for database operations.
+    """
+    client = create_client(settings.SUPABASE_URL, settings.SUPABASE_ANON_KEY)
+    client.postgrest.auth(token.credentials)
+    return client
+
 def get_current_user(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     """
-    Decodes and verifies the JWT token using the Supabase JWKS.
+    Verifies the JWT token using the official Supabase client.
     Returns the user's data if the token is valid.
     """
     try:
-        jwks = get_jwks()
-        unverified_header = jwt.get_unverified_header(token.credentials)
-        kid = unverified_header.get("kid")
-
-        # Debug logging
-        print(f"[DEBUG] Token kid: {kid}")
-        print(f"[DEBUG] Available JWKS kids: {[k.get('kid') for k in jwks.get('keys', [])]}")
-
-        if not kid:
-            raise HTTPException(status_code=401, detail="Invalid token: 'kid' not found in header")
-
-        matching_key = None
-        for key in jwks["keys"]:
-            if key["kid"] == kid:
-                matching_key = key
-                break
-
-        if not matching_key:
-            print(f"[ERROR] No matching key found for kid: {kid}")
-            raise HTTPException(status_code=401, detail="Invalid token: Matching key not found in JWKS")
-
-        # Handle both RSA and EC keys
-        if matching_key["kty"] == "RSA":
-            jwk_key = {
-                "kty": matching_key["kty"],
-                "kid": matching_key["kid"],
-                "use": matching_key["use"],
-                "n": matching_key["n"],
-                "e": matching_key["e"],
-            }
-            algorithm = "RS256"
-        elif matching_key["kty"] == "EC":
-            jwk_key = {
-                "kty": matching_key["kty"],
-                "kid": matching_key["kid"],
-                "use": matching_key["use"],
-                "crv": matching_key["crv"],
-                "x": matching_key["x"],
-                "y": matching_key["y"],
-            }
-            algorithm = "ES256"
-        else:
-            raise HTTPException(status_code=401, detail=f"Unsupported key type: {matching_key['kty']}")
-
-        public_key = jwk.construct(jwk_key)
-
-        payload = jwt.decode(
-            token.credentials,
-            public_key,
-            algorithms=[algorithm],
-            audience="authenticated",
-            issuer=f"{settings.SUPABASE_URL}/auth/v1"
-        )
-
-        user_id = payload.get("sub")
-        if user_id is None:
-            raise HTTPException(status_code=401, detail="Invalid token: User ID not found")
+        # Use the official Supabase client to verify the user
+        # This makes a network call to Supabase Auth API to ensure the token is valid and not revoked
+        user_response = supabase.auth.get_user(token.credentials)
         
-        return {"id": user_id, "email": payload.get("email"), "role": payload.get("role")}
+        if not user_response or not user_response.user:
+             raise HTTPException(status_code=401, detail="Invalid token: User not found")
 
-    except JWTError as e:
-        raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
-    except HTTPException as e:
-        # Re-raise HTTPExceptions to avoid them being caught by the generic Exception
-        raise e
+        user = user_response.user
+        
+        # Construct the user dictionary expected by the endpoints
+        return {
+            "id": user.id, 
+            "email": user.email, 
+            "role": user.role
+        }
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
+        print(f"Auth Error (Supabase Client): {str(e)}")
+        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
 
 
 # --- Pydantic Models ---
@@ -256,7 +217,8 @@ def read_current_user(current_user: dict = Depends(get_current_user)):
 @app.post("/api/chat", response_model=ChatResponse, tags=["Chat"])
 async def chat_with_agent(
     request: ChatRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
 ):
     """
     Send a message to an AI agent and get a response.
@@ -271,6 +233,7 @@ async def chat_with_agent(
     Args:
         request: ChatRequest with session_id, agent_id, message, history, and context
         current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
 
     Returns:
         ChatResponse with agent's response and metadata
@@ -315,7 +278,7 @@ async def chat_with_agent(
         timestamp = datetime.utcnow().isoformat()
 
         try:
-            supabase.table("negotiation_history").insert({
+            db.table("negotiation_history").insert({
                 "session_id": request.session_id,
                 "agent_id": request.agent_id,
                 "agent_name": get_agent_name(request.agent_id),
@@ -380,7 +343,8 @@ def detect_disagreement(ai_response: str) -> bool:
 
 @app.get("/api/sessions", response_model=List[SessionResponse], tags=["Sessions"])
 def get_user_sessions(
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
 ):
     """
     Get all game sessions for the current user.
@@ -389,12 +353,13 @@ def get_user_sessions(
 
     Args:
         current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
 
     Returns:
         List of SessionResponse objects
     """
     try:
-        response = supabase.table("game_sessions")\
+        response = db.table("game_sessions")\
             .select("*")\
             .eq("user_id", current_user["id"])\
             .order("created_at", desc=True)\
@@ -413,7 +378,8 @@ def get_user_sessions(
 @app.post("/api/sessions", response_model=SessionResponse, tags=["Sessions"])
 def create_session(
     request: CreateSessionRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
 ):
     """
     Create a new game session.
@@ -423,6 +389,7 @@ def create_session(
     Args:
         request: CreateSessionRequest with budget parameters
         current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
 
     Returns:
         SessionResponse with the created session data
@@ -438,7 +405,8 @@ def create_session(
             "status": "in_progress",
         }
 
-        response = supabase.table("game_sessions").insert(session_data).execute()
+        # Use the authenticated client (db) instead of the global one (supabase)
+        response = db.table("game_sessions").insert(session_data).execute()
 
         if not response.data:
             raise HTTPException(
@@ -454,14 +422,15 @@ def create_session(
         print(f"Error creating session: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail="En feil oppstod ved opprettelse av spillsesjon"
+            detail=f"En feil oppstod ved opprettelse av spillsesjon: {str(e)}"
         )
 
 
 @app.get("/api/sessions/{session_id}", response_model=SessionResponse, tags=["Sessions"])
 def get_session(
     session_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
 ):
     """
     Get a specific game session by ID.
@@ -469,12 +438,13 @@ def get_session(
     Args:
         session_id: The UUID of the session
         current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
 
     Returns:
         SessionResponse with the session data
     """
     try:
-        response = supabase.table("game_sessions")\
+        response = db.table("game_sessions")\
             .select("*")\
             .eq("id", session_id)\
             .eq("user_id", current_user["id"])\
@@ -503,7 +473,8 @@ def get_session(
 def update_session(
     session_id: str,
     updates: Dict[str, Any],
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
 ):
     """
     Update a game session.
@@ -514,13 +485,14 @@ def update_session(
         session_id: The UUID of the session
         updates: Dictionary of fields to update
         current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
 
     Returns:
         SessionResponse with the updated session data
     """
     try:
         # Verify session belongs to user
-        existing = supabase.table("game_sessions")\
+        existing = db.table("game_sessions")\
             .select("id")\
             .eq("id", session_id)\
             .eq("user_id", current_user["id"])\
@@ -534,7 +506,7 @@ def update_session(
             )
 
         # Update the session
-        response = supabase.table("game_sessions")\
+        response = db.table("game_sessions")\
             .update(updates)\
             .eq("id", session_id)\
             .execute()
@@ -561,7 +533,8 @@ def update_session(
 def create_commitment(
     session_id: str,
     request: CreateCommitmentRequest,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
 ):
     """
     Create a WBS commitment (accept an offer).
@@ -576,13 +549,14 @@ def create_commitment(
         session_id: The UUID of the session
         request: CreateCommitmentRequest with commitment details
         current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
 
     Returns:
         CommitmentResponse with the created commitment
     """
     try:
         # Verify session belongs to user and get current budget
-        session_response = supabase.table("game_sessions")\
+        session_response = db.table("game_sessions")\
             .select("*")\
             .eq("id", session_id)\
             .eq("user_id", current_user["id"])\
@@ -608,7 +582,7 @@ def create_commitment(
             )
 
         # Check if this WBS area already committed
-        existing = supabase.table("wbs_commitments")\
+        existing = db.table("wbs_commitments")\
             .select("id")\
             .eq("session_id", session_id)\
             .eq("wbs_id", request.wbs_id)\
@@ -642,7 +616,7 @@ def create_commitment(
             "negotiated_scope": request.negotiated_scope,
         }
 
-        commitment_response = supabase.table("wbs_commitments")\
+        commitment_response = db.table("wbs_commitments")\
             .insert(commitment_data)\
             .execute()
 
@@ -653,7 +627,7 @@ def create_commitment(
             )
 
         # Update session budget
-        supabase.table("game_sessions")\
+        db.table("game_sessions")\
             .update({"current_budget_used": new_budget_used})\
             .eq("id", session_id)\
             .execute()
