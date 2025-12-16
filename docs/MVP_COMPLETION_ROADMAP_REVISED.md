@@ -1,0 +1,1482 @@
+# MVP Completion Roadmap (REVISED)
+## Nye Hædda Barneskole - Implementation Plan with ALL Requirements
+
+**Created:** December 16, 2025
+**Revision:** v2.0 (Updated with Gantt, Precedence, Tests, Chat Fix)
+**Deadline:** December 17, 2025 (End of Day)
+**Total Estimated Time:** 32-42 hours
+**Status:** 🚨 CRITICAL - 7 must-have features + visualizations + tests required
+
+---
+
+## 🎯 REVISED EXECUTIVE SUMMARY
+
+**Current State:** 8/15 PRD Must-Have features complete (53%)
+
+**MUST IMPLEMENT (blocking MVP):**
+1. ❌ Session completion flow with validation (4-6 hours)
+2. ❌ Session export (JSON download) (3-4 hours)
+3. ❌ Renegotiation (uncommit) capability (3-4 hours)
+4. ❌ Chat history loading from DB (2 hours) **[REQUIRED]**
+5. ❌ Gantt chart visualization (6-8 hours) **[REQUIRED]**
+6. ❌ Precedence diagram (6-8 hours) **[REQUIRED]**
+7. ❌ Automated tests (8-10 hours) **[REQUIRED]**
+
+**NICE TO HAVE (if time):**
+- ⏸️ Mobile optimization (8-12 hours)
+- ⏸️ Help documentation modal (1-2 hours)
+
+**Total Required Effort:** 32-42 hours
+**Team Recommendation:** 2-3 developers working in parallel
+
+---
+
+## 📅 IMPLEMENTATION STRATEGY
+
+### Option A: Parallel Development (Recommended)
+**Team of 3 developers:**
+- **Developer 1:** Core flow (items 1-3) - 10-14 hours
+- **Developer 2:** Visualizations (items 5-6) - 12-16 hours
+- **Developer 3:** Chat fix + Tests (items 4, 7) - 10-12 hours
+- **Timeline:** 14-16 hours with coordination
+- **Result:** Full MVP compliance
+
+### Option B: Sequential (Single Developer)
+**Minimum viable path:**
+- Tonight: Core flow (10-14 hours)
+- Tomorrow AM: Chat fix (2 hours)
+- Tomorrow PM: Basic Gantt (4 hours) + Basic tests (4 hours)
+- **Result:** Partial compliance, request extension for full completion
+
+---
+
+## 📋 DETAILED IMPLEMENTATION PLAN
+
+## PRIORITY 1: CORE FLOW (10-14 hours)
+
+### Task 1.1: Session Completion Flow with Validation (4-6 hours)
+
+#### Backend Implementation (2-3 hours)
+
+**File:** `backend/services/critical_path.py` (NEW)
+
+```python
+from datetime import datetime, timedelta
+from typing import List, Dict
+
+def calculate_critical_path(
+    wbs_items: List[Dict],
+    commitments: List[Dict],
+    start_date: str = "2025-01-15"
+) -> Dict:
+    """
+    Calculate critical path using Forward/Backward pass algorithm.
+
+    Returns:
+        {
+            "projected_completion_date": "2026-05-10",
+            "total_duration_days": 480,
+            "critical_path": ["1.3.1", "1.3.2", "1.4.1"],
+            "meets_deadline": True,
+            "days_before_deadline": 5
+        }
+    """
+    deadline = datetime.fromisoformat("2026-05-15")
+    project_start = datetime.fromisoformat(start_date)
+
+    # Build WBS lookup
+    wbs_map = {item["id"]: item for item in wbs_items}
+    commitment_map = {c["wbs_item_id"]: c for c in commitments}
+
+    # Forward pass: Calculate ES and EF
+    earliest_start = {}
+    earliest_finish = {}
+
+    def calc_earliest_start(wbs_id: str) -> datetime:
+        if wbs_id in earliest_start:
+            return earliest_start[wbs_id]
+
+        wbs = wbs_map[wbs_id]
+        dependencies = wbs.get("dependencies", [])
+
+        if not dependencies:
+            earliest_start[wbs_id] = project_start
+        else:
+            dep_finishes = [calc_earliest_finish(dep) for dep in dependencies]
+            earliest_start[wbs_id] = max(dep_finishes)
+
+        return earliest_start[wbs_id]
+
+    def calc_earliest_finish(wbs_id: str) -> datetime:
+        if wbs_id in earliest_finish:
+            return earliest_finish[wbs_id]
+
+        es = calc_earliest_start(wbs_id)
+
+        # Get duration from commitment or baseline
+        if wbs_id in commitment_map:
+            duration_days = int(commitment_map[wbs_id]["committed_duration_days"])
+        else:
+            duration_days = int(wbs_map[wbs_id]["baseline_duration"])
+
+        earliest_finish[wbs_id] = es + timedelta(days=duration_days)
+        return earliest_finish[wbs_id]
+
+    # Calculate for all tasks
+    for wbs_id in wbs_map.keys():
+        calc_earliest_finish(wbs_id)
+
+    # Project completion = maximum EF
+    projected_completion = max(earliest_finish.values())
+
+    # Backward pass: Calculate LS and LF
+    latest_finish = {}
+    latest_start = {}
+
+    # Initialize: All tasks must finish by project completion
+    for wbs_id in wbs_map.keys():
+        latest_finish[wbs_id] = projected_completion
+
+    def calc_latest_finish(wbs_id: str) -> datetime:
+        if wbs_id in latest_finish:
+            return latest_finish[wbs_id]
+
+        # Find all tasks that depend on this task
+        successors = [
+            task_id for task_id, task in wbs_map.items()
+            if wbs_id in task.get("dependencies", [])
+        ]
+
+        if not successors:
+            latest_finish[wbs_id] = projected_completion
+        else:
+            successor_starts = [calc_latest_start(succ) for succ in successors]
+            latest_finish[wbs_id] = min(successor_starts)
+
+        return latest_finish[wbs_id]
+
+    def calc_latest_start(wbs_id: str) -> datetime:
+        if wbs_id in latest_start:
+            return latest_start[wbs_id]
+
+        lf = calc_latest_finish(wbs_id)
+
+        if wbs_id in commitment_map:
+            duration_days = int(commitment_map[wbs_id]["committed_duration_days"])
+        else:
+            duration_days = int(wbs_map[wbs_id]["baseline_duration"])
+
+        latest_start[wbs_id] = lf - timedelta(days=duration_days)
+        return latest_start[wbs_id]
+
+    # Calculate for all tasks
+    for wbs_id in wbs_map.keys():
+        calc_latest_start(wbs_id)
+
+    # Identify critical path (slack = 0)
+    critical_path = []
+    for wbs_id in wbs_map.keys():
+        slack = (latest_start[wbs_id] - earliest_start[wbs_id]).days
+        if slack == 0:
+            critical_path.append(wbs_id)
+
+    total_duration = (projected_completion - project_start).days
+    meets_deadline = projected_completion <= deadline
+    days_diff = (deadline - projected_completion).days
+
+    return {
+        "projected_completion_date": projected_completion.isoformat(),
+        "total_duration_days": total_duration,
+        "critical_path": critical_path,
+        "meets_deadline": meets_deadline,
+        "days_before_deadline": days_diff,
+        "deadline": deadline.isoformat(),
+        "earliest_start": {k: v.isoformat() for k, v in earliest_start.items()},
+        "earliest_finish": {k: v.isoformat() for k, v in earliest_finish.items()},
+        "latest_start": {k: v.isoformat() for k, v in latest_start.items()},
+        "latest_finish": {k: v.isoformat() for k, v in latest_finish.items()}
+    }
+```
+
+**File:** `backend/main.py` (ADD ENDPOINT)
+
+```python
+from services.critical_path import calculate_critical_path
+
+@app.post("/api/sessions/{session_id}/validate")
+async def validate_session(
+    session_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: SupabaseClient = Depends(get_supabase_client)
+):
+    """Validate session against all constraints."""
+    # Fetch session
+    session_response = db.table("game_sessions").select("*").eq("id", session_id).eq("user_id", current_user["sub"]).execute()
+    if not session_response.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    session = session_response.data[0]
+
+    # Fetch commitments
+    commitments_response = db.table("wbs_commitments").select("*").eq("session_id", session_id).execute()
+    commitments = commitments_response.data
+
+    # Load WBS data
+    import json
+    with open("../frontend/public/data/wbs.json") as f:
+        wbs_data = json.load(f)
+
+    errors = []
+    warnings = []
+
+    # Check 1: Completeness
+    negotiable_wbs = [item for item in wbs_data["items"] if item.get("negotiable", False)]
+    committed_wbs_ids = [c["wbs_item_id"] for c in commitments]
+    missing_wbs = [item["id"] for item in negotiable_wbs if item["id"] not in committed_wbs_ids]
+
+    if missing_wbs:
+        errors.append({
+            "type": "completeness",
+            "message": f"Mangler WBS pakker: {', '.join(missing_wbs)}",
+            "missing_count": len(missing_wbs),
+            "missing_items": missing_wbs
+        })
+
+    # Check 2: Budget
+    total_budget = float(session["current_budget_used"]) + float(session["locked_budget"])
+    if total_budget > 700.0:
+        errors.append({
+            "type": "budget",
+            "message": f"Budsjett overskredet med {total_budget - 700.0:.2f} MNOK",
+            "current": total_budget,
+            "limit": 700.0,
+            "overage": total_budget - 700.0
+        })
+    elif total_budget > 680.0:
+        warnings.append({
+            "type": "budget",
+            "message": f"Budsjett på {(total_budget/700.0)*100:.1f}% kapasitet"
+        })
+
+    # Check 3: Timeline
+    timeline_result = calculate_critical_path(wbs_data["items"], commitments)
+
+    if not timeline_result["meets_deadline"]:
+        errors.append({
+            "type": "timeline",
+            "message": f"Prosjekt forsinket til {timeline_result['projected_completion_date'][:10]}",
+            "projected": timeline_result["projected_completion_date"],
+            "deadline": "2026-05-15",
+            "days_late": abs(timeline_result["days_before_deadline"])
+        })
+    elif timeline_result["days_before_deadline"] < 5:
+        warnings.append({
+            "type": "timeline",
+            "message": f"Tidsplan har liten buffer: bare {timeline_result['days_before_deadline']} dager før deadline"
+        })
+
+    is_valid = len(errors) == 0
+
+    # Update session if valid
+    if is_valid:
+        db.table("game_sessions").update({
+            "status": "completed",
+            "completed_at": "now()",
+            "projected_completion_date": timeline_result["projected_completion_date"]
+        }).eq("id", session_id).execute()
+
+    return {
+        "valid": is_valid,
+        "errors": errors,
+        "warnings": warnings,
+        "session_id": session_id,
+        "total_budget": total_budget,
+        "committed_items": len(commitments),
+        "timeline": timeline_result,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+```
+
+#### Frontend Implementation (2-3 hours)
+
+**File:** `frontend/components/validation-result-modal.tsx` (NEW)
+
+```typescript
+'use client'
+
+interface ValidationError {
+  type: string
+  message: string
+  current?: number
+  limit?: number
+  overage?: number
+  days_late?: number
+  missing_items?: string[]
+}
+
+interface ValidationResultModalProps {
+  errors: ValidationError[]
+  warnings: ValidationError[]
+  onClose: () => void
+}
+
+export function ValidationResultModal({
+  errors,
+  warnings,
+  onClose
+}: ValidationResultModalProps) {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+        <h2 className="text-2xl font-bold text-red-600 mb-4">
+          ❌ Validering Feilet
+        </h2>
+
+        <div className="space-y-4 mb-6">
+          {errors.map((error, idx) => (
+            <div key={idx} className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 rounded">
+              <p className="font-semibold text-red-800 dark:text-red-200 mb-2">
+                {error.type === 'budget' && '💰 Budsjett Overskredet'}
+                {error.type === 'completeness' && '📋 Manglende Pakker'}
+                {error.type === 'timeline' && '⏰ Tidsfrist Overskredet'}
+              </p>
+              <p className="text-red-700 dark:text-red-300">{error.message}</p>
+
+              {error.type === 'budget' && error.overage && (
+                <div className="mt-3 text-sm space-y-1">
+                  <p className="font-medium">Du må redusere kostnadene med <strong>{error.overage.toFixed(2)} MNOK</strong></p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    💡 Forslag: Reforhandle de dyreste pakkene eller fjern scope med eier
+                  </p>
+                </div>
+              )}
+
+              {error.type === 'completeness' && error.missing_items && (
+                <div className="mt-3 text-sm">
+                  <p className="font-medium">Manglende pakker:</p>
+                  <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
+                    {error.missing_items.map(item => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {error.type === 'timeline' && error.days_late && (
+                <div className="mt-3 text-sm">
+                  <p className="font-medium">{error.days_late} dager for sent</p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    💡 Forslag: Forhandel kortere leveringstid eller fjern avhengigheter
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {warnings.length > 0 && (
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-4 rounded">
+              <p className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">⚠️ Advarsler</p>
+              <ul className="space-y-1">
+                {warnings.map((warning, idx) => (
+                  <li key={idx} className="text-yellow-700 dark:text-yellow-300 text-sm">
+                    {warning.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={onClose}
+          className="w-full bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition"
+        >
+          Tilbake til Planlegging
+        </button>
+      </div>
+    </div>
+  )
+}
+```
+
+**File:** `frontend/components/success-modal.tsx` (NEW)
+
+```typescript
+'use client'
+
+interface SuccessModalProps {
+  sessionId: string
+  totalBudget: number
+  committedItems: number
+  projectedCompletion: string
+  daysBeforeDeadline: number
+  onExport: () => void
+  onNewGame: () => void
+}
+
+export function SuccessModal({
+  sessionId,
+  totalBudget,
+  committedItems,
+  projectedCompletion,
+  daysBeforeDeadline,
+  onExport,
+  onNewGame
+}: SuccessModalProps) {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full mx-4">
+        <h2 className="text-3xl font-bold text-green-600 mb-4">
+          🎉 Plan Godkjent!
+        </h2>
+
+        <div className="space-y-4 mb-6">
+          <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+            <p className="text-lg mb-2">
+              <strong>Total Kostnad:</strong> {totalBudget.toFixed(2)} MNOK
+              <span className="text-green-600 dark:text-green-400 ml-2 font-semibold">
+                (innenfor 700 MNOK budsjett)
+              </span>
+            </p>
+            <p className="text-lg">
+              <strong>Ferdigstillelse:</strong> {new Date(projectedCompletion).toLocaleDateString('nb-NO')}
+              <span className="text-green-600 dark:text-green-400 ml-2 font-semibold">
+                ({daysBeforeDeadline} dager før deadline)
+              </span>
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">WBS Pakker</p>
+              <p className="text-3xl font-bold">{committedItems}/15</p>
+            </div>
+
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Status</p>
+              <p className="text-2xl font-bold text-green-600">✓ Godkjent</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={onExport}
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition"
+          >
+            📥 Eksporter Økt
+          </button>
+
+          <button
+            onClick={onNewGame}
+            className="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-6 py-3 rounded-lg font-semibold transition"
+          >
+            🆕 Start Ny Økt
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+**File:** `frontend/app/dashboard/page.tsx` (MODIFY)
+
+Add submit button and validation logic:
+
+```typescript
+const [showSuccessModal, setShowSuccessModal] = useState(false)
+const [showErrorModal, setShowErrorModal] = useState(false)
+const [validationResult, setValidationResult] = useState<any>(null)
+
+const handleSubmitPlan = async () => {
+  const token = ... // get JWT token
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${sessionId}/validate`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+
+  const result = await response.json()
+  setValidationResult(result)
+
+  if (result.valid) {
+    setShowSuccessModal(true)
+  } else {
+    setShowErrorModal(true)
+  }
+}
+
+// In JSX:
+<button
+  onClick={handleSubmitPlan}
+  disabled={committedCount < 3}
+  className={`px-6 py-3 rounded-lg font-semibold transition ${
+    committedCount < 3
+      ? 'bg-gray-300 cursor-not-allowed'
+      : 'bg-green-600 hover:bg-green-700 text-white'
+  }`}
+>
+  {committedCount < 3 ? '⏳ Fullfør alle 3 pakker først' : '✅ Send Inn Plan'}
+</button>
+
+{showSuccessModal && validationResult && (
+  <SuccessModal
+    sessionId={sessionId}
+    totalBudget={validationResult.total_budget}
+    committedItems={validationResult.committed_items}
+    projectedCompletion={validationResult.timeline.projected_completion_date}
+    daysBeforeDeadline={validationResult.timeline.days_before_deadline}
+    onExport={handleExport}
+    onNewGame={handleNewGame}
+  />
+)}
+
+{showErrorModal && validationResult && (
+  <ValidationResultModal
+    errors={validationResult.errors}
+    warnings={validationResult.warnings}
+    onClose={() => setShowErrorModal(false)}
+  />
+)}
+```
+
+---
+
+### Task 1.2: Session Export (3-4 hours)
+
+**File:** `backend/main.py` (ADD ENDPOINT)
+
+```python
+@app.get("/api/sessions/{session_id}/export")
+async def export_session(
+    session_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: SupabaseClient = Depends(get_supabase_client)
+):
+    """Export complete session as JSON for coursework submission."""
+    # Fetch session
+    session_response = db.table("game_sessions").select("*").eq("id", session_id).eq("user_id", current_user["sub"]).execute()
+    if not session_response.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    session = session_response.data[0]
+
+    # Fetch commitments
+    commitments_response = db.table("wbs_commitments").select("*").eq("session_id", session_id).order("created_at").execute()
+    commitments = commitments_response.data
+
+    # Fetch negotiation history
+    history_response = db.table("negotiation_history").select("*").eq("session_id", session_id).order("created_at").execute()
+    chat_logs = history_response.data
+
+    # Load reference data
+    import json
+    with open("../frontend/public/data/wbs.json") as f:
+        wbs_data = json.load(f)
+    with open("../frontend/public/data/agents.json") as f:
+        agents_data = json.load(f)
+
+    # Calculate timeline
+    timeline_result = calculate_critical_path(wbs_data["items"], commitments)
+
+    # Build export
+    export_data = {
+        # Metadata
+        "export_version": "1.0",
+        "exported_at": datetime.utcnow().isoformat(),
+        "simulation_name": "Nye Hædda Barneskole PM Simulation",
+
+        # Session info
+        "session": {
+            "id": session_id,
+            "user_id": session["user_id"],
+            "created_at": session["created_at"],
+            "completed_at": session.get("completed_at"),
+            "status": session["status"]
+        },
+
+        # Budget metrics
+        "budget": {
+            "total_limit": 700.0,
+            "locked_budget": float(session["locked_budget"]),
+            "available_budget": float(session["available_budget"]),
+            "used_budget": float(session["current_budget_used"]),
+            "final_total": float(session["current_budget_used"]) + float(session["locked_budget"]),
+            "budget_percentage": ((float(session["current_budget_used"]) + float(session["locked_budget"])) / 700.0) * 100
+        },
+
+        # Timeline
+        "timeline": {
+            "deadline": "2026-05-15",
+            "projected_completion": timeline_result["projected_completion_date"],
+            "meets_deadline": timeline_result["meets_deadline"],
+            "days_before_deadline": timeline_result["days_before_deadline"],
+            "total_duration_days": timeline_result["total_duration_days"],
+            "critical_path": timeline_result["critical_path"]
+        },
+
+        # Commitments
+        "commitments": [
+            {
+                "wbs_item_id": c["wbs_item_id"],
+                "agent_id": c["agent_id"],
+                "baseline_cost": float(c["baseline_cost"]),
+                "committed_cost": float(c["committed_cost"]),
+                "baseline_duration": float(c["baseline_duration_days"]),
+                "committed_duration": float(c["committed_duration_days"]),
+                "cost_savings": float(c.get("cost_savings", 0)),
+                "quality_level": c.get("quality_level"),
+                "committed_at": c["created_at"]
+            }
+            for c in commitments
+        ],
+
+        # Negotiation history
+        "negotiation_history": [
+            {
+                "id": msg["id"],
+                "agent_id": msg["agent_id"],
+                "wbs_item_id": msg.get("wbs_item_id"),
+                "user_message": msg["user_message"],
+                "agent_response": msg["agent_response"],
+                "disagreement": msg.get("disagreement", False),
+                "timestamp": msg["created_at"]
+            }
+            for msg in chat_logs
+        ],
+
+        # Statistics
+        "statistics": {
+            "total_negotiations": len(chat_logs),
+            "total_commitments": len(commitments),
+            "negotiable_items_completed": len([c for c in commitments if c.get("negotiable", True)]),
+            "disagreement_count": sum(1 for msg in chat_logs if msg.get("disagreement")),
+            "total_cost_savings": sum(float(c.get("cost_savings", 0)) for c in commitments)
+        },
+
+        # Reference data (for instructor review)
+        "reference": {
+            "wbs_items": wbs_data["items"],
+            "agents": agents_data
+        }
+    }
+
+    return JSONResponse(content=export_data)
+```
+
+**Frontend Export Handler:**
+
+```typescript
+const handleExport = async () => {
+  const token = ... // get JWT token
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${sessionId}/export`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+
+  const exportData = await response.json()
+
+  // Create blob and download
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+    type: 'application/json'
+  })
+
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `nye-haedda-session-${sessionId}-${new Date().toISOString().split('T')[0]}.json`
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+```
+
+---
+
+### Task 1.3: Renegotiation (Uncommit) (3-4 hours)
+
+**File:** `backend/main.py` (ADD ENDPOINT)
+
+```python
+@app.delete("/api/sessions/{session_id}/commitments/{wbs_item_id}")
+async def uncommit_wbs_item(
+    session_id: str,
+    wbs_item_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: SupabaseClient = Depends(get_supabase_client)
+):
+    """Remove commitment and recalculate budget. Preserves chat history."""
+    # Verify session ownership
+    session_response = db.table("game_sessions").select("*").eq("id", session_id).eq("user_id", current_user["sub"]).execute()
+    if not session_response.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    session = session_response.data[0]
+
+    # Find commitment
+    commitment_response = db.table("wbs_commitments").select("*").eq("session_id", session_id).eq("wbs_item_id", wbs_item_id).execute()
+    if not commitment_response.data:
+        raise HTTPException(status_code=404, detail="Commitment not found")
+
+    commitment = commitment_response.data[0]
+    committed_cost = float(commitment["committed_cost"])
+
+    # Delete commitment
+    db.table("wbs_commitments").delete().eq("session_id", session_id).eq("wbs_item_id", wbs_item_id).execute()
+
+    # Update session budget
+    new_budget_used = float(session["current_budget_used"]) - committed_cost
+    db.table("game_sessions").update({
+        "current_budget_used": new_budget_used,
+        "status": "in_progress"  # Reset to in_progress if was completed
+    }).eq("id", session_id).execute()
+
+    # Chat history is NOT deleted - preserved for continued negotiation
+
+    return {
+        "message": "Commitment removed successfully",
+        "wbs_item_id": wbs_item_id,
+        "uncommitted_cost": committed_cost,
+        "new_budget_used": new_budget_used
+    }
+```
+
+**File:** `frontend/components/uncommit-modal.tsx` (NEW)
+
+```typescript
+'use client'
+
+interface UncommitModalProps {
+  wbsItem: any
+  commitment: any
+  onConfirm: () => void
+  onCancel: () => void
+}
+
+export function UncommitModal({
+  wbsItem,
+  commitment,
+  onConfirm,
+  onCancel
+}: UncommitModalProps) {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md">
+        <h3 className="text-xl font-bold mb-4">🔄 Fjern Forpliktelse?</h3>
+
+        <p className="text-gray-700 dark:text-gray-300 mb-4">
+          Dette vil fjerne <strong>{wbsItem.name}</strong> fra planen din og
+          redusere budsjettet med <strong>{commitment.committed_cost} MNOK</strong>.
+        </p>
+
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          💬 Samtalehistorikken blir bevart, så du kan fortsette forhandlingene.
+        </p>
+
+        <div className="flex gap-3">
+          <button
+            onClick={onCancel}
+            className="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-4 py-2 rounded-lg transition"
+          >
+            Avbryt
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex-1 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-semibold transition"
+          >
+            Fjern Forpliktelse
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+**Add to WBS Card:**
+
+```typescript
+{commitment && (
+  <>
+    <button
+      onClick={() => setShowUncommitModal(true)}
+      className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+    >
+      🔄 Reforhandle
+    </button>
+
+    {showUncommitModal && (
+      <UncommitModal
+        wbsItem={wbsItem}
+        commitment={commitment}
+        onConfirm={async () => {
+          await fetch(`/api/sessions/${sessionId}/commitments/${wbsItem.id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+          setShowUncommitModal(false)
+          // Refresh data
+          router.refresh()
+        }}
+        onCancel={() => setShowUncommitModal(false)}
+      />
+    )}
+  </>
+)}
+```
+
+---
+
+## PRIORITY 2: CHAT HISTORY FIX (2 hours)
+
+### Task 2.1: Load Chat History from Database
+
+**File:** `frontend/components/chat-interface.tsx` (MODIFY)
+
+```typescript
+useEffect(() => {
+  const loadChatHistory = async () => {
+    const token = ... // get JWT token
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${sessionId}/history?agent_id=${agentId}&wbs_item_id=${wbsId}`,
+      {
+        headers: { 'Authorization': `Bearer ${token}` }
+      }
+    )
+
+    if (response.ok) {
+      const history = await response.json()
+
+      // Convert to message format
+      const messages = history.flatMap((entry: any) => [
+        {
+          id: `${entry.id}-user`,
+          role: 'user',
+          content: entry.user_message,
+          timestamp: entry.created_at
+        },
+        {
+          id: `${entry.id}-agent`,
+          role: 'agent',
+          content: entry.agent_response,
+          timestamp: entry.created_at,
+          disagreement: entry.disagreement
+        }
+      ])
+
+      setMessages(messages)
+    }
+  }
+
+  loadChatHistory()
+}, [sessionId, agentId, wbsId])
+```
+
+**Backend:** Endpoint already exists (`GET /api/sessions/{id}/history`)
+
+---
+
+## PRIORITY 3: VISUALIZATIONS (12-16 hours)
+
+### Task 3.1: Gantt Chart (6-8 hours)
+
+**File:** `frontend/components/gantt-chart.tsx` (NEW)
+
+```typescript
+'use client'
+
+import { useMemo } from 'react'
+
+interface GanttChartProps {
+  wbsItems: any[]
+  commitments: any[]
+  timeline: any // from validation endpoint
+}
+
+export function GanttChart({ wbsItems, commitments, timeline }: GanttChartProps) {
+  const projectStart = new Date('2025-01-15')
+  const projectEnd = new Date('2026-05-15')
+  const today = new Date()
+
+  // Calculate total project duration in days
+  const totalDuration = Math.ceil((projectEnd.getTime() - projectStart.getTime()) / (1000 * 60 * 60 * 24))
+
+  // Helper: Convert date to pixel position
+  const dateToX = (date: Date) => {
+    const daysSinceStart = Math.ceil((date.getTime() - projectStart.getTime()) / (1000 * 60 * 60 * 24))
+    return (daysSinceStart / totalDuration) * 100 // percentage
+  }
+
+  // Build task list with dates
+  const tasks = useMemo(() => {
+    const commitmentMap = Object.fromEntries(
+      commitments.map(c => [c.wbs_item_id, c])
+    )
+
+    const earliestStart = timeline.earliest_start || {}
+    const earliestFinish = timeline.earliest_finish || {}
+    const criticalPath = timeline.critical_path || []
+
+    return wbsItems.map(item => {
+      const commitment = commitmentMap[item.id]
+      const start = earliestStart[item.id] ? new Date(earliestStart[item.id]) : null
+      const finish = earliestFinish[item.id] ? new Date(earliestFinish[item.id]) : null
+
+      return {
+        id: item.id,
+        name: item.name,
+        start,
+        finish,
+        isCritical: criticalPath.includes(item.id),
+        isCommitted: !!commitment,
+        isNegotiable: item.negotiable
+      }
+    }).filter(task => task.start && task.finish)
+  }, [wbsItems, commitments, timeline])
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
+      <h3 className="text-xl font-bold mb-4">Gantt Chart</h3>
+
+      {/* Timeline header */}
+      <div className="mb-4">
+        <div className="relative h-8 bg-gray-100 dark:bg-gray-700 rounded">
+          {/* Month markers */}
+          {Array.from({ length: 16 }, (_, i) => {
+            const monthDate = new Date(projectStart)
+            monthDate.setMonth(monthDate.getMonth() + i)
+            const x = dateToX(monthDate)
+
+            return (
+              <div
+                key={i}
+                className="absolute top-0 h-full border-l border-gray-300 dark:border-gray-600"
+                style={{ left: `${x}%` }}
+              >
+                <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
+                  {monthDate.toLocaleDateString('nb-NO', { month: 'short', year: '2-digit' })}
+                </span>
+              </div>
+            )
+          })}
+
+          {/* Today marker */}
+          {today >= projectStart && today <= projectEnd && (
+            <div
+              className="absolute top-0 h-full border-l-2 border-blue-500"
+              style={{ left: `${dateToX(today)}%` }}
+            >
+              <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold ml-1">
+                Idag
+              </span>
+            </div>
+          )}
+
+          {/* Deadline marker */}
+          <div
+            className="absolute top-0 h-full border-l-2 border-red-500"
+            style={{ left: '100%' }}
+          >
+            <span className="text-xs text-red-600 font-semibold ml-1">
+              Deadline
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Tasks */}
+      <div className="space-y-2">
+        {tasks.map((task, idx) => {
+          const startX = dateToX(task.start!)
+          const finishX = dateToX(task.finish!)
+          const width = finishX - startX
+
+          return (
+            <div key={task.id} className="relative">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-sm font-mono text-gray-600 dark:text-gray-400 w-16">
+                  {task.id}
+                </span>
+                <span className="text-sm flex-1">{task.name}</span>
+                {task.isCritical && (
+                  <span className="text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-1 rounded">
+                    Kritisk
+                  </span>
+                )}
+              </div>
+
+              <div className="relative h-8 bg-gray-100 dark:bg-gray-700 rounded">
+                <div
+                  className={`absolute top-1/2 -translate-y-1/2 h-6 rounded ${
+                    task.isCritical
+                      ? 'bg-red-500'
+                      : task.isNegotiable
+                      ? 'bg-green-500'
+                      : 'bg-gray-400'
+                  } ${!task.isCommitted && 'opacity-50 border-2 border-dashed border-current'}`}
+                  style={{
+                    left: `${startX}%`,
+                    width: `${width}%`
+                  }}
+                >
+                  {task.isCommitted && (
+                    <div className="h-full flex items-center justify-center text-white text-xs font-semibold">
+                      {Math.ceil((task.finish!.getTime() - task.start!.getTime()) / (1000 * 60 * 60 * 24))}d
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="mt-6 flex gap-4 text-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-red-500 rounded"></div>
+          <span>Kritisk sti</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-green-500 rounded"></div>
+          <span>Forhandlet</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-gray-400 rounded"></div>
+          <span>Låst</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-gray-400 opacity-50 border-2 border-dashed border-gray-400 rounded"></div>
+          <span>Ikke forpliktet</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+---
+
+### Task 3.2: Precedence Diagram (6-8 hours)
+
+**File:** `frontend/components/precedence-diagram.tsx` (NEW)
+
+```typescript
+'use client'
+
+import { useMemo } from 'react'
+
+interface PrecedenceDiagramProps {
+  wbsItems: any[]
+  timeline: any
+}
+
+export function PrecedenceDiagram({ wbsItems, timeline }: PrecedenceDiagramProps) {
+  const { nodes, edges } = useMemo(() => {
+    const criticalPath = timeline.critical_path || []
+    const earliestStart = timeline.earliest_start || {}
+    const earliestFinish = timeline.earliest_finish || {}
+    const latestStart = timeline.latest_start || {}
+    const latestFinish = timeline.latest_finish || {}
+
+    // Build nodes
+    const nodes = wbsItems.map((item, idx) => {
+      const es = earliestStart[item.id] ? Math.ceil((new Date(earliestStart[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24)) : 0
+      const ef = earliestFinish[item.id] ? Math.ceil((new Date(earliestFinish[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24)) : 0
+      const ls = latestStart[item.id] ? Math.ceil((new Date(latestStart[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24)) : 0
+      const lf = latestFinish[item.id] ? Math.ceil((new Date(latestFinish[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24)) : 0
+      const slack = ls - es
+
+      return {
+        id: item.id,
+        name: item.name,
+        duration: ef - es,
+        es,
+        ef,
+        ls,
+        lf,
+        slack,
+        isCritical: criticalPath.includes(item.id),
+        dependencies: item.dependencies || [],
+        // Layout position (simplified grid layout)
+        x: (idx % 5) * 200 + 50,
+        y: Math.floor(idx / 5) * 150 + 50
+      }
+    })
+
+    // Build edges
+    const edges: any[] = []
+    nodes.forEach(node => {
+      node.dependencies.forEach((depId: string) => {
+        const fromNode = nodes.find(n => n.id === depId)
+        if (fromNode) {
+          edges.push({
+            from: fromNode.id,
+            to: node.id,
+            fromX: fromNode.x + 160,
+            fromY: fromNode.y + 40,
+            toX: node.x,
+            toY: node.y + 40,
+            isCritical: fromNode.isCritical && node.isCritical
+          })
+        }
+      })
+    })
+
+    return { nodes, edges }
+  }, [wbsItems, timeline])
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 overflow-auto">
+      <h3 className="text-xl font-bold mb-4">Precedence Diagram (AON)</h3>
+
+      <svg
+        width="1000"
+        height={Math.max(500, Math.ceil(nodes.length / 5) * 150 + 100)}
+        className="border border-gray-200 dark:border-gray-700 rounded"
+      >
+        {/* Edges (arrows) */}
+        {edges.map((edge, idx) => (
+          <g key={idx}>
+            <line
+              x1={edge.fromX}
+              y1={edge.fromY}
+              x2={edge.toX}
+              y2={edge.toY}
+              stroke={edge.isCritical ? '#ef4444' : '#9ca3af'}
+              strokeWidth={edge.isCritical ? 3 : 2}
+              markerEnd="url(#arrowhead)"
+            />
+          </g>
+        ))}
+
+        {/* Arrow marker */}
+        <defs>
+          <marker
+            id="arrowhead"
+            markerWidth="10"
+            markerHeight="10"
+            refX="9"
+            refY="3"
+            orient="auto"
+          >
+            <polygon points="0 0, 10 3, 0 6" fill="#9ca3af" />
+          </marker>
+        </defs>
+
+        {/* Nodes */}
+        {nodes.map(node => (
+          <g key={node.id}>
+            {/* Node box */}
+            <rect
+              x={node.x}
+              y={node.y}
+              width="160"
+              height="80"
+              fill={node.isCritical ? '#fee2e2' : '#f3f4f6'}
+              stroke={node.isCritical ? '#ef4444' : '#9ca3af'}
+              strokeWidth={node.isCritical ? 3 : 2}
+              rx="4"
+            />
+
+            {/* Node ID */}
+            <text
+              x={node.x + 80}
+              y={node.y + 20}
+              textAnchor="middle"
+              className="text-sm font-bold"
+              fill={node.isCritical ? '#991b1b' : '#374151'}
+            >
+              {node.id}
+            </text>
+
+            {/* Node name */}
+            <text
+              x={node.x + 80}
+              y={node.y + 38}
+              textAnchor="middle"
+              className="text-xs"
+              fill="#6b7280"
+            >
+              {node.name.length > 18 ? node.name.substring(0, 18) + '...' : node.name}
+            </text>
+
+            {/* ES/EF/LS/LF */}
+            <text
+              x={node.x + 5}
+              y={node.y + 55}
+              className="text-xs"
+              fill="#6b7280"
+            >
+              ES:{node.es} EF:{node.ef}
+            </text>
+            <text
+              x={node.x + 5}
+              y={node.y + 70}
+              className="text-xs"
+              fill="#6b7280"
+            >
+              LS:{node.ls} LF:{node.lf}
+            </text>
+
+            {/* Slack */}
+            {node.slack > 0 && (
+              <text
+                x={node.x + 155}
+                y={node.y + 70}
+                textAnchor="end"
+                className="text-xs font-semibold"
+                fill="#059669"
+              >
+                S:{node.slack}
+              </text>
+            )}
+            {node.slack === 0 && (
+              <text
+                x={node.x + 155}
+                y={node.y + 70}
+                textAnchor="end"
+                className="text-xs font-semibold"
+                fill="#dc2626"
+              >
+                KRITISK
+              </text>
+            )}
+          </g>
+        ))}
+      </svg>
+
+      {/* Legend */}
+      <div className="mt-4 flex gap-4 text-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-12 h-8 bg-red-100 border-2 border-red-500 rounded"></div>
+          <span>Kritisk sti</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-12 h-8 bg-gray-100 border-2 border-gray-400 rounded"></div>
+          <span>Ikke-kritisk</span>
+        </div>
+        <div>
+          <strong>ES</strong>=Tidligst start, <strong>EF</strong>=Tidligst slutt, <strong>LS</strong>=Senest start, <strong>LF</strong>=Senest slutt, <strong>S</strong>=Slakk
+        </div>
+      </div>
+    </div>
+  )
+}
+```
+
+**Add tabs to Dashboard:**
+
+```typescript
+const [activeTab, setActiveTab] = useState<'overview' | 'gantt' | 'precedence'>('overview')
+
+// In JSX:
+<div className="flex gap-2 mb-4">
+  <button
+    onClick={() => setActiveTab('overview')}
+    className={activeTab === 'overview' ? 'tab-active' : 'tab'}
+  >
+    Oversikt
+  </button>
+  <button
+    onClick={() => setActiveTab('gantt')}
+    className={activeTab === 'gantt' ? 'tab-active' : 'tab'}
+  >
+    Gantt Chart
+  </button>
+  <button
+    onClick={() => setActiveTab('precedence')}
+    className={activeTab === 'precedence' ? 'tab-active' : 'tab'}
+  >
+    Precedensdiagram
+  </button>
+</div>
+
+{activeTab === 'overview' && <DashboardOverview />}
+{activeTab === 'gantt' && <GanttChart wbsItems={wbsItems} commitments={commitments} timeline={timeline} />}
+{activeTab === 'precedence' && <PrecedenceDiagram wbsItems={wbsItems} timeline={timeline} />}
+```
+
+---
+
+## PRIORITY 4: AUTOMATED TESTS (8-10 hours)
+
+### Task 4.1: Backend Tests (4 hours)
+
+**File:** `backend/tests/test_validation.py` (NEW)
+
+```python
+import pytest
+from fastapi.testclient import TestClient
+from main import app
+
+client = TestClient(app)
+
+def test_validate_session_success():
+    """Test successful validation."""
+    # Create test session with valid data
+    session_id = "test-session-123"
+
+    response = client.post(
+        f"/api/sessions/{session_id}/validate",
+        headers={"Authorization": "Bearer test-token"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["valid"] == True
+    assert len(data["errors"]) == 0
+
+def test_validate_session_over_budget():
+    """Test validation fails when budget exceeded."""
+    session_id = "test-session-over-budget"
+
+    response = client.post(
+        f"/api/sessions/{session_id}/validate",
+        headers={"Authorization": "Bearer test-token"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["valid"] == False
+    assert any(e["type"] == "budget" for e in data["errors"])
+
+def test_export_session():
+    """Test session export."""
+    session_id = "test-session-123"
+
+    response = client.get(
+        f"/api/sessions/{session_id}/export",
+        headers={"Authorization": "Bearer test-token"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "export_version" in data
+    assert "session" in data
+    assert "budget" in data
+    assert "commitments" in data
+    assert "negotiation_history" in data
+
+def test_uncommit_wbs_item():
+    """Test uncommitting a WBS item."""
+    session_id = "test-session-123"
+    wbs_id = "1.3.1"
+
+    response = client.delete(
+        f"/api/sessions/{session_id}/commitments/{wbs_id}",
+        headers={"Authorization": "Bearer test-token"}
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["wbs_item_id"] == wbs_id
+    assert "uncommitted_cost" in data
+    assert "new_budget_used" in data
+```
+
+### Task 4.2: Frontend Tests (4 hours)
+
+**File:** `frontend/__tests__/dashboard.test.tsx` (NEW)
+
+```typescript
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import Dashboard from '@/app/dashboard/page'
+
+describe('Dashboard', () => {
+  it('displays budget correctly', () => {
+    render(<Dashboard />)
+
+    expect(screen.getByText(/310.*MNOK/i)).toBeInTheDocument()
+    expect(screen.getByText(/700.*MNOK/i)).toBeInTheDocument()
+  })
+
+  it('shows submit button when 3 items committed', async () => {
+    render(<Dashboard />)
+
+    // Simulate 3 commitments
+    // ...
+
+    const submitButton = screen.getByText(/Send Inn Plan/i)
+    expect(submitButton).toBeEnabled()
+  })
+
+  it('validates plan on submit', async () => {
+    const user = userEvent.setup()
+    render(<Dashboard />)
+
+    const submitButton = screen.getByText(/Send Inn Plan/i)
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Plan Godkjent/i)).toBeInTheDocument()
+    })
+  })
+})
+```
+
+---
+
+## ✅ COMPLETION CHECKLIST
+
+### Tonight (10-14 hours)
+- [ ] Backend: critical_path.py service
+- [ ] Backend: POST /api/sessions/{id}/validate
+- [ ] Backend: GET /api/sessions/{id}/export
+- [ ] Backend: DELETE /api/sessions/{id}/commitments/{wbs_id}
+- [ ] Frontend: validation-result-modal.tsx
+- [ ] Frontend: success-modal.tsx
+- [ ] Frontend: uncommit-modal.tsx
+- [ ] Frontend: Submit button + handlers
+- [ ] Frontend: Export handler
+- [ ] Testing: Core flow works end-to-end
+
+### Tomorrow (14-18 hours)
+- [ ] Frontend: Load chat history on mount
+- [ ] Frontend: gantt-chart.tsx component
+- [ ] Frontend: precedence-diagram.tsx component
+- [ ] Frontend: Dashboard tabs (overview/gantt/precedence)
+- [ ] Backend: Test suite (validation, export, uncommit)
+- [ ] Frontend: Test suite (dashboard, chat, modals)
+- [ ] Integration testing: Full user journey
+- [ ] Final testing: All features work
+
+---
+
+## 🚀 RECOMMENDED TEAM SPLIT
+
+**Developer 1 (Backend Focus):**
+- Critical path algorithm
+- All 3 backend endpoints
+- Backend tests
+- ~12-14 hours
+
+**Developer 2 (Frontend Core):**
+- All modals (validation, success, uncommit)
+- Submit button + logic
+- Export handler
+- Chat history loading
+- ~8-10 hours
+
+**Developer 3 (Frontend Visualizations):**
+- Gantt chart component
+- Precedence diagram component
+- Dashboard tabs
+- Frontend tests
+- ~12-14 hours
+
+**Total Team Time:** ~32-38 hours (parallelized to ~14-16 hours)
+
+---
+
+**Status:** Ready for implementation
+**Next Step:** Assign tasks and begin development
+**Goal:** MVP-ready by December 17 EOD
