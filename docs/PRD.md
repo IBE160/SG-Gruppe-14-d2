@@ -1407,72 +1407,127 @@ An interactive, browser-based simulation where students:
 
 ---
 
-**FR-9.3: History/Timeline View**
-- **Priority:** Should Have
-- **Description:** Version control system showing all plan changes over time with before/after comparison
+**FR-9.3: History/Timeline View (Simplified Contract Timeline)**
+- **Priority:** Must Have (v2.1 Dec 17, 2025: Scope reduced to contract acceptance snapshots only)
+- **Description:** Contract acceptance timeline showing budget/timeline impact for each negotiable package, starting with a baseline snapshot showing the 12 locked packages
+- **Scope Change Rationale:**
+  - Original FR-9.3 specified full version control (all negotiations, uncommits, etc.)
+  - **Simplified approach:** Track only contract acceptances (1 baseline + contracts accepted)
+  - **Why:** POC scope = 3 negotiable packages → maximum 3-10 meaningful snapshots typically
+  - **Pedagogical value:** Students see impact of each accepted contract on budget/timeline/diagrams
+  - **Future-proof:** 100 snapshot limit supports scaling to 20+ negotiable packages with renegotiations
 - **Detailed Requirements:**
   - Accessible via "🕒 Historikk" button in top-right navigation (all views)
-  - Opens side panel overlaying current view
-  - **Left sidebar (400px):**
-    - Timeline list of all events (commits, uncommits, negotiations)
-    - Each event shows:
-      - Version number badge (1, 2, 3...)
-      - Event type icon (💬 negotiation, ✓ commit, 🔄 uncommit, ⚠️ validation)
-      - Title: "Forhandling med [Supplier]" or "Fullført: [WBS ID]"
-      - Key changes: Old value → New value
-      - Timestamp: Relative (e.g., "30 min siden") or absolute
-    - Filter buttons: All / Negotiations / Plan changes
-    - Current event highlighted in blue
-    - Vertical timeline line connecting events
-  - **Right panel (comparison view):**
-    - Split screen: "Før (Versjon X)" vs "Etter (Versjon Y)"
-    - Toggle views: Gantt (default) / Precedence / Table
-    - Summary stats at top:
-      - Before: Total cost, End date (with ✓ or ❌)
-      - After: Total cost, End date (with ✓ or ❌)
-    - **Gantt comparison:**
-      - Timeline showing changed tasks
-      - Red bar: Old values (removed)
-      - Green bar: New values (added)
-      - Savings indicator: "-X MNOK, -Y dager"
-      - Collapsed section for unchanged tasks
-    - **Cascade effects panel (blue):**
-      - Numbered list (1-5) showing impacts:
-        - End date change
-        - Budget change
-        - Critical path change
-        - Dependent task shifts
-        - Validation status change
-    - **Change summary stats:**
-      - Economic impact: +/- X MNOK (Y%)
-      - Time impact: +/- X dager (Y%)
+  - Opens side panel overlaying current view (slide-in from right, 300ms animation)
+  - **Left sidebar (420px) - Contract Timeline:**
+    - **Version 0 (Baseline) - Auto-created at session start:**
+      - Badge: "Versjon 0" (blue background)
+      - Label: "Startposisjon - Baseline"
+      - Details: "12 kontraktfestede pakker"
+      - Budget: "390 MNOK låst, 310 MNOK tilgjengelig"
+      - Timestamp: Session creation time
+      - **Always listed first** (default selected if no contracts accepted yet)
+    - **Versions 1-100 (Contract Acceptances) - Auto-created on each POST /api/sessions/{id}/commitments:**
+      - Badge: "Versjon N" (green if completed, gray if pending/future)
+      - Icon: ✓ CheckCircle (green) for completed, ○ outline for pending
+      - Label: "✓ WBS X.X.X - [Package Name]" or "(Venter...)" if not yet negotiated
+      - Details: "[Supplier Name]", "X MNOK, Y dager"
+      - Timestamp: Contract acceptance time (relative: "30 min siden" or absolute)
+      - Click to select and show in comparison view
+    - **Pagination (Performance Optimization):**
+      - **Initial load:** Latest 5 snapshots only (GET /api/sessions/{id}/snapshots?limit=5&offset=0)
+      - **"Load 10 more" button:** Loads next 10 snapshots (offset increments)
+      - **"Show full history" button:** Loads all snapshots (appears after 15+ loaded)
+      - **Virtualized scrolling:** Only render visible items (React Virtualized or TanStack Virtual)
+    - Vertical timeline line connecting versions (gray-300, 2px)
+    - Filter dropdown: "Alle kontrakter" (simple, no complex filtering)
+    - Total count: "(X av Y kontrakter akseptert)" at bottom (e.g., "1 av 3")
+  - **Right panel (comparison view) - Tabs:**
+    - Three tabs: "📊 Oversikt" (default), "📈 Gantt", "🔀 Presedensdiagram"
+    - Active tab: bg-blue-600 text-white
+    - **Tab 1: Oversikt (Summary Stats)**
+      - Budget breakdown card: Kontraktfestet, Tilgjengelig, Total budsjett (color-coded)
+      - Timeline card: Prosjektslutt (estimated), Days before/after deadline, validation icon (✓/❌)
+      - Mini Gantt preview (simplified): Feb 2025 - May 2026 timeline, locked tasks (gray bars), negotiable tasks (dotted outline → green when committed), deadline marker (red dashed line)
+      - Key insights panel (blue background): Budget constraint explanation (310 MNOK, 3 packages, 35 MNOK deficit), deadline constraint (inflexible, cannot extend)
+    - **Tab 2: Gantt (When contract selected)**
+      - Side-by-side mini Gantt charts: "Før (Versjon N-1)" vs "Etter (Versjon N)"
+      - Highlight changed task in green
+      - Show deltas: "+105 MNOK", "+60 dager på kritisk sti"
+    - **Tab 3: Presedensdiagram (When contract selected)**
+      - Side-by-side precedence diagrams
+      - Highlight newly committed node in green
+      - Show critical path changes (if any)
   - **Action buttons:**
-    - "◄ Gå til Versjon X" (navigate to specific version)
-    - "Sammenlign andre versjoner" (select different versions to compare)
-    - "✓ Bruk Versjon Y (nåværende)" (confirm current version)
-  - **Export:**
-    - "📥 Eksporter fullstendig historikk (JSON)"
-    - "📊 Generer endringsrapport (PDF)"
-  - Close button: "✕ Lukk historikk" (top right, red)
-- **Data Structure:**
+    - "← Tilbake til Dashboard" (secondary button, left)
+    - "Start Forhandling →" (primary button, center) - only visible on Version 0
+    - "Eksporter fullstendig historikk (JSON)" (secondary button, right) - disabled until ≥1 contract accepted
+  - Close button: "✕ Lukk" (top right, red)
+- **Automatic Snapshot Creation:**
+  - **Trigger:** POST /api/sessions/{id}/commitments (when user clicks "✓ Godta" on offer)
+  - **Backend logic:**
+    1. Save commitment to `wbs_commitments` table
+    2. Update `game_sessions.budget_used`
+    3. **Create snapshot:** INSERT INTO `session_snapshots` with version number, budget before/after, contract details, gantt/precedence state (JSONB)
+  - **Frontend:** Real-time update if history panel is open (polling every 5s or WebSocket)
+- **Data Structure (Simplified):**
   ```javascript
-  session.version_history = [
-    {
-      version: 1,
-      timestamp: "2025-03-15T10:00:00Z",
-      action: "commit",
-      wbs_id: "1.3.1",
-      changes: {cost: 105, duration: 60},
-      snapshot: {current_plan: {...}, total_budget_used: 105, projected_end_date: "..."}
-    },
-    // ... all versions
-  ]
+  session_snapshot = {
+    id: uuid,
+    session_id: uuid,
+    version: number,               // 0, 1, 2, ... 100 (auto-increment)
+    label: string,                 // "Baseline" | "WBS 1.3.1 - Grunnarbeid"
+    snapshot_type: "baseline" | "contract_acceptance",
+
+    // Budget state
+    budget_committed: bigint,      // NOK in øre (390000000 = 390 MNOK)
+    budget_available: bigint,      // NOK in øre (310000000 = 310 MNOK)
+    budget_total: bigint,          // Always 700000000 (700 MNOK)
+
+    // Contract details (null for baseline)
+    contract_wbs_id: string | null,        // "1.3.1"
+    contract_cost: bigint | null,          // NOK in øre
+    contract_duration: integer | null,     // days
+    contract_supplier: string | null,      // "Bjørn Eriksen AS"
+
+    // Timeline state
+    project_end_date: date,                // "2025-08-30"
+    days_before_deadline: integer,         // 258 (positive = before, negative = after)
+
+    // Visualization snapshots (JSONB for compression)
+    gantt_state: jsonb,                    // gantt-task-react data structure
+    precedence_state: jsonb,                // ReactFlow nodes/edges
+
+    timestamp: timestamptz,
+    created_at: timestamptz
+  }
   ```
-- **Storage Limit:** Keep last 50 versions (auto-prune older versions)
+- **Storage Limit & Scalability:**
+  - **Maximum:** 100 snapshots per session
+  - **Typical usage (POC):** 4-10 snapshots (1 baseline + 3 contracts + 0-6 renegotiations)
+  - **Future scale (20 packages):** ~60 snapshots (1 baseline + 20 contracts + ~40 renegotiations)
+  - **Storage per snapshot:** ~15 KB (current), ~90 KB (future with 100 WBS items)
+  - **Total per session:** 1.5 MB (100 snapshots × 15 KB) - negligible storage impact
+  - **Auto-archive:** When > 100 snapshots, move oldest to `session_snapshots_archive` table (sliding window)
+  - **Cleanup policy:** Delete snapshots for sessions older than 2 years (configurable)
+- **Database Table:** `session_snapshots` (see schema in database/migrations/)
+- **API Endpoints:**
+  - `GET /api/sessions/{id}/snapshots?limit=5&offset=0` - Fetch snapshots with pagination
+  - `GET /api/sessions/{id}/snapshots/{version}` - Fetch specific snapshot
+  - `GET /api/sessions/{id}/snapshots/export` - Export all snapshots as JSON
 - **Acceptance Test:**
-  - User commits 5 WBS items → history shows 5 events
-  - User clicks event 3 → comparison shows version 2 vs version 3
-  - User clicks "Eksporter historikk" → JSON file downloads with all versions
+  - User starts new session → Version 0 (Baseline) auto-created with 390 MNOK committed, 310 MNOK available
+  - User accepts WBS 1.3.1 for 105 MNOK → Version 1 created automatically
+  - User opens history panel → sees latest 5 versions (0: Baseline, 1: WBS 1.3.1), "Load 10 more" button disabled (only 2 total)
+  - User clicks Version 1 → comparison shows "Før: 390 MNOK committed" vs "Etter: 495 MNOK committed" (+105 MNOK)
+  - User accepts 2 more contracts → Versions 2, 3 created
+  - User clicks "Eksporter historikk" → JSON file downloads with all 4 snapshots (baseline + 3 contracts)
+  - **Future test (scalability):** User renegotiates 50 times → 54 snapshots total, pagination shows "Load 10 more" correctly, UI remains responsive
+- **Reference Documents:**
+  - Mockup: `docs/ux/UI_flows/mockup-10-history-timeline-simplified.svg`
+  - User Flow: `docs/ux/functional_flows/flow-08-history-timeline-interaction.svg`
+  - UX Spec: `docs/ux-design-specification.md` section 3.9
+  - Database Schema: `database/migrations/002_session_snapshots.sql`
 
 ---
 

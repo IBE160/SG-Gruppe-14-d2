@@ -4,7 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { colors } from '@/lib/design-system';
 import { BudgetDisplay } from '@/components/budget-display';
+import { GanttChart } from '@/components/gantt-chart';
+import { PrecedenceDiagram } from '@/components/precedence-diagram';
+import { HistoryPanel } from '@/components/history-panel';
 import { createSession, getUserSessions } from '@/lib/api/sessions';
+import { createClient } from '@/lib/supabase/client';
+import { getAuthToken } from '@/lib/auth-utils';
 import type { GameSession } from '@/types';
 
 export default function DashboardPage() {
@@ -12,12 +17,23 @@ export default function DashboardPage() {
   const [session, setSession] = useState<GameSession | null>(null);
   const [wbsElements, setWbsElements] = useState<any[]>([]);
   const [agents, setAgents] = useState<any[]>([]);
+  const [commitments, setCommitments] = useState<any[]>([]);
+  const [timeline, setTimeline] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'gantt' | 'precedence'>('overview');
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   useEffect(() => {
     loadDashboard();
   }, []);
+
+  useEffect(() => {
+    // Load commitments and validation data when session changes
+    if (session) {
+      loadCommitmentsAndValidation();
+    }
+  }, [session]);
 
   async function loadDashboard() {
     try {
@@ -56,6 +72,53 @@ export default function DashboardPage() {
       setError(err.message || 'Kunne ikke laste dashboard');
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function loadCommitmentsAndValidation() {
+    if (!session) return;
+
+    try {
+      // Get JWT token from Supabase session
+      const token = await getAuthToken();
+      if (!token) {
+        console.error('No auth token found');
+        return;
+      }
+
+      // Fetch commitments
+      const commitmentsRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${session.id}/commitments`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (commitmentsRes.ok) {
+        const commitmentsData = await commitmentsRes.json();
+        setCommitments(commitmentsData);
+      }
+
+      // Fetch validation/timeline data
+      const validationRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${session.id}/validate`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (validationRes.ok) {
+        const validationData = await validationRes.json();
+        setTimeline(validationData);
+      }
+    } catch (err) {
+      console.error('Error loading commitments/validation:', err);
     }
   }
 
@@ -126,10 +189,66 @@ export default function DashboardPage() {
         </div>
       </header>
 
+      {/* Tab Navigation */}
+      <div className="mx-auto max-w-7xl px-6 pt-6">
+        <div className="flex gap-2 mb-4 border-b justify-between items-center" style={{ borderColor: colors.border.medium }}>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-4 py-2 text-sm font-semibold transition-colors ${
+                activeTab === 'overview'
+                  ? 'border-b-2 border-blue-500 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              📊 Oversikt
+            </button>
+            <button
+              onClick={() => setActiveTab('gantt')}
+              className={`px-4 py-2 text-sm font-semibold transition-colors ${
+                activeTab === 'gantt'
+                  ? 'border-b-2 border-blue-500 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              📈 Gantt-diagram
+            </button>
+            <button
+              onClick={() => setActiveTab('precedence')}
+              className={`px-4 py-2 text-sm font-semibold transition-colors ${
+                activeTab === 'precedence'
+                  ? 'border-b-2 border-blue-500 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              🔀 Presedensdiagram
+            </button>
+          </div>
+          <button
+            onClick={() => setIsHistoryOpen(true)}
+            className="px-4 py-2 text-sm font-semibold text-white rounded transition-colors hover:opacity-90"
+            style={{ backgroundColor: colors.button.primary.bg }}
+          >
+            🕒 Historikk
+          </button>
+        </div>
+      </div>
+
       <div className="mx-auto max-w-7xl px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+        {/* Visualization Views */}
+        {activeTab === 'gantt' && (
+          <GanttChart wbsItems={wbsElements} commitments={commitments} timeline={timeline} />
+        )}
+
+        {activeTab === 'precedence' && (
+          <PrecedenceDiagram wbsItems={wbsElements} timeline={timeline} />
+        )}
+
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-8">
             {/* Budget Section */}
             <div
               className="rounded-lg border p-6"
@@ -322,7 +441,18 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+        )}
       </div>
+
+      {/* History Panel Overlay */}
+      {session && (
+        <HistoryPanel
+          sessionId={session.id}
+          isOpen={isHistoryOpen}
+          onClose={() => setIsHistoryOpen(false)}
+          wbsItems={wbsElements}
+        />
+      )}
     </div>
   );
 }
