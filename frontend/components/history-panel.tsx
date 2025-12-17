@@ -112,7 +112,11 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
         }
       );
 
-      if (!response.ok) throw new Error('Export failed');
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Export failed:', response.status, errorText);
+        throw new Error(`Export failed: ${response.status} - ${errorText}`);
+      }
 
       const data = await response.json();
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
