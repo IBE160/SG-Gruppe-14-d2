@@ -1,0 +1,163 @@
+<svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .title { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700; fill: #111827; }
+      .heading { font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; fill: #111827; }
+      .subheading { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; fill: #374151; }
+      .body-text { font-family: 'Inter', sans-serif; font-size: 12px; fill: #374151; }
+      .small-text { font-family: 'Inter', sans-serif; font-size: 10px; fill: #6B7280; }
+      .badge-text { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; fill: #FFFFFF; }
+      .button-text { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; fill: #FFFFFF; }
+      .label-text { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500; fill: #6B7280; }
+      .value-text { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; fill: #111827; }
+    </style>
+  </defs>
+
+  <!-- Background overlay -->
+  <rect width="1400" height="900" fill="#00000080"/>
+
+  <!-- Main panel -->
+  <rect x="70" y="50" width="1260" height="800" rx="8" fill="#FFFFFF"/>
+
+  <!-- Header -->
+  <rect x="70" y="50" width="1260" height="60" rx="8" fill="#F9FAFB"/>
+  <text x="100" y="85" class="title">🕒 Historikk - Kontrakt Aksepteringer</text>
+  <text x="1290" y="85" class="title" fill="#EF4444" text-anchor="end">✕ Lukk</text>
+  <line x1="70" y1="110" x2="1330" y2="110" stroke="#E5E7EB" stroke-width="1"/>
+
+  <!-- Left Sidebar -->
+  <line x1="490" y1="110" x2="490" y2="850" stroke="#E5E7EB" stroke-width="1"/>
+
+  <!-- Filter dropdown -->
+  <rect x="90" y="130" width="200" height="32" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="105" y="151" class="body-text">Filter: Alle kontrakter ▼</text>
+
+  <!-- Timeline line -->
+  <line x1="120" y1="190" x2="120" y2="780" stroke="#D1D5DB" stroke-width="2"/>
+
+  <!-- Version 0: Baseline (selected) -->
+  <rect x="90" y="180" width="380" height="110" rx="4" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+  <circle cx="120" cy="220" r="8" fill="#3B82F6"/>
+  <rect x="145" y="190" width="70" height="20" rx="3" fill="#3B82F6"/>
+  <text x="180" y="204" class="badge-text" text-anchor="middle">Versjon 0</text>
+  <text x="145" y="225" class="subheading">Startposisjon - Baseline</text>
+  <text x="145" y="242" class="body-text">12 kontraktfestede pakker</text>
+  <text x="145" y="260" class="body-text">• Budsjett: 390 MNOK låst</text>
+  <text x="145" y="275" class="body-text">• Tilgjengelig: 310 MNOK</text>
+  <text x="145" y="285" class="small-text">Opprettet: 15. mars 2025 10:00</text>
+
+  <!-- Version 1: First contract (pending) -->
+  <rect x="90" y="305" width="380" height="95" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  <circle cx="120" cy="340" r="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="2"/>
+  <rect x="145" y="313" width="70" height="20" rx="3" fill="#10B981"/>
+  <text x="180" y="327" class="badge-text" text-anchor="middle">Versjon 1</text>
+  <text x="145" y="345" class="subheading">✓ WBS 1.3.1 - Grunnarbeid</text>
+  <text x="145" y="362" class="body-text">Bjørn Eriksen AS</text>
+  <text x="145" y="377" class="body-text">• 105 MNOK, 60 dager</text>
+  <text x="145" y="395" class="small-text">(Venter...)</text>
+
+  <!-- Version 2 & 3 (pending) -->
+  <rect x="90" y="415" width="380" height="80" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <circle cx="120" cy="450" r="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="2"/>
+  <rect x="145" y="423" width="70" height="20" rx="3" fill="#9CA3AF"/>
+  <text x="180" y="437" class="badge-text" text-anchor="middle">Versjon 2</text>
+  <text x="145" y="455" class="body-text">WBS 1.3.2 (Venter...)</text>
+
+  <rect x="90" y="510" width="380" height="80" rx="4" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <circle cx="120" cy="545" r="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="2"/>
+  <rect x="145" y="518" width="70" height="20" rx="3" fill="#9CA3AF"/>
+  <text x="180" y="532" class="badge-text" text-anchor="middle">Versjon 3</text>
+  <text x="145" y="550" class="body-text">WBS 1.4.1 (Venter...)</text>
+
+  <!-- Event count -->
+  <text x="90" y="820" class="small-text">(0 av 3 kontrakter akseptert)</text>
+
+  <!-- Right Panel -->
+  <text x="530" y="145" class="heading">Sammenligning: Versjon 0 (Baseline)</text>
+
+  <!-- Tabs -->
+  <rect x="530" y="160" width="130" height="32" rx="4" fill="#3B82F6"/>
+  <text x="595" y="181" class="button-text" text-anchor="middle">📊 Oversikt</text>
+  <rect x="670" y="160" width="130" height="32" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="735" y="181" class="body-text" text-anchor="middle">📈 Gantt</text>
+  <rect x="810" y="160" width="150" height="32" rx="4" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="885" y="181" class="body-text" text-anchor="middle">🔀 Presedensdiagram</text>
+
+  <!-- Summary stats card -->
+  <rect x="530" y="210" width="760" height="220" rx="6" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="550" y="235" class="subheading">Startposisjon - 12 Kontraktfestede Pakker</text>
+
+  <!-- Budget breakdown -->
+  <text x="550" y="265" class="label-text">BUDSJETT OVERSIKT</text>
+  <rect x="550" y="275" width="350" height="70" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="570" y="295" class="body-text">Kontraktfestet (12 pakker):</text>
+  <text x="820" y="295" class="value-text" text-anchor="end">390 MNOK</text>
+  <text x="570" y="315" class="body-text">Tilgjengelig for forhandling:</text>
+  <text x="820" y="315" class="value-text" text-anchor="end" fill="#10B981">310 MNOK</text>
+  <text x="570" y="335" class="body-text" style="font-weight:600">Total budsjett:</text>
+  <text x="820" y="335" class="value-text" text-anchor="end">700 MNOK</text>
+
+  <!-- Timeline -->
+  <text x="550" y="370" class="label-text">TIDSLINJE</text>
+  <rect x="550" y="380" width="350" height="40" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="570" y="400" class="body-text">Prosjektslutt (estimert):</text>
+  <text x="820" y="400" class="value-text" text-anchor="end">30. aug 2025</text>
+  <text x="570" y="415" class="small-text" fill="#10B981">✓ 258 dager før fristen (15. mai 2026)</text>
+
+  <!-- Mini Gantt preview -->
+  <rect x="930" y="210" width="350" height="220" rx="6" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="950" y="235" class="subheading">Gantt-diagram Preview</text>
+
+  <line x1="950" y1="260" x2="1260" y2="260" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="950" y="255" class="small-text">Feb 2025</text>
+  <text x="1105" y="255" class="small-text" text-anchor="middle">Aug 2025</text>
+  <text x="1250" y="255" class="small-text" text-anchor="end">Mai 2026</text>
+
+  <!-- Locked tasks -->
+  <rect x="950" y="270" width="180" height="12" rx="2" fill="#D1D5DB"/>
+  <text x="945" y="280" class="small-text" text-anchor="end">Låste pakker</text>
+
+  <!-- Negotiable tasks (dotted) -->
+  <rect x="1130" y="295" width="50" height="12" rx="2" fill="none" stroke="#3B82F6" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="945" y="305" class="small-text" text-anchor="end">1.3.1 Grunnarbeid</text>
+
+  <rect x="1180" y="320" width="40" height="12" rx="2" fill="none" stroke="#3B82F6" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="945" y="330" class="small-text" text-anchor="end">1.3.2 Fundamentering</text>
+
+  <rect x="1220" y="345" width="35" height="12" rx="2" fill="none" stroke="#3B82F6" stroke-width="1" stroke-dasharray="2,2"/>
+  <text x="945" y="355" class="small-text" text-anchor="end">1.4.1 Råbygg</text>
+
+  <!-- Deadline marker -->
+  <line x1="1255" y1="265" x2="1255" y2="365" stroke="#EF4444" stroke-width="2" stroke-dasharray="4,4"/>
+  <text x="1250" y="380" class="small-text" fill="#EF4444" text-anchor="end">Frist</text>
+
+  <!-- Key insights panel -->
+  <rect x="530" y="450" width="760" height="130" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1"/>
+  <text x="550" y="475" class="subheading" fill="#1E40AF">📌 Nøkkelinformasjon</text>
+  <text x="570" y="500" class="body-text">• Du har <tspan style="font-weight:600">310 MNOK</tspan> til å forhandle med for <tspan style="font-weight:600">3 WBS-pakker</tspan></text>
+  <text x="570" y="520" class="body-text">• Gjennomsnittlig må hver pakke koste <tspan style="font-weight:600">≤103 MNOK</tspan> for å holde budsjettet</text>
+  <text x="570" y="540" class="body-text">• Det er en <tspan style="font-weight:600" fill="#EF4444">deficit på 35 MNOK</tspan> - du MÅ forhandle ned prisene</text>
+  <text x="570" y="560" class="body-text">• Tidsfristen er <tspan style="font-weight:600">ufravikelig</tspan> - kommunen kan IKKE forlenge prosjektet</text>
+
+  <!-- Action buttons -->
+  <rect x="530" y="600" width="200" height="40" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="630" y="625" class="body-text" text-anchor="middle">← Tilbake til Dashboard</text>
+
+  <rect x="750" y="600" width="200" height="40" rx="6" fill="#3B82F6"/>
+  <text x="850" y="625" class="button-text" text-anchor="middle">Start Forhandling →</text>
+
+  <!-- Info box -->
+  <rect x="530" y="660" width="760" height="100" rx="6" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+  <text x="550" y="685" class="subheading" fill="#92400E">💡 Slik fungerer historikken</text>
+  <text x="570" y="708" class="body-text">Hver gang du aksepterer en kontrakt, lagres en "versjon" som viser:</text>
+  <text x="570" y="725" class="body-text">• Budsjettendring (før/etter) • Tidslinje-påvirkning • Gantt og Presedensdiagram oppdatert</text>
+  <text x="570" y="742" class="body-text">Du kan når som helst gå tilbake og se hvordan hver beslutning påvirket prosjektet.</text>
+
+  <!-- Export button -->
+  <rect x="1000" y="600" width="280" height="40" rx="6" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="1"/>
+  <text x="1140" y="625" class="body-text" text-anchor="middle">📥 Eksporter fullstendig historikk (JSON)</text>
+
+  <!-- Version indicator -->
+  <rect x="1050" y="810" width="230" height="30" rx="4" fill="#F3F4F6"/>
+  <text x="1165" y="830" class="small-text" text-anchor="middle">Viser: Versjon 0 av 1 (0 kontrakter akseptert)</text>
+</svg>

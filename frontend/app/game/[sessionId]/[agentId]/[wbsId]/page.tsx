@@ -52,7 +52,8 @@ export default function GamePage() {
 
       // Load session data
       const sessionData = await getSession(sessionId);
-      setSession(sessionData.session);
+      // Backend returns session object directly, not wrapped
+      setSession(sessionData as unknown as GameSession);
 
       // Load static data
       const [wbsRes, agentsRes] = await Promise.all([

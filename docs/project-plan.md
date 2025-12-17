@@ -7,58 +7,88 @@
 
 ---
 
-## 📊 Executive Summary (Updated: December 16, 2025)
+## 📊 Executive Summary (Updated: December 17, 2025)
 
 ### Project Status: **POC FUNCTIONAL - 75% COMPLETE** ✅
 
-The PM Simulator project has successfully implemented core functionality and is ready for **classroom demonstrations** and **proof-of-concept testing**. The application features a working AI-powered negotiation system, full authentication, budget tracking, and data persistence.
+The PM Simulator project has successfully implemented core functionality and is ready for **classroom demonstrations** and **proof-of-concept testing**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, and critical path calculation.
 
 ### What's Working ✅
 
 **Complete & Operational:**
-1. ✅ **User Authentication** - Full Supabase auth with email/password, registration, login, password reset
-2. ✅ **Dashboard** - 3-tier budget visualization (310/390/700 MNOK), WBS package listing, agent panels
-3. ✅ **AI Negotiation** - Real-time chat with 4 AI agents using Gemini 2.5 Flash, context-aware responses
-4. ✅ **Offer Management** - Automatic offer detection, accept/reject buttons, budget impact preview
-5. ✅ **Budget Tracking** - Real-time updates, validation (≤700 MNOK), duplicate prevention
-6. ✅ **Data Persistence** - Sessions, commitments, and negotiation history saved to database
-7. ✅ **Backend API** - 10 RESTful endpoints, JWT auth, RLS-compliant database access
-8. ✅ **Design System** - Professional UI with Tailwind CSS, Shadcn components, color-coded budget tiers
-9. ✅ **Static Data** - Complete WBS (15 items) and agent configs (4 agents) in JSON format
-10. ✅ **Documentation** - 40+ comprehensive docs (PRD, architecture, test plans, troubleshooting)
+1. ✅ **User Authentication** - Full Supabase auth with email/password, registration, login, password reset, protected routes
+2. ✅ **Dashboard** - 3-tier budget visualization (310/390/700 MNOK), WBS package listing, agent panels, tabbed interface
+3. ✅ **AI Negotiation** - Real-time chat with 4 AI agents using Gemini 2.5 Flash, context injection, Norwegian responses
+4. ✅ **Offer Management** - Automatic regex-based offer detection, accept/reject buttons, budget impact preview
+5. ✅ **Budget Tracking** - Real-time updates, validation (≤700 MNOK), duplicate prevention, tier calculations
+6. ✅ **Data Persistence** - Sessions, commitments, and negotiation history saved with RLS policies enforced
+7. ✅ **Backend API** - 11 RESTful endpoints, JWT auth, proper error handling, Norwegian error messages
+8. ✅ **Design System** - Professional UI with Tailwind CSS, Shadcn components, complete color palette
+9. ✅ **Static Data** - Complete WBS (15 items) and agent configs (4 agents) with full metadata
+10. ✅ **Documentation** - 50+ comprehensive docs (PRD v2.2, architecture, test plans, troubleshooting, UX specs)
+11. ✅ **Critical Path Algorithm** - Full CPM implementation (ES/EF/LS/LF, slack time, critical path identification)
+12. ✅ **Database Schema** - 6 tables with triggers, RLS policies, computed columns, indexes, snapshot system
+
+### What's Partially Working 🟡
+
+**In Progress (40-70% complete):**
+1. 🟡 **Gantt Chart** (50%) - Component created with gantt-task-react, color coding (red/green/blue/grey) implemented, data binding from backend validation endpoint needs verification
+2. 🟡 **Precedence Diagram** (30%) - Component shell created with ReactFlow, AON network structure designed, node/edge rendering needs completion (4-6 hours)
+3. 🟡 **History/Timeline View** (50%) - Database schema complete (session_snapshots table), backend endpoints ready (GET /snapshots with pagination), frontend UI 50% complete, snapshot auto-creation working
+4. 🟡 **Snapshot System** (70%) - Database triggers functional, auto-creation on commitment working (saves timeline data as of Dec 17), UI visualization integration partial
 
 ### What's Missing ❌
 
 **Critical for MVP:**
-1. ⚠️ **Session Completion Flow** - No results page or completion summary (est: 4-6 hours)
-2. ⚠️ **Chat History Loading** - Messages reset on page refresh (est: 2 hours)
-3. ⚠️ **Database Import Verification** - Need to confirm schema imported to Supabase production
+1. ❌ **Session Completion Flow** - No results page or completion summary (est: 4-6 hours)
+2. ⚠️ **Visualization Data Integration** - Gantt/Precedence components exist but data flow from validation endpoint needs debugging (est: 2-3 hours)
 
 **Important but Not Blocking:**
-4. ❌ **Renegotiation** - Cannot uncommit accepted offers (est: 3-4 hours)
-5. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (est: 4-6 hours)
-6. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement limit (est: 3 hours)
-7. ❌ **Visualizations** - Gantt chart and precedence diagram designs exist but not coded (est: 6-8 hours using gantt-task-react + ReactFlow libraries)
-8. ❌ **Export** - No session export to JSON/PDF (est: 4-6 hours)
-9. ⚠️ **Mobile Responsive** - Desktop-optimized, limited mobile support (est: 8-12 hours)
-10. ❌ **Automated Tests** - No unit/integration/E2E test suite (est: 40+ hours)
+3. ❌ **History Panel Full Integration** - UI component created but snapshot visualization rendering incomplete (est: 4-5 hours)
+4. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement mechanic (detection works, UI missing) (est: 3 hours)
+5. ❌ **Export Functionality** - No session/history export to JSON/PDF (est: 4-6 hours)
+6. ⚠️ **Mobile Responsiveness** - Desktop-optimized only, limited mobile support (est: 8-12 hours)
+7. ❌ **Automated Testing** - No test suite (unit/integration/E2E) (est: 40+ hours)
+
+**Nice to Have (Future Enhancements):**
+8. ❌ **Renegotiation/Uncommit** - Cannot reverse accepted offers, no DELETE endpoint (est: 3-4 hours)
 
 ### File Statistics
 - **Frontend:** ~150 source files, ~8,000+ lines of TypeScript/TSX
 - **Backend:** ~10 Python files, ~1,200+ lines of code
-- **Database:** 5 tables, 627-line migration script with RLS policies
-- **Documentation:** 40+ markdown files, 18 SVG diagrams
+- **Database:** 6 tables with 7 migration files (~960 lines SQL total)
+- **Documentation:** 50+ markdown files, 22 SVG diagrams
 - **Data Files:** 2 JSON files (15 WBS items, 4 agent configs)
+- **Total Codebase:** ~11,500+ lines (excluding documentation)
 
-### Recommended Next Steps
-1. **Week 1:** Verify database import, implement session completion flow, add chat history loading
-2. **Week 2:** Add renegotiation, timeline validation, agent timeout UI
-3. **Week 3:** Build visualizations using gantt-task-react (Gantt chart) and ReactFlow (precedence diagram)
-4. **Week 4:** Add export, improve mobile responsiveness, write automated tests
-5. **Week 5:** Production deployment, pilot testing with LOG565 class
+### Recommended Next Steps (Priority Order)
 
-### Timeline to MVP: 20-30 hours
-### Timeline to Full POC: 40-55 hours
+**Week 1: Critical Path to MVP (6-11 hours)**
+1. **Debug Visualization Data Flow** (2-3 hours) - Fix Gantt/Precedence data binding from /validate endpoint
+2. **Session Completion Flow** (4-6 hours) - Implement completion page with results summary
+3. **Verify Database Import** (1-2 hours) - Confirm all tables and triggers working in production
+
+**Week 2: Visualization & History Completion (10-13 hours)**
+4. **Complete History Panel UI** (4-5 hours) - Finish snapshot visualization rendering and tabbed comparison
+5. **Complete Precedence Diagram** (4-6 hours) - Full AON network with ReactFlow (nodes, edges, critical path highlighting)
+6. **Gantt Chart Polish** (2 hours) - Verify all features working (zoom, dependencies, timeline)
+
+**Week 3: Polish & Features (7-9 hours)**
+7. **Agent Timeout UI** (3 hours) - Visual countdown and lock status display
+8. **Export Functionality** (4-6 hours) - Session/history export to JSON
+
+**Week 4+: Quality & Deployment (50+ hours)**
+9. **Mobile Responsiveness** (8-12 hours) - Optimize for mobile devices
+10. **Automated Testing** (40+ hours) - Unit, integration, and E2E test suite
+11. **Production Deployment** (4-8 hours) - Deploy frontend/backend, final testing
+
+**Nice to Have (Future Enhancements)**
+- **Renegotiation/Uncommit Feature** (3-4 hours) - DELETE endpoint + uncommit UI to reverse accepted offers
+
+### Updated Timeline Estimates
+- **To MVP (Classroom Ready):** 16-21 hours (Weeks 1-2)
+- **To Full Feature Set:** 33-43 hours (Weeks 1-3, excluding renegotiation)
+- **To Production Quality:** 81-102 hours (Weeks 1-4+, including testing/deployment, excluding renegotiation)
 
 ---
 
@@ -236,6 +266,7 @@ The PM Simulator project has successfully implemented core functionality and is 
         - ✅ Real-time chat UI with message bubbles
         - ✅ Budget impact preview in sidebar
         - ✅ Auto-redirect after commitment
+        - ✅ Chat history persistence and loading (fixed session resumption issue)
 
 - [x] **Plan Management & Validation** (Week 3-4) - ⚠️ PARTIALLY COMPLETE
     - *Status: Core commitment flow implemented, some advanced features missing.*
@@ -283,6 +314,7 @@ The PM Simulator project has successfully implemented core functionality and is 
         - ✅ Responsive UI components (Tailwind + Shadcn)
         - ✅ Testing scripts (backend/test_chat.py, test_setup.py, etc.)
         - ✅ Troubleshooting documentation (TROUBLESHOOTING_REPORT_DEC_16.md)
+        - ✅ Chat history fix (backend RLS + frontend session resume logic)
     - *Missing Features:*
         - ❌ Session export as JSON/PDF
         - ❌ Help documentation modal in UI
@@ -290,7 +322,7 @@ The PM Simulator project has successfully implemented core functionality and is 
         - ❌ Agent timeout UI countdown
         - ❌ Session completion page
 
-**Current Progress:** Sprint 2-3 features ~85% complete. Sprint 4-5 features ~40% complete. Core negotiation loop fully functional.
+**Current Progress:** Sprint 2-3 features ~90% complete. Sprint 4-5 features ~40% complete. Core negotiation loop fully functional.
 
 ---
 
@@ -352,34 +384,56 @@ The PM Simulator project has successfully implemented core functionality and is 
 - ✅ Auth system fully functional
 - ✅ Design system with comprehensive color palette
 - ✅ 40+ documentation files
+- ✅ Fixed critical issue with session resumption and chat history loading
 
 **Remaining Gaps (MVP Completion):**
 1. ⚠️ **Session Completion Flow** - No completion page or results summary (4-6 hours)
-2. ⚠️ **Chat History Loading** - Messages not loaded from DB on page refresh (2 hours)
-3. ⚠️ **Database Import Verification** - Confirm schema imported to Supabase production (30 minutes)
-4. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
-5. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (4-6 hours)
-6. ❌ **Visualizations** - Gantt chart and precedence diagram not built (6-8 hours using gantt-task-react + ReactFlow)
-7. ❌ **Export Functionality** - No session export to JSON/PDF (3-4 hours)
-8. ❌ **Automated Testing** - No unit/integration/E2E test suite (8-10 hours)
+2. ⚠️ **Database Import Verification** - Confirm schema imported to Supabase production (30 minutes)
+3. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
+4. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (4-6 hours)
+5. ❌ **Visualizations** - Gantt chart and precedence diagram not built (6-8 hours using gantt-task-react + ReactFlow)
+6. ❌ **Export Functionality** - No session export to JSON/PDF (3-4 hours)
+7. ❌ **Automated Testing** - No unit/integration/E2E test suite (8-10 hours)
+
+9. ❌ **History/Timeline View (Contract Snapshots)** - Shows baseline + contract acceptance impact on budget/timeline/diagrams (6-8 hours)
+   - **NEW: Must Have (v2.1 Dec 17, 2025)** - Pedagogical value for students to see decision impacts
+   - Complete documentation ready:
+     - Mockup: `docs/ux/UI_flows/mockup-10-history-timeline-simplified.svg`
+     - User flow: `docs/ux/functional_flows/flow-08-history-timeline-interaction.svg`
+     - Database schema: `database/migrations/002_session_snapshots.sql`
+     - PRD: FR-9.3, UX Spec: Section 3.9
+   - Implementation scope:
+     - Backend: Session snapshots table, API endpoints (GET /snapshots with pagination)
+     - Frontend: History panel overlay, timeline sidebar, comparison view (3 tabs: Oversikt/Gantt/Presedensdiagram)
+     - Auto-snapshot creation on contract acceptance
+     - Pagination (load 5 initially, 10 more on button/scroll)
+     - Max 100 snapshots per session (future-proof for scaling)
 
 **Nice to Have (If Time Permits):**
-9. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
-10. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
-11. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
+10. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
+11. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
+12. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
 
 **Next Priority Actions (MVP Completion):**
-1. Verify database schema import in Supabase production instance
+1. Verify database schema import in Supabase production instance (including new `session_snapshots` table)
 2. Implement session completion flow (`/app/complete/page.tsx` + API endpoint)
 3. Add chat history loading from `negotiation_history` table
-4. Implement uncommit functionality for renegotiation
-5. Add timeline/dependency validation (critical path algorithm)
-6. Build Gantt chart (gantt-task-react) and precedence diagram (ReactFlow) visualizations
-7. Implement session export functionality
-8. Write automated test suite (backend + frontend)
+4. **Implement History/Timeline View (Must Have - NEW):**
+   - Import database schema: `database/migrations/002_session_snapshots.sql`
+   - Backend: Create snapshot endpoints (GET /snapshots, POST baseline on session start)
+   - Backend: Auto-create snapshots on contract acceptance (modify POST /commitments)
+   - Frontend: History panel overlay component with timeline sidebar
+   - Frontend: Comparison view with 3 tabs (Oversikt, Gantt, Presedensdiagram)
+   - Frontend: Pagination (load 5, then 10 more on scroll/button)
+   - Testing: Verify baseline creation, snapshot creation, pagination, export
+5. Implement uncommit functionality for renegotiation
+6. Add timeline/dependency validation (critical path algorithm)
+7. Build Gantt chart (gantt-task-react) and precedence diagram (ReactFlow) visualizations
+8. Implement session export functionality (including history export)
+9. Write automated test suite (backend + frontend)
 
-**Estimated time to MVP (required features only):** 29-38 hours of focused development work.
-**Estimated time with nice-to-have features:** 40-53 hours.
+**Estimated time to MVP (required features only):** 35-46 hours of focused development work (updated to include history/timeline view).
+**Estimated time with nice-to-have features:** 46-59 hours.
 
 **Recommended approach:** Team of 2-3 developers working in parallel (see `MVP_COMPLETION_ROADMAP_REVISED.md`)
 

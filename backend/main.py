@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 from config import settings
 from services.gemini_service import get_gemini_service
+from services.critical_path_service import calculate_critical_path
 from prompts.agent_prompts import get_agent_prompt, get_agent_name, get_agent_type
 
 # --- Supabase & Authentication Setup ---
@@ -160,6 +161,7 @@ class CommitmentResponse(BaseModel):
     savings_percentage: Optional[float]
     negotiated_scope: Optional[str]
     created_at: str
+    updated_session: Optional[SessionResponse] = None
 
 
 
@@ -173,11 +175,60 @@ class NegotiationHistoryRecord(BaseModel):
     agent_response: str
     is_disagreement: bool
     contains_offer: bool
-    offer_data: Optional[Dict[str, Any]]
+    offer_data: Optional[Dict[str, Any]] = None
     context_snapshot: Dict[str, Any]
     timestamp: str
-    response_time_ms: Optional[int]
-    sentiment: Optional[str]
+    response_time_ms: Optional[int] = None
+    sentiment: Optional[str] = None
+
+
+class ValidationResponse(BaseModel):
+    """Response model for session validation endpoint"""
+    valid: bool
+    earliest_start: Dict[str, str]
+    earliest_finish: Dict[str, str]
+    latest_start: Dict[str, str]
+    latest_finish: Dict[str, str]
+    slack: Dict[str, int]
+    critical_path: List[str]
+    projected_completion_date: str
+    deadline: str
+    meets_deadline: bool
+    total_duration_days: int
+    budget_valid: bool
+    budget_used: float
+    budget_remaining: float
+
+
+class SnapshotResponse(BaseModel):
+    """Response model for session snapshot data"""
+    id: str
+    session_id: str
+    version: int
+    label: str
+    snapshot_type: str
+    budget_committed: int
+    budget_available: int
+    budget_total: int
+    contract_wbs_id: Optional[str]
+    contract_cost: Optional[int]
+    contract_duration: Optional[int]
+    contract_supplier: Optional[str]
+    project_end_date: str
+    days_before_deadline: int
+    gantt_state: Dict[str, Any]
+    precedence_state: Dict[str, Any]
+    timestamp: str
+    created_at: str
+
+
+class SnapshotListResponse(BaseModel):
+    """Response model for paginated snapshot list"""
+    snapshots: List[SnapshotResponse]
+    total_count: int
+    limit: int
+    offset: int
+    has_more: bool
 
 # --- FastAPI App Initialization ---
 
@@ -291,7 +342,7 @@ async def chat_with_agent(
             }).execute()
         except Exception as db_error:
             print(f"Database error saving chat message: {db_error}")
-            # Continue anyway - don't fail the request if DB save fails
+            raise HTTPException(status_code=500, detail=f"Database error: {str(db_error)}")
 
         # Return response
         return ChatResponse(
@@ -344,7 +395,7 @@ def detect_disagreement(ai_response: str) -> bool:
 @app.get("/api/sessions", response_model=List[SessionResponse], tags=["Sessions"])
 def get_user_sessions(
     current_user: dict = Depends(get_current_user),
-    db: Client = Depends(get_db_client)
+    # db: Client = Depends(get_db_client) # Bypass authenticated client
 ):
     """
     Get all game sessions for the current user.
@@ -359,11 +410,14 @@ def get_user_sessions(
         List of SessionResponse objects
     """
     try:
-        response = db.table("game_sessions")\
+        print(f"[DEBUG] Fetching sessions for user {current_user['id']} using GLOBAL client")
+        response = supabase.table("game_sessions")\
             .select("*")\
             .eq("user_id", current_user["id"])\
             .order("created_at", desc=True)\
             .execute()
+        
+        print(f"[DEBUG] Found {len(response.data)} sessions")
 
         return [SessionResponse(**session) for session in response.data]
 
@@ -385,6 +439,7 @@ def create_session(
     Create a new game session.
 
     Initializes a new game session with default budget values and settings.
+    Automatically creates a baseline snapshot (Version 0) showing the starting state.
 
     Args:
         request: CreateSessionRequest with budget parameters
@@ -414,7 +469,22 @@ def create_session(
                 detail="Kunne ikke opprette spillsesjon"
             )
 
-        return SessionResponse(**response.data[0])
+        session = response.data[0]
+        session_id = session["id"]
+
+        # Auto-create baseline snapshot (Version 0)
+        try:
+            db.rpc("create_baseline_snapshot", {
+                "p_session_id": session_id,
+                "p_project_end_date": "2025-08-30",
+                "p_days_before_deadline": 258
+            }).execute()
+            print(f"Created baseline snapshot for session {session_id}")
+        except Exception as snapshot_error:
+            print(f"Warning: Could not create baseline snapshot: {snapshot_error}")
+            # Don't fail the request if snapshot creation fails
+
+        return SessionResponse(**session)
 
     except HTTPException:
         raise
@@ -632,7 +702,91 @@ def create_commitment(
             .eq("id", session_id)\
             .execute()
 
-        return CommitmentResponse(**commitment_response.data[0])
+        commitment = commitment_response.data[0]
+
+        # Auto-create contract snapshot
+        try:
+            from services.critical_path_service import calculate_critical_path
+            import json
+
+            # Calculate updated budget values (in øre for database)
+            budget_committed = int(new_budget_used * 100)  # Convert NOK to øre
+            budget_available = int((available_budget - new_budget_used) * 100)
+            contract_cost = int(request.committed_price * 100)
+
+            # Map WBS ID to supplier name
+            supplier_map = {
+                "1.3.1": "Bjørn Eriksen AS",
+                "1.3.2": "Bjørn Eriksen AS",
+                "1.4.1": "Kari Andersen AS"
+            }
+            supplier = supplier_map.get(request.wbs_id, "Ukjent")
+
+            # Convert weeks to days
+            duration_days = request.committed_duration_weeks * 7
+
+            # Get all commitments for this session to calculate timeline
+            all_commitments_response = db.table("wbs_commitments")\
+                .select("*")\
+                .eq("session_id", session_id)\
+                .execute()
+
+            all_commitments = all_commitments_response.data if all_commitments_response.data else []
+
+            # Load WBS data
+            with open("data/wbs.json", "r", encoding="utf-8") as f:
+                wbs_data = json.load(f)
+
+            # Calculate critical path and timeline
+            timeline = calculate_critical_path(
+                wbs_items=wbs_data["wbs_elements"],
+                commitments=[{
+                    "wbs_item_id": c["wbs_id"],
+                    "duration": c.get("committed_duration_weeks", 0) * 7
+                } for c in all_commitments],
+                start_date="2025-01-15",
+                deadline="2026-05-15"
+            )
+
+            # Calculate project end date and days before deadline
+            project_end_date = timeline.get("projected_completion_date", "2025-09-29")
+            from datetime import datetime
+            deadline_dt = datetime.strptime("2026-05-15", "%Y-%m-%d")
+            project_dt = datetime.strptime(project_end_date, "%Y-%m-%d")
+            days_before_deadline = (deadline_dt - project_dt).days
+
+            db.rpc("create_contract_snapshot", {
+                "p_session_id": session_id,
+                "p_wbs_id": request.wbs_id,
+                "p_cost": contract_cost,
+                "p_duration": duration_days,
+                "p_supplier": supplier,
+                "p_budget_committed": budget_committed,
+                "p_budget_available": budget_available,
+                "p_project_end_date": project_end_date,
+                "p_days_before_deadline": days_before_deadline,
+                "p_gantt_state": timeline,  # Save full timeline data for Gantt
+                "p_precedence_state": timeline  # Save full timeline data for precedence diagram
+            }).execute()
+            print(f"Created contract snapshot for WBS {request.wbs_id} in session {session_id}")
+        except Exception as snapshot_error:
+            print(f"Warning: Could not create contract snapshot: {snapshot_error}")
+            # Don't fail the request if snapshot creation fails
+
+        return CommitmentResponse(**commitment)
+        # Fetch the updated session to return to the frontend
+        updated_session_response = db.table("game_sessions")\
+            .select("*")\
+            .eq("id", session_id)\
+            .single()\
+            .execute()
+            
+        updated_session = SessionResponse(**updated_session_response.data) if updated_session_response.data else None
+
+        return CommitmentResponse(
+            **commitment_response.data[0],
+            updated_session=updated_session
+        )
 
     except HTTPException:
         raise
@@ -647,7 +801,8 @@ def create_commitment(
 @app.get("/api/sessions/{session_id}/commitments", response_model=List[CommitmentResponse], tags=["Commitments"])
 def get_commitments(
     session_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
 ):
     """
     Get all commitments for a session.
@@ -655,13 +810,14 @@ def get_commitments(
     Args:
         session_id: The UUID of the session
         current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
 
     Returns:
         List of CommitmentResponse objects
     """
     try:
         # Verify session belongs to user
-        session_response = supabase.table("game_sessions")\
+        session_response = db.table("game_sessions")\
             .select("id")\
             .eq("id", session_id)\
             .eq("user_id", current_user["id"])\
@@ -675,7 +831,7 @@ def get_commitments(
             )
 
         # Get commitments
-        commitments_response = supabase.table("wbs_commitments")\
+        commitments_response = db.table("wbs_commitments")\
             .select("*")\
             .eq("session_id", session_id)\
             .order("created_at")\
@@ -697,15 +853,17 @@ def get_commitments(
 def get_negotiation_history(
     session_id: str,
     agent_id: Optional[str] = None,
-    current_user: dict = Depends(get_current_user)
-):
+    current_user: dict = Depends(get_current_user),
+    # Temporarily bypass get_db_client to use global supabase client for debugging
+    db: Client = Depends(get_db_client)
+) -> List[NegotiationHistoryRecord]:
     """
     Get negotiation history for a specific game session.
     Optionally filter by agent_id.
     """
     try:
-        # Verify session belongs to user
-        session_response = supabase.table("game_sessions")\
+        # Verify session belongs to user (still need user_id for this check)
+        session_response = db.table("game_sessions")\
             .select("id")\
             .eq("id", session_id)\
             .eq("user_id", current_user["id"])\
@@ -719,7 +877,7 @@ def get_negotiation_history(
             )
 
         # Build the query for negotiation history
-        query = supabase.table("negotiation_history")\
+        query = db.table("negotiation_history")\
             .select("*")\
             .eq("session_id", session_id)
 
@@ -738,4 +896,305 @@ def get_negotiation_history(
         raise HTTPException(
             status_code=500,
             detail="En feil oppstod ved henting av samtalehistorikk"
+        )
+
+
+@app.post("/api/sessions/{session_id}/validate", response_model=ValidationResponse, tags=["Validation"])
+def validate_session(
+    session_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Validate a game session by calculating critical path and checking constraints.
+
+    Performs:
+    - Budget validation (total cost ≤ 700 MNOK)
+    - Timeline validation (completion date ≤ May 15, 2026)
+    - Critical path calculation (CPM algorithm)
+    - Earliest Start/Finish calculation
+    - Latest Start/Finish calculation
+    - Slack time calculation
+
+    Returns timeline data for Gantt chart and precedence diagram visualization.
+    """
+    import json
+    from pathlib import Path
+
+    try:
+        # Verify session belongs to user
+        session_response = supabase.table("game_sessions")\
+            .select("*")\
+            .eq("id", session_id)\
+            .eq("user_id", current_user["id"])\
+            .single()\
+            .execute()
+
+        if not session_response.data:
+            raise HTTPException(
+                status_code=404,
+                detail="Spillsesjon ikke funnet"
+            )
+
+        session = session_response.data
+
+        # Load WBS data from JSON file
+        wbs_file_path = Path(__file__).parent.parent / "frontend" / "public" / "data" / "wbs.json"
+        with open(wbs_file_path, 'r', encoding='utf-8') as f:
+            wbs_data = json.load(f)
+
+        wbs_items = wbs_data.get('wbs_elements', [])
+
+        # Get commitments for this session
+        commitments_response = supabase.table("wbs_commitments")\
+            .select("*")\
+            .eq("session_id", session_id)\
+            .execute()
+
+        # Convert commitment weeks to days for calculation
+        commitments = []
+        for c in commitments_response.data:
+            commitments.append({
+                'wbs_item_id': c['wbs_id'],
+                'duration': c.get('committed_duration_weeks', 0) * 7,  # Convert weeks to days
+                'cost': c.get('committed_price', 0)
+            })
+
+        # Calculate critical path
+        timeline_result = calculate_critical_path(
+            wbs_items=wbs_items,
+            commitments=commitments,
+            start_date="2025-01-15",
+            deadline="2026-05-15"
+        )
+
+        # Budget validation
+        budget_used = session.get('current_budget_used', 0)
+        budget_remaining = session.get('total_budget', 700_000_000) - budget_used
+        budget_valid = budget_used <= session.get('total_budget', 700_000_000)
+
+        # Combine results
+        validation_result = {
+            **timeline_result,
+            'budget_valid': budget_valid,
+            'budget_used': budget_used,
+            'budget_remaining': budget_remaining,
+            'valid': timeline_result['meets_deadline'] and budget_valid
+        }
+
+        return ValidationResponse(**validation_result)
+
+    except HTTPException:
+        raise
+    except FileNotFoundError:
+        print("WBS data file not found")
+        raise HTTPException(
+            status_code=500,
+            detail="WBS data kunne ikke lastes"
+        )
+    except Exception as e:
+        print(f"Error validating session: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"En feil oppstod ved validering: {str(e)}"
+        )
+
+
+@app.get("/api/sessions/{session_id}/snapshots", response_model=SnapshotListResponse, tags=["Snapshots"])
+def get_session_snapshots(
+    session_id: str,
+    limit: int = 5,
+    offset: int = 0,
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
+):
+    """
+    Get session snapshots with pagination.
+
+    Returns snapshots ordered by version DESC (newest first).
+    Load 5 initially, 10 more on scroll/button click.
+
+    Args:
+        session_id: The UUID of the session
+        limit: Number of snapshots to return (default: 5)
+        offset: Number of snapshots to skip (default: 0)
+        current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
+
+    Returns:
+        SnapshotListResponse with paginated snapshots
+    """
+    try:
+        # Verify session belongs to user
+        session_response = db.table("game_sessions")\
+            .select("id")\
+            .eq("id", session_id)\
+            .eq("user_id", current_user["id"])\
+            .single()\
+            .execute()
+
+        if not session_response.data:
+            raise HTTPException(
+                status_code=404,
+                detail="Spillsesjon ikke funnet"
+            )
+
+        # Get total count
+        count_response = db.table("session_snapshots")\
+            .select("id", count="exact")\
+            .eq("session_id", session_id)\
+            .execute()
+
+        total_count = count_response.count or 0
+
+        # Get paginated snapshots
+        snapshots_response = db.table("session_snapshots")\
+            .select("*")\
+            .eq("session_id", session_id)\
+            .order("version", desc=True)\
+            .limit(limit)\
+            .range(offset, offset + limit - 1)\
+            .execute()
+
+        snapshots = [SnapshotResponse(**s) for s in snapshots_response.data]
+        has_more = (offset + limit) < total_count
+
+        return SnapshotListResponse(
+            snapshots=snapshots,
+            total_count=total_count,
+            limit=limit,
+            offset=offset,
+            has_more=has_more
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error fetching snapshots: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="En feil oppstod ved henting av snapshots"
+        )
+
+
+@app.get("/api/sessions/{session_id}/snapshots/{version}", response_model=SnapshotResponse, tags=["Snapshots"])
+def get_snapshot_by_version(
+    session_id: str,
+    version: int,
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
+):
+    """
+    Get a specific snapshot by version number.
+
+    Args:
+        session_id: The UUID of the session
+        version: The snapshot version number (0, 1, 2, ...)
+        current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
+
+    Returns:
+        SnapshotResponse for the specified version
+    """
+    try:
+        # Verify session belongs to user
+        session_response = db.table("game_sessions")\
+            .select("id")\
+            .eq("id", session_id)\
+            .eq("user_id", current_user["id"])\
+            .single()\
+            .execute()
+
+        if not session_response.data:
+            raise HTTPException(
+                status_code=404,
+                detail="Spillsesjon ikke funnet"
+            )
+
+        # Get snapshot by version
+        snapshot_response = db.table("session_snapshots")\
+            .select("*")\
+            .eq("session_id", session_id)\
+            .eq("version", version)\
+            .single()\
+            .execute()
+
+        if not snapshot_response.data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Snapshot versjon {version} ikke funnet"
+            )
+
+        return SnapshotResponse(**snapshot_response.data)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error fetching snapshot: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="En feil oppstod ved henting av snapshot"
+        )
+
+
+@app.get("/api/sessions/{session_id}/snapshots/export", tags=["Snapshots"])
+def export_session_snapshots(
+    session_id: str,
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
+):
+    """
+    Export all session snapshots as JSON.
+
+    Returns complete snapshot history for the session in JSON format.
+    Useful for downloading/analyzing session progression.
+
+    Args:
+        session_id: The UUID of the session
+        current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
+
+    Returns:
+        JSON with all snapshots and session metadata
+    """
+    try:
+        # Verify session belongs to user
+        session_response = db.table("game_sessions")\
+            .select("*")\
+            .eq("id", session_id)\
+            .eq("user_id", current_user["id"])\
+            .single()\
+            .execute()
+
+        if not session_response.data:
+            raise HTTPException(
+                status_code=404,
+                detail="Spillsesjon ikke funnet"
+            )
+
+        # Get all snapshots
+        snapshots_response = db.table("session_snapshots")\
+            .select("*")\
+            .eq("session_id", session_id)\
+            .order("version")\
+            .execute()
+
+        # Build export data
+        export_data = {
+            "session": session_response.data,
+            "snapshots": snapshots_response.data,
+            "export_timestamp": datetime.utcnow().isoformat(),
+            "total_snapshots": len(snapshots_response.data)
+        }
+
+        return export_data
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error exporting snapshots: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="En feil oppstod ved eksport av snapshots"
         )

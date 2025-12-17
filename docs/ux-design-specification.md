@@ -870,40 +870,48 @@ w-8 h-8:   32px  - Extra large (empty states)
 
 ---
 
-### 3.9 History/Timeline View (Overlay Panel)
+### 3.9 History/Timeline View (Overlay Panel) - Simplified Contract Timeline
+
+**⚠️ SCOPE CHANGE (v2.1 - Dec 17, 2025):** Simplified to focus on contract acceptance snapshots only (not full version control). Priority: **Must Have**.
 
 **Layout (Full-screen Overlay):**
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│ 🕒 Historikk                                    ✕ Lukk historikk  │
+│ 🕒 Historikk - Kontrakt Aksepteringer          ✕ Lukk historikk  │
 ├────────────────────────────────────────────────────────────────────┤
 │                                                                    │
-│ ┌──Event Timeline──────┐  ┌──Comparison View──────────────────┐  │
-│ │ [Filter: Alle ▼]     │  │ Før (Versjon 7) | Etter (Versjon 8)│  │
+│ ┌──Contract Timeline───┐  ┌──Comparison View──────────────────┐  │
+│ │ [Filter: Alle ▼]     │  │ Versjon 0: Baseline (Startposisjon)│  │
 │ │                      │  │                                     │  │
-│ │ Versjon 8 (Nå)       │  │ ┌─────────────┐  ┌─────────────┐   │  │
-│ │ ⦿ Forpliktet         │  │ │ Råbygg      │  │ Råbygg      │   │  │
-│ │   2.1 Råbygg         │  │ │ 200 MNOK    │  │ 185 MNOK    │   │  │
-│ │   15. mar 13:24      │  │ │ [████████]  │  │ [████████]  │   │  │
-│ │                      │  │ └─────────────┘  └─────────────┘   │  │
-│ │ ○ Versjon 7          │  │     (rødt)          (grønt)        │  │
-│ │   Fjernet 3.2        │  │                                     │  │
-│ │   15. mar 13:20      │  │ Endringer:                          │  │
-│ │                      │  │ • Budsjett: -15 MNOK (2.1% ↓)      │  │
-│ │ ○ Versjon 6          │  │ • Tidslinje: -5 dager (1.5% raskere)│ │
-│ │   Reforhandlet 1.3.1 │  │ • Kritisk sti: Uendret              │  │
-│ │   15. mar 12:45      │  │                                     │  │
-│ │                      │  │ Kaskadeeffekter:                    │  │
-│ │ ○ Versjon 5          │  │ 1. WBS 2.2 start flyttet 5 d tid.. │  │
-│ │   ...                │  │ 2. Kritisk sti opprettholdt         │  │
-│ │ (scrollable)         │  │ 3. Ingen nye forsinkelser           │  │
+│ │ ⦿ Versjon 0 (NÅ)     │  │ ┌─────────────────────────────┐   │  │
+│ │   Startposisjon      │  │ │ BUDSJETT OVERSIKT           │   │  │
+│ │   12 låste pakker    │  │ │ Låst: 390 MNOK              │   │  │
+│ │   15. mar 10:00      │  │ │ Tilgjengelig: 310 MNOK      │   │  │
+│ │                      │  │ │ Total: 700 MNOK             │   │  │
+│ │ ○ Versjon 1          │  │ └─────────────────────────────┘   │  │
+│ │   ✓ WBS 1.3.1        │  │                                     │  │
+│ │   Grunnarbeid        │  │ TIDSLINJE                           │  │
+│ │   105 MNOK, 60d      │  │ Prosjektslutt: 30. aug 2025         │  │
+│ │   (Venter...)        │  │ ✓ 258 dager før frist               │  │
 │ │                      │  │                                     │  │
-│ │                      │  │ [← Forrige] [Neste →]              │  │
-│ │ (32 hendelser)       │  │ [Sammenlign med nåværende]         │  │
-│ └──────────────────────┘  │ [Eksporter historikk (JSON)]       │  │
-│                            └─────────────────────────────────────┘  │
+│ │ ○ Versjon 2          │  │ [Mini Gantt Preview]                │  │
+│ │   ✓ WBS 1.3.2        │  │ ░░░░░░ Låste pakker (12)            │  │
+│ │   (Venter...)        │  │ ┄┄┄┄ 1.3.1 Grunnarbeid (pending)    │  │
+│ │                      │  │ ┄┄┄┄ 1.3.2 Fundamentering           │  │
+│ │ ○ Versjon 3          │  │ ┄┄┄┄ 1.4.1 Råbygg                   │  │
+│ │   ✓ WBS 1.4.1        │  │ │                       │ FRIST     │  │
+│ │   (Venter...)        │  │                                     │  │
+│ │                      │  │ [Start Forhandling →]               │  │
+│ │ (0 av 3 akseptert)   │  │ [Eksporter historikk (JSON)]        │  │
+│ └──────────────────────┘  └─────────────────────────────────────┘  │
 └────────────────────────────────────────────────────────────────────┘
 ```
+
+**Core Concept:**
+This is NOT a full version control system. It's a **Contract Acceptance Timeline** showing:
+1. **Version 0 (Baseline):** Starting state with 12 locked packages (390 MNOK committed)
+2. **Version 1-3:** Snapshots created automatically when user accepts each of the 3 negotiable contracts
+3. **Comparison View:** Shows before/after impact for budget, timeline, and visualizations
 
 **Specifications:**
 
@@ -920,56 +928,118 @@ w-8 h-8:   32px  - Extra large (empty states)
 - Padding: p-6
 
 **Header:**
-- Title: text-xl font-bold text-gray-900, with Clock icon
+- Title: "🕒 Historikk - Kontrakt Aksepteringer" (text-xl font-bold text-gray-900)
 - Close button: Absolute top-right, red-600 text, hover: red-700
 - Border-bottom: 1px solid gray-200, pb-4
 
-**Left Sidebar - Event Timeline:**
-- Width: 400px, border-right: 1px solid gray-200
-- Filter dropdown: mb-4, options: "Alle", "Forhandlinger", "Planendringer"
-- Event list:
-  - Scrollable: max-height: calc(100vh - 200px), overflow-y: auto
-  - Each event: py-3, border-bottom: 1px gray-100
-  - **Current/selected event:** bg-blue-50, border-left: 3px blue-600
-  - **Other events:** hover: bg-gray-50
-  - Event icon: Circle (filled for current, outline for past)
-  - Action type icons: CheckCircle (commit), XCircle (remove), RefreshCw (renegotiate)
-  - Timestamp: text-xs text-gray-500
-  - WBS description: text-sm font-medium text-gray-900
-- Total count: text-xs text-gray-500, at bottom
+**Left Sidebar - Contract Timeline (Simplified):**
+- Width: 420px, border-right: 1px solid gray-200
+- Filter dropdown: mb-4, options: "Alle kontrakter" only (simple, no complex filtering)
+- Timeline vertical line connecting versions (gray-300, 2px)
+- **Version 0 (Baseline) - Auto-created at session start:**
+  - Badge: "Versjon 0" (blue-600 background)
+  - Title: "Startposisjon - Baseline" (font-semibold)
+  - Details: "12 kontraktfestede pakker", "390 MNOK låst, 310 MNOK tilgjengelig"
+  - Timestamp: Session creation time
+  - **Always highlighted when no contracts accepted yet** (bg-blue-50, border-left: 3px blue-600)
+- **Versions 1-3 (Contract Acceptances):**
+  - Badge: "Versjon N" (green-600 for completed, gray-400 for pending)
+  - Icon: ✓ CheckCircle (green) for completed, ○ outline for pending
+  - Title: "✓ WBS X.X.X - [Package Name]" or "(Venter...)" if pending
+  - Details: "[Supplier Name]", "X MNOK, Y dager"
+  - Timestamp: Acceptance time (relative: "30 min siden" or absolute)
+  - Click to select and show in comparison view
+- Total count: "(X av 3 kontrakter akseptert)" at bottom (text-xs text-gray-500)
 
-**Right Panel - Comparison View:**
-- Width: calc(100% - 400px - 48px)
-- Headers: "Før (Versjon N)" | "Etter (Versjon N+1)"
-  - text-lg font-semibold text-gray-900
-  - Separated by vertical divider
-- **Gantt Comparison:**
-  - Side-by-side mini Gantt charts (simplified view)
-  - Old state: Red bars, strikethrough for removed tasks
-  - New state: Green bars, highlighted for added/changed tasks
-  - Height: 300px
-- **Change Summary Stats:**
-  - Background: blue-50, rounded, p-3
-  - Stats displayed with icons (TrendingDown for reductions, TrendingUp for increases)
-  - Text: text-sm font-medium
-- **Cascade Effects Panel:**
-  - Background: gray-50, rounded, p-3
-  - Numbered list (1, 2, 3...)
-  - Each effect: text-xs text-gray-700
-  - Shows up to 5 most significant impacts
+**Right Panel - Comparison View (Simplified):**
+- Width: calc(100% - 420px - 48px)
+- **Tab Navigation:**
+  - Three tabs: "📊 Oversikt" (default), "📈 Gantt", "🔀 Presedensdiagram"
+  - Active tab: bg-blue-600 text-white
+  - Inactive tabs: bg-white border gray-300, hover: bg-gray-50
+
+**Tab 1: Oversikt (Summary Stats):**
+- **Budget Breakdown Card:**
+  - Background: gray-50, border gray-200, rounded, p-4
+  - Shows: Kontraktfestet, Tilgjengelig, Total budsjett
+  - Color-coded values (green for available, gray for locked)
+- **Timeline Card:**
+  - Shows: Prosjektslutt (estimated), Days before/after deadline
+  - ✓ or ❌ icon for validation status
+- **Mini Gantt Preview:**
+  - Simplified horizontal timeline (Feb 2025 - May 2026)
+  - Locked tasks: Gray bars (continuous block)
+  - Negotiable tasks: Dotted outline (pending) or green bars (committed)
+  - Deadline marker: Red dashed line at May 15, 2026
+  - Height: 200px
+- **Key Insights Panel:**
+  - Background: blue-50, border blue-600, rounded
+  - Bullet points explaining budget constraint (310 MNOK, 3 packages, deficit 35 MNOK)
+  - Deadline constraint (inflexible, cannot extend)
+
+**Tab 2: Gantt (When contract accepted):**
+- Side-by-side mini Gantt charts
+- Left: "Før (Versjon N-1)" - shows previous state
+- Right: "Etter (Versjon N)" - shows current state
+- Highlight changed task in green
+- Show budget/timeline deltas: "+105 MNOK", "+60 dager på kritisk sti"
+
+**Tab 3: Presedensdiagram (When contract accepted):**
+- Side-by-side precedence diagrams
+- Highlight newly committed node in green
+- Show critical path changes (if any)
 
 **Action Buttons:**
-- Row of buttons at bottom
-- Navigation: "← Forrige versjon" | "Neste versjon →" (ghost buttons)
-- Compare: "Sammenlign med nåværende" (secondary button)
-- Export: "Eksporter historikk (JSON)" or "(PDF)" (primary button)
+- "← Tilbake til Dashboard" (secondary button, left)
+- "Start Forhandling →" (primary button, center) - only visible on Version 0
+- "Eksporter fullstendig historikk (JSON)" (secondary button, right) - disabled until at least 1 contract accepted
 
-**Data Management:**
-- Maximum 50 versions stored in database (auto-prune oldest via cron job or trigger)
-- Each version stored in `session_snapshots` table
-- Database handles storage limits automatically (no manual monitoring needed)
+**Automatic Snapshot Creation:**
+- **Trigger:** POST /api/sessions/{id}/commitments (when user accepts contract offer)
+- **Database:** INSERT INTO session_snapshots with version number, budget before/after, contract details, gantt/precedence state
+- **Frontend:** Real-time update if history panel is open (WebSocket or polling)
 
-**Reference:** mockup-10-history-timeline-pane.svg, PRD FR-9.3
+**Data Structure (Simplified):**
+```javascript
+session_snapshot = {
+  id: uuid,
+  session_id: uuid,
+  version: 0 | 1 | 2 | 3,  // Max 4 snapshots (baseline + 3 contracts)
+  label: "Baseline" | "WBS 1.3.1 - Grunnarbeid",
+  snapshot_type: "baseline" | "contract_acceptance",
+
+  // Budget state
+  budget_committed: 390000000,  // 390 MNOK (in øre)
+  budget_available: 310000000,  // 310 MNOK
+  budget_total: 700000000,      // Always 700 MNOK
+
+  // Contract details (null for baseline)
+  contract_wbs_id: "1.3.1" | null,
+  contract_cost: 105000000 | null,
+  contract_duration: 60 | null,
+  contract_supplier: "Bjørn Eriksen AS" | null,
+
+  // Timeline state
+  project_end_date: "2025-08-30",
+  days_before_deadline: 258,
+
+  // Visualization snapshots (JSON)
+  gantt_state: {...},           // gantt-task-react data
+  precedence_state: {...},       // ReactFlow nodes/edges
+
+  timestamp: "2025-03-15T10:00:00Z"
+}
+```
+
+**Storage Limit:**
+- Maximum 10 snapshots per session (1 baseline + up to 9 contract acceptances if user renegotiates)
+- Auto-prune: Keep latest 10 versions, delete older ones
+- Table: `session_snapshots` with foreign key to `game_sessions`
+
+**Reference:**
+- Mockup: `docs/ux/UI_flows/mockup-10-history-timeline-simplified.svg`
+- User Flow: `docs/ux/functional_flows/flow-08-history-timeline-interaction.svg`
+- PRD: FR-9.3 (Simplified)
 
 ---
 

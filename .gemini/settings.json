@@ -1,8 +1,19 @@
 {
-  "telemetry": {
-    "enabled": true,
-    "target": "local",
-    "outfile": ".logging/log.jsonl",
-    "logPrompts": true
+ "telemetry": {
+  "enabled": true,
+  "target": "local",
+  "outfile": ".logging/log.jsonl",
+  "logPrompts": true
+  },
+   "mcpServers": {
+   "supabase": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@supabase/mcp-server-supabase@latest",
+      "--access-token",
+      "sbp_03ea763a4b0106b075470af58f620b72814c9424"
+     ]
+   }
   }
 }

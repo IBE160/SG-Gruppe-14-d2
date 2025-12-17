@@ -4,20 +4,37 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { colors } from '@/lib/design-system';
 import { BudgetDisplay } from '@/components/budget-display';
+import { GanttChart } from '@/components/gantt-chart';
+import { PrecedenceDiagram } from '@/components/precedence-diagram';
+import { HistoryPanel } from '@/components/history-panel';
+import { ChatInterface } from '@/components/chat-interface';
 import { createSession, getUserSessions } from '@/lib/api/sessions';
-import type { GameSession } from '@/types';
+import { createClient } from '@/lib/supabase/client';
+import { getAuthToken } from '@/lib/auth-utils';
+import type { GameSession, GameContext } from '@/types';
 
 export default function DashboardPage() {
   const router = useRouter();
   const [session, setSession] = useState<GameSession | null>(null);
   const [wbsElements, setWbsElements] = useState<any[]>([]);
   const [agents, setAgents] = useState<any[]>([]);
+  const [commitments, setCommitments] = useState<any[]>([]);
+  const [timeline, setTimeline] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'gantt' | 'precedence'>('overview');
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   useEffect(() => {
     loadDashboard();
   }, []);
+
+  useEffect(() => {
+    // Load commitments and validation data when session changes
+    if (session) {
+      loadCommitmentsAndValidation();
+    }
+  }, [session]);
 
   async function loadDashboard() {
     try {
@@ -42,7 +59,7 @@ export default function DashboardPage() {
 
       // Check for existing active session
       const sessions = await getUserSessions();
-      const activeSession = sessions.find((s) => s.status === 'active');
+      const activeSession = sessions.find((s) => s.status === 'in_progress');
 
       if (activeSession) {
         setSession(activeSession);
@@ -56,6 +73,53 @@ export default function DashboardPage() {
       setError(err.message || 'Kunne ikke laste dashboard');
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function loadCommitmentsAndValidation() {
+    if (!session) return;
+
+    try {
+      // Get JWT token from Supabase session
+      const token = await getAuthToken();
+      if (!token) {
+        console.error('No auth token found');
+        return;
+      }
+
+      // Fetch commitments
+      const commitmentsRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${session.id}/commitments`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (commitmentsRes.ok) {
+        const commitmentsData = await commitmentsRes.json();
+        setCommitments(commitmentsData);
+      }
+
+      // Fetch validation/timeline data
+      const validationRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${session.id}/validate`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (validationRes.ok) {
+        const validationData = await validationRes.json();
+        setTimeline(validationData);
+      }
+    } catch (err) {
+      console.error('Error loading commitments/validation:', err);
     }
   }
 
@@ -108,6 +172,15 @@ export default function DashboardPage() {
   const initialDeficit = 35000000; // 35 MNOK as specified
   const totalNeeded = negotiableWBS.reduce((sum, w) => sum + (w.baseline_cost || 0), 0);
 
+  const gameContext: GameContext = {
+    total_budget: session.total_budget,
+    current_budget_used: session.current_budget_used,
+    available_budget: session.available_budget,
+    locked_budget: session.locked_budget,
+    deadline_date: session.deadline_date,
+    committed_wbs: session.negotiable_wbs_commitments || [],
+  };
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: colors.background.page }}>
       {/* Header */}
@@ -126,10 +199,66 @@ export default function DashboardPage() {
         </div>
       </header>
 
+      {/* Tab Navigation */}
+      <div className="mx-auto max-w-7xl px-6 pt-6">
+        <div className="flex gap-2 mb-4 border-b justify-between items-center" style={{ borderColor: colors.border.medium }}>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-4 py-2 text-sm font-semibold transition-colors ${
+                activeTab === 'overview'
+                  ? 'border-b-2 border-blue-500 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              📊 Oversikt
+            </button>
+            <button
+              onClick={() => setActiveTab('gantt')}
+              className={`px-4 py-2 text-sm font-semibold transition-colors ${
+                activeTab === 'gantt'
+                  ? 'border-b-2 border-blue-500 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              📈 Gantt-diagram
+            </button>
+            <button
+              onClick={() => setActiveTab('precedence')}
+              className={`px-4 py-2 text-sm font-semibold transition-colors ${
+                activeTab === 'precedence'
+                  ? 'border-b-2 border-blue-500 text-blue-600'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              🔀 Presedensdiagram
+            </button>
+          </div>
+          <button
+            onClick={() => setIsHistoryOpen(true)}
+            className="px-4 py-2 text-sm font-semibold text-white rounded transition-colors hover:opacity-90"
+            style={{ backgroundColor: colors.button.primary.bg }}
+          >
+            🕒 Historikk
+          </button>
+        </div>
+      </div>
+
       <div className="mx-auto max-w-7xl px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+        {/* Visualization Views */}
+        {activeTab === 'gantt' && (
+          <GanttChart wbsItems={wbsElements} commitments={commitments} timeline={timeline} />
+        )}
+
+        {activeTab === 'precedence' && (
+          <PrecedenceDiagram wbsItems={wbsElements} timeline={timeline} />
+        )}
+
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-8">
             {/* Budget Section */}
             <div
               className="rounded-lg border p-6"
@@ -289,40 +418,35 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            {/* AI Agents Panel */}
+            {/* Owner Chat Panel */}
             <div
-              className="rounded-lg border p-6"
+              className="rounded-lg border overflow-hidden flex flex-col h-[600px]"
               style={{
                 backgroundColor: colors.background.card,
                 borderColor: colors.border.medium,
               }}
             >
-              <h3 className="text-sm font-bold text-gray-900 mb-4">AI Agenter</h3>
-              <div className="space-y-3">
-                {agents.map((agent) => (
-                  <div
-                    key={agent.id}
-                    className="flex items-start gap-3 p-3 rounded-lg"
-                    style={{ backgroundColor: colors.background.input }}
-                  >
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-full text-white text-sm font-bold"
-                      style={{ backgroundColor: agent.avatar_color }}
-                    >
-                      {agent.initials}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-gray-900">{agent.name}</p>
-                      <p className="text-xs text-gray-600">{agent.role}</p>
-                      <p className="mt-1 text-xs text-gray-700">{agent.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ChatInterface
+                sessionId={session.id}
+                agentId="anne-lise-berg"
+                agentType="owner"
+                gameContext={gameContext}
+              />
             </div>
           </div>
         </div>
+        )}
       </div>
+
+      {/* History Panel Overlay */}
+      {session && (
+        <HistoryPanel
+          sessionId={session.id}
+          isOpen={isHistoryOpen}
+          onClose={() => setIsHistoryOpen(false)}
+          wbsItems={wbsElements}
+        />
+      )}
     </div>
   );
 }
