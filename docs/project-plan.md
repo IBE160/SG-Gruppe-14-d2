@@ -26,22 +26,22 @@ The PM Simulator project has successfully implemented core functionality and is 
 8. ✅ **Design System** - Professional UI with Tailwind CSS, Shadcn components, color-coded budget tiers
 9. ✅ **Static Data** - Complete WBS (15 items) and agent configs (4 agents) in JSON format
 10. ✅ **Documentation** - 40+ comprehensive docs (PRD, architecture, test plans, troubleshooting)
+11. ✅ **Chat History Loading** - Messages persist and reload correctly on session resume
 
 ### What's Missing ❌
 
 **Critical for MVP:**
 1. ⚠️ **Session Completion Flow** - No results page or completion summary (est: 4-6 hours)
-2. ⚠️ **Chat History Loading** - Messages reset on page refresh (est: 2 hours)
-3. ⚠️ **Database Import Verification** - Need to confirm schema imported to Supabase production
+2. ⚠️ **Database Import Verification** - Need to confirm schema imported to Supabase production
 
 **Important but Not Blocking:**
-4. ❌ **Renegotiation** - Cannot uncommit accepted offers (est: 3-4 hours)
-5. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (est: 4-6 hours)
-6. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement limit (est: 3 hours)
-7. ❌ **Visualizations** - Gantt chart and precedence diagram designs exist but not coded (est: 6-8 hours using gantt-task-react + ReactFlow libraries)
-8. ❌ **Export** - No session export to JSON/PDF (est: 4-6 hours)
-9. ⚠️ **Mobile Responsive** - Desktop-optimized, limited mobile support (est: 8-12 hours)
-10. ❌ **Automated Tests** - No unit/integration/E2E test suite (est: 40+ hours)
+3. ❌ **Renegotiation** - Cannot uncommit accepted offers (est: 3-4 hours)
+4. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (est: 4-6 hours)
+5. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement limit (est: 3 hours)
+6. ❌ **Visualizations** - Gantt chart and precedence diagram designs exist but not coded (est: 6-8 hours using gantt-task-react + ReactFlow libraries)
+7. ❌ **Export** - No session export to JSON/PDF (est: 4-6 hours)
+8. ⚠️ **Mobile Responsive** - Desktop-optimized, limited mobile support (est: 8-12 hours)
+9. ❌ **Automated Tests** - No unit/integration/E2E test suite (est: 40+ hours)
 
 ### File Statistics
 - **Frontend:** ~150 source files, ~8,000+ lines of TypeScript/TSX
@@ -51,7 +51,7 @@ The PM Simulator project has successfully implemented core functionality and is 
 - **Data Files:** 2 JSON files (15 WBS items, 4 agent configs)
 
 ### Recommended Next Steps
-1. **Week 1:** Verify database import, implement session completion flow, add chat history loading
+1. **Week 1:** Verify database import, implement session completion flow
 2. **Week 2:** Add renegotiation, timeline validation, agent timeout UI
 3. **Week 3:** Build visualizations using gantt-task-react (Gantt chart) and ReactFlow (precedence diagram)
 4. **Week 4:** Add export, improve mobile responsiveness, write automated tests
@@ -236,6 +236,7 @@ The PM Simulator project has successfully implemented core functionality and is 
         - ✅ Real-time chat UI with message bubbles
         - ✅ Budget impact preview in sidebar
         - ✅ Auto-redirect after commitment
+        - ✅ Chat history persistence and loading (fixed session resumption issue)
 
 - [x] **Plan Management & Validation** (Week 3-4) - ⚠️ PARTIALLY COMPLETE
     - *Status: Core commitment flow implemented, some advanced features missing.*
@@ -283,6 +284,7 @@ The PM Simulator project has successfully implemented core functionality and is 
         - ✅ Responsive UI components (Tailwind + Shadcn)
         - ✅ Testing scripts (backend/test_chat.py, test_setup.py, etc.)
         - ✅ Troubleshooting documentation (TROUBLESHOOTING_REPORT_DEC_16.md)
+        - ✅ Chat history fix (backend RLS + frontend session resume logic)
     - *Missing Features:*
         - ❌ Session export as JSON/PDF
         - ❌ Help documentation modal in UI
@@ -290,7 +292,7 @@ The PM Simulator project has successfully implemented core functionality and is 
         - ❌ Agent timeout UI countdown
         - ❌ Session completion page
 
-**Current Progress:** Sprint 2-3 features ~85% complete. Sprint 4-5 features ~40% complete. Core negotiation loop fully functional.
+**Current Progress:** Sprint 2-3 features ~90% complete. Sprint 4-5 features ~40% complete. Core negotiation loop fully functional.
 
 ---
 
@@ -352,31 +354,30 @@ The PM Simulator project has successfully implemented core functionality and is 
 - ✅ Auth system fully functional
 - ✅ Design system with comprehensive color palette
 - ✅ 40+ documentation files
+- ✅ Fixed critical issue with session resumption and chat history loading
 
 **Remaining Gaps (MVP Completion):**
 1. ⚠️ **Session Completion Flow** - No completion page or results summary (4-6 hours)
-2. ⚠️ **Chat History Loading** - Messages not loaded from DB on page refresh (2 hours)
-3. ⚠️ **Database Import Verification** - Confirm schema imported to Supabase production (30 minutes)
-4. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
-5. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (4-6 hours)
-6. ❌ **Visualizations** - Gantt chart and precedence diagram not built (6-8 hours using gantt-task-react + ReactFlow)
-7. ❌ **Export Functionality** - No session export to JSON/PDF (3-4 hours)
-8. ❌ **Automated Testing** - No unit/integration/E2E test suite (8-10 hours)
+2. ⚠️ **Database Import Verification** - Confirm schema imported to Supabase production (30 minutes)
+3. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
+4. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (4-6 hours)
+5. ❌ **Visualizations** - Gantt chart and precedence diagram not built (6-8 hours using gantt-task-react + ReactFlow)
+6. ❌ **Export Functionality** - No session export to JSON/PDF (3-4 hours)
+7. ❌ **Automated Testing** - No unit/integration/E2E test suite (8-10 hours)
 
 **Nice to Have (If Time Permits):**
-9. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
-10. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
-11. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
+8. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
+9. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
+10. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
 
 **Next Priority Actions (MVP Completion):**
 1. Verify database schema import in Supabase production instance
 2. Implement session completion flow (`/app/complete/page.tsx` + API endpoint)
-3. Add chat history loading from `negotiation_history` table
-4. Implement uncommit functionality for renegotiation
-5. Add timeline/dependency validation (critical path algorithm)
-6. Build Gantt chart (gantt-task-react) and precedence diagram (ReactFlow) visualizations
-7. Implement session export functionality
-8. Write automated test suite (backend + frontend)
+3. Implement uncommit functionality for renegotiation
+4. Add timeline/dependency validation (critical path algorithm)
+5. Build Gantt chart (gantt-task-react) and precedence diagram (ReactFlow) visualizations
+6. Implement session export functionality
+7. Write automated test suite (backend + frontend)
 
 **Estimated time to MVP (required features only):** 29-38 hours of focused development work.
 **Estimated time with nice-to-have features:** 40-53 hours.
