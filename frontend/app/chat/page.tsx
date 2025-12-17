@@ -4,6 +4,7 @@ import { ChatPageClient } from "./chat-page-client";
 
 // This interface can be shared or moved to a types file later
 export interface AgentPrompt {
+  id: string;
   title: string;
   content: string;
 }
@@ -26,10 +27,18 @@ export default function ChatPage() {
     prompts = agentSections.map(section => {
       const titleMatch = section.match(/## (.*?)\r?\n/);
       const nameMatch = section.match(/\*\*Name:\*\* (.*?)\r?\n/);
-      const roleMatch = section.match(/\*\*Role:\*\* (.*?)\r?\n/);
       
+      const titleLine = titleMatch ? titleMatch[1] : "";
+      
+      // Determine ID based on Agent number in title
+      let id = "unknown";
+      if (titleLine.includes("Agent 1")) id = "anne-lise-berg";
+      else if (titleLine.includes("Agent 2")) id = "bjorn-eriksen";
+      else if (titleLine.includes("Agent 3")) id = "kari-andersen";
+      else if (titleLine.includes("Agent 4")) id = "per-johansen";
+
       const name = nameMatch ? nameMatch[1] : "";
-      let simplifiedRole = titleMatch ? titleMatch[1].split(': ')[1] || titleMatch[1] : "Unknown Role";
+      let simplifiedRole = titleLine.split(': ')[1] || titleLine;
       
       const roleParts = simplifiedRole.split(' - ');
       if (roleParts.length > 1) {
@@ -43,6 +52,7 @@ export default function ChatPage() {
       }
 
       return {
+        id,
         title: name ? `${name}, ${simplifiedRole}` : simplifiedRole,
         content: section,
       };
@@ -51,6 +61,7 @@ export default function ChatPage() {
   } catch (error) {
     console.error("Error reading or parsing markdown file for chat:", error);
     prompts = [{
+      id: "error",
       title: "Error",
       content: "Could not load agent prompts."
     }];
