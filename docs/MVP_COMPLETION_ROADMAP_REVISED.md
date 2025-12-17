@@ -18,8 +18,8 @@
 2. ❌ Session export (JSON download) (3-4 hours)
 3. ❌ Renegotiation (uncommit) capability (3-4 hours)
 4. ❌ Chat history loading from DB (2 hours) **[REQUIRED]**
-5. ❌ Gantt chart visualization (6-8 hours) **[REQUIRED]**
-6. ❌ Precedence diagram (6-8 hours) **[REQUIRED]**
+5. ❌ Gantt chart visualization using gantt-task-react (6-8 hours) **[REQUIRED]**
+6. ❌ Precedence diagram using ReactFlow (6-8 hours) **[REQUIRED]**
 7. ❌ Automated tests (8-10 hours) **[REQUIRED]**
 
 **NICE TO HAVE (if time):**
@@ -36,7 +36,7 @@
 ### Option A: Parallel Development (Recommended)
 **Team of 3 developers:**
 - **Developer 1:** Core flow (items 1-3) - 10-14 hours
-- **Developer 2:** Visualizations (items 5-6) - 12-16 hours
+- **Developer 2:** Visualizations using gantt-task-react + ReactFlow (items 5-6) - 12-16 hours
 - **Developer 3:** Chat fix + Tests (items 4, 7) - 10-12 hours
 - **Timeline:** 14-16 hours with coordination
 - **Result:** Full MVP compliance
@@ -887,12 +887,24 @@ useEffect(() => {
 
 ### Task 3.1: Gantt Chart (6-8 hours)
 
+**Implementation Approach:** Using `gantt-task-react` library (30K+ weekly downloads) for pre-built Gantt chart functionality.
+
 **File:** `frontend/components/gantt-chart.tsx` (NEW)
+
+**Step 1: Install library**
+```bash
+npm install gantt-task-react
+npm install --save-dev @types/gantt-task-react
+```
+
+**Step 2: Create Gantt component**
 
 ```typescript
 'use client'
 
 import { useMemo } from 'react'
+import { Gantt, Task, ViewMode } from 'gantt-task-react'
+import 'gantt-task-react/dist/index.css'
 
 interface GanttChartProps {
   wbsItems: any[]
@@ -901,21 +913,7 @@ interface GanttChartProps {
 }
 
 export function GanttChart({ wbsItems, commitments, timeline }: GanttChartProps) {
-  const projectStart = new Date('2025-01-15')
-  const projectEnd = new Date('2026-05-15')
-  const today = new Date()
-
-  // Calculate total project duration in days
-  const totalDuration = Math.ceil((projectEnd.getTime() - projectStart.getTime()) / (1000 * 60 * 60 * 24))
-
-  // Helper: Convert date to pixel position
-  const dateToX = (date: Date) => {
-    const daysSinceStart = Math.ceil((date.getTime() - projectStart.getTime()) / (1000 * 60 * 60 * 24))
-    return (daysSinceStart / totalDuration) * 100 // percentage
-  }
-
-  // Build task list with dates
-  const tasks = useMemo(() => {
+  const tasks: Task[] = useMemo(() => {
     const commitmentMap = Object.fromEntries(
       commitments.map(c => [c.wbs_item_id, c])
     )
@@ -924,118 +922,57 @@ export function GanttChart({ wbsItems, commitments, timeline }: GanttChartProps)
     const earliestFinish = timeline.earliest_finish || {}
     const criticalPath = timeline.critical_path || []
 
-    return wbsItems.map(item => {
-      const commitment = commitmentMap[item.id]
-      const start = earliestStart[item.id] ? new Date(earliestStart[item.id]) : null
-      const finish = earliestFinish[item.id] ? new Date(earliestFinish[item.id]) : null
+    return wbsItems
+      .map(item => {
+        const commitment = commitmentMap[item.id]
+        const start = earliestStart[item.id] ? new Date(earliestStart[item.id]) : null
+        const end = earliestFinish[item.id] ? new Date(earliestFinish[item.id]) : null
 
-      return {
-        id: item.id,
-        name: item.name,
-        start,
-        finish,
-        isCritical: criticalPath.includes(item.id),
-        isCommitted: !!commitment,
-        isNegotiable: item.negotiable
-      }
-    }).filter(task => task.start && task.finish)
+        if (!start || !end) return null
+
+        const isCritical = criticalPath.includes(item.id)
+        const isCommitted = !!commitment
+        const isNegotiable = item.negotiable
+
+        return {
+          id: item.id,
+          name: `${item.id} - ${item.name}`,
+          start,
+          end,
+          progress: isCommitted ? 100 : 0,
+          type: 'task' as const,
+          styles: {
+            backgroundColor: isCritical
+              ? '#ef4444' // Red for critical path
+              : isNegotiable
+              ? '#22c55e' // Green for negotiable
+              : '#9ca3af', // Gray for locked
+            backgroundSelectedColor: isCritical ? '#dc2626' : isNegotiable ? '#16a34a' : '#6b7280',
+            progressColor: isCritical ? '#991b1b' : isNegotiable ? '#15803d' : '#4b5563',
+            progressSelectedColor: isCritical ? '#7f1d1d' : isNegotiable ? '#14532d' : '#374151'
+          },
+          dependencies: item.dependencies || []
+        }
+      })
+      .filter((task): task is Task => task !== null)
   }, [wbsItems, commitments, timeline])
 
+  // Set Norwegian locale and Month view by default
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
       <h3 className="text-xl font-bold mb-4">Gantt Chart</h3>
 
-      {/* Timeline header */}
-      <div className="mb-4">
-        <div className="relative h-8 bg-gray-100 dark:bg-gray-700 rounded">
-          {/* Month markers */}
-          {Array.from({ length: 16 }, (_, i) => {
-            const monthDate = new Date(projectStart)
-            monthDate.setMonth(monthDate.getMonth() + i)
-            const x = dateToX(monthDate)
-
-            return (
-              <div
-                key={i}
-                className="absolute top-0 h-full border-l border-gray-300 dark:border-gray-600"
-                style={{ left: `${x}%` }}
-              >
-                <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
-                  {monthDate.toLocaleDateString('nb-NO', { month: 'short', year: '2-digit' })}
-                </span>
-              </div>
-            )
-          })}
-
-          {/* Today marker */}
-          {today >= projectStart && today <= projectEnd && (
-            <div
-              className="absolute top-0 h-full border-l-2 border-blue-500"
-              style={{ left: `${dateToX(today)}%` }}
-            >
-              <span className="text-xs text-blue-600 dark:text-blue-400 font-semibold ml-1">
-                Idag
-              </span>
-            </div>
-          )}
-
-          {/* Deadline marker */}
-          <div
-            className="absolute top-0 h-full border-l-2 border-red-500"
-            style={{ left: '100%' }}
-          >
-            <span className="text-xs text-red-600 font-semibold ml-1">
-              Deadline
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Tasks */}
-      <div className="space-y-2">
-        {tasks.map((task, idx) => {
-          const startX = dateToX(task.start!)
-          const finishX = dateToX(task.finish!)
-          const width = finishX - startX
-
-          return (
-            <div key={task.id} className="relative">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm font-mono text-gray-600 dark:text-gray-400 w-16">
-                  {task.id}
-                </span>
-                <span className="text-sm flex-1">{task.name}</span>
-                {task.isCritical && (
-                  <span className="text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-1 rounded">
-                    Kritisk
-                  </span>
-                )}
-              </div>
-
-              <div className="relative h-8 bg-gray-100 dark:bg-gray-700 rounded">
-                <div
-                  className={`absolute top-1/2 -translate-y-1/2 h-6 rounded ${
-                    task.isCritical
-                      ? 'bg-red-500'
-                      : task.isNegotiable
-                      ? 'bg-green-500'
-                      : 'bg-gray-400'
-                  } ${!task.isCommitted && 'opacity-50 border-2 border-dashed border-current'}`}
-                  style={{
-                    left: `${startX}%`,
-                    width: `${width}%`
-                  }}
-                >
-                  {task.isCommitted && (
-                    <div className="h-full flex items-center justify-center text-white text-xs font-semibold">
-                      {Math.ceil((task.finish!.getTime() - task.start!.getTime()) / (1000 * 60 * 60 * 24))}d
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )
-        })}
+      <div className="gantt-wrapper">
+        <Gantt
+          tasks={tasks}
+          viewMode={ViewMode.Month}
+          locale="nb-NO"
+          listCellWidth="200px"
+          columnWidth={60}
+          barProgressColor="#3b82f6"
+          barBackgroundColor="#e5e7eb"
+          todayColor="rgba(59, 130, 246, 0.3)"
+        />
       </div>
 
       {/* Legend */}
@@ -1052,26 +989,62 @@ export function GanttChart({ wbsItems, commitments, timeline }: GanttChartProps)
           <div className="w-4 h-4 bg-gray-400 rounded"></div>
           <span>Låst</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-gray-400 opacity-50 border-2 border-dashed border-gray-400 rounded"></div>
-          <span>Ikke forpliktet</span>
-        </div>
       </div>
     </div>
   )
 }
 ```
 
+**Step 3: Add custom CSS for styling** (optional, in `globals.css`)
+
+```css
+.gantt-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.gantt-wrapper .gantt {
+  font-family: inherit;
+}
+```
+
+**Benefits of gantt-task-react:**
+- ✅ Pre-built timeline rendering (months, weeks, days)
+- ✅ Auto-positioning of task bars
+- ✅ Dependency arrows built-in
+- ✅ Zoom and scroll interactions
+- ✅ Today marker automatically displayed
+- ✅ Saves 3-5 hours vs custom implementation
+
 ---
 
 ### Task 3.2: Precedence Diagram (6-8 hours)
 
+**Implementation Approach:** Using `ReactFlow` library (500K+ weekly downloads) for AON network diagram with built-in graph layout.
+
 **File:** `frontend/components/precedence-diagram.tsx` (NEW)
+
+**Step 1: Install library**
+```bash
+npm install reactflow
+```
+
+**Step 2: Create Precedence Diagram component**
 
 ```typescript
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
+import ReactFlow, {
+  Node,
+  Edge,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  MarkerType
+} from 'reactflow'
+import 'reactflow/dist/style.css'
 
 interface PrecedenceDiagramProps {
   wbsItems: any[]
@@ -1079,179 +1052,109 @@ interface PrecedenceDiagramProps {
 }
 
 export function PrecedenceDiagram({ wbsItems, timeline }: PrecedenceDiagramProps) {
-  const { nodes, edges } = useMemo(() => {
-    const criticalPath = timeline.critical_path || []
-    const earliestStart = timeline.earliest_start || {}
-    const earliestFinish = timeline.earliest_finish || {}
-    const latestStart = timeline.latest_start || {}
-    const latestFinish = timeline.latest_finish || {}
+  const criticalPath = timeline.critical_path || []
+  const earliestStart = timeline.earliest_start || {}
+  const earliestFinish = timeline.earliest_finish || {}
+  const latestStart = timeline.latest_start || {}
+  const latestFinish = timeline.latest_finish || {}
 
-    // Build nodes
-    const nodes = wbsItems.map((item, idx) => {
-      const es = earliestStart[item.id] ? Math.ceil((new Date(earliestStart[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24)) : 0
-      const ef = earliestFinish[item.id] ? Math.ceil((new Date(earliestFinish[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24)) : 0
-      const ls = latestStart[item.id] ? Math.ceil((new Date(latestStart[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24)) : 0
-      const lf = latestFinish[item.id] ? Math.ceil((new Date(latestFinish[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24)) : 0
+  const initialNodes: Node[] = useMemo(() => {
+    return wbsItems.map((item, idx) => {
+      const es = earliestStart[item.id]
+        ? Math.ceil((new Date(earliestStart[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24))
+        : 0
+      const ef = earliestFinish[item.id]
+        ? Math.ceil((new Date(earliestFinish[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24))
+        : 0
+      const ls = latestStart[item.id]
+        ? Math.ceil((new Date(latestStart[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24))
+        : 0
+      const lf = latestFinish[item.id]
+        ? Math.ceil((new Date(latestFinish[item.id]).getTime() - new Date('2025-01-15').getTime()) / (1000 * 60 * 60 * 24))
+        : 0
       const slack = ls - es
+      const isCritical = criticalPath.includes(item.id)
 
       return {
         id: item.id,
-        name: item.name,
-        duration: ef - es,
-        es,
-        ef,
-        ls,
-        lf,
-        slack,
-        isCritical: criticalPath.includes(item.id),
-        dependencies: item.dependencies || [],
-        // Layout position (simplified grid layout)
-        x: (idx % 5) * 200 + 50,
-        y: Math.floor(idx / 5) * 150 + 50
+        type: 'default',
+        position: { x: (idx % 5) * 220 + 50, y: Math.floor(idx / 5) * 180 + 50 },
+        data: {
+          label: (
+            <div className="text-center p-2">
+              <div className="font-bold text-sm mb-1">{item.id}</div>
+              <div className="text-xs mb-1 text-gray-700">
+                {item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name}
+              </div>
+              <div className="text-xs text-gray-600 mt-2">
+                <div>ES: {es} | EF: {ef}</div>
+                <div>LS: {ls} | LF: {lf}</div>
+              </div>
+              <div className={`text-xs font-semibold mt-1 ${slack === 0 ? 'text-red-600' : 'text-green-600'}`}>
+                {slack === 0 ? 'KRITISK' : `Slack: ${slack}d`}
+              </div>
+            </div>
+          )
+        },
+        style: {
+          background: isCritical ? '#fee2e2' : '#f3f4f6',
+          border: `${isCritical ? '3' : '2'}px solid ${isCritical ? '#ef4444' : '#9ca3af'}`,
+          borderRadius: '8px',
+          width: 180,
+          fontSize: '12px'
+        }
       }
     })
-
-    // Build edges
-    const edges: any[] = []
-    nodes.forEach(node => {
-      node.dependencies.forEach((depId: string) => {
-        const fromNode = nodes.find(n => n.id === depId)
-        if (fromNode) {
-          edges.push({
-            from: fromNode.id,
-            to: node.id,
-            fromX: fromNode.x + 160,
-            fromY: fromNode.y + 40,
-            toX: node.x,
-            toY: node.y + 40,
-            isCritical: fromNode.isCritical && node.isCritical
-          })
-        }
-      })
-    })
-
-    return { nodes, edges }
   }, [wbsItems, timeline])
 
+  const initialEdges: Edge[] = useMemo(() => {
+    const edges: Edge[] = []
+    wbsItems.forEach(item => {
+      const dependencies = item.dependencies || []
+      dependencies.forEach((depId: string) => {
+        const isCritical =
+          criticalPath.includes(item.id) && criticalPath.includes(depId)
+
+        edges.push({
+          id: `${depId}-${item.id}`,
+          source: depId,
+          target: item.id,
+          type: 'smoothstep',
+          animated: isCritical,
+          style: {
+            stroke: isCritical ? '#ef4444' : '#9ca3af',
+            strokeWidth: isCritical ? 3 : 2
+          },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: isCritical ? '#ef4444' : '#9ca3af'
+          }
+        })
+      })
+    })
+    return edges
+  }, [wbsItems, timeline])
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 overflow-auto">
+    <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
       <h3 className="text-xl font-bold mb-4">Precedence Diagram (AON)</h3>
 
-      <svg
-        width="1000"
-        height={Math.max(500, Math.ceil(nodes.length / 5) * 150 + 100)}
-        className="border border-gray-200 dark:border-gray-700 rounded"
-      >
-        {/* Edges (arrows) */}
-        {edges.map((edge, idx) => (
-          <g key={idx}>
-            <line
-              x1={edge.fromX}
-              y1={edge.fromY}
-              x2={edge.toX}
-              y2={edge.toY}
-              stroke={edge.isCritical ? '#ef4444' : '#9ca3af'}
-              strokeWidth={edge.isCritical ? 3 : 2}
-              markerEnd="url(#arrowhead)"
-            />
-          </g>
-        ))}
-
-        {/* Arrow marker */}
-        <defs>
-          <marker
-            id="arrowhead"
-            markerWidth="10"
-            markerHeight="10"
-            refX="9"
-            refY="3"
-            orient="auto"
-          >
-            <polygon points="0 0, 10 3, 0 6" fill="#9ca3af" />
-          </marker>
-        </defs>
-
-        {/* Nodes */}
-        {nodes.map(node => (
-          <g key={node.id}>
-            {/* Node box */}
-            <rect
-              x={node.x}
-              y={node.y}
-              width="160"
-              height="80"
-              fill={node.isCritical ? '#fee2e2' : '#f3f4f6'}
-              stroke={node.isCritical ? '#ef4444' : '#9ca3af'}
-              strokeWidth={node.isCritical ? 3 : 2}
-              rx="4"
-            />
-
-            {/* Node ID */}
-            <text
-              x={node.x + 80}
-              y={node.y + 20}
-              textAnchor="middle"
-              className="text-sm font-bold"
-              fill={node.isCritical ? '#991b1b' : '#374151'}
-            >
-              {node.id}
-            </text>
-
-            {/* Node name */}
-            <text
-              x={node.x + 80}
-              y={node.y + 38}
-              textAnchor="middle"
-              className="text-xs"
-              fill="#6b7280"
-            >
-              {node.name.length > 18 ? node.name.substring(0, 18) + '...' : node.name}
-            </text>
-
-            {/* ES/EF/LS/LF */}
-            <text
-              x={node.x + 5}
-              y={node.y + 55}
-              className="text-xs"
-              fill="#6b7280"
-            >
-              ES:{node.es} EF:{node.ef}
-            </text>
-            <text
-              x={node.x + 5}
-              y={node.y + 70}
-              className="text-xs"
-              fill="#6b7280"
-            >
-              LS:{node.ls} LF:{node.lf}
-            </text>
-
-            {/* Slack */}
-            {node.slack > 0 && (
-              <text
-                x={node.x + 155}
-                y={node.y + 70}
-                textAnchor="end"
-                className="text-xs font-semibold"
-                fill="#059669"
-              >
-                S:{node.slack}
-              </text>
-            )}
-            {node.slack === 0 && (
-              <text
-                x={node.x + 155}
-                y={node.y + 70}
-                textAnchor="end"
-                className="text-xs font-semibold"
-                fill="#dc2626"
-              >
-                KRITISK
-              </text>
-            )}
-          </g>
-        ))}
-      </svg>
+      <div style={{ width: '100%', height: '600px' }} className="border border-gray-200 dark:border-gray-700 rounded">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          fitView
+          attributionPosition="bottom-left"
+        >
+          <Background />
+          <Controls />
+        </ReactFlow>
+      </div>
 
       {/* Legend */}
       <div className="mt-4 flex gap-4 text-sm">
@@ -1264,13 +1167,22 @@ export function PrecedenceDiagram({ wbsItems, timeline }: PrecedenceDiagramProps
           <span>Ikke-kritisk</span>
         </div>
         <div>
-          <strong>ES</strong>=Tidligst start, <strong>EF</strong>=Tidligst slutt, <strong>LS</strong>=Senest start, <strong>LF</strong>=Senest slutt, <strong>S</strong>=Slakk
+          <strong>ES</strong>=Tidligst start, <strong>EF</strong>=Tidligst slutt,
+          <strong>LS</strong>=Senest start, <strong>LF</strong>=Senest slutt
         </div>
       </div>
     </div>
   )
 }
 ```
+
+**Benefits of ReactFlow:**
+- ✅ Purpose-built for node-based diagrams (Activity-on-Node format)
+- ✅ Auto-layout with drag-and-drop repositioning
+- ✅ Built-in zoom, pan, fit-to-view controls
+- ✅ Animated edges for critical path
+- ✅ Smooth edge routing (no collision calculations needed)
+- ✅ Saves 7-15 hours vs custom graph layout algorithms
 
 **Add tabs to Dashboard:**
 
@@ -1441,8 +1353,9 @@ describe('Dashboard', () => {
 
 ### Tomorrow (14-18 hours)
 - [ ] Frontend: Load chat history on mount
-- [ ] Frontend: gantt-chart.tsx component
-- [ ] Frontend: precedence-diagram.tsx component
+- [ ] Frontend: Install gantt-task-react and reactflow libraries
+- [ ] Frontend: gantt-chart.tsx component (using gantt-task-react)
+- [ ] Frontend: precedence-diagram.tsx component (using ReactFlow)
 - [ ] Frontend: Dashboard tabs (overview/gantt/precedence)
 - [ ] Backend: Test suite (validation, export, uncommit)
 - [ ] Frontend: Test suite (dashboard, chat, modals)
@@ -1467,8 +1380,9 @@ describe('Dashboard', () => {
 - ~8-10 hours
 
 **Developer 3 (Frontend Visualizations):**
-- Gantt chart component
-- Precedence diagram component
+- Install gantt-task-react and reactflow libraries
+- Gantt chart component (using gantt-task-react)
+- Precedence diagram component (using ReactFlow)
 - Dashboard tabs
 - Frontend tests
 - ~12-14 hours

@@ -38,7 +38,7 @@ The PM Simulator project has successfully implemented core functionality and is 
 4. ❌ **Renegotiation** - Cannot uncommit accepted offers (est: 3-4 hours)
 5. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (est: 4-6 hours)
 6. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement limit (est: 3 hours)
-7. ❌ **Visualizations** - Gantt chart and precedence diagram designs exist but not coded (est: 16-24 hours)
+7. ❌ **Visualizations** - Gantt chart and precedence diagram designs exist but not coded (est: 6-8 hours using gantt-task-react + ReactFlow libraries)
 8. ❌ **Export** - No session export to JSON/PDF (est: 4-6 hours)
 9. ⚠️ **Mobile Responsive** - Desktop-optimized, limited mobile support (est: 8-12 hours)
 10. ❌ **Automated Tests** - No unit/integration/E2E test suite (est: 40+ hours)
@@ -53,7 +53,7 @@ The PM Simulator project has successfully implemented core functionality and is 
 ### Recommended Next Steps
 1. **Week 1:** Verify database import, implement session completion flow, add chat history loading
 2. **Week 2:** Add renegotiation, timeline validation, agent timeout UI
-3. **Week 3:** Build visualizations (Gantt, precedence diagram)
+3. **Week 3:** Build visualizations using gantt-task-react (Gantt chart) and ReactFlow (precedence diagram)
 4. **Week 4:** Add export, improve mobile responsiveness, write automated tests
 5. **Week 5:** Production deployment, pilot testing with LOG565 class
 
@@ -139,6 +139,7 @@ The PM Simulator project has successfully implemented core functionality and is 
 - [x] **UX Functional Flows & Visualizations**
     - *Files: `docs/ux/functional_flows/` (7 flow diagrams + 2 visualizations)*
     - *Description: Complete functional flow diagrams (validation rules, budget calculation, AI negotiation, commitment flow, state management, error handling, critical path/timeline) and visualization designs (Gantt chart, precedence diagram). 10 SVG files total.*
+    - *Implementation Note: Visualizations will be built using gantt-task-react (Gantt) and ReactFlow (Precedence) libraries, configured to match the designs. See `docs/Precedence-And-Gantt.md` for implementation guide.*
 - [x] **WBS Source Data**
     - *File: `docs/data/wbs.pdf`*
     - *Description: Complete Work Breakdown Structure with all 70+ work packages including IDs, names, responsibilities, durations, start/end dates, dependencies, deliverables, and cost estimates (totaling 700 MNOK). Source data ready for conversion to JSON.*
@@ -254,14 +255,24 @@ The PM Simulator project has successfully implemented core functionality and is 
         - ❌ Session completion flow
 
 - [ ] **Visualization Features** (Week 4-5) - ❌ NOT IMPLEMENTED
-    - *Status: Design files exist, but components not built.*
+    - *Status: Design files exist, library-based implementation planned.*
     - *Available Designs: `docs/ux/functional_flows/visualization-01-gantt-chart.svg`, `visualization-02-precedence-diagram.svg`*
+    - *Implementation Approach:*
+        - **Gantt Chart:** Using `gantt-task-react` library (30K+ weekly downloads)
+          - Pre-built timeline rendering with Month/Week/Day view modes
+          - Configured for Feb 2025 - May 2026 timeline
+          - Color scheme: Red (critical path), Green (negotiable), Gray (locked)
+        - **Precedence Diagram:** Using `ReactFlow` library (500K+ weekly downloads)
+          - Purpose-built for Activity-on-Node (AON) network diagrams
+          - Auto-layout, zoom, pan, drag interactions built-in
+          - Node display: WBS ID, name, duration, ES/EF/LS/LF, slack time
+        - See `docs/Precedence-And-Gantt.md` for complete implementation guide
     - *Missing Features:*
-        - ❌ Gantt chart React component
-        - ❌ Precedence diagram AON network
+        - ❌ Gantt chart React component with gantt-task-react integration
+        - ❌ Precedence diagram AON network with ReactFlow integration
         - ❌ History/timeline view
         - ❌ Tabbed navigation between views
-    - *Estimated Effort: 16-24 hours*
+    - *Estimated Effort: 6-8 hours (reduced from 16-24 hours with library approach)*
 
 - [x] **Export & Polish** (Week 5) - ⚠️ PARTIALLY COMPLETE
     - *Status: Some polish complete, export missing.*
@@ -348,7 +359,7 @@ The PM Simulator project has successfully implemented core functionality and is 
 3. ⚠️ **Database Import Verification** - Confirm schema imported to Supabase production (30 minutes)
 4. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
 5. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (4-6 hours)
-6. ❌ **Visualizations** - Gantt chart and precedence diagram not built (12-16 hours)
+6. ❌ **Visualizations** - Gantt chart and precedence diagram not built (6-8 hours using gantt-task-react + ReactFlow)
 7. ❌ **Export Functionality** - No session export to JSON/PDF (3-4 hours)
 8. ❌ **Automated Testing** - No unit/integration/E2E test suite (8-10 hours)
 
@@ -363,7 +374,7 @@ The PM Simulator project has successfully implemented core functionality and is 
 3. Add chat history loading from `negotiation_history` table
 4. Implement uncommit functionality for renegotiation
 5. Add timeline/dependency validation (critical path algorithm)
-6. Build Gantt chart and precedence diagram visualizations
+6. Build Gantt chart (gantt-task-react) and precedence diagram (ReactFlow) visualizations
 7. Implement session export functionality
 8. Write automated test suite (backend + frontend)
 
