@@ -161,6 +161,7 @@ class CommitmentResponse(BaseModel):
     savings_percentage: Optional[float]
     negotiated_scope: Optional[str]
     created_at: str
+    updated_session: Optional[SessionResponse] = None
 
 
 
@@ -174,11 +175,11 @@ class NegotiationHistoryRecord(BaseModel):
     agent_response: str
     is_disagreement: bool
     contains_offer: bool
-    offer_data: Optional[Dict[str, Any]]
+    offer_data: Optional[Dict[str, Any]] = None
     context_snapshot: Dict[str, Any]
     timestamp: str
-    response_time_ms: Optional[int]
-    sentiment: Optional[str]
+    response_time_ms: Optional[int] = None
+    sentiment: Optional[str] = None
 
 
 class ValidationResponse(BaseModel):
@@ -341,7 +342,7 @@ async def chat_with_agent(
             }).execute()
         except Exception as db_error:
             print(f"Database error saving chat message: {db_error}")
-            # Continue anyway - don't fail the request if DB save fails
+            raise HTTPException(status_code=500, detail=f"Database error: {str(db_error)}")
 
         # Return response
         return ChatResponse(
@@ -394,7 +395,7 @@ def detect_disagreement(ai_response: str) -> bool:
 @app.get("/api/sessions", response_model=List[SessionResponse], tags=["Sessions"])
 def get_user_sessions(
     current_user: dict = Depends(get_current_user),
-    db: Client = Depends(get_db_client)
+    # db: Client = Depends(get_db_client) # Bypass authenticated client
 ):
     """
     Get all game sessions for the current user.
@@ -409,11 +410,14 @@ def get_user_sessions(
         List of SessionResponse objects
     """
     try:
-        response = db.table("game_sessions")\
+        print(f"[DEBUG] Fetching sessions for user {current_user['id']} using GLOBAL client")
+        response = supabase.table("game_sessions")\
             .select("*")\
             .eq("user_id", current_user["id"])\
             .order("created_at", desc=True)\
             .execute()
+        
+        print(f"[DEBUG] Found {len(response.data)} sessions")
 
         return [SessionResponse(**session) for session in response.data]
 
@@ -770,6 +774,19 @@ def create_commitment(
             # Don't fail the request if snapshot creation fails
 
         return CommitmentResponse(**commitment)
+        # Fetch the updated session to return to the frontend
+        updated_session_response = db.table("game_sessions")\
+            .select("*")\
+            .eq("id", session_id)\
+            .single()\
+            .execute()
+            
+        updated_session = SessionResponse(**updated_session_response.data) if updated_session_response.data else None
+
+        return CommitmentResponse(
+            **commitment_response.data[0],
+            updated_session=updated_session
+        )
 
     except HTTPException:
         raise
@@ -784,7 +801,8 @@ def create_commitment(
 @app.get("/api/sessions/{session_id}/commitments", response_model=List[CommitmentResponse], tags=["Commitments"])
 def get_commitments(
     session_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
 ):
     """
     Get all commitments for a session.
@@ -792,13 +810,14 @@ def get_commitments(
     Args:
         session_id: The UUID of the session
         current_user: Authenticated user from JWT token
+        db: Authenticated Supabase client
 
     Returns:
         List of CommitmentResponse objects
     """
     try:
         # Verify session belongs to user
-        session_response = supabase.table("game_sessions")\
+        session_response = db.table("game_sessions")\
             .select("id")\
             .eq("id", session_id)\
             .eq("user_id", current_user["id"])\
@@ -812,7 +831,7 @@ def get_commitments(
             )
 
         # Get commitments
-        commitments_response = supabase.table("wbs_commitments")\
+        commitments_response = db.table("wbs_commitments")\
             .select("*")\
             .eq("session_id", session_id)\
             .order("created_at")\
@@ -834,15 +853,17 @@ def get_commitments(
 def get_negotiation_history(
     session_id: str,
     agent_id: Optional[str] = None,
-    current_user: dict = Depends(get_current_user)
-):
+    current_user: dict = Depends(get_current_user),
+    # Temporarily bypass get_db_client to use global supabase client for debugging
+    db: Client = Depends(get_db_client)
+) -> List[NegotiationHistoryRecord]:
     """
     Get negotiation history for a specific game session.
     Optionally filter by agent_id.
     """
     try:
-        # Verify session belongs to user
-        session_response = supabase.table("game_sessions")\
+        # Verify session belongs to user (still need user_id for this check)
+        session_response = db.table("game_sessions")\
             .select("id")\
             .eq("id", session_id)\
             .eq("user_id", current_user["id"])\
@@ -856,7 +877,7 @@ def get_negotiation_history(
             )
 
         # Build the query for negotiation history
-        query = supabase.table("negotiation_history")\
+        query = db.table("negotiation_history")\
             .select("*")\
             .eq("session_id", session_id)
 

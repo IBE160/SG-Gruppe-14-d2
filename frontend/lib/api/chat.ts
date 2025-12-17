@@ -7,7 +7,6 @@ import { createClient } from '@/lib/supabase/client';
 import type {
   ChatRequest,
   ChatResponse,
-  ConversationMessage,
   GameContext,
   NegotiationMessage, // Import NegotiationMessage
   ChatMessage // Import ChatMessage from UI/COMPONENT TYPES
@@ -114,15 +113,26 @@ export async function getNegotiationHistory(
     },
   });
 
+  console.log('[DEBUG] getNegotiationHistory status:', response.status, response.statusText);
+
   if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
+    const errorText = await response.text();
+    console.error('[DEBUG] getNegotiationHistory error body:', errorText);
+    
+    let errorData = {};
+    try {
+        errorData = JSON.parse(errorText);
+    } catch (e) { /* ignore */ }
+
     throw new Error(
+      // @ts-expect-error
       errorData.detail || errorData.message || 'Kunne ikke hente samtalehistorikk.'
     );
   }
 
   // Backend now returns List<NegotiationMessage>
   const rawHistory: NegotiationMessage[] = await response.json();
+  console.log('[DEBUG] getNegotiationHistory data:', rawHistory);
 
   const formattedHistory: ChatMessage[] = [];
   rawHistory.forEach((record) => {
