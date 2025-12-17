@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import type { AgentPrompt } from "./page";
 import { ChatInterface } from "@/components/chat-interface";
-import { sendChatMessage } from "@/lib/api/chat";
-import { createSession } from "@/lib/api/sessions";
+import { sendChatMessage, getNegotiationHistory } from "@/lib/api/chat";
+import { createSession, getUserSessions } from "@/lib/api/sessions";
 import type { ChatMessage, GameContext } from "@/types";
 
 interface ChatPageClientProps {
@@ -17,14 +17,6 @@ interface Message {
   sender: "user" | "agent";
 }
 
-// Map agent titles to agent IDs
-const AGENT_TITLE_TO_ID: Record<string, string> = {
-  "Anne-Lise Berg": "anne-lise-berg",
-  "Bjørn Eriksen": "bjorn-eriksen",
-  "Kari Andersen": "kari-andersen",
-  "Per Johansen": "per-johansen",
-};
-
 export function ChatPageClient({ prompts }: ChatPageClientProps) {
   const [selectedAgent, setSelectedAgent] = useState<AgentPrompt | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -32,16 +24,29 @@ export function ChatPageClient({ prompts }: ChatPageClientProps) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Create session on mount
+  // Create or fetch session on mount
   useEffect(() => {
     const initializeSession = async () => {
       try {
-        const session = await createSession();
-        setSessionId(session.id);
-        console.log("Session created:", session.id);
+        // First check if user has existing sessions
+        const existingSessions = await getUserSessions();
+        console.log("[DEBUG] Fetched sessions:", existingSessions);
+        
+        const activeSession = existingSessions.find(s => s.status === 'in_progress');
+        console.log("[DEBUG] Active session found:", activeSession);
+
+        if (activeSession) {
+          setSessionId(activeSession.id);
+          console.log("Resuming existing session:", activeSession.id);
+        } else {
+          // Create new session if none exists
+          const session = await createSession();
+          setSessionId(session.id);
+          console.log("New session created:", session.id);
+        }
       } catch (err) {
-        console.error("Failed to create session:", err);
-        setError("Kunne ikke opprette spilløkt. Vennligst last inn siden på nytt.");
+        console.error("Failed to initialize session:", err);
+        setError("Kunne ikke starte spilløkt. Vennligst last inn siden på nytt.");
       }
     };
 
@@ -54,11 +59,11 @@ export function ChatPageClient({ prompts }: ChatPageClientProps) {
       return;
     }
 
-    // Get agent ID from title
-    const agentId = AGENT_TITLE_TO_ID[selectedAgent.title];
+    // Use agent ID directly
+    const agentId = selectedAgent.id;
     if (!agentId) {
-      console.error("Unknown agent:", selectedAgent.title);
-      setError(`Ukjent agent: ${selectedAgent.title}`);
+      console.error("Unknown agent ID");
+      setError("Ukjent agent ID");
       return;
     }
 
@@ -125,8 +130,40 @@ export function ChatPageClient({ prompts }: ChatPageClientProps) {
 
   const handleSelectAgent = (agent: AgentPrompt) => {
     setSelectedAgent(agent);
-    setMessages([]); // Clear messages when a new agent is selected
+    setMessages([]); // Clear messages initially
   };
+
+  // Load chat history when agent is selected
+  useEffect(() => {
+    const loadHistory = async () => {
+      if (!sessionId || !selectedAgent) return;
+
+      const agentId = selectedAgent.id;
+      if (!agentId) return;
+
+      setIsLoading(true);
+      try {
+        const history = await getNegotiationHistory(sessionId, agentId);
+        
+        // Convert API ChatMessages to local Message format
+        const formattedMessages: Message[] = history.map(msg => ({
+          id: msg.id || Date.now().toString(),
+          text: msg.content,
+          sender: msg.role === 'user' ? 'user' : 'agent'
+        }));
+
+        setMessages(formattedMessages);
+      } catch (err) {
+        console.error("Failed to load chat history:", err);
+        // Don't show error to user, just start with empty chat
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadHistory();
+  }, [sessionId, selectedAgent]);
+
   
   const handleGoBack = () => {
     setSelectedAgent(null);

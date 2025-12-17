@@ -42,7 +42,7 @@ export default function DashboardPage() {
 
       // Check for existing active session
       const sessions = await getUserSessions();
-      const activeSession = sessions.find((s) => s.status === 'active');
+      const activeSession = sessions.find((s) => s.status === 'in_progress');
 
       if (activeSession) {
         setSession(activeSession);

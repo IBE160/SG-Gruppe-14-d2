@@ -5,6 +5,7 @@ import { colors } from '@/lib/design-system';
 import type { ChatMessage, OfferData, GameContext } from '@/types';
 import {
   sendChatMessage,
+  getNegotiationHistory,
   parseOfferFromResponse,
   formatCost,
   formatDuration,
@@ -42,6 +43,33 @@ export function ChatInterface({
   const agentName = getAgentName(agentId);
   const agentRole = getAgentRole(agentId);
   const agentInitials = getAgentInitials(agentId);
+
+  // Load history on mount
+  useEffect(() => {
+    async function loadHistory() {
+      try {
+        setIsLoading(true);
+        const history = await getNegotiationHistory(sessionId, agentId);
+        setMessages(history);
+
+        // Check for pending offer in last message
+        const lastMsg = history[history.length - 1];
+        if (lastMsg?.contains_offer && lastMsg.offer_data && lastMsg.role === 'agent') {
+          setPendingOffer(lastMsg.offer_data);
+          if (onOfferReceived) {
+            onOfferReceived(lastMsg.offer_data);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load history:', err);
+        // Don't show error to user, just start empty
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadHistory();
+  }, [sessionId, agentId]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
