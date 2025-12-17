@@ -230,11 +230,6 @@ export function ChatInterface({
         {messages.length === 0 && (
           <div className="text-center text-sm text-gray-500">
             <p>Start forhandlingene med {agentName}</p>
-            <p className="mt-2 text-xs">
-              {agentType === 'owner'
-                ? 'Kommunen kan øke budsjett eller redusere scope, men ALDRI forlenge fristen.'
-                : 'Leverandøren kan justere pris, kvalitet og varighet.'}
-            </p>
           </div>
         )}
 

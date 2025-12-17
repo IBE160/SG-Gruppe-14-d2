@@ -7,10 +7,11 @@ import { BudgetDisplay } from '@/components/budget-display';
 import { GanttChart } from '@/components/gantt-chart';
 import { PrecedenceDiagram } from '@/components/precedence-diagram';
 import { HistoryPanel } from '@/components/history-panel';
+import { ChatInterface } from '@/components/chat-interface';
 import { createSession, getUserSessions } from '@/lib/api/sessions';
 import { createClient } from '@/lib/supabase/client';
 import { getAuthToken } from '@/lib/auth-utils';
-import type { GameSession } from '@/types';
+import type { GameSession, GameContext } from '@/types';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -170,6 +171,15 @@ export default function DashboardPage() {
   // Calculate initial deficit
   const initialDeficit = 35000000; // 35 MNOK as specified
   const totalNeeded = negotiableWBS.reduce((sum, w) => sum + (w.baseline_cost || 0), 0);
+
+  const gameContext: GameContext = {
+    total_budget: session.total_budget,
+    current_budget_used: session.current_budget_used,
+    available_budget: session.available_budget,
+    locked_budget: session.locked_budget,
+    deadline_date: session.deadline_date,
+    committed_wbs: session.negotiable_wbs_commitments || [],
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: colors.background.page }}>
@@ -408,36 +418,20 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            {/* AI Agents Panel */}
+            {/* Owner Chat Panel */}
             <div
-              className="rounded-lg border p-6"
+              className="rounded-lg border overflow-hidden flex flex-col h-[600px]"
               style={{
                 backgroundColor: colors.background.card,
                 borderColor: colors.border.medium,
               }}
             >
-              <h3 className="text-sm font-bold text-gray-900 mb-4">AI Agenter</h3>
-              <div className="space-y-3">
-                {agents.map((agent) => (
-                  <div
-                    key={agent.id}
-                    className="flex items-start gap-3 p-3 rounded-lg"
-                    style={{ backgroundColor: colors.background.input }}
-                  >
-                    <div
-                      className="flex h-10 w-10 items-center justify-center rounded-full text-white text-sm font-bold"
-                      style={{ backgroundColor: agent.avatar_color }}
-                    >
-                      {agent.initials}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-gray-900">{agent.name}</p>
-                      <p className="text-xs text-gray-600">{agent.role}</p>
-                      <p className="mt-1 text-xs text-gray-700">{agent.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ChatInterface
+                sessionId={session.id}
+                agentId="anne-lise-berg"
+                agentType="owner"
+                gameContext={gameContext}
+              />
             </div>
           </div>
         </div>
