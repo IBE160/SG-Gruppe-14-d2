@@ -6,6 +6,7 @@ Handles communication with Google Gemini AI for agent responses
 import google.generativeai as genai
 from typing import List, Dict, Optional
 from config import settings
+from google.api_core.exceptions import ResourceExhausted
 
 
 class GeminiService:
@@ -20,11 +21,6 @@ class GeminiService:
             "max_output_tokens": settings.GEMINI_MAX_TOKENS,
         }
 
-        # Use the correct model name for Gemini API
-        # Available models discovered from list_gemini_models.py:
-        # - models/gemini-2.5-flash (recommended - fast and stable)
-        # - models/gemini-2.5-pro (more capable but slower)
-        # Note: Must include "models/" prefix
         model_name = "models/gemini-2.5-flash"
         self.model = genai.GenerativeModel(
             model_name=model_name,
@@ -41,18 +37,7 @@ class GeminiService:
     ) -> str:
         """
         Send a message to an AI agent and get response.
-
-        Args:
-            agent_id: The agent identifier (e.g., "anne-lise-berg")
-            system_prompt: The full system prompt for this agent
-            user_message: The user's current message
-            conversation_history: List of previous messages [{"role": "user"|"agent", "content": "..."}]
-            game_context: Optional game state context (budget, commitments, etc.)
-
-        Returns:
-            The AI agent's response text (in Norwegian)
         """
-        # Build the full prompt with context
         full_prompt = self._build_full_prompt(
             system_prompt=system_prompt,
             conversation_history=conversation_history,
@@ -69,9 +54,12 @@ class GeminiService:
 
             return response.text.strip()
 
+        except ResourceExhausted as e:
+            print(f"Gemini API Quota Exceeded for agent {agent_id}: {str(e)}")
+            return "Beklager, den daglige kvoten for AI-kall er nådd. Prøv igjen i morgen."
         except Exception as e:
             print(f"Gemini API error for agent {agent_id}: {str(e)}")
-            return f"Beklager, det oppstod en teknisk feil. Vennligst prøv igjen om litt."
+            return f"Beklager, det oppstod en teknisk feil med AI-tjenesten. Vennligst prøv igjen om litt."
 
     def _build_full_prompt(
         self,
