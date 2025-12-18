@@ -68,7 +68,7 @@ CREATE TABLE public.game_sessions (
 
     -- Performance tracking
     duration_seconds INTEGER GENERATED ALWAYS AS
-        (EXTRACT(EPOCH FROM (COALESCE(completed_at, NOW()) - started_at))::INTEGER) STORED,
+        (EXTRACT(EPOCH FROM (COALESCE(completed_at, NOW()) - started_at))::INTEGER),
 
     -- Constraints
     CONSTRAINT valid_budget_usage CHECK (current_budget_used >= 0),

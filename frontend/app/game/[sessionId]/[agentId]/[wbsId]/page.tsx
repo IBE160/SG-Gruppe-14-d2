@@ -116,7 +116,7 @@ export default function GamePage() {
       );
 
       setTimeout(() => {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       }, 2000);
     } catch (err: any) {
       if (err.code === 'BUDGET_EXCEEDED') {

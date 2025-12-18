@@ -24,6 +24,9 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'gantt' | 'precedence'>('overview');
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [validationResult, setValidationResult] = useState<any>(null); // To store the full validation response
 
   useEffect(() => {
     loadDashboard();
@@ -35,6 +38,53 @@ export default function DashboardPage() {
       loadCommitmentsAndValidation();
     }
   }, [session]);
+
+  async function handleSubmitPlan() {
+    if (!session) return;
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Ensure the latest validation data is fetched
+      await loadCommitmentsAndValidation(); // This will update the 'timeline' state
+
+      if (!timeline) {
+        // This case should ideally not happen if loadCommitmentsAndValidation awaited correctly
+        throw new Error('Valideringsdata er ikke tilgjengelig.');
+      }
+
+      setValidationResult(timeline); // Store the full timeline/validation result
+
+      if (timeline.valid) {
+        // Plan is valid, update session status to 'completed'
+        const token = await getAuthToken();
+        if (!token) throw new Error('No auth token found');
+
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${session.id}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: 'completed' }),
+          }
+        );
+        // Update local session state
+        setSession((prevSession) => (prevSession ? { ...prevSession, status: 'completed' } : null));
+        setShowSuccessModal(true);
+      } else {
+        // Plan is invalid, show error modal
+        setShowErrorModal(true);
+      }
+    } catch (err: any) {
+      console.error('Error submitting plan:', err);
+      setError(err.message || 'Kunne ikke sende inn plan.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   async function loadDashboard() {
     try {
@@ -259,6 +309,17 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
+            {/* Submit Plan Button */}
+            <div className="flex justify-end">
+                <button
+                    onClick={handleSubmitPlan}
+                    disabled={commitments.length === 0 || timeline?.valid === undefined} // Disabled if no commitments or validation not yet loaded
+                    className="px-6 py-3 text-lg font-semibold text-white rounded-md transition-colors"
+                    style={{ backgroundColor: colors.button.primary.bg }}
+                >
+                    Send inn plan
+                </button>
+            </div>
             {/* Budget Section */}
             <div
               className="rounded-lg border p-6"
@@ -446,6 +507,73 @@ export default function DashboardPage() {
           onClose={() => setIsHistoryOpen(false)}
           wbsItems={wbsElements}
         />
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && validationResult && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl max-w-md w-full text-center">
+            <h2 className="text-2xl font-bold text-green-600 mb-4">🎉 Plan Godkjent!</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-2">
+              Din prosjektplan har blitt godkjent og møter alle krav.
+            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
+              Total kostnad: {(validationResult.budget_used / 1_000_000).toFixed(1)} MNOK (under grensen på 700 MNOK)
+              <br />
+              Fullføringsdato: {validationResult.projected_completion_date} (innen fristen {validationResult.deadline})
+            </p>
+            <button
+              onClick={() => {
+                setShowSuccessModal(false);
+                router.push('/dashboard'); // Optionally navigate or refresh
+              }}
+              className="mt-4 px-6 py-2 rounded-md font-semibold text-white transition-colors"
+              style={{ backgroundColor: colors.button.primary.bg }}
+            >
+              Start nytt spill
+            </button>
+            {/* TODO: Add Export Session button */}
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && validationResult && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl max-w-md w-full text-center">
+            <h2 className="text-2xl font-bold text-red-600 mb-4">❌ Planvalidering feilet!</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
+              Din prosjektplan oppfyller ikke alle kravene:
+            </p>
+            <ul className="text-left text-sm text-gray-800 dark:text-gray-200 mb-4 space-y-2">
+              {!validationResult.meets_deadline && (
+                <li className="flex items-center">
+                  <span className="text-red-500 mr-2">●</span>
+                  Prosjektet er forsinket: {validationResult.projected_completion_date}
+                  {' '}er etter fristen {validationResult.deadline}.
+                </li>
+              )}
+              {!validationResult.budget_valid && (
+                <li className="flex items-center">
+                  <span className="text-red-500 mr-2">●</span>
+                  Budsjettet er overskredet: {(validationResult.budget_used / 1_000_000).toFixed(1)} MNOK
+                  {' '}brukt (grense 700 MNOK).
+                </li>
+              )}
+              {/* Add more specific error messages if needed from validationResult */}
+            </ul>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Gå tilbake og juster planen din ved å reforhandle eller be om budsjettøkning.
+            </p>
+            <button
+              onClick={() => setShowErrorModal(false)}
+              className="mt-4 px-6 py-2 rounded-md font-semibold text-white transition-colors"
+              style={{ backgroundColor: colors.button.primary.bg }}
+            >
+              Tilbake til planlegging
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

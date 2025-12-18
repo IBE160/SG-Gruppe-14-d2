@@ -170,36 +170,40 @@ export async function getNegotiationHistory(
 export function parseOfferFromResponse(response: string): {
   containsOffer: boolean;
   cost?: number;
-  duration?: number;
+  duration?: number; // Duration is now consistently in days
   qualityLevel?: string;
 } {
-  // Look for cost patterns: "55 MNOK", "55MNOK", "55 millioner"
+  // Look for cost patterns: "55 MNOK", "55MNOK", "55 millioner", "55 mill"
   const costPatterns = [
-    /(\d+)\s*MNOK/i,
-    /(\d+)\s*millioner/i,
-    /kr\s*(\d+)\s*millioner/i,
+    /(\d+[.,]?\d*)\s*MNOK/i,
+    /(\d+[.,]?\d*)\s*millioner/i,
+    /(\d+[.,]?\d*)\s*mill\.?/i,
+    /kr\s*(\d+[.,]?\d*)\s*millioner/i,
   ];
 
   let cost: number | undefined;
   for (const pattern of costPatterns) {
     const match = response.match(pattern);
     if (match) {
-      cost = parseFloat(match[1]) * 1_000_000; // Convert to actual value
+      const value = parseFloat(match[1].replace(',', '.'));
+      cost = value * 1_000_000; // Convert to actual value
       break;
     }
   }
 
-  // Look for duration patterns: "2.5 måneder", "2,5 mnd", "3 måneder"
+  // Look for duration patterns: "dager", "uker", "måneder"
   const durationPatterns = [
-    /(\d+[.,]?\d*)\s*måneder/i,
-    /(\d+[.,]?\d*)\s*mnd/i,
+    { pattern: /(\d+[.,]?\d*)\s*(dager|dag)/i, multiplier: 1 },
+    { pattern: /(\d+[.,]?\d*)\s*(uker|uke)/i, multiplier: 7 },
+    { pattern: /(\d+[.,]?\d*)\s*(måneder|mnd)/i, multiplier: 30 },
   ];
 
-  let duration: number | undefined;
-  for (const pattern of durationPatterns) {
+  let duration: number | undefined; // Duration will be in days
+  for (const { pattern, multiplier } of durationPatterns) {
     const match = response.match(pattern);
     if (match) {
-      duration = parseFloat(match[1].replace(',', '.'));
+      const value = parseFloat(match[1].replace(',', '.'));
+      duration = Math.round(value * multiplier);
       break;
     }
   }
@@ -217,7 +221,7 @@ export function parseOfferFromResponse(response: string): {
   return {
     containsOffer: cost !== undefined && duration !== undefined,
     cost,
-    duration,
+    duration, // Now in days
     qualityLevel,
   };
 }

@@ -773,7 +773,14 @@ def create_commitment(
             print(f"Warning: Could not create contract snapshot: {snapshot_error}")
             # Don't fail the request if snapshot creation fails
 
-        return CommitmentResponse(**commitment)
+        # Fetch the updated session to return to the frontend
+        updated_session_response = db.table("game_sessions").select("*").eq("id", session_id).single().execute()
+        updated_session = SessionResponse(**updated_session_response.data) if updated_session_response.data else None
+
+        return CommitmentResponse(
+            **commitment_response.data[0],
+            updated_session=updated_session
+        )
         # Fetch the updated session to return to the frontend
         updated_session_response = db.table("game_sessions")\
             .select("*")\
