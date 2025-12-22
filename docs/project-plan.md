@@ -13,11 +13,12 @@
 
 The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, automatic snapshot system, and history panel with timeline reconstruction. **Vendor contract acceptance is fully implemented** with complete 12-step data flow from UI to database to snapshots.
 
-**Only 4 critical features remain for MVP (12-17 hours total):**
-1. Owner perspective budget revision acceptance (6-8 hours)
-2. History panel UX polish (1-2 hours)
-3. Dependency validation - enforce prerequisite order (2-3 hours)
-4. Timeline validation - prevent deadline violations (3-4 hours)
+**Only 5 critical features remain for MVP (14-20 hours total):**
+1. **Fix baseline snapshot** - Show 12 locked contracts in history start view (2-3 hours) 🔴 CRITICAL
+2. Owner perspective budget revision acceptance (6-8 hours)
+3. History panel UX polish (1-2 hours)
+4. Dependency validation - enforce prerequisite order (2-3 hours)
+5. Timeline validation - prevent deadline violations (3-4 hours)
 
 All other remaining items are nice-to-have enhancements (including future administration panel for teachers).
 
@@ -52,18 +53,19 @@ All other remaining items are nice-to-have enhancements (including future admini
 ### What's Missing ❌
 
 **Critical for MVP:**
-1. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
-2. 🟡 **History Panel Polish** - Core functionality working (snapshots, Gantt/Precedence reconstruction), needs UX polish (est: 1-2 hours)
-3. ❌ **Dependency Validation** - Users can commit to packages before prerequisites are complete, breaks realistic project sequencing (est: 2-3 hours)
-4. ❌ **Timeline Validation** - Users can accept offers that make project late, no deadline enforcement during commitment (est: 3-4 hours)
+1. 🔴 **Fix Baseline Snapshot** - History panel empty, baseline has no timeline data for 12 locked contracts (est: 2-3 hours) **CRITICAL - DO THIS FIRST**
+2. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
+3. 🟡 **History Panel Polish** - Core functionality working (snapshots, Gantt/Precedence reconstruction), needs UX polish (est: 1-2 hours)
+4. ❌ **Dependency Validation** - Users can commit to packages before prerequisites are complete, breaks realistic project sequencing (est: 2-3 hours)
+5. ❌ **Timeline Validation** - Users can accept offers that make project late, no deadline enforcement during commitment (est: 3-4 hours)
 
 **Nice to Have (Future Enhancements):**
-5. ❌ **Renegotiation/Uncommit** - Cannot reverse accepted offers, no DELETE endpoint (est: 3-4 hours)
-6. ❌ **Export Functionality** - Session/history export endpoint exists, needs frontend UI button (est: 2-3 hours)
-7. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement mechanic (detection works, UI missing) (est: 3 hours)
-8. ⚠️ **Mobile Responsiveness** - Desktop-optimized only, limited mobile support (est: 8-12 hours)
-9. ❌ **Automated Testing** - No test suite (unit/integration/E2E) (est: 40+ hours)
-10. ❌ **Administration Panel** - Teacher/admin dashboard to view all student sessions and results from database (est: 12-16 hours)
+6. ❌ **Renegotiation/Uncommit** - Cannot reverse accepted offers, no DELETE endpoint (est: 3-4 hours)
+7. ❌ **Export Functionality** - Session/history export endpoint exists, needs frontend UI button (est: 2-3 hours)
+8. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement mechanic (detection works, UI missing) (est: 3 hours)
+9. ⚠️ **Mobile Responsiveness** - Desktop-optimized only, limited mobile support (est: 8-12 hours)
+10. ❌ **Automated Testing** - No test suite (unit/integration/E2E) (est: 40+ hours)
+11. ❌ **Administration Panel** - Teacher/admin dashboard to view all student sessions and results from database (est: 12-16 hours)
 
 ---
 
@@ -231,6 +233,70 @@ All other remaining items are nice-to-have enhancements (including future admini
 ---
 
 ## ✅ MVP Completion Checklist - Acceptance Flows
+
+### **Phase 0: Fix Baseline Snapshot (CRITICAL - 2-3 hours)** 🔴
+
+**Current Issue:** History panel shows "0 snapshots lagret" because baseline snapshot has empty timeline data.
+
+**What's Wrong:**
+- Baseline snapshot IS created when session starts (backend/main.py line 475-486)
+- But `gantt_state` and `precedence_state` are empty JSON: `'{}'::jsonb`
+- Frontend can't render Gantt/Precedence without timeline data
+- Students can't see the "starting situation" with 12 locked contracts
+
+**The 12 Locked (Pre-Negotiated) Contracts:**
+1. 1.1.1 - Planlegging og design (locked_duration, locked_cost)
+2. 1.1.2 - Miljøvurdering
+3. 1.2.1 - Grunnarbeider
+4. 1.2.2 - Masseuttak
+5. 1.4.2 - Elektrisk anlegg
+6. 1.5.1 - Landskap og grøntområder
+7. 1.5.2 - Lekeplasser
+8. 1.6.1 - Skilting og veivisning
+9. 1.6.2 - Parkeringsanlegg
+10. 1.7.1 - Renovasjonssystem
+11. 1.8.1 - Dokumentasjon og overlevering
+12. 1.9.1 - Kvalitetssikring
+
+**Budget at Baseline:**
+- Committed: 390 MNOK (12 locked contracts)
+- Available: 310 MNOK (for 3 negotiable contracts)
+- Total: 700 MNOK
+
+#### 0.1 Update Baseline Snapshot Creation (2-3 hours)
+- [ ] **Backend: Modify create_baseline_snapshot() call** (`backend/main.py` line ~475-486)
+  - [ ] Before calling RPC, calculate timeline for baseline state
+  - [ ] Load wbs.json to get all 15 WBS items
+  - [ ] Create "locked commitments" list for the 12 non-negotiable items
+  - [ ] For each locked item: use `locked_duration` and `locked_cost`
+  - [ ] Run `calculate_critical_path(wbs_items, locked_commitments, start_date='2025-01-15', deadline='2026-05-15')`
+  - [ ] Returns: `{earliest_start{}, earliest_finish{}, latest_start{}, latest_finish{}, slack{}, projected_completion_date, meets_deadline}`
+  - [ ] Pass timeline data to `create_baseline_snapshot()` RPC
+
+- [ ] **Database: Update create_baseline_snapshot() function** (`database/migrations/002_session_snapshots.sql` line 170-217)
+  - [ ] Add parameters: `p_gantt_state JSONB DEFAULT '{}'::jsonb`, `p_precedence_state JSONB DEFAULT '{}'::jsonb`
+  - [ ] Instead of hardcoded empty `'{}'::jsonb`, use the passed parameters
+  - [ ] Or keep it simple: backend can UPDATE the snapshot after creation with timeline data
+
+- [ ] **Test baseline snapshot creation:**
+  - [ ] Create new session
+  - [ ] Check database: `SELECT * FROM session_snapshots WHERE snapshot_type = 'baseline'`
+  - [ ] Verify `gantt_state` has: `{earliest_start: {...}, earliest_finish: {...}}`
+  - [ ] Verify `precedence_state` has: `{es: {...}, ef: {...}, ls: {...}, lf: {...}, slack: {...}}`
+  - [ ] Open history panel → should show "1 snapshot lagret"
+  - [ ] Click baseline snapshot → Gantt and Precedence should render with 12 locked contracts
+  - [ ] Verify project_end_date is calculated (e.g., "2025-08-30")
+  - [ ] Verify days_before_deadline shows correct value (e.g., "258 dager før fristen")
+
+#### 0.2 Verify Baseline Snapshot Display (30 min)
+- [ ] **History Panel shows baseline correctly:**
+  - [ ] Timeline sidebar: "Versjon 0 - Baseline - 12 Kontraktfestede Pakker"
+  - [ ] Budget: "390 MNOK forpliktet, 310 MNOK tilgjengelig"
+  - [ ] Gantt tab: Shows all 15 WBS items with 12 locked (grey bars)
+  - [ ] Precedence tab: Shows all 15 nodes with ES/EF/LS/LF values
+  - [ ] Critical path highlighted correctly (from wbs.json critical_path field)
+
+---
 
 ### **Phase 1: Complete Vendor Contract Acceptance Flow (5-7 hours)**
 
