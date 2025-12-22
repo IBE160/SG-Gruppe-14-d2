@@ -945,7 +945,7 @@ def validate_session(
         session = session_response.data
 
         # Load WBS data from JSON file
-        wbs_file_path = Path(__file__).parent.parent / "frontend" / "public" / "data" / "wbs.json"
+        wbs_file_path = Path(__file__).parent / "data" / "wbs.json"
         with open(wbs_file_path, 'r', encoding='utf-8') as f:
             wbs_data = json.load(f)
 

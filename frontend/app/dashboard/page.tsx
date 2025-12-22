@@ -301,7 +301,7 @@ export default function DashboardPage() {
         )}
 
         {activeTab === 'precedence' && (
-          <PrecedenceDiagram wbsItems={wbsElements} timeline={timeline} />
+          <PrecedenceDiagram wbsItems={wbsElements} commitments={commitments} timeline={timeline} />
         )}
 
         {/* Overview Tab */}

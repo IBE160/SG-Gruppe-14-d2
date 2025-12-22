@@ -4,6 +4,7 @@ import { useMemo, useEffect } from 'react';
 import { Gantt, Task, ViewMode } from 'gantt-task-react';
 import 'gantt-task-react/dist/index.css';
 import '@/styles/gantt-override.css';
+import { calculateTimeline, daysToDate } from '@/lib/timeline-calculator';
 
 interface GanttChartProps {
   wbsItems: any[];
@@ -12,105 +13,52 @@ interface GanttChartProps {
 }
 
 export function GanttChart({ wbsItems, commitments, timeline }: GanttChartProps) {
+  const projectStart = new Date('2025-01-15');
+
+  // Calculate timeline data using shared utility
+  const timelineData = useMemo(() => {
+    const hasBackendData = timeline?.earliest_start && Object.keys(timeline.earliest_start).length > 0;
+
+    if (hasBackendData) {
+      return {
+        earliestStart: timeline.earliest_start,
+        earliestFinish: timeline.earliest_finish
+      };
+    }
+
+    // Fallback: Calculate using shared utility
+    const calculated = calculateTimeline(wbsItems, commitments);
+
+    // Convert day numbers to dates
+    const earliestStart: Record<string, string> = {};
+    const earliestFinish: Record<string, string> = {};
+
+    Object.keys(calculated.es).forEach(id => {
+      earliestStart[id] = daysToDate(calculated.es[id], projectStart).toISOString();
+      earliestFinish[id] = daysToDate(calculated.ef[id], projectStart).toISOString();
+    });
+
+    return { earliestStart, earliestFinish };
+  }, [wbsItems, commitments, timeline]);
+
   const tasks: Task[] = useMemo(() => {
     const commitmentMap = Object.fromEntries(
       commitments.map((c: any) => [c.wbs_id || c.wbs_item_id, c])
     );
 
-    const earliestStart = timeline?.earliest_start || {};
-    const earliestFinish = timeline?.earliest_finish || {};
-
-    const projectStart = new Date('2025-01-15');
-
-    // Pre-calculate fallback dates for all items in topological order
-    const fallbackDates: Record<string, { start: Date; end: Date }> = {};
-
-    const calculateAllFallbackDates = () => {
-      const visited = new Set<string>();
-      const calculating = new Set<string>();
-
-      const calculate = (itemId: string): { start: Date; end: Date } => {
-        if (fallbackDates[itemId]) return fallbackDates[itemId];
-
-        if (calculating.has(itemId)) {
-          // Circular dependency, use project start
-          const item = wbsItems.find((w: any) => w.id === itemId);
-          const duration = item?.is_negotiable
-            ? (item?.baseline_duration || 30)
-            : (item?.locked_duration || 30);
-          return {
-            start: projectStart,
-            end: new Date(projectStart.getTime() + duration * 24 * 60 * 60 * 1000)
-          };
-        }
-
-        calculating.add(itemId);
-
-        const item = wbsItems.find((w: any) => w.id === itemId);
-        if (!item) {
-          return { start: projectStart, end: projectStart };
-        }
-
-        const duration = item.is_negotiable
-          ? (item.baseline_duration || 30)
-          : (item.locked_duration || 30);
-
-        let start = projectStart;
-
-        // If item has dependencies, start after the latest dependency ends
-        if (item.dependencies && item.dependencies.length > 0) {
-          let maxEndDate = projectStart;
-
-          item.dependencies.forEach((depId: string) => {
-            // Recursively calculate dependency dates
-            const depDates = calculate(depId);
-            if (depDates.end > maxEndDate) {
-              maxEndDate = depDates.end;
-            }
-          });
-
-          start = maxEndDate;
-        }
-
-        const end = new Date(start.getTime() + duration * 24 * 60 * 60 * 1000);
-
-        fallbackDates[itemId] = { start, end };
-        calculating.delete(itemId);
-        visited.add(itemId);
-
-        return { start, end };
-      };
-
-      // Calculate for all items
-      wbsItems.forEach((item: any) => {
-        if (!visited.has(item.id)) {
-          calculate(item.id);
-        }
-      });
-    };
-
-    // Only calculate fallback dates if timeline data is missing
-    if (Object.keys(earliestStart).length === 0 || Object.keys(earliestFinish).length === 0) {
-      calculateAllFallbackDates();
-    }
-
     return wbsItems
       .map((item) => {
         const commitment = commitmentMap[item.id];
 
-        // Try to get dates from timeline first, then use fallback
+        // Get dates from timelineData (either backend or calculated)
         let start: Date;
         let end: Date;
 
-        if (earliestStart[item.id] && earliestFinish[item.id]) {
-          start = new Date(earliestStart[item.id]);
-          end = new Date(earliestFinish[item.id]);
-        } else if (fallbackDates[item.id]) {
-          // Use pre-calculated fallback dates
-          start = fallbackDates[item.id].start;
-          end = fallbackDates[item.id].end;
+        if (timelineData.earliestStart[item.id] && timelineData.earliestFinish[item.id]) {
+          start = new Date(timelineData.earliestStart[item.id]);
+          end = new Date(timelineData.earliestFinish[item.id]);
         } else {
-          // Last resort: use project start + duration
+          // Fallback: use project start + duration
           const duration = item.is_negotiable
             ? (item.baseline_duration || 30)
             : (item.locked_duration || 30);
@@ -159,7 +107,7 @@ export function GanttChart({ wbsItems, commitments, timeline }: GanttChartProps)
         } as Task;
       })
       .filter((task): task is Task => task !== null);
-  }, [wbsItems, commitments, timeline]);
+  }, [wbsItems, commitments, timelineData]);
 
   // Add red outline to critical path items after render
   useEffect(() => {
