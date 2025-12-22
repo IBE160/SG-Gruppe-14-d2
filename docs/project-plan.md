@@ -13,9 +13,11 @@
 
 The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, automatic snapshot system, and history panel with timeline reconstruction. **Vendor contract acceptance is fully implemented** with complete 12-step data flow from UI to database to snapshots.
 
-**Only 2 critical features remain for MVP:**
+**Only 4 critical features remain for MVP (12-17 hours total):**
 1. Owner perspective budget revision acceptance (6-8 hours)
 2. History panel UX polish (1-2 hours)
+3. Dependency validation - enforce prerequisite order (2-3 hours)
+4. Timeline validation - prevent deadline violations (3-4 hours)
 
 All other remaining items are nice-to-have enhancements (including future administration panel for teachers).
 
@@ -52,14 +54,16 @@ All other remaining items are nice-to-have enhancements (including future admini
 **Critical for MVP:**
 1. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
 2. 🟡 **History Panel Polish** - Core functionality working (snapshots, Gantt/Precedence reconstruction), needs UX polish (est: 1-2 hours)
+3. ❌ **Dependency Validation** - Users can commit to packages before prerequisites are complete, breaks realistic project sequencing (est: 2-3 hours)
+4. ❌ **Timeline Validation** - Users can accept offers that make project late, no deadline enforcement during commitment (est: 3-4 hours)
 
 **Nice to Have (Future Enhancements):**
-3. ❌ **Renegotiation/Uncommit** - Cannot reverse accepted offers, no DELETE endpoint (est: 3-4 hours)
-4. ❌ **Export Functionality** - Session/history export endpoint exists, needs frontend UI button (est: 2-3 hours)
-5. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement mechanic (detection works, UI missing) (est: 3 hours)
-6. ⚠️ **Mobile Responsiveness** - Desktop-optimized only, limited mobile support (est: 8-12 hours)
-7. ❌ **Automated Testing** - No test suite (unit/integration/E2E) (est: 40+ hours)
-8. ❌ **Administration Panel** - Teacher/admin dashboard to view all student sessions and results from database (est: 12-16 hours)
+5. ❌ **Renegotiation/Uncommit** - Cannot reverse accepted offers, no DELETE endpoint (est: 3-4 hours)
+6. ❌ **Export Functionality** - Session/history export endpoint exists, needs frontend UI button (est: 2-3 hours)
+7. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement mechanic (detection works, UI missing) (est: 3 hours)
+8. ⚠️ **Mobile Responsiveness** - Desktop-optimized only, limited mobile support (est: 8-12 hours)
+9. ❌ **Automated Testing** - No test suite (unit/integration/E2E) (est: 40+ hours)
+10. ❌ **Administration Panel** - Teacher/admin dashboard to view all student sessions and results from database (est: 12-16 hours)
 
 ---
 
@@ -226,6 +230,261 @@ All other remaining items are nice-to-have enhancements (including future admini
 
 ---
 
+## ✅ MVP Completion Checklist - Acceptance Flows
+
+### **Phase 1: Complete Vendor Contract Acceptance Flow (5-7 hours)**
+
+#### 1.1 Add Dependency Validation (2-3 hours)
+- [ ] **Backend validation logic** (`backend/main.py` line ~654)
+  - [ ] In `create_commitment()`: Check if all `item.dependencies[]` exist in `wbs_commitments` table
+  - [ ] Query: `SELECT wbs_id FROM wbs_commitments WHERE session_id = ? AND wbs_id IN (...dependencies)`
+  - [ ] If missing dependencies, return 400 error with Norwegian message
+  - [ ] Error format: `{"detail": "Du må først forplikte deg til [1.3.1, 1.3.2] før du kan akseptere denne pakken"}`
+- [ ] **Test dependency blocking**
+  - [ ] Try to commit to "1.4.1 Råbygg" before "1.3.1 Grunnarbeid" → should fail
+  - [ ] Commit to "1.3.1" first → then "1.4.1" should succeed
+- [ ] **Frontend error display** (already exists in `chat-interface.tsx`)
+  - [ ] Verify error message shows in red alert box
+  - [ ] User can go back and negotiate prerequisite packages
+
+#### 1.2 Add Timeline Validation (3-4 hours)
+- [ ] **Backend timeline check** (`backend/main.py` line ~700, before saving commitment)
+  - [ ] Load all current commitments for session
+  - [ ] Add new commitment to temporary list
+  - [ ] Run `calculate_critical_path(wbs_items, temp_commitments, start_date, deadline)`
+  - [ ] Check if `projected_completion_date > deadline`
+  - [ ] If late, calculate `days_late = (projected_completion - deadline).days`
+  - [ ] Return 400 error with timeline impact
+  - [ ] Error format: `{"detail": "Dette tilbudet vil føre til {days_late} dagers forsinkelse. Fristen er {deadline}, beregnet ferdigstillelse vil bli {projected_completion}. Du må enten forhandle kortere varighet eller be eieren om fristverlengelse."}`
+- [ ] **Test timeline blocking**
+  - [ ] Accept offers with total duration > deadline → should fail
+  - [ ] Error message shows days late and suggests solutions
+- [ ] **Frontend error display**
+  - [ ] Verify error shows with timeline details
+  - [ ] User understands they need to renegotiate or go to owner
+
+#### 1.3 Verify Downstream Updates Work (30 min)
+- [ ] **After contract acceptance, verify all systems update:**
+  - [ ] `wbs_commitments` table: New row inserted
+  - [ ] `game_sessions.current_budget_used`: Incremented correctly
+  - [ ] `session_snapshots`: New snapshot created with version N+1
+  - [ ] **Gantt Chart**: Reflects new commitment timeline
+    - [ ] New committed package shows in grey
+    - [ ] Timeline dates updated with new critical path
+    - [ ] Red outline on critical path items correct
+  - [ ] **Precedence Diagram**: Shows updated timeline
+    - [ ] ES/EF/LS/LF values updated for all affected nodes
+    - [ ] Slack values recalculated
+    - [ ] Critical path highlighting correct
+  - [ ] **History Panel**: New snapshot appears
+    - [ ] Timeline sidebar shows new version
+    - [ ] Can click and view Gantt/Precedence from that snapshot
+    - [ ] Budget values correct in snapshot
+
+---
+
+### **Phase 2: Implement Owner Budget Revision Flow (6-8 hours)**
+
+#### 2.1 Frontend: Offer Detection & UI (2 hours)
+- [ ] **Regex pattern for budget revision offers** (`chat-interface.tsx`)
+  - [ ] Add pattern to detect: "budsjett.*økning.*(\d+)\s*MNOK" or similar
+  - [ ] Parse: revision_amount, justification from AI response
+  - [ ] Example: "Jeg kan godkjenne en budsjettøkning på 50 MNOK for å dekke uforutsette kostnader"
+- [ ] **BudgetRevisionOfferBox component** (new component)
+  - [ ] Similar to OfferBox but for budget revisions
+  - [ ] Display: Old budget → New budget, increase amount, justification
+  - [ ] Buttons: "✓ Godta budsjettøkning" and "✗ Avslå"
+  - [ ] Show impact: "Tilgjengelig budsjett: 120 MNOK → 170 MNOK"
+- [ ] **Accept handler** (`game/[sessionId]/[agentId]/[wbsId]/page.tsx`)
+  - [ ] `handleBudgetRevisionAccepted(revision)` function
+  - [ ] Calls new API: `acceptBudgetRevision(sessionId, revision)`
+
+#### 2.2 Backend: Budget Revision Endpoint (2 hours)
+- [ ] **New API endpoint** (`backend/main.py`)
+  - [ ] `POST /api/sessions/{session_id}/budget-revision`
+  - [ ] Request body: `{ revision_amount: number, justification: string, affects_total_budget: boolean }`
+  - [ ] Validation: revision_amount > 0, justification not empty
+  - [ ] Load current session
+  - [ ] Update `available_budget` += revision_amount
+  - [ ] Update `total_budget` += revision_amount (if affects_total_budget=true)
+  - [ ] Call `create_budget_revision_snapshot()` RPC
+  - [ ] Return updated session
+- [ ] **API client** (`frontend/lib/api/sessions.ts`)
+  - [ ] `acceptBudgetRevision(sessionId, revision)` function
+  - [ ] Returns updated session
+
+#### 2.3 Database: Budget Revision Snapshot (1-2 hours)
+- [ ] **New database function** (`database/migrations/003_budget_revisions.sql` - new file)
+  - [ ] `create_budget_revision_snapshot(p_session_id, p_old_budget, p_new_budget, p_revision_amount, p_justification)`
+  - [ ] Insert into `session_snapshots` with:
+    - [ ] `snapshot_type = 'budget_revision'`
+    - [ ] `label = 'Budsjettøkning: +{revision_amount/1000000} MNOK'`
+    - [ ] `budget_committed`: Same as before (no change)
+    - [ ] `budget_available`: Updated amount
+    - [ ] `budget_total`: Updated amount (if applicable)
+    - [ ] `contract_*` fields: NULL (no contract involved)
+    - [ ] `gantt_state`: Copy from previous snapshot (timeline unchanged)
+    - [ ] `precedence_state`: Copy from previous snapshot (timeline unchanged)
+    - [ ] `version`: Auto-incremented
+  - [ ] Add custom fields (optional):
+    - [ ] `revision_old_budget`: Previous available budget
+    - [ ] `revision_new_budget`: New available budget
+    - [ ] `revision_justification`: Why it was approved
+- [ ] **Run migration**
+  - [ ] Apply to Supabase database
+  - [ ] Verify function exists: `SELECT * FROM pg_proc WHERE proname = 'create_budget_revision_snapshot'`
+
+#### 2.4 History Panel: Display Budget Revisions (1-2 hours)
+- [ ] **Update snapshot card rendering** (`history-panel.tsx`)
+  - [ ] Check `snapshot.snapshot_type === 'budget_revision'`
+  - [ ] Show different icon: 💰 or 📈 instead of ✓
+  - [ ] Label: "Budsjettøkning: +50 MNOK" (instead of contract details)
+  - [ ] Show justification in card
+  - [ ] No contract cost/duration display
+- [ ] **Overview tab**
+  - [ ] Show budget change: "Økning fra 310 MNOK til 360 MNOK"
+  - [ ] Display justification text
+  - [ ] Timeline unchanged message: "Ingen endring i prosjektets tidslinje"
+- [ ] **Gantt/Precedence tabs**
+  - [ ] Should show same timeline as previous snapshot (budget doesn't affect CPM)
+
+#### 2.5 Test Complete Budget Revision Flow (30 min)
+- [ ] **End-to-end test:**
+  - [ ] Chat with owner agent (Anne-Lise Berg)
+  - [ ] AI responds with budget increase offer
+  - [ ] BudgetRevisionOfferBox appears with correct amounts
+  - [ ] Click "✓ Godta budsjettøkning"
+  - [ ] Session updates with new available budget
+  - [ ] Dashboard shows increased budget
+  - [ ] New snapshot appears in history panel
+  - [ ] Can view snapshot and see budget change
+  - [ ] Gantt/Precedence unchanged (as expected)
+
+---
+
+### **Phase 3: Polish History Panel (1-2 hours)**
+
+- [ ] **Improve snapshot card design**
+  - [ ] Better visual hierarchy (larger version badge, clearer icons)
+  - [ ] Color coding: Baseline (blue), Contract (green), Budget Revision (gold)
+  - [ ] Hover effects and smooth transitions
+- [ ] **Enhance pagination UX**
+  - [ ] Add loading spinner when fetching more snapshots
+  - [ ] Smooth scroll animation when new snapshots load
+  - [ ] "Loading..." state on "Load More" button
+  - [ ] Disable button when no more snapshots
+- [ ] **Add filters/search (optional)**
+  - [ ] Filter by snapshot type (All, Baseline, Contracts, Budget Revisions)
+  - [ ] Search by WBS ID or supplier name
+- [ ] **Responsive improvements**
+  - [ ] Stack timeline sidebar on mobile (full width)
+  - [ ] Collapse snapshot details on small screens
+
+---
+
+### **Phase 4: Update Timeline Estimates**
+
+**Updated MVP Timeline:**
+- Dependency Validation: 2-3 hours
+- Timeline Validation: 3-4 hours
+- Owner Budget Revision: 6-8 hours
+- History Panel Polish: 1-2 hours
+- **Total to MVP: 12-17 hours**
+
+---
+
+### **Key Integration Points - How Data Flows**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    ACCEPTANCE TRIGGER                        │
+│  User clicks "Accept" on vendor offer OR budget revision     │
+└────────────────────────────┬────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  VALIDATION PHASE                            │
+│  1. Dependency check (vendor only)                           │
+│  2. Timeline check (vendor only)                             │
+│  3. Budget check (both)                                      │
+│  → If any fail: BLOCK and return error to user              │
+└────────────────────────────┬────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  DATABASE UPDATES                            │
+│  Vendor Contract:                                            │
+│    - INSERT wbs_commitments                                  │
+│    - UPDATE game_sessions.current_budget_used                │
+│  Budget Revision:                                            │
+│    - UPDATE game_sessions.available_budget                   │
+│    - UPDATE game_sessions.total_budget (if applicable)       │
+└────────────────────────────┬────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│              CRITICAL PATH RECALCULATION                     │
+│  Vendor Contract:                                            │
+│    - Run calculate_critical_path() with new commitment       │
+│    - Returns: ES/EF/LS/LF/slack for ALL WBS items           │
+│    - Returns: projected_completion_date, days_before_deadline│
+│  Budget Revision:                                            │
+│    - SKIP (budget doesn't affect timeline)                   │
+│    - Copy timeline from previous snapshot                    │
+└────────────────────────────┬────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  SNAPSHOT CREATION                           │
+│  Call create_*_snapshot() RPC function:                      │
+│    - Auto-increment version (via trigger)                    │
+│    - Save budget state (committed/available/total)           │
+│    - Save contract details (vendor) or revision (owner)      │
+│    - Save gantt_state JSONB (full timeline)                  │
+│    - Save precedence_state JSONB (full timeline)             │
+│    - Enforce 100 snapshot limit (delete oldest)              │
+└────────────────────────────┬────────────────────────────────┘
+                             │
+                             ▼
+┌─────────────────────────────────────────────────────────────┐
+│              FRONTEND VISUALIZATION UPDATES                  │
+│  1. Dashboard:                                               │
+│     - Budget bars update (committed/available/total)         │
+│     - Commitment list refreshes                              │
+│  2. Gantt Chart:                                             │
+│     - Re-renders with new timeline data                      │
+│     - Committed packages show in grey                        │
+│     - Timeline shifts based on new durations                 │
+│     - Critical path highlighting updates                     │
+│  3. Precedence Diagram:                                      │
+│     - Nodes update with new ES/EF/LS/LF values              │
+│     - Slack values recalculate                               │
+│     - Critical path highlighting updates                     │
+│  4. History Panel:                                           │
+│     - New snapshot appears in timeline sidebar               │
+│     - Can click to view Gantt/Precedence from that moment    │
+│     - Budget overview shows state at that snapshot           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### **Critical Dependencies Between Systems**
+
+| System | Depends On | Why |
+|--------|------------|-----|
+| **Gantt Chart** | Timeline calculation, Commitments | Needs ES/EF dates for all tasks |
+| **Precedence Diagram** | Timeline calculation, Commitments | Needs ES/EF/LS/LF/slack for all tasks |
+| **History Panel** | Snapshots | Displays historical states |
+| **Snapshots** | Timeline calculation | Stores gantt_state and precedence_state |
+| **Timeline Validation** | Timeline calculation | Must run CPM before allowing commitment |
+| **Dependency Validation** | Commitments table | Checks if prerequisites exist |
+| **Budget Tracking** | Commitments, Revisions | Sums all committed costs |
+
+**Key Insight:** Timeline calculation is the **single source of truth** that feeds Gantt, Precedence, Snapshots, and Validation. Must run after every commitment or when requested.
+
+---
+
 ### File Statistics
 - **Frontend:** ~150 source files, ~8,000+ lines of TypeScript/TSX
 - **Backend:** ~10 Python files, ~1,200+ lines of code
@@ -265,11 +524,11 @@ All other remaining items are nice-to-have enhancements (including future admini
 - **Renegotiation/Uncommit Feature** (3-4 hours) - DELETE endpoint + uncommit UI to reverse accepted offers
 
 ### Updated Timeline Estimates
-- **To MVP (Core Features):** 7-10 hours (Owner perspective budget revision + History panel polish)
-- **To Enhanced MVP:** 14-19 hours (MVP + Export UI + Uncommit)
-- **To Full Feature Set:** 25-34 hours (Enhanced MVP + Agent timeout UI + Mobile responsiveness)
-- **To Production Quality:** 65-74 hours (Full feature set + Automated testing + Deployment)
-- **With Admin Panel:** 77-90 hours (Production quality + Teacher administration dashboard)
+- **To MVP (Core Features):** 12-17 hours (Owner budget revision + History polish + Dependency validation + Timeline validation)
+- **To Enhanced MVP:** 19-26 hours (MVP + Export UI + Uncommit)
+- **To Full Feature Set:** 30-39 hours (Enhanced MVP + Agent timeout UI + Mobile responsiveness)
+- **To Production Quality:** 70-79 hours (Full feature set + Automated testing + Deployment)
+- **With Admin Panel:** 82-95 hours (Production quality + Teacher administration dashboard)
 
 ---
 
@@ -449,8 +708,8 @@ All other remaining items are nice-to-have enhancements (including future admini
         - ✅ Auto-redirect after commitment
         - ✅ Chat history persistence and loading (fixed session resumption issue)
 
-- [x] **Plan Management & Validation** (Week 3-4) - ⚠️ PARTIALLY COMPLETE
-    - *Status: Core commitment flow implemented, some advanced features missing.*
+- [x] **Plan Management & Validation** (Week 3-4) - ✅ CORE COMPLETE
+    - *Status: Core commitment flow fully implemented, session completion added, advanced validations deferred.*
     - *Files: `backend/main.py` (commitments endpoints), `frontend/components/chat-interface.tsx` (offer acceptance)*
     - *Features Implemented:*
         - ✅ Commitment flow with offer acceptance
@@ -459,12 +718,13 @@ All other remaining items are nice-to-have enhancements (including future admini
         - ✅ Database persistence via POST /api/sessions/{id}/commitments
         - ✅ Session budget updates
         - ✅ Error handling with user feedback
-    - *Missing Features:*
+        - ✅ Session completion flow with results page
+        - ✅ Automatic snapshot creation on contract acceptance
+    - *Nice to Have (Future Development):*
         - ❌ Renegotiation (uncommit) functionality
         - ❌ Dependency validation against WBS structure
         - ❌ Timeline validation (deadline ≤May 15 2026)
         - ❌ Modal confirmations for commitments
-        - ❌ Session completion flow
 
 - [x] **Visualization Features** (Week 4-5) - ✅ COMPLETE
     - *Status: Fully implemented with shared calculation engine.*
@@ -588,25 +848,39 @@ All other remaining items are nice-to-have enhancements (including future admini
 4. ✅ **Vendor Contract Acceptance** - COMPLETE, full 12-step flow with snapshots
 5. ❌ **Owner Perspective Budget Revision** - NOT IMPLEMENTED (no UI, no endpoint, no snapshots) (6-8 hours)
 6. 🟡 **History Panel Polish** - Core working, needs UX polish (1-2 hours)
+7. ❌ **Dependency Validation** - NOT IMPLEMENTED, can commit without prerequisites (2-3 hours)
+8. ❌ **Timeline Validation** - NOT IMPLEMENTED, can accept late-making offers (3-4 hours)
 
 **Nice to Have (If Time Permits):**
-7. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
-8. ❌ **Export Functionality** - Session export endpoint exists but needs frontend UI (2-3 hours)
-9. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
-10. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
-11. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
-12. ❌ **Administration Panel** - Teacher dashboard to view all student sessions/results from database (12-16 hours)
-13. ❌ **Automated Testing** - No unit/integration/E2E test suite (40+ hours)
+9. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
+10. ❌ **Export Functionality** - Session export endpoint exists but needs frontend UI (2-3 hours)
+11. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
+12. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
+13. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
+14. ❌ **Administration Panel** - Teacher dashboard to view all student sessions/results from database (12-16 hours)
+15. ❌ **Automated Testing** - No unit/integration/E2E test suite (40+ hours)
 
-**Next Priority Actions (Critical for MVP):**
-1. **Implement Owner Perspective Budget Revision Acceptance** (6-8 hours)
-   - See detailed breakdown with implementation steps in "Contract & Budget Acceptance System" section above
-   - Includes: Frontend UI component, backend endpoint, database snapshot function, history panel display
-2. **Polish History Panel UX** (1-2 hours)
+**Next Priority Actions (Critical for MVP - 12-17 hours total):**
+1. **Add Dependency Validation** (2-3 hours)
+   - Backend: Check prerequisites before allowing commitment
+   - Prevents unrealistic sequences (e.g., building without foundation)
+   - See detailed checklist in "MVP Completion Checklist" section
+2. **Add Timeline Validation** (3-4 hours)
+   - Backend: Calculate timeline impact before commitment
+   - Block offers that would make project late
+   - Force negotiation or owner deadline extension
+   - See detailed checklist in "MVP Completion Checklist" section
+3. **Implement Owner Perspective Budget Revision Acceptance** (6-8 hours)
+   - Frontend: BudgetRevisionOfferBox component
+   - Backend: POST /budget-revision endpoint
+   - Database: Budget revision snapshot creation
+   - History Panel: Display budget revision snapshots
+   - See detailed checklist in "MVP Completion Checklist" section
+4. **Polish History Panel UX** (1-2 hours)
    - Improve snapshot card design and information hierarchy
-   - Enhance pagination UX (loading states, infinite scroll option)
+   - Enhance pagination UX (loading states, smooth animations)
    - Add filters/search for snapshots
-   - Improve responsive layout
+   - See detailed checklist in "MVP Completion Checklist" section
 
 ---
 
