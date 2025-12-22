@@ -7,11 +7,17 @@
 
 ---
 
-## 📊 Executive Summary (Updated: December 17, 2025)
+## 📊 Executive Summary (Updated: December 22, 2025)
 
-### Project Status: **POC FUNCTIONAL - 85% COMPLETE** ✅
+### Project Status: **MVP-READY - 90% COMPLETE** ✅
 
-The PM Simulator project has successfully implemented core functionality and is ready for **classroom demonstrations** and **proof-of-concept testing**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, and critical path calculation.
+The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, automatic snapshot system, and history panel with timeline reconstruction. **Vendor contract acceptance is fully implemented** with complete 12-step data flow from UI to database to snapshots.
+
+**Only 2 critical features remain for MVP:**
+1. Owner perspective budget revision acceptance (6-8 hours)
+2. History panel UX polish (1-2 hours)
+
+All other remaining items are nice-to-have enhancements (including future administration panel for teachers).
 
 ### What's Working ✅
 
@@ -28,28 +34,197 @@ The PM Simulator project has successfully implemented core functionality and is 
 10. ✅ **Documentation** - 50+ comprehensive docs (PRD v2.2, architecture, test plans, troubleshooting, UX specs)
 11. ✅ **Critical Path Algorithm** - Full CPM implementation (ES/EF/LS/LF, slack time, critical path identification)
 12. ✅ **Database Schema** - 6 tables with triggers, RLS policies, computed columns, indexes, snapshot system
-13. ✅ **Session Completion Flow** - Implemented completion page with results summary and success/error modals.
-14. ✅ **Visualization Data Integration** - Data flow from validation endpoint to Gantt/Precedence components is now working.
+13. ✅ **Session Completion Flow** - Implemented completion page with results summary and success/error modals
+14. ✅ **Gantt Chart** - Fully functional timeline visualization with critical path highlighting, dependency arrows, and dynamic date calculations based on commitments
+15. ✅ **Precedence Diagram (AON)** - Complete Activity-on-Node network with ReactFlow, ES/EF/LS/LF display, slack calculations, persistent layout (saves positions to localStorage), and reset functionality
+16. ✅ **Shared Timeline Calculator** - Single source of truth for time calculations across all visualizations, dynamically updates based on committed/locked/baseline durations
+17. ✅ **Backend Validation Endpoint** - Fixed /validate endpoint, correctly loads WBS data and provides timeline calculations
 
 ### What's Partially Working 🟡
 
 **In Progress (40-70% complete):**
-1. 🟡 **Gantt Chart** (60%) - Component created and correctly receiving data. Needs final polish.
-2. 🟡 **Precedence Diagram** (30%) - Component shell created with ReactFlow, AON network structure designed, node/edge rendering needs completion (4-6 hours).
-3. 🟡 **History/Timeline View** (50%) - Database schema complete (session_snapshots table), backend endpoints ready (GET /snapshots with pagination), frontend UI 50% complete, snapshot auto-creation working.
-4. 🟡 **Snapshot System** (70%) - Database triggers functional, auto-creation on commitment working (saves timeline data as of Dec 17), UI visualization integration partial.
+1. 🟡 **Owner Perspective** (40%) - User can chat with owner agent (Anne-Lise Berg), but budget revision acceptance is NOT implemented (no UI button, no backend endpoint, no snapshot creation)
+2. 🟡 **History/Timeline View** (80%) - Database schema complete, backend endpoints ready, frontend UI fully created, snapshot visualization working for Gantt/Precedence, needs final polish
+3. 🟡 **Snapshot System** (95%) - Database triggers functional, auto-creation on vendor contract acceptance working (saves complete timeline data for Gantt/Precedence reconstruction), only missing owner budget revision snapshots
 
 ### What's Missing ❌
 
-**Important but Not Blocking:**
-1. ❌ **History Panel Full Integration** - UI component created but snapshot visualization rendering incomplete (est: 4-5 hours)
-2. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement mechanic (detection works, UI missing) (est: 3 hours)
-3. ❌ **Export Functionality** - No session/history export to JSON/PDF (est: 4-6 hours)
-4. ⚠️ **Mobile Responsiveness** - Desktop-optimized only, limited mobile support (est: 8-12 hours)
-5. ❌ **Automated Testing** - No test suite (unit/integration/E2E) (est: 40+ hours)
+**Critical for MVP:**
+1. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
+2. 🟡 **History Panel Polish** - Core functionality working (snapshots, Gantt/Precedence reconstruction), needs UX polish (est: 1-2 hours)
 
 **Nice to Have (Future Enhancements):**
-6. ❌ **Renegotiation/Uncommit** - Cannot reverse accepted offers, no DELETE endpoint (est: 3-4 hours)
+3. ❌ **Renegotiation/Uncommit** - Cannot reverse accepted offers, no DELETE endpoint (est: 3-4 hours)
+4. ❌ **Export Functionality** - Session/history export endpoint exists, needs frontend UI button (est: 2-3 hours)
+5. ❌ **Agent Timeout UI** - No visual countdown for 6-disagreement mechanic (detection works, UI missing) (est: 3 hours)
+6. ⚠️ **Mobile Responsiveness** - Desktop-optimized only, limited mobile support (est: 8-12 hours)
+7. ❌ **Automated Testing** - No test suite (unit/integration/E2E) (est: 40+ hours)
+8. ❌ **Administration Panel** - Teacher/admin dashboard to view all student sessions and results from database (est: 12-16 hours)
+
+---
+
+## 🤝 Contract & Budget Acceptance System - Technical Deep Dive
+
+### ✅ Vendor Contract Acceptance (FULLY IMPLEMENTED)
+
+**Complete 12-Step Data Flow:**
+
+1. **User receives offer** from vendor agent (Bjørn Eriksen, Cathrine Lund, or David Hansen) in chat
+2. **Offer detection** via regex parser in chat interface (detects cost, duration, quality)
+3. **OfferBox UI renders** with "✓ Godta tilbud" (Accept) and "✗ Avslå" (Reject) buttons
+4. **User clicks Accept** → triggers `handleOfferAccepted()` in game page
+5. **API call** `POST /api/sessions/{sessionId}/commitments` with offer data:
+   ```typescript
+   {
+     wbs_id: string,           // "1.3.1"
+     wbs_name: string,         // "Grunnarbeid"
+     agent_id: string,         // "bjorn-eriksen"
+     baseline_cost: number,    // Original estimate (øre)
+     negotiated_cost: number,  // Agreed price (øre)
+     committed_cost: number,   // Final commitment (øre)
+     baseline_duration: number,    // Original months
+     negotiated_duration: number,  // Agreed months
+     quality_level: string     // "budget" | "standard" | "premium"
+   }
+   ```
+6. **Backend validation** (budget ≤ 700 MNOK, no duplicates, valid WBS ID)
+7. **Database INSERT** into `wbs_commitments` table (15 fields saved)
+8. **Session UPDATE** increments `current_budget_used` in `game_sessions`
+9. **Critical path recalculation** via CPM algorithm with updated commitments
+10. **Snapshot auto-creation** via `create_contract_snapshot()` database function
+11. **Snapshot data saved** (version auto-incremented, timeline states stored as JSONB)
+12. **Frontend redirect** to dashboard showing updated budget and commitment list
+
+**Key Database Changes:**
+- ✅ `wbs_commitments` table: New row with all contract details
+- ✅ `game_sessions.current_budget_used`: Incremented by committed_cost
+- ✅ `session_snapshots` table: New snapshot with version N+1
+
+**Snapshot Contains (for History Pane Reconstruction):**
+- ✅ Budget state: `budget_committed`, `budget_available`, `budget_total`
+- ✅ Contract details: `contract_wbs_id`, `contract_cost`, `contract_duration`, `contract_supplier`
+- ✅ Project timeline: `project_end_date`, `days_before_deadline`
+- ✅ **Gantt state (JSONB)**: Complete timeline with `earliest_start`, `earliest_finish` dates for ALL 15 WBS items
+- ✅ **Precedence state (JSONB)**: Complete timeline with `earliest_start`, `earliest_finish`, `latest_start`, `latest_finish`, `slack` for ALL 15 WBS items
+- ✅ Metadata: `version`, `label`, `snapshot_type`, `timestamp`
+
+**History Pane Can Display:**
+- ✅ Timeline sidebar with all snapshots (paginated, 10 per page)
+- ✅ Snapshot cards showing version, contract details, date
+- ✅ **Gantt chart reconstruction** from `gantt_state` JSONB (shows project timeline at that moment)
+- ✅ **Precedence diagram reconstruction** from `precedence_state` JSONB (shows ES/EF/LS/LF at that moment)
+- ✅ Budget overview with committed/available/total amounts
+- ✅ Timeline info with project end date and deadline delta
+- ✅ Export all snapshots to JSON
+
+**Files Involved:**
+- `frontend/components/chat-interface.tsx` - OfferBox component with Accept button
+- `frontend/app/game/[sessionId]/[agentId]/[wbsId]/page.tsx` - handleOfferAccepted()
+- `frontend/lib/api/sessions.ts` - createCommitment() API client
+- `backend/main.py` - create_commitment() endpoint (lines 602-806)
+- `database/migrations/001_complete_schema.sql` - wbs_commitments table
+- `database/migrations/002_session_snapshots.sql` - session_snapshots table + triggers
+- `frontend/components/history-panel.tsx` - History UI with Gantt/Precedence tabs
+- `frontend/components/gantt-chart.tsx` - Gantt reconstruction from snapshot
+- `frontend/components/precedence-diagram.tsx` - Precedence reconstruction from snapshot
+
+---
+
+### ❌ Owner Budget Revision Acceptance (NOT IMPLEMENTED)
+
+**What Currently Works:**
+- ✅ User can navigate to owner agent (Anne-Lise Berg)
+- ✅ User can chat with owner agent
+- ✅ Owner agent can propose budget increases in chat responses (via AI)
+- ✅ Game context includes budget info sent to agent
+
+**What's Missing:**
+- ❌ **No OfferBox equivalent** for budget revision offers (no UI to accept/reject)
+- ❌ **No backend endpoint** `POST /api/sessions/{sessionId}/budget-revision`
+- ❌ **No database table** `budget_revisions` to track revision history
+- ❌ **No snapshot creation** for type='budget_revision' events
+- ❌ **No session update logic** to modify `available_budget` or `total_budget`
+
+**What Would Be Needed (Estimated 6-8 hours):**
+
+1. **Frontend OfferBox for Budget Revisions** (2 hours)
+   - New regex pattern to detect budget revision offers in chat
+   - New `BudgetRevisionOfferBox` component with Accept/Reject buttons
+   - Handler `handleBudgetRevisionAccepted()`
+
+2. **Backend Endpoint** (2 hours)
+   ```python
+   @app.post("/api/sessions/{session_id}/budget-revision")
+   async def accept_budget_revision(
+       session_id: str,
+       request: BudgetRevisionRequest
+   ):
+       # Update game_sessions.available_budget
+       # Update game_sessions.total_budget (if applicable)
+       # Create budget_revision_snapshot
+       # Return updated session
+   ```
+
+3. **Database Schema Update** (1 hour)
+   - Add `budget_revisions` table (optional, for audit trail)
+   - Update `create_budget_revision_snapshot()` function
+   - Add fields: `revision_old_budget`, `revision_new_budget`, `revision_justification`
+
+4. **Snapshot Creation** (1 hour)
+   - New snapshot type: `'budget_revision'`
+   - Store old and new budget amounts
+   - Store justification text
+   - NO need to recalculate timeline (budget doesn't affect CPM)
+
+5. **History Panel Update** (1-2 hours)
+   - Display budget revision snapshots differently (no contract details)
+   - Show budget increase amount and justification
+   - Add "Budget Revision" badge/icon
+
+**Key Inputs Required for Owner Budget Revision:**
+```typescript
+{
+  revision_amount: number,      // Increase in øre (e.g., 50000000 = 50 MNOK)
+  justification: string,        // "Approved due to scope change"
+  affects_total_budget: boolean // true = increase total, false = just available
+}
+```
+
+**Database Effects Would Be:**
+- INSERT into `budget_revisions` table (if created)
+- UPDATE `game_sessions.available_budget` += revision_amount
+- UPDATE `game_sessions.total_budget` += revision_amount (if affects_total_budget=true)
+- INSERT into `session_snapshots` with snapshot_type='budget_revision'
+- NO wbs_commitments changes
+- NO timeline recalculation needed (budget doesn't affect critical path)
+
+---
+
+### 📊 Snapshot Data Requirements Summary
+
+**For Vendor Contract Acceptance (what's captured):**
+| Data Category | Fields | Purpose |
+|---------------|--------|---------|
+| **Contract Info** | wbs_id, cost, duration, supplier | Which package, price, timeline, vendor |
+| **Budget State** | committed, available, total | Budget at this moment (in øre) |
+| **Timeline State** | project_end_date, days_before_deadline | Project status vs deadline |
+| **Gantt Reconstruction** | earliest_start{}, earliest_finish{} for all WBS | Render Gantt at this point in time |
+| **Precedence Reconstruction** | es{}, ef{}, ls{}, lf{}, slack{} for all WBS | Render Precedence at this point in time |
+| **Metadata** | version, label, snapshot_type, timestamp | Snapshot tracking |
+
+**For Owner Budget Revision (what WOULD be needed):**
+| Data Category | Fields | Purpose |
+|---------------|--------|---------|
+| **Revision Info** | old_budget, new_budget, justification | Track budget changes |
+| **Budget State** | committed, available, total | Updated budget amounts |
+| **Timeline State** | project_end_date, days_before_deadline | Same as before (unchanged) |
+| **Gantt State** | Same as previous snapshot | No recalculation needed |
+| **Precedence State** | Same as previous snapshot | No recalculation needed |
+| **Metadata** | version, label='Budget Revision', snapshot_type='budget_revision' | Tracking |
+
+**Note:** Budget revisions do NOT require timeline recalculation because budget doesn't affect critical path (only durations and dependencies do).
+
+---
 
 ### File Statistics
 - **Frontend:** ~150 source files, ~8,000+ lines of TypeScript/TSX
@@ -66,27 +241,35 @@ The PM Simulator project has successfully implemented core functionality and is 
 2. ✅ **Session Completion Flow** (4-6 hours) - Implement completion page with results summary
 3. ✅ **Verify Database Import** (1-2 hours) - Confirm all tables and triggers working in production
 
-**Week 2: Visualization & History Completion (10-13 hours)**
-4. **Complete History Panel UI** (4-5 hours) - Finish snapshot visualization rendering and tabbed comparison
-5. **Complete Precedence Diagram** (4-6 hours) - Full AON network with ReactFlow (nodes, edges, critical path highlighting)
-6. **Gantt Chart Polish** (2 hours) - Verify all features working (zoom, dependencies, timeline)
+**Week 2: History & Owner Perspective Completion (4-9 hours) - ✅ VISUALIZATIONS COMPLETE, 🟡 OWNER PERSPECTIVE IN PROGRESS**
+4. ✅ **Complete Gantt Chart** (DONE) - Full timeline visualization with critical path, dependencies, dynamic calculations
+5. ✅ **Complete Precedence Diagram** (DONE) - Full AON network with ReactFlow, ES/EF/LS/LF, slack, persistent layout
+6. ✅ **Fix Backend Validation** (DONE) - Corrected WBS file path, endpoint now returns timeline data
+7. **Complete Owner Perspective Budget Revision** (6-8 hours) - Implement budget revision acceptance flow:
+   - Frontend: BudgetRevisionOfferBox component with Accept/Reject buttons
+   - Backend: POST /api/sessions/{sessionId}/budget-revision endpoint
+   - Database: create_budget_revision_snapshot() function with new snapshot type
+   - History Panel: Display budget revision snapshots with old/new amounts and justification
+8. **Polish History Panel UI** (1-2 hours) - Final polish on snapshot cards, improve pagination UX
 
 **Week 3: Polish & Features (7-9 hours)**
-7. **Agent Timeout UI** (3 hours) - Visual countdown and lock status display
-8. **Export Functionality** (4-6 hours) - Session/history export to JSON
+9. **Agent Timeout UI** (3 hours) - Visual countdown and lock status display
+10. **Export Functionality** (4-6 hours) - Session/history export to JSON
 
 **Week 4+: Quality & Deployment (50+ hours)**
-9. **Mobile Responsiveness** (8-12 hours) - Optimize for mobile devices
-10. **Automated Testing** (40+ hours) - Unit, integration, and E2E test suite
-11. **Production Deployment** (4-8 hours) - Deploy frontend/backend, final testing
+11. **Mobile Responsiveness** (8-12 hours) - Optimize for mobile devices
+12. **Automated Testing** (40+ hours) - Unit, integration, and E2E test suite
+13. **Production Deployment** (4-8 hours) - Deploy frontend/backend, final testing
 
 **Nice to Have (Future Enhancements)**
 - **Renegotiation/Uncommit Feature** (3-4 hours) - DELETE endpoint + uncommit UI to reverse accepted offers
 
 ### Updated Timeline Estimates
-- **To MVP (Classroom Ready):** 16-21 hours (Weeks 1-2)
-- **To Full Feature Set:** 33-43 hours (Weeks 1-3, excluding renegotiation)
-- **To Production Quality:** 81-102 hours (Weeks 1-4+, including testing/deployment, excluding renegotiation)
+- **To MVP (Core Features):** 7-10 hours (Owner perspective budget revision + History panel polish)
+- **To Enhanced MVP:** 14-19 hours (MVP + Export UI + Uncommit)
+- **To Full Feature Set:** 25-34 hours (Enhanced MVP + Agent timeout UI + Mobile responsiveness)
+- **To Production Quality:** 65-74 hours (Full feature set + Automated testing + Deployment)
+- **With Admin Panel:** 77-90 hours (Production quality + Teacher administration dashboard)
 
 ---
 
@@ -283,25 +466,35 @@ The PM Simulator project has successfully implemented core functionality and is 
         - ❌ Modal confirmations for commitments
         - ❌ Session completion flow
 
-- [ ] **Visualization Features** (Week 4-5) - ❌ NOT IMPLEMENTED
-    - *Status: Design files exist, library-based implementation planned.*
-    - *Available Designs: `docs/ux/functional_flows/visualization-01-gantt-chart.svg`, `visualization-02-precedence-diagram.svg`*
-    - *Implementation Approach:*
-        - **Gantt Chart:** Using `gantt-task-react` library (30K+ weekly downloads)
-          - Pre-built timeline rendering with Month/Week/Day view modes
-          - Configured for Feb 2025 - May 2026 timeline
-          - Color scheme: Red (critical path), Green (negotiable), Gray (locked)
-        - **Precedence Diagram:** Using `ReactFlow` library (500K+ weekly downloads)
-          - Purpose-built for Activity-on-Node (AON) network diagrams
-          - Auto-layout, zoom, pan, drag interactions built-in
-          - Node display: WBS ID, name, duration, ES/EF/LS/LF, slack time
-        - See `docs/Precedence-And-Gantt.md` for complete implementation guide
+- [x] **Visualization Features** (Week 4-5) - ✅ COMPLETE
+    - *Status: Fully implemented with shared calculation engine.*
+    - *Files: `frontend/components/gantt-chart.tsx`, `frontend/components/precedence-diagram.tsx`, `frontend/lib/timeline-calculator.ts`*
+    - *Features Implemented:*
+        - **Gantt Chart** (using `gantt-task-react`)
+          ✅ Timeline rendering with Month view mode
+          ✅ Dynamic date calculations based on commitments
+          ✅ Color scheme: Blue (negotiable), Grey (committed/locked)
+          ✅ Critical path highlighting with red outline
+          ✅ Dependency arrows
+          ✅ Uses shared timeline calculator
+        - **Precedence Diagram** (using `ReactFlow`)
+          ✅ Activity-on-Node (AON) network diagram
+          ✅ Zoom, pan, drag interactions
+          ✅ Node display: WBS ID, name, ES/EF/LS/LF, slack time
+          ✅ Critical path from wbs.json (business definition)
+          ✅ Persistent layout saved to localStorage
+          ✅ Reset layout button
+          ✅ Uses shared timeline calculator
+        - **Shared Timeline Calculator** (`lib/timeline-calculator.ts`)
+          ✅ CPM algorithm (forward/backward pass)
+          ✅ ES/EF/LS/LF calculation
+          ✅ Slack/float calculation
+          ✅ Dynamic duration selection (committed > locked > baseline)
+          ✅ Single source of truth for both diagrams
+        - ✅ Tabbed navigation between Gantt and Precedence views
     - *Missing Features:*
-        - ❌ Gantt chart React component with gantt-task-react integration
-        - ❌ Precedence diagram AON network with ReactFlow integration
-        - ❌ History/timeline view
-        - ❌ Tabbed navigation between views
-    - *Estimated Effort: 6-8 hours (reduced from 16-24 hours with library approach)*
+        - ❌ History/timeline view (snapshot visualization)
+    - *Implementation Time: 8 hours (Dec 22, 2025)*
 
 - [x] **Export & Polish** (Week 5) - ⚠️ PARTIALLY COMPLETE
     - *Status: Some polish complete, export missing.*
@@ -320,7 +513,7 @@ The PM Simulator project has successfully implemented core functionality and is 
         - ❌ Agent timeout UI countdown
         - ❌ Session completion page
 
-**Current Progress:** Sprint 2-3 features ~90% complete. Sprint 4-5 features ~40% complete. Core negotiation loop fully functional.
+**Current Progress:** Sprint 2-3 features ~95% complete. Sprint 4-5 features ~85% complete (visualizations done, history panel working). Core negotiation loop fully functional. Vendor contract acceptance fully implemented with automatic snapshot creation. Owner perspective budget revision acceptance NOT yet implemented (requires frontend UI, backend endpoint, and snapshot type).
 
 ---
 
@@ -367,7 +560,7 @@ The PM Simulator project has successfully implemented core functionality and is 
 - **Phase 0 (Discovery & Analysis):** ✅ 100% Complete (8/8 tasks)
 - **Phase 1 (Planning):** ✅ 100% Complete (5/5 tasks)
 - **Phase 2 (Solutioning):** ✅ 100% Complete (8/8 tasks)
-- **Phase 3 (Implementation):** ✅ ~75% Complete (10/10 Sprint 1 tasks, 3.5/5 Sprint 2-5 themes)
+- **Phase 3 (Implementation):** ✅ ~90% Complete (10/10 Sprint 1 tasks, 4.2/5 Sprint 2-5 themes - visualizations complete, vendor contract acceptance complete, owner budget revision not yet implemented)
 - **Phase 4 (Testing):** ⏸️ Not Started (0/6 test categories)
 - **Phase 5 (Deployment):** ⏸️ Not Started (0/4 deployment tasks)
 
@@ -375,65 +568,45 @@ The PM Simulator project has successfully implemented core functionality and is 
 - ✅ Sprint 1 foundation 100% complete
 - ✅ All 4 AI agent prompts fully documented (682 lines) and integrated with Gemini API
 - ✅ Complete WBS and agent data files (wbs.json, agents.json)
-- ✅ Database schema created (5 tables, RLS policies, triggers) - awaiting import verification
-- ✅ Backend API fully operational (10 endpoints, Gemini service, auth)
+- ✅ Database schema created (6 tables including session_snapshots, RLS policies, triggers)
+- ✅ Backend API fully operational (14 endpoints including snapshots, Gemini service, auth)
 - ✅ Dashboard with 3-tier budget visualization
 - ✅ Full AI negotiation loop (chat, offer detection, accept/reject, persistence)
+- ✅ **Vendor contract acceptance fully implemented** - 12-step data flow from UI to database with validation
+- ✅ **Automatic snapshot system** - Creates snapshots on contract acceptance with complete timeline data
+- ✅ **History Panel with Gantt/Precedence reconstruction** - Renders snapshots with full ES/EF/LS/LF data
+- ✅ **Gantt Chart & Precedence Diagram** - Full visualizations with critical path, shared timeline calculator
 - ✅ Auth system fully functional
 - ✅ Design system with comprehensive color palette
-- ✅ 40+ documentation files
+- ✅ 50+ documentation files
 - ✅ Fixed critical issue with session resumption and chat history loading
 
 **Remaining Gaps (MVP Completion):**
-1. ⚠️ **Session Completion Flow** - No completion page or results summary (4-6 hours)
-2. ⚠️ **Database Import Verification** - Confirm schema imported to Supabase production (30 minutes)
-3. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
-4. ❌ **Timeline/Dependency Validation** - No deadline or critical path checks (4-6 hours)
-5. ❌ **Visualizations** - Gantt chart and precedence diagram not built (6-8 hours using gantt-task-react + ReactFlow)
-6. ❌ **Export Functionality** - No session export to JSON/PDF (3-4 hours)
-7. ❌ **Automated Testing** - No unit/integration/E2E test suite (8-10 hours)
-
-9. ❌ **History/Timeline View (Contract Snapshots)** - Shows baseline + contract acceptance impact on budget/timeline/diagrams (6-8 hours)
-   - **NEW: Must Have (v2.1 Dec 17, 2025)** - Pedagogical value for students to see decision impacts
-   - Complete documentation ready:
-     - Mockup: `docs/ux/UI_flows/mockup-10-history-timeline-simplified.svg`
-     - User flow: `docs/ux/functional_flows/flow-08-history-timeline-interaction.svg`
-     - Database schema: `database/migrations/002_session_snapshots.sql`
-     - PRD: FR-9.3, UX Spec: Section 3.9
-   - Implementation scope:
-     - Backend: Session snapshots table, API endpoints (GET /snapshots with pagination)
-     - Frontend: History panel overlay, timeline sidebar, comparison view (3 tabs: Oversikt/Gantt/Presedensdiagram)
-     - Auto-snapshot creation on contract acceptance
-     - Pagination (load 5 initially, 10 more on button/scroll)
-     - Max 100 snapshots per session (future-proof for scaling)
+1. ✅ **Session Completion Flow** - COMPLETE with results summary page
+2. ✅ **Database Import Verification** - COMPLETE, all tables working
+3. ✅ **Visualizations** - COMPLETE, Gantt and Precedence fully functional
+4. ✅ **Vendor Contract Acceptance** - COMPLETE, full 12-step flow with snapshots
+5. ❌ **Owner Perspective Budget Revision** - NOT IMPLEMENTED (no UI, no endpoint, no snapshots) (6-8 hours)
+6. 🟡 **History Panel Polish** - Core working, needs UX polish (1-2 hours)
 
 **Nice to Have (If Time Permits):**
-10. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
-11. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
-12. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
+7. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
+8. ❌ **Export Functionality** - Session export endpoint exists but needs frontend UI (2-3 hours)
+9. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
+10. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
+11. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
+12. ❌ **Administration Panel** - Teacher dashboard to view all student sessions/results from database (12-16 hours)
+13. ❌ **Automated Testing** - No unit/integration/E2E test suite (40+ hours)
 
-**Next Priority Actions (MVP Completion):**
-1. Verify database schema import in Supabase production instance (including new `session_snapshots` table)
-2. Implement session completion flow (`/app/complete/page.tsx` + API endpoint)
-3. Add chat history loading from `negotiation_history` table
-4. **Implement History/Timeline View (Must Have - NEW):**
-   - Import database schema: `database/migrations/002_session_snapshots.sql`
-   - Backend: Create snapshot endpoints (GET /snapshots, POST baseline on session start)
-   - Backend: Auto-create snapshots on contract acceptance (modify POST /commitments)
-   - Frontend: History panel overlay component with timeline sidebar
-   - Frontend: Comparison view with 3 tabs (Oversikt, Gantt, Presedensdiagram)
-   - Frontend: Pagination (load 5, then 10 more on scroll/button)
-   - Testing: Verify baseline creation, snapshot creation, pagination, export
-5. Implement uncommit functionality for renegotiation
-6. Add timeline/dependency validation (critical path algorithm)
-7. Build Gantt chart (gantt-task-react) and precedence diagram (ReactFlow) visualizations
-8. Implement session export functionality (including history export)
-9. Write automated test suite (backend + frontend)
-
-**Estimated time to MVP (required features only):** 35-46 hours of focused development work (updated to include history/timeline view).
-**Estimated time with nice-to-have features:** 46-59 hours.
-
-**Recommended approach:** Team of 2-3 developers working in parallel (see `MVP_COMPLETION_ROADMAP_REVISED.md`)
+**Next Priority Actions (Critical for MVP):**
+1. **Implement Owner Perspective Budget Revision Acceptance** (6-8 hours)
+   - See detailed breakdown with implementation steps in "Contract & Budget Acceptance System" section above
+   - Includes: Frontend UI component, backend endpoint, database snapshot function, history panel display
+2. **Polish History Panel UX** (1-2 hours)
+   - Improve snapshot card design and information hierarchy
+   - Enhance pagination UX (loading states, infinite scroll option)
+   - Add filters/search for snapshots
+   - Improve responsive layout
 
 ---
 
