@@ -66,3 +66,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Target header row by its inline height style */
+.gantt-container div[style*="height: 48px"] div,
+.gantt-container div[style*="height: 48px"] span,
+.gantt-container div[style*="height: 48px"] * {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+/* Also target the specific hashed classes visible in inspector */
+.gantt-container ._1nB0t div,
+.gantt-container ._1nB0t span {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+}
+
+/* Critical path RED OUTLINE - target by aria-label containing critical WBS IDs */
+.gantt-container svg g[aria-label*="1.3.1"] rect,
+.gantt-container svg g[aria-label*="1.3.2"] rect,
+.gantt-container svg g[aria-label*="1.4.1"] rect,
+.gantt-container svg g[aria-label*="1.1.1"] rect,
+.gantt-container svg g[aria-label*="1.2.1"] rect,
+.gantt-container svg g[aria-label*="1.9.1"] rect {
+  stroke: #dc2626 !important;
+  stroke-width: 1px !important;
+  rx: 4 !important;
+  ry: 4 !important;
+}
