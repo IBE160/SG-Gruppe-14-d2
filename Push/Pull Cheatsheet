@@ -1,0 +1,108 @@
+Full Update Workflow Summary
+
+To update the remote repository:
+
+1. Get latest changes: git pull
+
+2.  Add your files: git add . #adds all new or modified files | git add (file name) #adds the speficic file
+
+3.  Commit your changes: git commit -m "A brief description of my changes"
+
+4.  Send your changes: git push
+
+
+
+---
+STARTE BACKEND
+
+Denne er kun nødvendig for å gå til rootmappen:
+cd C:\Users\morte\Documents\GitHub\SG-Gruppe-14-d2
+
+.\.venv\Scripts\Activate.ps1
+cd backend
+uvicorn main:app --reload
+
+
+STARTE FRONTEND
+
+cd frontend
+npm run dev
+
+---
+
+
+JEG HAR GJORT EN FEIL LOKALT - What to do?
+Så lenge man ikke begynner å skrive "git add", "git commit" eller "git push" så kan man alltids bare skrive "git reset" så er du tilbake en clean versjon av repoet slik det var før du begynte det som ødela. 
+
+---
+
+FIL ELLER MAPPE ER ØDELAGT - Men du trenger å fetche filene på nytt
+SCENARIO: Du har gjort feil på en mappe lokalt som har ødelagt hele flyten og det er behov for å slette den lokalt og pulle den fra main branch repositoriet. 
+
+Tips til dette:
+For at en fil skal slettes i GitHub-repoet, må slettingen bli en del av en commit som du pusher. Å slette lokalt alene påvirker ikke remote. 
+
+Anbefalt (renest): slett med git rm
+git switch main              # eller riktig branch
+git rm path/til/fil.ext
+git commit -m "Delete fil.ext"
+git push
+
+Hvis du allerede har slettet filen i Filutforsker/VS Code
+git switch main              # eller riktig branch
+git add -A                   # (stager også slettinger)
+git commit -m "Delete fil.ext"
+git push
+
+Hvis dere jobber med PR-flyt: gjør dette i en feature-branch, push, og lag PR til main (da skjer slettingen i main når PR merges).
+
+---
+
+
+
+
+
+
+CLAUDE COMMANDS CHEATSHEET
+
+PERMISSIONS (du stoler på at AIen kan løse det for deg)
+You can start a session with bypassPermissions mode using a command-line flag:
+
+  claude --dangerously-skip-permissions
+
+  Or alternatively:
+
+  claude --permission-mode bypassPermissions
+
+  Both of these will skip all permission prompts for just that session without changing your permanent settings. The session-specific flag overrides any settings in your config files and only applies to that one session.
+
+FILE USAGE IN PROMPTING
+● Here are the ways you can provide files to me in Claude Code:
+
+  Quick Methods
+
+  1. Use the @ symbol (easiest):
+  @/path/to/document.pdf - add some text to this
+  Or with relative paths:
+  @./document.pdf - add a header to this
+
+  2. Drag and drop:
+  - Simply drag a file into the Claude Code terminal window
+
+  3. Copy and paste:
+  - Copy a file and paste it with Ctrl+V (Windows/Linux)
+
+  4. Just mention the file path:
+  Read this PDF and add text: C:\Users\morte\Documents\myfile.pdf
+
+  For PDFs Specifically
+
+  I can read PDFs directly using my Read tool. Once you reference a PDF file (using any method above), I can:
+  - Extract and analyze the text content
+  - Help you create modified versions
+  - Generate new files with added text
+
+  For example, you could say:
+  @C:\Users\morte\Documents\report.pdf - add a title page with "Annual Report 2025"
+
+  The @ symbol method is usually the most convenient for interactive sessions.
