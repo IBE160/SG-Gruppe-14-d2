@@ -395,7 +395,7 @@ def detect_disagreement(ai_response: str) -> bool:
 @app.get("/api/sessions", response_model=List[SessionResponse], tags=["Sessions"])
 def get_user_sessions(
     current_user: dict = Depends(get_current_user),
-    # db: Client = Depends(get_db_client) # Bypass authenticated client
+    db: Client = Depends(get_db_client)
 ):
     """
     Get all game sessions for the current user.
@@ -410,13 +410,13 @@ def get_user_sessions(
         List of SessionResponse objects
     """
     try:
-        print(f"[DEBUG] Fetching sessions for user {current_user['id']} using GLOBAL client")
-        response = supabase.table("game_sessions")\
+        print(f"[DEBUG] Fetching sessions for user {current_user['id']} using authenticated client")
+        response = db.table("game_sessions")\
             .select("*")\
             .eq("user_id", current_user["id"])\
             .order("created_at", desc=True)\
             .execute()
-        
+
         print(f"[DEBUG] Found {len(response.data)} sessions")
 
         return [SessionResponse(**session) for session in response.data]
@@ -903,7 +903,8 @@ def get_negotiation_history(
 @app.post("/api/sessions/{session_id}/validate", response_model=ValidationResponse, tags=["Validation"])
 def validate_session(
     session_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client)
 ):
     """
     Validate a game session by calculating critical path and checking constraints.
@@ -923,7 +924,7 @@ def validate_session(
 
     try:
         # Verify session belongs to user
-        session_response = supabase.table("game_sessions")\
+        session_response = db.table("game_sessions")\
             .select("*")\
             .eq("id", session_id)\
             .eq("user_id", current_user["id"])\
@@ -946,7 +947,7 @@ def validate_session(
         wbs_items = wbs_data.get('wbs_elements', [])
 
         # Get commitments for this session
-        commitments_response = supabase.table("wbs_commitments")\
+        commitments_response = db.table("wbs_commitments")\
             .select("*")\
             .eq("session_id", session_id)\
             .execute()

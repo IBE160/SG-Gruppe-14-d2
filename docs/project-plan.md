@@ -7,19 +7,19 @@
 
 ---
 
-## 📊 Executive Summary (Updated: December 22, 2025)
+## 📊 Executive Summary (Updated: December 23, 2025)
 
-### Project Status: **MVP-READY - 90% COMPLETE** ✅
+### Project Status: **MVP-READY - 92% COMPLETE** ✅
 
-The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, automatic snapshot system, and history panel with timeline reconstruction. **Vendor contract acceptance is fully implemented** with complete 12-step data flow from UI to database to snapshots.
+The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, automatic snapshot system, and history panel with timeline reconstruction. **Vendor contract acceptance is fully implemented** with complete 12-step data flow from UI to database to snapshots. **Chat history persistence is now fixed** - sessions correctly load conversation history when switching between agents.
 
-**Only 4 critical features remain for MVP (12-17 hours total):**
-1. Owner perspective budget revision acceptance (6-8 hours)
-2. History panel UX polish (1-2 hours)
+**Only 4 critical features remain for MVP (10-15 hours total):**
+1. History panel baseline snapshot visualization (1-2 hours)
+2. Owner perspective budget revision acceptance (6-8 hours)
 3. Dependency validation - enforce prerequisite order (2-3 hours)
 4. Timeline validation - prevent deadline violations (3-4 hours)
 
-**Note:** Baseline snapshot removed from database - frontend calculates baseline state from wbs.json on-demand.
+**Note:** Baseline snapshot removed from database - frontend calculates baseline state from wbs.json on-demand and shows as "virtual" snapshot in history panel.
 
 All other remaining items are nice-to-have enhancements (including future administration panel for teachers).
 
@@ -32,30 +32,31 @@ All other remaining items are nice-to-have enhancements (including future admini
 4. ✅ **Offer Management** - Automatic regex-based offer detection, accept/reject buttons, budget impact preview
 5. ✅ **Budget Tracking** - Real-time updates, validation (≤700 MNOK), duplicate prevention, tier calculations
 6. ✅ **Data Persistence** - Sessions, commitments, and negotiation history saved with RLS policies enforced
-7. ✅ **Backend API** - 11 RESTful endpoints, JWT auth, proper error handling, Norwegian error messages
-8. ✅ **Design System** - Professional UI with Tailwind CSS, Shadcn components, complete color palette
-9. ✅ **Static Data** - Complete WBS (15 items) and agent configs (4 agents) with full metadata
-10. ✅ **Documentation** - 50+ comprehensive docs (PRD v2.2, architecture, test plans, troubleshooting, UX specs)
-11. ✅ **Critical Path Algorithm** - Full CPM implementation (ES/EF/LS/LF, slack time, critical path identification)
-12. ✅ **Database Schema** - 6 tables with triggers, RLS policies, computed columns, indexes, snapshot system
-13. ✅ **Session Completion Flow** - Implemented completion page with results summary and success/error modals
-14. ✅ **Gantt Chart** - Fully functional timeline visualization with critical path highlighting, dependency arrows, and dynamic date calculations based on commitments
-15. ✅ **Precedence Diagram (AON)** - Complete Activity-on-Node network with ReactFlow, ES/EF/LS/LF display, slack calculations, persistent layout (saves positions to localStorage), and reset functionality
-16. ✅ **Shared Timeline Calculator** - Single source of truth for time calculations across all visualizations, dynamically updates based on committed/locked/baseline durations
-17. ✅ **Backend Validation Endpoint** - Fixed /validate endpoint, correctly loads WBS data and provides timeline calculations
+7. ✅ **Chat History Persistence** - Fixed session resumption bug, conversations now correctly load when switching between agents (Dec 23, 2025)
+8. ✅ **Backend API** - 14 RESTful endpoints, JWT auth, proper error handling, Norwegian error messages, authenticated db client for all session operations
+9. ✅ **Design System** - Professional UI with Tailwind CSS, Shadcn components, complete color palette
+10. ✅ **Static Data** - Complete WBS (15 items) and agent configs (4 agents) with full metadata
+11. ✅ **Documentation** - 50+ comprehensive docs (PRD v2.2, architecture, test plans, troubleshooting, UX specs)
+12. ✅ **Critical Path Algorithm** - Full CPM implementation (ES/EF/LS/LF, slack time, critical path identification)
+13. ✅ **Database Schema** - 6 tables with triggers, RLS policies, computed columns, indexes, snapshot system
+14. ✅ **Session Completion Flow** - Implemented completion page with results summary and success/error modals
+15. ✅ **Gantt Chart** - Fully functional timeline visualization with critical path highlighting, dependency arrows, and dynamic date calculations based on commitments
+16. ✅ **Precedence Diagram (AON)** - Complete Activity-on-Node network with ReactFlow, ES/EF/LS/LF display, slack calculations, persistent layout (saves positions to localStorage), and reset functionality
+17. ✅ **Shared Timeline Calculator** - Single source of truth for time calculations across all visualizations, dynamically updates based on committed/locked/baseline durations
+18. ✅ **Backend Validation Endpoint** - Fixed /validate endpoint, correctly loads WBS data and provides timeline calculations
 
 ### What's Partially Working 🟡
 
-**In Progress (40-70% complete):**
+**In Progress (40-90% complete):**
 1. 🟡 **Owner Perspective** (40%) - User can chat with owner agent (Anne-Lise Berg), but budget revision acceptance is NOT implemented (no UI button, no backend endpoint, no snapshot creation)
-2. 🟡 **History/Timeline View** (80%) - Database schema complete, backend endpoints ready, frontend UI fully created, snapshot visualization working for Gantt/Precedence, needs final polish
+2. 🟡 **History/Timeline View** (90%) - Database schema complete, backend endpoints ready, frontend UI fully created with 3 tabs (Overview/Gantt/Precedence), snapshot visualization working for contract acceptances, **needs baseline virtual snapshot** to show initial 12 locked contracts as version 0
 3. 🟡 **Snapshot System** (95%) - Database triggers functional, auto-creation on vendor contract acceptance working (saves complete timeline data for Gantt/Precedence reconstruction), only missing owner budget revision snapshots
 
 ### What's Missing ❌
 
 **Critical for MVP:**
-1. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
-2. 🟡 **History Panel Polish** - Core functionality working (snapshots, Gantt/Precedence reconstruction), needs UX polish (est: 1-2 hours)
+1. ❌ **History Panel Baseline Snapshot** - Need to add "virtual" baseline snapshot showing initial 12 locked contracts (390 MNOK committed, 310 MNOK available) calculated from wbs.json, displayed as version 0 in history timeline (est: 1-2 hours)
+2. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
 3. ❌ **Dependency Validation** - Users can commit to packages before prerequisites are complete, breaks realistic project sequencing (est: 2-3 hours)
 4. ❌ **Timeline Validation** - Users can accept offers that make project late, no deadline enforcement during commitment (est: 3-4 hours)
 
@@ -133,6 +134,103 @@ All other remaining items are nice-to-have enhancements (including future admini
 - `frontend/components/history-panel.tsx` - History UI with Gantt/Precedence tabs
 - `frontend/components/gantt-chart.tsx` - Gantt reconstruction from snapshot
 - `frontend/components/precedence-diagram.tsx` - Precedence reconstruction from snapshot
+
+---
+
+### 🟡 Baseline Snapshot Virtual Implementation (90% COMPLETE)
+
+**Design Decision:**
+- Baseline snapshot is **NOT stored in database** (deliberate design choice for simplicity and security)
+- Frontend calculates baseline state **on-demand** from wbs.json (12 locked contracts)
+- Shows initial state: 390 MNOK committed, 310 MNOK available, 700 MNOK total
+
+**What Currently Works:**
+- ✅ wbs.json contains complete data for all 15 WBS items (12 locked + 3 negotiable)
+- ✅ Locked items marked with `is_locked: true` flag
+- ✅ Shared timeline calculator can generate baseline timeline from locked items
+- ✅ History panel UI exists and can display snapshots with 3 tabs (Overview/Gantt/Precedence)
+- ✅ History panel correctly renders contract acceptance snapshots from database
+
+**What's Missing:**
+- ❌ **No baseline "virtual" snapshot** created in frontend
+- ❌ Baseline not shown as version 0 in history timeline sidebar
+- ❌ Users cannot see the starting point (12 pre-negotiated contracts) in history view
+
+**Implementation Approach (1-2 hours):**
+
+1. **Create baseline snapshot generator** in `history-panel.tsx`:
+   ```typescript
+   function createBaselineSnapshot(): Snapshot {
+     // Filter locked items from wbs.json
+     const lockedItems = wbsItems.filter(item => item.is_locked);
+
+     // Calculate baseline timeline using shared timeline calculator
+     const baselineTimeline = calculateTimeline(lockedItems, []);
+
+     return {
+       id: 'baseline-virtual',
+       session_id: sessionId,
+       version: 0,
+       label: 'Baseline: 12 Forhåndsinngåtte Kontrakter',
+       snapshot_type: 'baseline',
+       budget_committed: 39000000000, // 390 MNOK in øre
+       budget_available: 31000000000, // 310 MNOK in øre
+       budget_total: 70000000000, // 700 MNOK in øre
+       contract_wbs_id: null,
+       contract_cost: null,
+       contract_duration: null,
+       contract_supplier: null,
+       project_end_date: baselineTimeline.projectEndDate,
+       days_before_deadline: baselineTimeline.daysBeforeDeadline,
+       gantt_state: baselineTimeline,
+       precedence_state: baselineTimeline,
+       timestamp: new Date().toISOString(),
+       created_at: new Date().toISOString(),
+     };
+   }
+   ```
+
+2. **Modify loadSnapshots()** to prepend virtual baseline:
+   ```typescript
+   async function loadSnapshots(offset: number, limit: number) {
+     // Load database snapshots
+     const data = await fetchSnapshotsFromAPI();
+
+     // If first load, add virtual baseline at the beginning
+     if (offset === 0) {
+       const baseline = createBaselineSnapshot();
+       setSnapshots([baseline, ...data.snapshots]);
+       setSelectedSnapshot(baseline); // Show baseline by default
+     } else {
+       setSnapshots(prev => [...prev, ...data.snapshots]);
+     }
+
+     setTotalCount(data.total_count + 1); // +1 for virtual baseline
+   }
+   ```
+
+3. **Update snapshot card styling** to distinguish baseline:
+   - Use blue color for baseline badge (vs green for contracts)
+   - Show "Versjon 0" prominently
+   - Display "12 låste pakker" instead of contract details
+
+4. **Test baseline visualization**:
+   - [ ] Baseline appears as first item in timeline sidebar
+   - [ ] Baseline is selected by default when opening history panel
+   - [ ] Overview tab shows correct budget values (390/310/700 MNOK)
+   - [ ] Gantt tab renders 12 locked contracts with correct timeline
+   - [ ] Precedence tab shows baseline network with ES/EF/LS/LF values
+   - [ ] Baseline snapshot doesn't interfere with contract snapshots
+
+**Files to Modify:**
+- `frontend/components/history-panel.tsx` - Add baseline snapshot generation and prepend logic
+- `frontend/lib/timeline-calculator.ts` - Ensure calculateTimeline works with locked items only
+
+**Benefits:**
+- Users see clear starting point (12 pre-negotiated contracts)
+- History timeline shows complete project evolution from baseline to current state
+- No database storage needed (calculated on-demand from wbs.json)
+- Consistent with design decision to keep baseline out of database
 
 ---
 
@@ -234,7 +332,54 @@ All other remaining items are nice-to-have enhancements (including future admini
 
 ## ✅ MVP Completion Checklist - Acceptance Flows
 
-**Note:** Baseline snapshot removed from database for simplicity and security. Frontend calculates baseline state from wbs.json on-demand (12 locked contracts showing starting situation: 390 MNOK committed, 310 MNOK available). Only contract acceptances create database snapshots.
+**Note:** Baseline snapshot removed from database for simplicity and security. Frontend calculates baseline state from wbs.json on-demand (12 locked contracts showing starting situation: 390 MNOK committed, 310 MNOK available). Frontend creates "virtual" baseline snapshot displayed as version 0 in history panel. Only contract acceptances create database snapshots.
+
+---
+
+### **Phase 0: Add Baseline Snapshot to History Panel (1-2 hours)**
+
+#### 0.1 Create Virtual Baseline Snapshot (1 hour)
+- [ ] **Add createBaselineSnapshot() function** (`frontend/components/history-panel.tsx`)
+  - [ ] Filter locked items from wbsItems: `const lockedItems = wbsItems.filter(item => item.is_locked)`
+  - [ ] Calculate baseline timeline: `const baselineTimeline = calculateTimeline(lockedItems, [])`
+  - [ ] Return Snapshot object with:
+    - [ ] `id: 'baseline-virtual'`
+    - [ ] `version: 0`
+    - [ ] `label: 'Baseline: 12 Forhåndsinngåtte Kontrakter'`
+    - [ ] `snapshot_type: 'baseline'`
+    - [ ] `budget_committed: 39000000000` (390 MNOK in øre)
+    - [ ] `budget_available: 31000000000` (310 MNOK in øre)
+    - [ ] `budget_total: 70000000000` (700 MNOK in øre)
+    - [ ] `gantt_state: baselineTimeline`
+    - [ ] `precedence_state: baselineTimeline`
+    - [ ] All contract fields set to null
+
+#### 0.2 Modify loadSnapshots() to Include Baseline (30 min)
+- [ ] **Update loadSnapshots() function** (`frontend/components/history-panel.tsx`)
+  - [ ] Check if `offset === 0` (first load)
+  - [ ] If first load, create baseline: `const baseline = createBaselineSnapshot()`
+  - [ ] Prepend baseline to snapshots: `setSnapshots([baseline, ...data.snapshots])`
+  - [ ] Set baseline as default selection: `setSelectedSnapshot(baseline)`
+  - [ ] Increment total count: `setTotalCount(data.total_count + 1)`
+  - [ ] If not first load (pagination), append normally without baseline
+
+#### 0.3 Update Snapshot Card Styling for Baseline (30 min)
+- [ ] **Distinguish baseline in timeline sidebar** (`history-panel.tsx`)
+  - [ ] Check `snapshot.snapshot_type === 'baseline'` in map function
+  - [ ] Use blue badge color for baseline (vs green for contracts)
+  - [ ] Show "Versjon 0" prominently
+  - [ ] Display "12 låste pakker" instead of contract details
+  - [ ] Add baseline icon or visual indicator
+
+#### 0.4 Test Baseline Visualization (30 min)
+- [ ] **Verify baseline appears correctly**
+  - [ ] Open history panel → baseline appears as first item
+  - [ ] Baseline is auto-selected on panel open
+  - [ ] Overview tab shows: 390 MNOK committed, 310 MNOK available, 700 MNOK total
+  - [ ] Gantt tab renders 12 locked contracts with correct timeline
+  - [ ] Precedence tab shows baseline network with ES/EF/LS/LF values
+  - [ ] Click on contract snapshot (version 1+) → switches correctly
+  - [ ] Pagination works → baseline doesn't duplicate on "Load More"
 
 ---
 
@@ -368,34 +513,45 @@ All other remaining items are nice-to-have enhancements (including future admini
 
 ---
 
-### **Phase 3: Polish History Panel (1-2 hours)**
+### **Phase 3: Polish History Panel UX (Optional - Nice to Have)**
 
-- [ ] **Improve snapshot card design**
+**Note:** Most critical history panel work completed in Phase 0 (baseline snapshot). These are UX enhancements.
+
+- [ ] **Improve snapshot card design** (30 min)
   - [ ] Better visual hierarchy (larger version badge, clearer icons)
-  - [ ] Color coding: Baseline (blue), Contract (green), Budget Revision (gold)
-  - [ ] Hover effects and smooth transitions
-- [ ] **Enhance pagination UX**
+  - [ ] Enhanced hover effects and smooth transitions
+  - [ ] Better spacing and typography
+- [ ] **Enhance pagination UX** (30 min)
   - [ ] Add loading spinner when fetching more snapshots
   - [ ] Smooth scroll animation when new snapshots load
   - [ ] "Loading..." state on "Load More" button
   - [ ] Disable button when no more snapshots
-- [ ] **Add filters/search (optional)**
+- [ ] **Add filters/search** (1 hour - optional)
   - [ ] Filter by snapshot type (All, Baseline, Contracts, Budget Revisions)
   - [ ] Search by WBS ID or supplier name
-- [ ] **Responsive improvements**
+  - [ ] Clear filters button
+- [ ] **Responsive improvements** (1 hour - optional)
   - [ ] Stack timeline sidebar on mobile (full width)
   - [ ] Collapse snapshot details on small screens
+  - [ ] Touch-friendly interactions
 
 ---
 
-### **Phase 4: Update Timeline Estimates**
+### **Phase 4: Updated Timeline Estimates**
 
-**Updated MVP Timeline:**
-- Dependency Validation: 2-3 hours
-- Timeline Validation: 3-4 hours
-- Owner Budget Revision: 6-8 hours
-- History Panel Polish: 1-2 hours
-- **Total to MVP: 12-17 hours**
+**Updated MVP Timeline (Critical Path to Completion):**
+- Phase 0: Baseline Snapshot: 1-2 hours
+- Phase 1: Dependency Validation: 2-3 hours
+- Phase 1: Timeline Validation: 3-4 hours
+- Phase 2: Owner Budget Revision: 6-8 hours
+- **Total to MVP: 12-17 hours** → **10-15 hours** (reduced due to chat history fix completed Dec 23)
+
+**Nice to Have (Post-MVP):**
+- Phase 3: History Panel UX Polish: 2-3 hours
+- Renegotiation/Uncommit: 3-4 hours
+- Export UI: 2-3 hours
+- Agent Timeout UI: 3 hours
+- **Total Nice to Have: 10-13 hours**
 
 ---
 
@@ -826,67 +982,69 @@ All other remaining items are nice-to-have enhancements (including future admini
 - **Phase 0 (Discovery & Analysis):** ✅ 100% Complete (8/8 tasks)
 - **Phase 1 (Planning):** ✅ 100% Complete (5/5 tasks)
 - **Phase 2 (Solutioning):** ✅ 100% Complete (8/8 tasks)
-- **Phase 3 (Implementation):** ✅ ~90% Complete (10/10 Sprint 1 tasks, 4.2/5 Sprint 2-5 themes - visualizations complete, vendor contract acceptance complete, owner budget revision not yet implemented)
+- **Phase 3 (Implementation):** ✅ ~92% Complete (10/10 Sprint 1 tasks, 4.5/5 Sprint 2-5 themes - visualizations complete, vendor contract acceptance complete, chat history fixed, owner budget revision not yet implemented)
 - **Phase 4 (Testing):** ⏸️ Not Started (0/6 test categories)
 - **Phase 5 (Deployment):** ⏸️ Not Started (0/4 deployment tasks)
 
-**Key Achievements:**
+**Key Achievements (Updated December 23, 2025):**
 - ✅ Sprint 1 foundation 100% complete
 - ✅ All 4 AI agent prompts fully documented (682 lines) and integrated with Gemini API
 - ✅ Complete WBS and agent data files (wbs.json, agents.json)
 - ✅ Database schema created (6 tables including session_snapshots, RLS policies, triggers)
-- ✅ Backend API fully operational (14 endpoints including snapshots, Gemini service, auth)
+- ✅ Backend API fully operational (14 endpoints including snapshots, Gemini service, auth with RLS-enforced client)
 - ✅ Dashboard with 3-tier budget visualization
 - ✅ Full AI negotiation loop (chat, offer detection, accept/reject, persistence)
+- ✅ **Chat history persistence** - Fixed critical bug with session resumption (Dec 23, 2025)
 - ✅ **Vendor contract acceptance fully implemented** - 12-step data flow from UI to database with validation
 - ✅ **Automatic snapshot system** - Creates snapshots on contract acceptance with complete timeline data
 - ✅ **History Panel with Gantt/Precedence reconstruction** - Renders snapshots with full ES/EF/LS/LF data
 - ✅ **Gantt Chart & Precedence Diagram** - Full visualizations with critical path, shared timeline calculator
 - ✅ Auth system fully functional
 - ✅ Design system with comprehensive color palette
-- ✅ 50+ documentation files
-- ✅ Fixed critical issue with session resumption and chat history loading
+- ✅ 50+ documentation files including detailed baseline snapshot implementation guide
 
 **Remaining Gaps (MVP Completion):**
 1. ✅ **Session Completion Flow** - COMPLETE with results summary page
 2. ✅ **Database Import Verification** - COMPLETE, all tables working
 3. ✅ **Visualizations** - COMPLETE, Gantt and Precedence fully functional
 4. ✅ **Vendor Contract Acceptance** - COMPLETE, full 12-step flow with snapshots
-5. ❌ **Owner Perspective Budget Revision** - NOT IMPLEMENTED (no UI, no endpoint, no snapshots) (6-8 hours)
-6. 🟡 **History Panel Polish** - Core working, needs UX polish (1-2 hours)
-7. ❌ **Dependency Validation** - NOT IMPLEMENTED, can commit without prerequisites (2-3 hours)
-8. ❌ **Timeline Validation** - NOT IMPLEMENTED, can accept late-making offers (3-4 hours)
+5. ✅ **Chat History Persistence** - COMPLETE, fixed session resumption bug (Dec 23, 2025)
+6. ❌ **Baseline Snapshot in History Panel** - NOT IMPLEMENTED, need virtual snapshot showing 12 locked contracts (1-2 hours)
+7. ❌ **Owner Perspective Budget Revision** - NOT IMPLEMENTED (no UI, no endpoint, no snapshots) (6-8 hours)
+8. ❌ **Dependency Validation** - NOT IMPLEMENTED, can commit without prerequisites (2-3 hours)
+9. ❌ **Timeline Validation** - NOT IMPLEMENTED, can accept late-making offers (3-4 hours)
 
 **Nice to Have (If Time Permits):**
-9. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
-10. ❌ **Export Functionality** - Session export endpoint exists but needs frontend UI (2-3 hours)
-11. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
-12. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
-13. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
-14. ❌ **Administration Panel** - Teacher dashboard to view all student sessions/results from database (12-16 hours)
-15. ❌ **Automated Testing** - No unit/integration/E2E test suite (40+ hours)
+10. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
+11. ❌ **Export Functionality** - Session export endpoint exists but needs frontend UI (2-3 hours)
+12. 🟡 **History Panel UX Polish** - Core working, optional enhancements (2-3 hours)
+13. ⏸️ **Agent Timeout UI** - Visual countdown for 6-disagreement timeout (3 hours)
+14. ⏸️ **Mobile Responsiveness** - Desktop-first, limited mobile support (8-12 hours)
+15. ⏸️ **Help Documentation Modal** - In-app help system (1-2 hours)
+16. ❌ **Administration Panel** - Teacher dashboard to view all student sessions/results from database (12-16 hours)
+17. ❌ **Automated Testing** - No unit/integration/E2E test suite (40+ hours)
 
-**Next Priority Actions (Critical for MVP - 12-17 hours total):**
-1. **Add Dependency Validation** (2-3 hours)
+**Next Priority Actions (Critical for MVP - 10-15 hours total):**
+1. **Add Baseline Snapshot to History Panel** (1-2 hours)
+   - Frontend: Create virtual baseline snapshot from wbs.json locked items
+   - Show as version 0 in timeline sidebar with 12 locked contracts
+   - Gantt/Precedence tabs render baseline timeline
+   - See detailed checklist in Phase 0 of "MVP Completion Checklist" section
+2. **Add Dependency Validation** (2-3 hours)
    - Backend: Check prerequisites before allowing commitment
    - Prevents unrealistic sequences (e.g., building without foundation)
-   - See detailed checklist in "MVP Completion Checklist" section
-2. **Add Timeline Validation** (3-4 hours)
+   - See detailed checklist in Phase 1 of "MVP Completion Checklist" section
+3. **Add Timeline Validation** (3-4 hours)
    - Backend: Calculate timeline impact before commitment
    - Block offers that would make project late
    - Force negotiation or owner deadline extension
-   - See detailed checklist in "MVP Completion Checklist" section
-3. **Implement Owner Perspective Budget Revision Acceptance** (6-8 hours)
+   - See detailed checklist in Phase 1 of "MVP Completion Checklist" section
+4. **Implement Owner Perspective Budget Revision Acceptance** (6-8 hours)
    - Frontend: BudgetRevisionOfferBox component
    - Backend: POST /budget-revision endpoint
    - Database: Budget revision snapshot creation
    - History Panel: Display budget revision snapshots
-   - See detailed checklist in "MVP Completion Checklist" section
-4. **Polish History Panel UX** (1-2 hours)
-   - Improve snapshot card design and information hierarchy
-   - Enhance pagination UX (loading states, smooth animations)
-   - Add filters/search for snapshots
-   - See detailed checklist in "MVP Completion Checklist" section
+   - See detailed checklist in Phase 2 of "MVP Completion Checklist" section
 
 ---
 
