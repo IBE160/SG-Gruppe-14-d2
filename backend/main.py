@@ -439,7 +439,8 @@ def create_session(
     Create a new game session.
 
     Initializes a new game session with default budget values and settings.
-    Automatically creates a baseline snapshot (Version 0) showing the starting state.
+    Note: Baseline state is calculated on-demand by frontend from wbs.json.
+    Snapshots are only created when contracts are accepted.
 
     Args:
         request: CreateSessionRequest with budget parameters
@@ -470,19 +471,10 @@ def create_session(
             )
 
         session = response.data[0]
-        session_id = session["id"]
 
-        # Auto-create baseline snapshot (Version 0)
-        try:
-            db.rpc("create_baseline_snapshot", {
-                "p_session_id": session_id,
-                "p_project_end_date": "2025-08-30",
-                "p_days_before_deadline": 258
-            }).execute()
-            print(f"Created baseline snapshot for session {session_id}")
-        except Exception as snapshot_error:
-            print(f"Warning: Could not create baseline snapshot: {snapshot_error}")
-            # Don't fail the request if snapshot creation fails
+        # Note: Baseline snapshot is NOT created in database
+        # Frontend calculates baseline state from wbs.json (12 locked contracts)
+        # Only contract acceptance creates database snapshots
 
         return SessionResponse(**session)
 
@@ -490,9 +482,11 @@ def create_session(
         raise
     except Exception as e:
         print(f"Error creating session: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(
             status_code=500,
-            detail=f"En feil oppstod ved opprettelse av spillsesjon: {str(e)}"
+            detail=f"Error creating session: {str(e)}"
         )
 
 

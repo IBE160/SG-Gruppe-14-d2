@@ -170,7 +170,9 @@ EXECUTE FUNCTION public.enforce_snapshot_limit();
 CREATE OR REPLACE FUNCTION public.create_baseline_snapshot(
     p_session_id UUID,
     p_project_end_date DATE DEFAULT '2025-08-30',
-    p_days_before_deadline INTEGER DEFAULT 258
+    p_days_before_deadline INTEGER DEFAULT 258,
+    p_gantt_state JSONB DEFAULT '{}'::jsonb,
+    p_precedence_state JSONB DEFAULT '{}'::jsonb
 )
 RETURNS UUID AS $$
 DECLARE
@@ -207,8 +209,8 @@ BEGIN
         NULL,
         p_project_end_date,
         p_days_before_deadline,
-        '{}'::jsonb,  -- Empty gantt state (will be populated by frontend)
-        '{}'::jsonb   -- Empty precedence state
+        p_gantt_state,      -- Timeline data for Gantt chart
+        p_precedence_state  -- Timeline data for Precedence diagram
     )
     RETURNING id INTO v_snapshot_id;
 
