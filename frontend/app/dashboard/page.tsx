@@ -119,8 +119,12 @@ export default function DashboardPage() {
         setSession(newSession);
       }
     } catch (err: any) {
-      console.error('Dashboard load error:', err);
-      setError(err.message || 'Kunne ikke laste dashboard');
+      if (err.message.includes('Ikke autentisert')) {
+        router.push('/auth/login');
+      } else {
+        console.error('Dashboard load error:', err);
+        setError(err.message || 'Kunne ikke laste dashboard');
+      }
     } finally {
       setIsLoading(false);
     }
