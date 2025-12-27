@@ -161,21 +161,25 @@ export async function createCommitment(
   });
 
   if (!response.ok) {
-    // Handle budget exceeded error
-    if (response.status === 400) {
-      const errorData = await response.json().catch(() => ({}));
-      if (errorData.detail?.includes('budsjett')) {
-        throw {
-          code: 'BUDGET_EXCEEDED',
-          message: errorData.detail,
-        };
-      }
+    const errorData = await response.json().catch(() => ({ detail: 'Ukjent feil ved parsing av feilmelding.' }));
+    const detail = errorData.detail;
+
+    // Handle FastAPI validation errors (array of objects)
+    if (Array.isArray(detail)) {
+      const message = detail.map(d => d.msg || 'Ukjent valideringsfeil').join('; ');
+      throw new Error(message);
     }
 
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(
-      errorData.detail || errorData.message || 'Kunne ikke opprette forpliktelse.'
-    );
+    // Handle simple string errors
+    if (typeof detail === 'string') {
+      // Special handling for budget error to throw a structured object
+      if (detail.includes('budsjett') || detail.includes('forsinkelse')) {
+        throw { code: 'VALIDATION_ERROR', message: detail };
+      }
+      throw new Error(detail);
+    }
+    
+    throw new Error(errorData.message || 'Kunne ikke opprette forpliktelse.');
   }
 
   const data: CreateCommitmentResponse = await response.json();

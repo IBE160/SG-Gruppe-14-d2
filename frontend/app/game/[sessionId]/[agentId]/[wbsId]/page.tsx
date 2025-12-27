@@ -102,7 +102,8 @@ export default function GamePage() {
         negotiated_cost: offer.cost,
         committed_cost: offer.cost,
         baseline_duration: wbsElement.baseline_duration,
-        negotiated_duration: offer.duration,
+        negotiated_duration: offer.duration, // This is in days
+        committed_duration: offer.duration, // This is in days
         quality_level: offer.quality_level as 'standard' | 'budget' | 'premium' | undefined,
       });
 
@@ -119,10 +120,12 @@ export default function GamePage() {
         window.location.href = '/dashboard';
       }, 2000);
     } catch (err: any) {
-      if (err.code === 'BUDGET_EXCEEDED') {
-        alert(`⚠ BUDSJETTOVERSKRIDELSE\n\n${err.message}\n\nDu må avslå tilbudet og forhandle videre.`);
+      // Handle structured errors like { code, message } which are non-fatal to the page
+      if (err.code === 'VALIDATION_ERROR') {
+        alert(`⚠ Handling Blokkert\n\n${err.message}`);
       } else {
-        setError(err.message || 'Kunne ikke godta tilbud');
+        // Handle generic or fatal errors by showing the error screen
+        setError(err.message || 'En ukjent feil oppstod. Prøv igjen.');
       }
     }
   }

@@ -140,28 +140,49 @@ class SessionResponse(BaseModel):
 
 class CreateCommitmentRequest(BaseModel):
     """Request model for creating a WBS commitment"""
-    wbs_id: str  # "1.3.1", "1.3.2", or "1.4.1"
-    committed_price: float
-    committed_duration_weeks: int
-    baseline_price: float
-    baseline_duration_weeks: int
-    negotiated_scope: Optional[str] = None
+    wbs_id: str
+    wbs_name: str
+    agent_id: str
+    baseline_cost: float
+    negotiated_cost: float
+    committed_cost: float
+    baseline_duration: float # This is in weeks from the frontend
+    negotiated_duration: float # This is in weeks from the frontend
+    committed_duration: float # This is in weeks from the frontend
+    quality_level: Optional[str] = None
 
 
 class CommitmentResponse(BaseModel):
-    """Response model for commitment data"""
+    """Response model for commitment data - MUST MATCH DB a little closer"""
     id: str
     session_id: str
     wbs_id: str
-    committed_price: float
-    committed_duration_weeks: int
-    baseline_price: float
-    baseline_duration_weeks: int
+    
+    # Corrected field names to match database schema
+    committed_cost: float
+    committed_duration: float
+    baseline_cost: float
+    baseline_duration: float
+    quality_level: Optional[str] = None # Mapped from negotiated_scope
+    
+    # Existing fields that were correct
     savings: Optional[float]
     savings_percentage: Optional[float]
-    negotiated_scope: Optional[str]
     created_at: str
     updated_session: Optional[SessionResponse] = None
+
+    # Fields from DB that are not always returned but need to be here for validation
+    wbs_name: Optional[str] = None
+    wbs_category: Optional[str] = None
+    agent_id: Optional[str] = None
+    agent_name: Optional[str] = None
+    negotiated_cost: Optional[float] = None
+    negotiated_duration: Optional[float] = None
+    status: Optional[str] = None
+    user_reasoning: Optional[str] = None
+    scope_changes: Optional[str] = None
+    committed_at: Optional[str] = None
+    updated_at: Optional[str] = None
 
 
 
@@ -241,7 +262,7 @@ app = FastAPI(
 # --- CORS Middleware ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -472,9 +493,67 @@ def create_session(
 
         session = response.data[0]
 
-        # Note: Baseline snapshot is NOT created in database
-        # Frontend calculates baseline state from wbs.json (12 locked contracts)
-        # Only contract acceptance creates database snapshots
+        # --- Baseline snapshot creation logic ---
+        try:
+            import json
+            from pathlib import Path
+
+            wbs_file_path = Path(__file__).parent / "data" / "wbs.json"
+            with open(wbs_file_path, 'r', encoding='utf-8') as f:
+                wbs_data = json.load(f)
+
+            wbs_items = wbs_data.get('wbs_elements', [])
+            
+            # Filter for the 12 non-negotiable WBS items
+            locked_wbs_items = [item for item in wbs_items if not item.get("is_negotiable", False)]
+
+            # Prepare "commitments" for the critical path calculation based on locked items
+            locked_commitments_for_timeline = []
+            for item in locked_wbs_items:
+                locked_commitments_for_timeline.append({
+                    "wbs_item_id": item["id"],
+                    "duration": item.get("locked_duration", 0), # Use locked_duration for baseline
+                    "cost": item.get("locked_cost", 0) # Also include cost for completeness
+                })
+
+            # Calculate the initial timeline based on the locked commitments
+            baseline_timeline = calculate_critical_path(
+                wbs_items=wbs_items,
+                commitments=locked_commitments_for_timeline,
+                start_date="2025-01-15",
+                deadline="2026-05-15"
+            )
+
+            # Calculate project end date and days before deadline
+            project_end_date = baseline_timeline.get("projected_completion_date", "2025-09-29")
+            from datetime import datetime
+            deadline_dt = datetime.strptime("2026-05-15", "%Y-%m-%d")
+            project_dt = datetime.strptime(project_end_date, "%Y-%m-%d")
+            days_before_deadline = (deadline_dt - project_dt).days
+            
+            # Extract committed budget from the request, convert to øre
+            baseline_budget_committed = int(request.locked_budget * 100) # Assuming locked_budget is the committed for baseline
+            baseline_budget_available = int(request.available_budget * 100)
+            baseline_budget_total = int(request.total_budget * 100)
+
+            # Call the database RPC to create the baseline snapshot
+            db.rpc("create_baseline_snapshot", {
+                "p_session_id": session["id"],
+                "p_budget_committed": baseline_budget_committed,
+                "p_budget_available": baseline_budget_available,
+                "p_budget_total": baseline_budget_total,
+                "p_project_end_date": project_end_date,
+                "p_days_before_deadline": days_before_deadline,
+                "p_gantt_state": baseline_timeline, # Pass full timeline data
+                "p_precedence_state": baseline_timeline # Pass full timeline data
+            }).execute()
+            print(f"Created baseline snapshot for session {session['id']}")
+
+        except Exception as baseline_snapshot_error:
+            print(f"Warning: Could not create baseline snapshot: {baseline_snapshot_error}")
+            import traceback
+            traceback.print_exc()
+        # --- End Baseline snapshot creation logic ---
 
         return SessionResponse(**session)
 
@@ -659,25 +738,34 @@ def create_commitment(
             )
 
         # Calculate new total budget used
-        new_budget_used = current_budget_used + request.committed_price
+        new_budget_used = current_budget_used + request.committed_cost
 
         # Validate budget not exceeded
         if new_budget_used > available_budget:
             remaining = available_budget - current_budget_used
             raise HTTPException(
                 status_code=400,
-                detail=f"Budsjett overskredet. Gjenstående: {remaining:,.0f} NOK, Forsøk på forpliktelse: {request.committed_price:,.0f} NOK"
+                detail=f"Budsjett overskredet. Gjenstående: {remaining:,.0f} NOK, Forsøk på forpliktelse: {request.committed_cost:,.0f} NOK"
             )
 
-        # Create commitment
+        # Map request to the database schema
+        agent_name = get_agent_name(request.agent_id)
+        wbs_category_placeholder = "Bygging"
+
         commitment_data = {
             "session_id": session_id,
             "wbs_id": request.wbs_id,
-            "committed_price": request.committed_price,
-            "committed_duration_weeks": request.committed_duration_weeks,
-            "baseline_price": request.baseline_price,
-            "baseline_duration_weeks": request.baseline_duration_weeks,
-            "negotiated_scope": request.negotiated_scope,
+            "wbs_name": request.wbs_name,
+            "wbs_category": wbs_category_placeholder,
+            "agent_id": request.agent_id,
+            "agent_name": agent_name,
+            "baseline_cost": request.baseline_cost,
+            "negotiated_cost": request.negotiated_cost,
+            "committed_cost": request.committed_cost,
+            "baseline_duration": request.baseline_duration,
+            "negotiated_duration": request.negotiated_duration,
+            "committed_duration": request.committed_duration,
+            "quality_level": request.quality_level,
         }
 
         commitment_response = db.table("wbs_commitments")\
@@ -703,23 +791,19 @@ def create_commitment(
             from services.critical_path_service import calculate_critical_path
             import json
 
-            # Calculate updated budget values (in øre for database)
-            budget_committed = int(new_budget_used * 100)  # Convert NOK to øre
+            budget_committed = int(new_budget_used * 100)
             budget_available = int((available_budget - new_budget_used) * 100)
-            contract_cost = int(request.committed_price * 100)
+            contract_cost = int(request.committed_cost)
 
-            # Map WBS ID to supplier name
             supplier_map = {
                 "1.3.1": "Bjørn Eriksen AS",
-                "1.3.2": "Bjørn Eriksen AS",
-                "1.4.1": "Kari Andersen AS"
+                "1.3.2": "Kari Andersen AS",
+                "1.4.1": "Per Johansen AS"
             }
-            supplier = supplier_map.get(request.wbs_id, "Ukjent")
+            supplier = supplier_map.get(request.wbs_id, "Ukjent Leverandør")
 
-            # Convert weeks to days
-            duration_days = request.committed_duration_weeks * 7
+            duration_days = request.committed_duration
 
-            # Get all commitments for this session to calculate timeline
             all_commitments_response = db.table("wbs_commitments")\
                 .select("*")\
                 .eq("session_id", session_id)\
@@ -727,22 +811,19 @@ def create_commitment(
 
             all_commitments = all_commitments_response.data if all_commitments_response.data else []
 
-            # Load WBS data
             with open("data/wbs.json", "r", encoding="utf-8") as f:
                 wbs_data = json.load(f)
 
-            # Calculate critical path and timeline
             timeline = calculate_critical_path(
                 wbs_items=wbs_data["wbs_elements"],
                 commitments=[{
                     "wbs_item_id": c["wbs_id"],
-                    "duration": c.get("committed_duration_weeks", 0) * 7
+                    "duration": c.get("committed_duration", 0)
                 } for c in all_commitments],
                 start_date="2025-01-15",
                 deadline="2026-05-15"
             )
 
-            # Calculate project end date and days before deadline
             project_end_date = timeline.get("projected_completion_date", "2025-09-29")
             from datetime import datetime
             deadline_dt = datetime.strptime("2026-05-15", "%Y-%m-%d")
@@ -759,40 +840,44 @@ def create_commitment(
                 "p_budget_available": budget_available,
                 "p_project_end_date": project_end_date,
                 "p_days_before_deadline": days_before_deadline,
-                "p_gantt_state": timeline,  # Save full timeline data for Gantt
-                "p_precedence_state": timeline  # Save full timeline data for precedence diagram
+                "p_gantt_state": timeline,
+                "p_precedence_state": timeline
             }).execute()
             print(f"Created contract snapshot for WBS {request.wbs_id} in session {session_id}")
         except Exception as snapshot_error:
             print(f"Warning: Could not create contract snapshot: {snapshot_error}")
-            # Don't fail the request if snapshot creation fails
+            import traceback
+            traceback.print_exc()
 
-        # Fetch the updated session to return to the frontend
         updated_session_response = db.table("game_sessions").select("*").eq("id", session_id).single().execute()
         updated_session = SessionResponse(**updated_session_response.data) if updated_session_response.data else None
 
-        return CommitmentResponse(
-            **commitment_response.data[0],
-            updated_session=updated_session
-        )
-        # Fetch the updated session to return to the frontend
-        updated_session_response = db.table("game_sessions")\
-            .select("*")\
-            .eq("id", session_id)\
-            .single()\
-            .execute()
-            
-        updated_session = SessionResponse(**updated_session_response.data) if updated_session_response.data else None
-
-        return CommitmentResponse(
-            **commitment_response.data[0],
-            updated_session=updated_session
-        )
+        # The data from the DB uses different keys than the CommitmentResponse model expects.
+        # We need to manually map the fields.
+        db_commitment = commitment_response.data[0]
+        response_data = {
+            "id": db_commitment["id"],
+            "session_id": db_commitment["session_id"],
+            "wbs_id": db_commitment["wbs_id"],
+            "committed_cost": db_commitment["committed_cost"],
+            "committed_duration": db_commitment["committed_duration"],
+            "baseline_cost": db_commitment["baseline_cost"],
+            "baseline_duration": db_commitment["baseline_duration"],
+            "savings": db_commitment.get("savings"),
+            "savings_percentage": db_commitment.get("savings_percentage"),
+            "quality_level": db_commitment.get("quality_level"),
+            "created_at": db_commitment["created_at"],
+            "updated_session": updated_session
+        }
+        
+        return CommitmentResponse(**response_data)
 
     except HTTPException:
         raise
     except Exception as e:
         print(f"Error creating commitment: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(
             status_code=500,
             detail="En feil oppstod ved opprettelse av forpliktelse"

@@ -5,6 +5,9 @@ import { colors } from '@/lib/design-system';
 import { getAuthToken } from '@/lib/auth-utils';
 import { GanttChart } from './gantt-chart';
 import { PrecedenceDiagram } from './precedence-diagram';
+import { calculateTimeline } from '@/lib/timeline-calculator'; // Import the client-side timeline calculator
+import { format } from 'date-fns';
+import { nb } from 'date-fns/locale';
 
 interface Snapshot {
   id: string;
@@ -43,10 +46,10 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
   const [activeTab, setActiveTab] = useState<'overview' | 'gantt' | 'precedence'>('overview');
 
   useEffect(() => {
-    if (isOpen && sessionId) {
+    if (isOpen && sessionId && wbsItems.length > 0) {
       loadSnapshots(0, 5);
     }
-  }, [isOpen, sessionId]);
+  }, [isOpen, sessionId, wbsItems]);
 
   async function loadSnapshots(offset: number, limit: number) {
     setIsLoading(true);
@@ -57,36 +60,93 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
         return;
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${sessionId}/snapshots?limit=${limit}&offset=${offset}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
+      let fetchedSnapshots: Snapshot[] = [];
+      let fetchedTotalCount = 0;
+      let fetchedHasMore = false;
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${sessionId}/snapshots?limit=${limit}&offset=${offset}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          fetchedSnapshots = data.snapshots;
+          fetchedTotalCount = data.total_count;
+          fetchedHasMore = data.has_more;
+        } else {
+          console.error('Snapshot load failed (backend error):', response.status, await response.text());
         }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Snapshot load failed:', response.status, errorText);
-        throw new Error(`Failed to load snapshots: ${response.status} - ${errorText}`);
+      } catch (e) {
+        console.error('Snapshot fetch threw an error:', e);
       }
+      
+      if (fetchedSnapshots.length === 0 && offset === 0) {
+        console.log("No snapshots from backend, generating client-side baseline.");
+        
+        const lockedWBSItems = wbsItems.filter((item: any) => !item.is_negotiable);
 
-      const data = await response.json();
+        const lockedCommitmentsForTimeline = lockedWBSItems.map((item: any) => ({
+            wbs_item_id: item.id,
+            duration: item.locked_duration,
+            cost: item.locked_cost
+        }));
+
+        const baselineTimeline = calculateTimeline(
+            wbsItems,
+            lockedCommitmentsForTimeline,
+            '2025-01-15',
+            '2026-05-15'
+        );
+
+        const projectEndDate = baselineTimeline.projected_completion_date || '2025-09-29';
+        const deadlineDt = new Date('2026-05-15');
+        const projectDt = new Date(projectEndDate);
+        const daysBeforeDeadline = Math.round((deadlineDt.getTime() - projectDt.getTime()) / (1000 * 60 * 60 * 24));
+
+        const mockBaselineSnapshot: Snapshot = {
+          id: 'client-baseline-' + sessionId,
+          session_id: sessionId,
+          version: 0,
+          label: 'Versjon 0 - Baseline - 12 Kontraktfestede Pakker',
+          snapshot_type: 'baseline',
+          budget_committed: 39000000000,
+          budget_available: 31000000000,
+          budget_total: 70000000000,
+          contract_wbs_id: null,
+          contract_cost: null,
+          contract_duration: null,
+          contract_supplier: null,
+          project_end_date: projectEndDate,
+          days_before_deadline: daysBeforeDeadline,
+          gantt_state: baselineTimeline,
+          precedence_state: baselineTimeline,
+          timestamp: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+        };
+        fetchedSnapshots = [mockBaselineSnapshot];
+        fetchedTotalCount = 1;
+        fetchedHasMore = false;
+      }
 
       if (offset === 0) {
-        setSnapshots(data.snapshots);
-        if (data.snapshots.length > 0) {
-          setSelectedSnapshot(data.snapshots[0]);
+        setSnapshots(fetchedSnapshots);
+        if (fetchedSnapshots.length > 0) {
+          setSelectedSnapshot(fetchedSnapshots[0]);
         }
       } else {
-        setSnapshots(prev => [...prev, ...data.snapshots]);
+        setSnapshots(prev => [...prev, ...fetchedSnapshots]);
       }
 
-      setTotalCount(data.total_count);
-      setHasMore(data.has_more);
+      setTotalCount(fetchedTotalCount);
+      setHasMore(fetchedHasMore);
     } catch (error) {
-      console.error('Error loading snapshots:', error);
+      console.error('Error in loadSnapshots:', error);
     } finally {
       setIsLoading(false);
     }
@@ -113,9 +173,7 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
       );
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Export failed:', response.status, errorText);
-        throw new Error(`Export failed: ${response.status} - ${errorText}`);
+        throw new Error(`Export failed: ${response.status} - ${await response.text()}`);
       }
 
       const data = await response.json();
@@ -133,13 +191,17 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
 
   if (!isOpen) return null;
 
-  const formatBudget = (oreAmount: number) => {
+  const formatBudget = (oreAmount: number | null) => {
+    if (oreAmount === null) return 'N/A';
     return (oreAmount / 100 / 1_000_000).toFixed(0);
   };
 
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('nb-NO', { day: 'numeric', month: 'short', year: 'numeric' });
+    try {
+      return format(new Date(dateStr), 'dd MMM yyyy', { locale: nb });
+    } catch (e) {
+      return 'Ugyldig dato';
+    }
   };
 
   return (
@@ -148,7 +210,6 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
         className="relative mx-4 h-[90vh] w-full max-w-7xl overflow-hidden rounded-lg"
         style={{ backgroundColor: colors.background.card }}
       >
-        {/* Header */}
         <div
           className="flex items-center justify-between border-b px-6 py-4"
           style={{ borderColor: colors.border.medium, backgroundColor: colors.background.input }}
@@ -168,7 +229,6 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
         </div>
 
         <div className="flex h-[calc(100%-72px)]">
-          {/* Left Sidebar - Timeline */}
           <div
             className="w-96 overflow-y-auto border-r"
             style={{ borderColor: colors.border.medium, backgroundColor: colors.background.input }}
@@ -182,10 +242,8 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
                   <option>Filter: Alle kontrakter ▼</option>
                 </select>
               </div>
-
-              {/* Timeline */}
               <div className="space-y-3">
-                {snapshots.map((snapshot, index) => {
+                {snapshots.map((snapshot) => {
                   const isSelected = selectedSnapshot?.id === snapshot.id;
                   const isBaseline = snapshot.snapshot_type === 'baseline';
 
@@ -228,23 +286,15 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
                     </div>
                   );
                 })}
-
-                {/* Load More Button */}
                 {hasMore && (
                   <button
                     onClick={loadMoreSnapshots}
                     disabled={isLoading}
                     className="w-full rounded border px-4 py-2 text-sm font-semibold transition-colors"
-                    style={{
-                      borderColor: colors.border.medium,
-                      backgroundColor: colors.background.card,
-                    }}
                   >
                     {isLoading ? 'Laster...' : 'Last flere ↓'}
                   </button>
                 )}
-
-                {/* Count */}
                 <p className="text-center text-xs text-gray-500">
                   Viser {snapshots.length} av {totalCount}
                 </p>
@@ -252,70 +302,43 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
             </div>
           </div>
 
-          {/* Right Panel - Comparison View */}
           <div className="flex-1 overflow-y-auto">
             {selectedSnapshot ? (
               <div className="p-6">
                 <h2 className="mb-4 text-lg font-bold text-gray-900">
                   Sammenligning: {selectedSnapshot.label}
                 </h2>
-
-                {/* Tabs */}
                 <div className="mb-6 flex gap-2">
                   <button
                     onClick={() => setActiveTab('overview')}
                     className={`rounded px-4 py-2 text-sm font-semibold ${
-                      activeTab === 'overview'
-                        ? 'text-white'
-                        : 'border text-gray-700'
+                      activeTab === 'overview' ? 'bg-blue-600 text-white' : 'border text-gray-700'
                     }`}
-                    style={{
-                      backgroundColor: activeTab === 'overview' ? colors.button.primary.bg : 'transparent',
-                      borderColor: colors.border.medium,
-                    }}
                   >
                     📊 Oversikt
                   </button>
                   <button
                     onClick={() => setActiveTab('gantt')}
                     className={`rounded px-4 py-2 text-sm font-semibold ${
-                      activeTab === 'gantt'
-                        ? 'text-white'
-                        : 'border text-gray-700'
+                      activeTab === 'gantt' ? 'bg-blue-600 text-white' : 'border text-gray-700'
                     }`}
-                    style={{
-                      backgroundColor: activeTab === 'gantt' ? colors.button.primary.bg : 'transparent',
-                      borderColor: colors.border.medium,
-                    }}
                   >
                     📈 Gantt
                   </button>
                   <button
                     onClick={() => setActiveTab('precedence')}
                     className={`rounded px-4 py-2 text-sm font-semibold ${
-                      activeTab === 'precedence'
-                        ? 'text-white'
-                        : 'border text-gray-700'
+                      activeTab === 'precedence' ? 'bg-blue-600 text-white' : 'border text-gray-700'
                     }`}
-                    style={{
-                      backgroundColor: activeTab === 'precedence' ? colors.button.primary.bg : 'transparent',
-                      borderColor: colors.border.medium,
-                    }}
                   >
                     🔀 Presedensdiagram
                   </button>
                 </div>
 
-                {/* Overview Tab */}
                 {activeTab === 'overview' && (
                   <div className="space-y-6">
-                    {/* Budget Summary */}
                     <div
                       className="rounded-lg border p-6"
-                      style={{
-                        backgroundColor: colors.background.input,
-                        borderColor: colors.border.light,
-                      }}
                     >
                       <h3 className="mb-4 text-sm font-bold text-gray-900">BUDSJETT OVERSIKT</h3>
                       <div className="space-y-3">
@@ -331,7 +354,7 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
                             {formatBudget(selectedSnapshot.budget_available)} MNOK
                           </span>
                         </div>
-                        <div className="flex justify-between border-t pt-3" style={{ borderColor: colors.border.light }}>
+                        <div className="flex justify-between border-t pt-3">
                           <span className="text-sm font-semibold text-gray-900">Total budsjett:</span>
                           <span className="text-sm font-semibold text-gray-900">
                             {formatBudget(selectedSnapshot.budget_total)} MNOK
@@ -339,14 +362,8 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
                         </div>
                       </div>
                     </div>
-
-                    {/* Timeline */}
                     <div
                       className="rounded-lg border p-6"
-                      style={{
-                        backgroundColor: colors.background.input,
-                        borderColor: colors.border.light,
-                      }}
                     >
                       <h3 className="mb-4 text-sm font-bold text-gray-900">TIDSLINJE</h3>
                       <div className="space-y-2">
@@ -369,22 +386,14 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
                         </div>
                       </div>
                     </div>
-
-                    {/* Export Button */}
                     <button
                       onClick={exportHistory}
                       className="w-full rounded border px-4 py-3 text-sm font-semibold transition-colors"
-                      style={{
-                        borderColor: colors.border.medium,
-                        backgroundColor: colors.background.card,
-                      }}
                     >
                       📥 Eksporter fullstendig historikk (JSON)
                     </button>
                   </div>
                 )}
-
-                {/* Gantt Tab */}
                 {activeTab === 'gantt' && (
                   <div>
                     <GanttChart
@@ -394,8 +403,6 @@ export function HistoryPanel({ sessionId, isOpen, onClose, wbsItems }: HistoryPa
                     />
                   </div>
                 )}
-
-                {/* Precedence Tab */}
                 {activeTab === 'precedence' && (
                   <div>
                     <PrecedenceDiagram

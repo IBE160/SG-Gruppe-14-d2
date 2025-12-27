@@ -126,6 +126,39 @@ export default function DashboardPage() {
     }
   }
 
+  async function handleStartNewSession() {
+    setIsLoading(true);
+    setError(null);
+    try {
+      // Mark current session as abandoned, if it exists
+      if (session) {
+        const token = await getAuthToken();
+        if (token) {
+          await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${session.id}`,
+            {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ status: 'abandoned' }),
+            }
+          );
+        }
+      }
+
+      // Create a new session and reload the page
+      await createSession();
+      window.location.reload();
+
+    } catch (err: any) {
+      console.error('Error starting new session:', err);
+      setError(err.message || 'Kunne ikke starte ny økt.');
+      setIsLoading(false);
+    }
+  }
+
   async function loadCommitmentsAndValidation() {
     if (!session) return;
 
@@ -241,11 +274,19 @@ export default function DashboardPage() {
           borderColor: colors.border.medium,
         }}
       >
-        <div className="mx-auto max-w-7xl px-6 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">PM Simulator</h1>
-          <p className="text-sm text-gray-600">
-            Boligutbyggingsprosjekt Fjordvik | Frist: 15. mai 2026
-          </p>
+        <div className="mx-auto max-w-7xl px-6 py-4 flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">PM Simulator</h1>
+            <p className="text-sm text-gray-600">
+              Boligutbyggingsprosjekt Fjordvik | Frist: 15. mai 2026
+            </p>
+          </div>
+          <button
+            onClick={handleStartNewSession}
+            className="px-4 py-2 text-sm font-semibold text-red-700 border border-red-300 rounded-md transition-colors hover:bg-red-50"
+          >
+            Start nytt spill
+          </button>
         </div>
       </header>
 

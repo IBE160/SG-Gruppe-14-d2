@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public.session_snapshots (
     -- Budget state (in øre for precision)
     budget_committed BIGINT NOT NULL CHECK (budget_committed >= 0),  -- e.g., 390000000 (390 MNOK)
     budget_available BIGINT NOT NULL CHECK (budget_available >= 0),  -- e.g., 310000000 (310 MNOK)
-    budget_total BIGINT NOT NULL DEFAULT 700000000 CHECK (budget_total = 700000000),  -- Always 700 MNOK
+    budget_total BIGINT NOT NULL DEFAULT 70000000000 CHECK (budget_total = 70000000000),  -- Always 700 MNOK (in øre)
 
     -- Contract details (null for baseline snapshots)
     contract_wbs_id VARCHAR(50),           -- "1.3.1", "1.3.2", etc.
@@ -169,6 +169,9 @@ EXECUTE FUNCTION public.enforce_snapshot_limit();
 
 CREATE OR REPLACE FUNCTION public.create_baseline_snapshot(
     p_session_id UUID,
+    p_budget_committed BIGINT,
+    p_budget_available BIGINT,
+    p_budget_total BIGINT,
     p_project_end_date DATE DEFAULT '2025-08-30',
     p_days_before_deadline INTEGER DEFAULT 258,
     p_gantt_state JSONB DEFAULT '{}'::jsonb,
@@ -200,9 +203,9 @@ BEGIN
         0,  -- Baseline is always version 0
         'Baseline - 12 Kontraktfestede Pakker',
         'baseline',
-        390000000,  -- 390 MNOK locked
-        310000000,  -- 310 MNOK available
-        700000000,  -- 700 MNOK total
+        p_budget_committed,
+        p_budget_available,
+        p_budget_total,
         NULL,       -- No contract for baseline
         NULL,
         NULL,

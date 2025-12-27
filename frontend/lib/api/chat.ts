@@ -236,10 +236,10 @@ export function formatCost(amount: number): string {
 }
 
 /**
- * Format duration in Norwegian
- * Example: 2.5 -> "2,5 måneder"
+ * Format duration in Norwegian (in days).
+ * Always displays the duration in days.
  */
-export function formatDuration(months: number): string {
-  const formatted = months.toString().replace('.', ',');
-  return `${formatted} måneder`;
+export function formatDuration(days: number): string {
+  if (days === 0) return "0 dager";
+  return `${days} ${days === 1 ? 'dag' : 'dager'}`;
 }
