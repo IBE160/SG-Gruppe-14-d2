@@ -63,45 +63,29 @@ def get_db_client(token: HTTPAuthorizationCredentials = Depends(auth_scheme)) ->
 
 def get_current_user(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     """
-    Verifies the JWT token locally using Supabase's public keys (JWKS).
-    This is more efficient than calling the Supabase API for every request.
+    Verifies the JWT token using the official Supabase client.
+    Returns the user's data if the token is valid.
     """
     try:
-        jwks = get_jwks()
-        unverified_header = jwt.get_unverified_header(token.credentials)
-        rsa_key = {}
-        for key in jwks["keys"]:
-            if key["kid"] == unverified_header["kid"]:
-                rsa_key = {
-                    "kty": key["kty"],
-                    "kid": key["kid"],
-                    "use": key["use"],
-                    "n": key["n"],
-                    "e": key["e"],
-                }
-        if not rsa_key:
-            raise HTTPException(status_code=401, detail="Unable to find appropriate key")
-
-        payload = jwt.decode(
-            token.credentials,
-            rsa_key,
-            algorithms=["RS256"],
-            audience="authenticated",
-            issuer=f"{settings.SUPABASE_URL}/auth/v1",
-        )
+        # Use the official Supabase client to verify the user
+        # This makes a network call to Supabase Auth API to ensure the token is valid and not revoked
+        user_response = supabase.auth.get_user(token.credentials)
         
+        if not user_response or not user_response.user:
+             raise HTTPException(status_code=401, detail="Invalid token: User not found")
+
+        user = user_response.user
+        
+        # Construct the user dictionary expected by the endpoints
         return {
-            "id": payload.get("sub"),
-            "email": payload.get("email"),
-            "role": payload.get("role")
+            "id": user.id, 
+            "email": user.email, 
+            "role": user.role
         }
 
-    except JWTError as e:
-        print(f"Auth Error (JWT Decode): {str(e)}")
-        raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
     except Exception as e:
-        print(f"Auth Error (General): {str(e)}")
-        raise HTTPException(status_code=401, detail=f"Invalid token: {e}")
+        print(f"Auth Error (Supabase Client): {str(e)}")
+        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
 
 
 # --- Pydantic Models ---
