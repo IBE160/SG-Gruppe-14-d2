@@ -7,40 +7,52 @@
 
 ---
 
-## 📊 Executive Summary (Updated: December 27, 2025)
+## 📊 Executive Summary (Updated: December 28, 2025)
 
 ### Project Status: **MVP-READY - 94% COMPLETE** ✅
 
-The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, automatic snapshot system, and history panel with timeline reconstruction. **Vendor contract acceptance is fully implemented** with complete 12-step data flow from UI to database to snapshots. **Chat history persistence is now fixed** - sessions correctly load conversation history when switching between agents. **Baseline snapshot is now visible** via a client-side workaround.
+The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, and a stable offer acceptance flow. **Baseline snapshot is now visible** via a client-side workaround. The core application is stable.
 
 **Only 3 critical features remain for MVP (9-13 hours total):**
 1. Owner perspective budget revision acceptance (6-8 hours)
 2. Dependency validation - enforce prerequisite order (2-3 hours)
 3. Timeline validation - prevent deadline violations (3-4 hours)
 
-All other remaining items are nice-to-have enhancements (including future administration panel for teachers).
+All other remaining items are nice-to-have enhancements.
+
+---
+
+### ⚠️ Known Issues
+
+1.  **Local Network Environment Error:**
+    *   **Symptom:** Some users on specific Windows machines may experience an authentication error (`Invalid token: [WinError 10035]...` or `Invalid token: Server disconnected`).
+    *   **Cause:** This is a local environmental issue on the user's machine that blocks the Python backend's outbound network requests to the Supabase authentication server. It is not a bug in the application code itself.
+    *   **Status:** The main codebase uses the correct and most robust authentication method (`supabase.auth.get_user()`). The issue must be resolved locally by the affected user (e.g., by checking firewalls, proxies, or network configurations). The application works correctly for team members without this specific network issue.
+
+---
 
 ### What's Working ✅
 
 **Complete & Operational:**
-1. ✅ **User Authentication** - Full Supabase auth with email/password, registration, login, password reset, protected routes
-2. ✅ **Dashboard** - 3-tier budget visualization (310/390/700 MNOK), WBS package listing, agent panels, tabbed interface
-3. ✅ **AI Negotiation** - Real-time chat with 4 AI agents using Gemini 2.5 Flash, context injection, Norwegian responses
-4. ✅ **Offer Management** - Automatic regex-based offer detection, accept/reject buttons, budget impact preview
-5. ✅ **Budget Tracking** - Real-time updates, validation (≤700 MNOK), duplicate prevention, tier calculations
-6. ✅ **Data Persistence** - Sessions, commitments, and negotiation history saved with RLS policies enforced
-7. ✅ **Chat History Persistence** - Fixed session resumption bug, conversations now correctly load when switching between agents (Dec 23, 2025)
-8. ✅ **Backend API** - 14 RESTful endpoints, JWT auth, proper error handling, Norwegian error messages, authenticated db client for all session operations
-9. ✅ **Design System** - Professional UI with Tailwind CSS, Shadcn components, complete color palette
-10. ✅ **Static Data** - Complete WBS (15 items) and agent configs (4 agents) with full metadata
-11. ✅ **Documentation** - 50+ comprehensive docs (PRD v2.2, architecture, test plans, troubleshooting, UX specs)
-12. ✅ **Critical Path Algorithm** - Full CPM implementation (ES/EF/LS/LF, slack time, critical path identification)
-13. ✅ **Database Schema** - 6 tables with triggers, RLS policies, computed columns, indexes, snapshot system
-14. ✅ **Session Completion Flow** - Implemented completion page with results summary and success/error modals
-15. ✅ **Gantt Chart** - Fully functional timeline visualization with critical path highlighting, dependency arrows, and dynamic date calculations based on commitments
-16. ✅ **Precedence Diagram (AON)** - Complete Activity-on-Node network with ReactFlow, ES/EF/LS/LF display, slack calculations, persistent layout (saves positions to localStorage), and reset functionality
-17. ✅ **Shared Timeline Calculator** - Single source of truth for time calculations across all visualizations, dynamically updates based on committed/locked/baseline durations
-18. ✅ **Backend Validation Endpoint** - Fixed /validate endpoint, correctly loads WBS data and provides timeline calculations
+1. ✅ **Core Application Stability** - The main user flow, from login and session creation to negotiation and offer acceptance, is now stable after extensive debugging.
+2. ✅ **User Authentication** - Full Supabase auth with email/password, registration, login, password reset, protected routes. The code uses the correct API-based validation.
+3. ✅ **Dashboard** - 3-tier budget visualization (310/390/700 MNOK), WBS package listing, agent panels, tabbed interface.
+4. ✅ **AI Negotiation** - Real-time chat with 4 AI agents using Gemini 2.5 Flash, context injection, Norwegian responses.
+5. ✅ **Offer Management** - Automatic regex-based offer detection, accept/reject buttons, budget impact preview.
+6. ✅ **Budget Tracking** - Real-time updates, validation (≤700 MNOK), duplicate prevention, tier calculations.
+7. ✅ **Data Persistence** - Sessions, commitments, and negotiation history saved with RLS policies enforced.
+8. ✅ **Chat History Persistence** - Fixed session resumption bug, conversations now correctly load when switching between agents.
+9. ✅ **Backend API** - 14 RESTful endpoints, JWT auth, proper error handling, Norwegian error messages.
+10. ✅ **Design System** - Professional UI with Tailwind CSS, Shadcn components, complete color palette.
+11. ✅ **Static Data** - Complete WBS (15 items) and agent configs (4 agents) with full metadata.
+12. ✅ **Documentation** - 50+ comprehensive docs (PRD v2.2, architecture, test plans, troubleshooting, UX specs).
+13. ✅ **Critical Path Algorithm** - Full CPM implementation (ES/EF/LS/LF, slack time, critical path identification).
+14. ✅ **Database Schema** - 6 tables with triggers, RLS policies, computed columns, indexes, snapshot system.
+15. ✅ **Session Completion Flow** - Implemented completion page with results summary and success/error modals.
+16. ✅ **Gantt Chart** - Fully functional timeline visualization with critical path highlighting, dependency arrows, and dynamic date calculations based on commitments.
+17. ✅ **Precedence Diagram (AON)** - Complete Activity-on-Node network with ReactFlow, ES/EF/LS/LF display, slack calculations, persistent layout (saves positions to localStorage), and reset functionality.
+18. ✅ **Shared Timeline Calculator** - Single source of truth for time calculations across all visualizations, dynamically updates based on committed/locked/baseline durations.
+19. ✅ **Backend Validation Endpoint** - Fixed /validate endpoint, correctly loads WBS data and provides timeline calculations.
 
 ### What's Partially Working 🟡
 
