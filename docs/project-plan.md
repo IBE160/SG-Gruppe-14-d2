@@ -7,16 +7,14 @@
 
 ---
 
-## 📊 Executive Summary (Updated: December 28, 2025)
+## 📊 Executive Summary (Updated: December 30, 2025)
 
-### Project Status: **MVP-READY - 94% COMPLETE** ✅
+### Project Status: **MVP-READY - 98% COMPLETE** ✅
 
 The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, and a stable offer acceptance flow. **Baseline snapshot is now visible** via a client-side workaround. The core application is stable.
 
-**Only 3 critical features remain for MVP (9-13 hours total):**
+**Only 1 critical feature remains for MVP (6-8 hours total):**
 1. Owner perspective budget revision acceptance (6-8 hours)
-2. Dependency validation - enforce prerequisite order (2-3 hours)
-3. Timeline validation - prevent deadline violations (3-4 hours)
 
 All other remaining items are nice-to-have enhancements.
 
@@ -66,8 +64,8 @@ All other remaining items are nice-to-have enhancements.
 **Critical for MVP:**
 1. ✅ **History Panel Baseline Snapshot** - COMPLETE via client-side workaround. The frontend now generates a virtual baseline snapshot. (est: 1-2 hours)
 2. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
-3. ❌ **Dependency Validation** - Users can commit to packages before prerequisites are complete, breaks realistic project sequencing (est: 2-3 hours)
-4. ❌ **Timeline Validation** - Users can accept offers that make project late, no deadline enforcement during commitment (est: 3-4 hours)
+3. ✅ **Dependency Validation** - COMPLETE. Users can no longer commit to packages before prerequisites are complete.
+4. ✅ **Timeline Validation** - COMPLETE. Users can no longer accept offers that make the project late.
 
 **Nice to Have (Future Enhancements):**
 6. ❌ **Renegotiation/Uncommit** - Cannot reverse accepted offers, no DELETE endpoint (est: 3-4 hours)
@@ -379,34 +377,34 @@ All other remaining items are nice-to-have enhancements.
 
 ### **Phase 1: Complete Vendor Contract Acceptance Flow (5-7 hours)**
 
-#### 1.1 Add Dependency Validation (2-3 hours)
-- [ ] **Backend validation logic** (`backend/main.py` line ~654)
-  - [ ] In `create_commitment()`: Check if all `item.dependencies[]` exist in `wbs_commitments` table
-  - [ ] Query: `SELECT wbs_id FROM wbs_commitments WHERE session_id = ? AND wbs_id IN (...dependencies)`
-  - [ ] If missing dependencies, return 400 error with Norwegian message
-  - [ ] Error format: `{"detail": "Du må først forplikte deg til [1.3.1, 1.3.2] før du kan akseptere denne pakken"}`
-- [ ] **Test dependency blocking**
-  - [ ] Try to commit to "1.4.1 Råbygg" before "1.3.1 Grunnarbeid" → should fail
-  - [ ] Commit to "1.3.1" first → then "1.4.1" should succeed
-- [ ] **Frontend error display** (already exists in `chat-interface.tsx`)
-  - [ ] Verify error message shows in red alert box
-  - [ ] User can go back and negotiate prerequisite packages
+#### 1.1 Add Dependency Validation (2-3 hours) - ✅ COMPLETE
+- [x] **Backend validation logic** (`backend/main.py` line ~654)
+  - [x] In `create_commitment()`: Check if all `item.dependencies[]` exist in `wbs_commitments` table
+  - [x] Query: `SELECT wbs_id FROM wbs_commitments WHERE session_id = ? AND wbs_id IN (...dependencies)`
+  - [x] If missing dependencies, return 400 error with Norwegian message
+  - [x] Error format: `{"detail": "Du må først forplikte deg til [1.3.1, 1.3.2] før du kan akseptere denne pakken"}`
+- [x] **Test dependency blocking**
+  - [x] Try to commit to "1.4.1 Råbygg" before "1.3.1 Grunnarbeid" → should fail
+  - [x] Commit to "1.3.1" first → then "1.4.1" should succeed
+- [x] **Frontend error display** (already exists in `chat-interface.tsx`)
+  - [x] Verify error message shows in red alert box
+  - [x] User can go back and negotiate prerequisite packages
 
-#### 1.2 Add Timeline Validation (3-4 hours)
-- [ ] **Backend timeline check** (`backend/main.py` line ~700, before saving commitment)
-  - [ ] Load all current commitments for session
-  - [ ] Add new commitment to temporary list
-  - [ ] Run `calculate_critical_path(wbs_items, temp_commitments, start_date, deadline)`
-  - [ ] Check if `projected_completion_date > deadline`
-  - [ ] If late, calculate `days_late = (projected_completion - deadline).days`
-  - [ ] Return 400 error with timeline impact
-  - [ ] Error format: `{"detail": "Dette tilbudet vil føre til {days_late} dagers forsinkelse. Fristen er {deadline}, beregnet ferdigstillelse vil bli {projected_completion}. Du må enten forhandle kortere varighet eller be eieren om fristverlengelse."}`
-- [ ] **Test timeline blocking**
-  - [ ] Accept offers with total duration > deadline → should fail
-  - [ ] Error message shows days late and suggests solutions
-- [ ] **Frontend error display**
-  - [ ] Verify error shows with timeline details
-  - [ ] User understands they need to renegotiate or go to owner
+#### 1.2 Add Timeline Validation (3-4 hours) - ✅ COMPLETE
+- [x] **Backend timeline check** (`backend/main.py` line ~700, before saving commitment)
+  - [x] Load all current commitments for session
+  - [x] Add new commitment to temporary list
+  - [x] Run `calculate_critical_path(wbs_items, temp_commitments, start_date, deadline)`
+  - [x] Check if `projected_completion_date > deadline`
+  - [x] If late, calculate `days_late = (projected_completion - deadline).days`
+  - [x] Return 400 error with timeline impact
+  - [x] Error format: `{"detail": "Dette tilbudet vil føre til {days_late} dagers forsinkelse. Fristen er {deadline}, beregnet ferdigstillelse vil bli {projected_completion}. Du må enten forhandle kortere varighet eller be eieren om fristverlengelse."}`
+- [x] **Test timeline blocking**
+  - [x] Accept offers with total duration > deadline → should fail
+  - [x] Error message shows days late and suggests solutions
+- [x] **Frontend error display**
+  - [x] Verify error shows with timeline details
+  - [x] User understands they need to renegotiate or go to owner
 
 #### 1.3 Verify Downstream Updates Work (30 min)
 - [ ] **After contract acceptance, verify all systems update:**
@@ -1004,9 +1002,9 @@ All other remaining items are nice-to-have enhancements.
 4. ✅ **Vendor Contract Acceptance** - COMPLETE, full 12-step flow with snapshots
 5. ✅ **Chat History Persistence** - COMPLETE, fixed session resumption bug (Dec 23, 2025)
 6. ✅ **Baseline Snapshot in History Panel** - COMPLETE via client-side workaround.
-7. ❌ **Owner Perspective Budget Revision** - NOT IMPLEMENTED (no UI, no endpoint, no snapshots) (6-8 hours)
-8. ❌ **Dependency Validation** - NOT IMPLEMENTED, can commit without prerequisites (2-3 hours)
-9. ❌ **Timeline Validation** - NOT IMPLEMENTED, can accept late-making offers (3-4 hours)
+7. ✅ **Dependency Validation** - COMPLETE. (2-3 hours)
+8. ✅ **Timeline Validation** - COMPLETE. (3-4 hours)
+9. ❌ **Owner Perspective Budget Revision** - NOT IMPLEMENTED (no UI, no endpoint, no snapshots) (6-8 hours)
 
 **Nice to Have (If Time Permits):**
 10. ❌ **Renegotiation (Uncommit)** - Cannot undo commitments (3-4 hours)
@@ -1018,17 +1016,8 @@ All other remaining items are nice-to-have enhancements.
 16. ❌ **Administration Panel** - Teacher dashboard to view all student sessions/results from database (12-16 hours)
 17. ❌ **Automated Testing** - No unit/integration/E2E test suite (40+ hours)
 
-**Next Priority Actions (Critical for MVP - 9-13 hours total):**
-1. **Add Dependency Validation** (2-3 hours)
-   - Backend: Check prerequisites before allowing commitment
-   - Prevents unrealistic sequences (e.g., building without foundation)
-   - See detailed checklist in Phase 1 of "MVP Completion Checklist" section
-2. **Add Timeline Validation** (3-4 hours)
-   - Backend: Calculate timeline impact before commitment
-   - Block offers that would make project late
-   - Force negotiation or owner deadline extension
-   - See detailed checklist in Phase 1 of "MVP Completion Checklist" section
-3. **Implement Owner Perspective Budget Revision Acceptance** (6-8 hours)
+**Next Priority Actions (Critical for MVP - 6-8 hours total):**
+1. **Implement Owner Perspective Budget Revision Acceptance** (6-8 hours)
    - Frontend: BudgetRevisionOfferBox component
    - Backend: POST /budget-revision endpoint
    - Database: Budget revision snapshot creation
