@@ -99,20 +99,24 @@ def get_db_client(token: HTTPAuthorizationCredentials = Depends(auth_scheme)) ->
 
 def get_current_user(token: HTTPAuthorizationCredentials = Depends(auth_scheme)) -> Dict[str, Any]:
     """
-    [DEBUG] Bypasses JWT validation and returns a hardcoded dummy user.
-    This is a temporary workaround for the persistent 'Unable to find appropriate key' error.
+    Validate the JWT token using Supabase Auth API.
     """
-    print("--- WARNING: AUTHENTICATION IS CURRENTLY BYPASSED FOR DEBUGGING ---")
-    # Using a user ID seen in previous logs to ensure consistency with existing data
-    return {
-        "id": "585e07ef-bd8d-4204-a2dd-91a228032d65", 
-        "email": "test-user@example.com", 
-        "role": "authenticated"
-    }
-
-
-
-
+    try:
+        user_response = supabase.auth.get_user(token.credentials)
+        
+        if not user_response or not user_response.user:
+            raise HTTPException(status_code=401, detail="Invalid token: User not found")
+        
+        return {
+            "id": user_response.user.id,
+            "email": user_response.user.email,
+            "role": "authenticated"
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Auth error: {e}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
 
 
 
