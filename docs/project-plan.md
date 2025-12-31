@@ -11,13 +11,16 @@
 
 ### Project Status: **MVP-READY - 99% COMPLETE** ✅
 
-The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, and a stable offer acceptance flow. **Baseline snapshot is now visible** via a client-side workaround. The core application is stable.
+The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, stable offer acceptance flow, and **complete snapshot system with history/timeline view**. Users can now view project state at any point in time, compare different snapshots, and see how decisions impacted the timeline via Gantt and Precedence diagrams. The core application is stable.
 
 **Recent Completions (December 30-31, 2025):**
+
 - ✅ Authentication fix - Replaced debug bypass with proper `supabase.auth.get_user()` validation
 - ✅ Dependency validation - Prevents commits without completing prerequisites (backend/main.py:610-635)
 - ✅ Timeline validation - Blocks commits that make project late (backend/main.py:659-703)
-- ✅ Baseline snapshot - Client-side workaround generates virtual baseline (history-panel.tsx:106-162)
+- ✅ Baseline snapshot - Client-side workaround generates virtual baseline (history-panel.tsx:118-169)
+- ✅ Snapshot system fixes - Fixed database constraints, type conversions, and timeline format consistency (December 31, 2025)
+- ✅ History/Timeline View - Full end-to-end snapshot creation, storage, and visualization working (December 31, 2025)
 
 **Only 1 critical feature remains for MVP (6-8 hours total):**
 
@@ -32,7 +35,13 @@ All other remaining items are nice-to-have enhancements.
 **No critical issues at this time.**
 
 **Recently Resolved:**
+
 - ✅ **Authentication Validation (Fixed: December 31, 2025)** - Resolved JWT validation issue. The temporary debug bypass code in `backend/main.py` `get_current_user()` function has been replaced with proper Supabase Auth API validation using `supabase.auth.get_user(token.credentials)`. Authentication now works correctly for all users without bypassing security.
+- ✅ **Snapshot System Database Errors (Fixed: December 31, 2025)** - Resolved three critical issues preventing snapshot creation:
+  1. Budget total constraint violation - Fixed hardcoded value in database function from 700000000 (7 MNOK) to 70000000000 (700 MNOK) to match CHECK constraint
+  2. Integer type error - Added int() conversion for duration before passing to database (backend/main.py:745)
+  3. Timeline format mismatch - Converted frontend baseline timeline format to match backend format for consistency (history-panel.tsx:131-169)
+- ✅ **AI Agent Offer Format (Fixed: December 31, 2025)** - Updated all three vendor agent prompts (Bjørn Eriksen, Kari Andersen, Per Johansen) with CRITICAL RULE requiring confirmation of both cost AND duration before giving formal offers, ensuring offer detection works correctly (docs/AI_AGENT_SYSTEM_PROMPTS.md)
 
 ---
 
@@ -59,23 +68,27 @@ All other remaining items are nice-to-have enhancements.
 17. ✅ **Precedence Diagram (AON)** - Complete Activity-on-Node network with ReactFlow, ES/EF/LS/LF display, slack calculations, persistent layout (saves positions to localStorage), and reset functionality.
 18. ✅ **Shared Timeline Calculator** - Single source of truth for time calculations across all visualizations, dynamically updates based on committed/locked/baseline durations.
 19. ✅ **Backend Validation Endpoint** - Fixed /validate endpoint, correctly loads WBS data and provides timeline calculations.
+20. ✅ **History/Timeline View** - Complete snapshot visualization system with 3 tabs (Overview/Gantt/Precedence), displays all contract acceptances chronologically, allows comparison of project state at different points in time, includes virtual baseline snapshot showing initial 12 locked contracts.
+21. ✅ **Snapshot System** - Auto-creation on vendor contract acceptance, stores complete timeline data (earliest_start/finish, latest_start/finish, slack, critical_path) in JSONB format, version auto-increment trigger, budget state tracking, enables full reconstruction of Gantt and Precedence diagrams at any point in project history.
 
 ### What's Partially Working 🟡
 
-**In Progress (40-90% complete):**
+**In Progress (40% complete):**
 
 1. 🟡 **Owner Perspective** (40%) - User can chat with owner agent (Anne-Lise Berg), but budget revision acceptance is NOT implemented (no UI button, no backend endpoint, no snapshot creation)
-2. 🟡 **History/Timeline View** (90%) - Database schema complete, backend endpoints ready, frontend UI fully created with 3 tabs (Overview/Gantt/Precedence), snapshot visualization working for contract acceptances, **needs baseline virtual snapshot** to show initial 12 locked contracts as version 0
-3. 🟡 **Snapshot System** (95%) - Database triggers functional, auto-creation on vendor contract acceptance working (saves complete timeline data for Gantt/Precedence reconstruction), only missing owner budget revision snapshots
 
 ### What's Missing ❌
 
 **Critical for MVP:**
 
-1. ✅ **History Panel Baseline Snapshot** - COMPLETE via client-side workaround. The frontend now generates a virtual baseline snapshot. (est: 1-2 hours)
-2. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
-3. ✅ **Dependency Validation** - COMPLETE. Users can no longer commit to packages before prerequisites are complete.
-4. ✅ **Timeline Validation** - COMPLETE. Users can no longer accept offers that make the project late.
+1. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
+
+**Recently Completed:**
+
+1. ✅ **History Panel Baseline Snapshot** - COMPLETE via client-side workaround. The frontend now generates a virtual baseline snapshot with backend-compatible format.
+2. ✅ **Dependency Validation** - COMPLETE. Users can no longer commit to packages before prerequisites are complete.
+3. ✅ **Timeline Validation** - COMPLETE. Users can no longer accept offers that make the project late.
+4. ✅ **Snapshot System End-to-End** - COMPLETE. Snapshots are auto-created on contract acceptance, stored with complete timeline data, and displayed in History panel with Gantt/Precedence reconstruction.
 
 **Nice to Have (Future Enhancements):**
 6. ❌ **Renegotiation/Uncommit** - Cannot reverse accepted offers, no DELETE endpoint (est: 3-4 hours)
@@ -551,31 +564,34 @@ All other remaining items are nice-to-have enhancements.
 **Project Completion: 99% of MVP**
 
 **Recently Completed (Dec 30-31, 2025):**
+
 1. **Authentication Security Fix** (Commit 281f438)
+
    - Removed hardcoded user bypass in `get_current_user()`
    - Implemented proper JWT validation: `supabase.auth.get_user(token.credentials)`
    - All users now authenticate securely through Supabase Auth API
-
 2. **Dependency Validation** (Commit f8411bc)
+
    - Backend validation in `backend/main.py` lines 610-635
    - Loads WBS dependencies from wbs.json
    - Checks existing commitments before allowing new ones
    - Returns clear error: "Du må først forplikte deg til følgende avhengige pakker: [X, Y] før du kan akseptere 'Z'."
-
 3. **Timeline Validation** (Commit f8411bc)
+
    - Backend validation in `backend/main.py` lines 659-703
    - Runs CPM calculation before each commitment
    - Compares projected completion vs deadline (2026-05-15)
    - Blocks commitments that would make project late
    - Error message shows days late and suggests renegotiation
-
 4. **Baseline Snapshot** (Completed Dec 30)
+
    - Client-side workaround in `frontend/components/history-panel.tsx` lines 106-162
    - Generates virtual baseline snapshot from wbs.json (12 locked contracts)
    - Displays as version 0 in history panel
    - Shows starting state: 390 MNOK committed, 310 MNOK available
 
 **What's Fully Functional:**
+
 - ✅ Authentication & authorization (Supabase + RLS)
 - ✅ Dashboard with 3-tier budget display (310/390/700 MNOK)
 - ✅ AI negotiation with 4 agents (Gemini 2.5 Flash)
@@ -591,6 +607,7 @@ All other remaining items are nice-to-have enhancements.
 - ✅ Database schema (6 tables, RLS, triggers, computed columns)
 
 **Only 1 Feature Remains:**
+
 - ❌ Owner Perspective Budget Revision Acceptance (6-8 hours)
 
 ---
@@ -717,12 +734,14 @@ COMMENT ON FUNCTION create_budget_revision_snapshot IS
 ```
 
 **Deployment Steps:**
+
 1. Open Supabase Dashboard → SQL Editor
 2. Paste the SQL above
 3. Execute the migration
 4. Verify function created: `SELECT proname FROM pg_proc WHERE proname = 'create_budget_revision_snapshot';`
 
 **Success Criteria:**
+
 - ✅ Function exists in database
 - ✅ Function returns UUID
 - ✅ Can be called by authenticated users
@@ -844,6 +863,7 @@ def accept_budget_revision(
 ```
 
 **Testing:**
+
 ```bash
 # Test with curl (replace TOKEN and SESSION_ID)
 curl -X POST http://localhost:8000/api/sessions/{SESSION_ID}/budget-revision \
@@ -857,6 +877,7 @@ curl -X POST http://localhost:8000/api/sessions/{SESSION_ID}/budget-revision \
 ```
 
 **Success Criteria:**
+
 - ✅ Endpoint returns 200 with success message
 - ✅ Session budget updated in database
 - ✅ Snapshot created with type='budget_revision'
@@ -1068,6 +1089,7 @@ function handleBudgetRevisionReject(messageContent: string) {
 ```
 
 **Success Criteria:**
+
 - ✅ Budget revision offers detected in owner agent responses
 - ✅ BudgetRevisionOfferBox renders with correct amounts
 - ✅ Accept button calls backend API
@@ -1219,6 +1241,7 @@ function handleBudgetRevisionReject(messageContent: string) {
 ```
 
 **Success Criteria:**
+
 - ✅ Budget revision snapshots show with green badge and 💰 icon
 - ✅ Overview tab shows budget change clearly
 - ✅ Gantt/Precedence tabs show unchanged timeline
@@ -1230,6 +1253,7 @@ function handleBudgetRevisionReject(messageContent: string) {
 #### **Test Checklist**
 
 **1. Budget Revision Flow (E2E):**
+
 - [ ] Start new session
 - [ ] Navigate to owner agent (Anne-Lise Berg)
 - [ ] Request budget increase in chat
@@ -1244,12 +1268,14 @@ function handleBudgetRevisionReject(messageContent: string) {
 - [ ] Verify Overview/Gantt/Precedence tabs work
 
 **2. Validation Testing:**
+
 - [ ] Dependency validation works (try 1.4.1 before 1.3.1)
 - [ ] Timeline validation works (try late offer)
 - [ ] Budget validation works (try overspending)
 - [ ] Budget revision validation (try negative amount)
 
 **3. Complete User Journey:**
+
 - [ ] Register → Login → Create session
 - [ ] Negotiate with 3 vendors
 - [ ] Accept 3 contracts
@@ -1258,6 +1284,7 @@ function handleBudgetRevisionReject(messageContent: string) {
 - [ ] View complete history
 
 **4. Database Verification:**
+
 ```sql
 -- Check session updated
 SELECT available_budget, total_budget FROM game_sessions WHERE id = '{SESSION_ID}';
@@ -1272,6 +1299,7 @@ WHERE session_id = '{SESSION_ID}' ORDER BY version;
 ### **POST-MVP ROADMAP**
 
 **Immediate Priority (10-13 hours):**
+
 1. Export UI (2-3 hours)
 2. Renegotiation/Uncommit (3-4 hours)
 3. History Panel UX Polish (2-3 hours)
@@ -1290,10 +1318,12 @@ WHERE session_id = '{SESSION_ID}' ORDER BY version;
 ### **RECOMMENDED EXECUTION SCHEDULE**
 
 **Today (Dec 31):**
+
 - Task 1: Database migration (1-2 hours)
 - Task 2: Backend endpoint (2 hours)
 
 **Tomorrow (Jan 1):**
+
 - Task 3: Frontend UI (2 hours)
 - Task 4: History panel (1-2 hours)
 - Testing & verification (1-2 hours)
