@@ -103,12 +103,8 @@ export function HistoryPanel({
         console.error("Snapshot fetch threw an error:", e);
       }
 
-      // Fallback: generate baseline snapshot client-side
-      if (fetchedSnapshots.length === 0 && offset === 0) {
-        console.log(
-          "No snapshots from backend, generating client-side baseline."
-        );
-
+      // Always generate baseline snapshot client-side (for first page only)
+      if (offset === 0) {
         const lockedWBSItems = wbsItems.filter(
           (item: any) => !item.is_negotiable
         );
@@ -119,12 +115,58 @@ export function HistoryPanel({
           cost: item.locked_cost,
         }));
 
-        const baselineTimeline = calculateTimeline(
+        const baselineTimelineRaw = calculateTimeline(
           wbsItems,
-          lockedCommitmentsForTimeline,
-          "2025-01-15",
-          "2026-05-15"
+          lockedCommitmentsForTimeline
         );
+
+        // Convert frontend timeline format to backend format for consistency
+        const projectStart = new Date("2025-01-15");
+        const daysToDate = (days: number) => {
+          const date = new Date(projectStart);
+          date.setDate(date.getDate() + days);
+          return date.toISOString().split("T")[0];
+        };
+
+        const baselineTimeline = {
+          earliest_start: Object.fromEntries(
+            Object.entries(baselineTimelineRaw.es).map(([id, days]) => [
+              id,
+              daysToDate(days),
+            ])
+          ),
+          earliest_finish: Object.fromEntries(
+            Object.entries(baselineTimelineRaw.ef).map(([id, days]) => [
+              id,
+              daysToDate(days),
+            ])
+          ),
+          latest_start: Object.fromEntries(
+            Object.entries(baselineTimelineRaw.ls).map(([id, days]) => [
+              id,
+              daysToDate(days),
+            ])
+          ),
+          latest_finish: Object.fromEntries(
+            Object.entries(baselineTimelineRaw.lf).map(([id, days]) => [
+              id,
+              daysToDate(days),
+            ])
+          ),
+          slack: baselineTimelineRaw.slack,
+          critical_path: Object.entries(baselineTimelineRaw.slack)
+            .filter(([_, slack]) => slack === 0)
+            .map(([id, _]) => id),
+          projected_completion_date: daysToDate(baselineTimelineRaw.projectEnd),
+          deadline: "2026-05-15",
+          meets_deadline:
+            baselineTimelineRaw.projectEnd <=
+            Math.ceil(
+              (new Date("2026-05-15").getTime() - projectStart.getTime()) /
+                (1000 * 60 * 60 * 24)
+            ),
+          total_duration_days: baselineTimelineRaw.projectEnd,
+        };
 
         const projectEndDate =
           baselineTimeline.projected_completion_date || "2025-09-29";
@@ -156,22 +198,26 @@ export function HistoryPanel({
           created_at: new Date().toISOString(),
         };
 
-        fetchedSnapshots = [mockBaselineSnapshot];
-        fetchedTotalCount = 1;
-        fetchedHasMore = false;
-      }
+        // Prepend baseline to fetched snapshots (baseline always comes first)
+        const allSnapshots = [mockBaselineSnapshot, ...fetchedSnapshots];
+        setSnapshots(allSnapshots);
 
-      if (offset === 0) {
-        setSnapshots(fetchedSnapshots);
+        // Select most recent snapshot (first in list after baseline)
         if (fetchedSnapshots.length > 0) {
           setSelectedSnapshot(fetchedSnapshots[0]);
+        } else {
+          setSelectedSnapshot(mockBaselineSnapshot);
         }
-      } else {
-        setSnapshots((prev) => [...prev, ...fetchedSnapshots]);
-      }
 
-      setTotalCount(fetchedTotalCount);
-      setHasMore(fetchedHasMore);
+        // Update count to include baseline
+        setTotalCount(fetchedTotalCount + 1);
+        setHasMore(fetchedHasMore);
+      } else {
+        // For subsequent pages, just append (no baseline)
+        setSnapshots((prev) => [...prev, ...fetchedSnapshots]);
+        setTotalCount(fetchedTotalCount + 1); // +1 for baseline (already in list)
+        setHasMore(fetchedHasMore);
+      }
     } catch (error) {
       console.error("Error in loadSnapshots:", error);
     } finally {

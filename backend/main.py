@@ -742,28 +742,53 @@ def create_commitment(
             }
             supplier = supplier_map.get(request.wbs_id, "Ukjent Leverandør")
 
-            duration_days = request.committed_duration
+            duration_days = int(request.committed_duration)
 
             all_commitments_response = db.table("wbs_commitments").select("*").eq("session_id", session_id).execute()
             all_commitments = all_commitments_response.data if all_commitments_response.data else []
 
+            print(f"DEBUG: Found {len(all_commitments)} commitments for timeline calculation")
+            for c in all_commitments:
+                print(f"  - WBS {c['wbs_id']}: {c.get('committed_duration', 0)} days, {c.get('committed_cost', 0)} cost")
+
             with open(_wbs_json_path(), "r", encoding="utf-8") as f:
                 wbs_data = json.load(f)
 
+            commitments_for_timeline = [
+                {"wbs_item_id": c["wbs_id"], "duration": c.get("committed_duration", 0)}
+                for c in all_commitments
+            ]
+            print(f"DEBUG: Commitments being passed to calculate_critical_path: {commitments_for_timeline}")
+
             timeline = calculate_critical_path(
                 wbs_items=wbs_data["wbs_elements"],
-                commitments=[
-                    {"wbs_item_id": c["wbs_id"], "duration": c.get("committed_duration", 0)}
-                    for c in all_commitments
-                ],
+                commitments=commitments_for_timeline,
                 start_date="2025-01-15",
                 deadline="2026-05-15",
             )
+
+            print(f"DEBUG: Timeline calculation result:")
+            print(f"  - Projected completion: {timeline.get('projected_completion_date', 'N/A')}")
+            print(f"  - Meets deadline: {timeline.get('meets_deadline', False)}")
+            print(f"  - Total duration days: {timeline.get('total_duration_days', 0)}")
+            print(f"  - Number of WBS items with ES data: {len(timeline.get('earliest_start', {}))}")
+            if timeline.get('earliest_start'):
+                print(f"  - Sample ES/EF data (first 3 items):")
+                for i, (wbs_id, es_date) in enumerate(list(timeline.get('earliest_start', {}).items())[:3]):
+                    ef_date = timeline.get('earliest_finish', {}).get(wbs_id, 'N/A')
+                    print(f"    - {wbs_id}: ES={es_date}, EF={ef_date}")
 
             project_end_date = timeline.get("projected_completion_date", "2025-09-29")
             deadline_dt = datetime.strptime("2026-05-15", "%Y-%m-%d")
             project_dt = datetime.strptime(project_end_date, "%Y-%m-%d")
             days_before_deadline = (deadline_dt - project_dt).days
+
+            print(f"DEBUG: Creating snapshot with:")
+            print(f"  - WBS ID: {request.wbs_id}")
+            print(f"  - Duration: {duration_days} days")
+            print(f"  - Project end date: {project_end_date}")
+            print(f"  - Days before deadline: {days_before_deadline}")
+            print(f"  - Timeline data fields: {list(timeline.keys())}")
 
             db.rpc(
                 "create_contract_snapshot",
@@ -781,6 +806,8 @@ def create_commitment(
                     "p_precedence_state": timeline,
                 },
             ).execute()
+
+            print(f"DEBUG: Snapshot created successfully")
 
         except Exception as snapshot_error:
             print(f"Warning: Could not create contract snapshot: {snapshot_error}")

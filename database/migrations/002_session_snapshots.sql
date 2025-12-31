@@ -268,7 +268,7 @@ BEGIN
         'contract_acceptance',
         p_budget_committed,
         p_budget_available,
-        700000000,  -- Always 700 MNOK
+        70000000000,  -- Always 700 MNOK (70 billion øre)
         p_wbs_id,
         p_cost,
         p_duration,

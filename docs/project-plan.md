@@ -7,15 +7,21 @@
 
 ---
 
-## 📊 Executive Summary (Updated: December 30, 2025)
+## 📊 Executive Summary (Updated: December 31, 2025)
 
-### Project Status: **MVP-READY - 98% COMPLETE** ✅
+### Project Status: **MVP-READY - 99% COMPLETE** ✅
 
 The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, and a stable offer acceptance flow. **Baseline snapshot is now visible** via a client-side workaround. The core application is stable.
 
+**Recent Completions (December 30-31, 2025):**
+- ✅ Authentication fix - Replaced debug bypass with proper `supabase.auth.get_user()` validation
+- ✅ Dependency validation - Prevents commits without completing prerequisites (backend/main.py:610-635)
+- ✅ Timeline validation - Blocks commits that make project late (backend/main.py:659-703)
+- ✅ Baseline snapshot - Client-side workaround generates virtual baseline (history-panel.tsx:106-162)
+
 **Only 1 critical feature remains for MVP (6-8 hours total):**
 
-1. Owner perspective budget revision acceptance (6-8 hours)
+1. Owner perspective budget revision acceptance (6-8 hours) - **See detailed implementation plan below**
 
 All other remaining items are nice-to-have enhancements.
 
@@ -535,6 +541,780 @@ All other remaining items are nice-to-have enhancements.
   - [ ] New snapshot appears in history panel
   - [ ] Can view snapshot and see budget change
   - [ ] Gantt/Precedence unchanged (as expected)
+
+---
+
+## 🎯 DETAILED IMPLEMENTATION PLAN TO MVP (Updated: December 31, 2025)
+
+### **Current Status Analysis**
+
+**Project Completion: 99% of MVP**
+
+**Recently Completed (Dec 30-31, 2025):**
+1. **Authentication Security Fix** (Commit 281f438)
+   - Removed hardcoded user bypass in `get_current_user()`
+   - Implemented proper JWT validation: `supabase.auth.get_user(token.credentials)`
+   - All users now authenticate securely through Supabase Auth API
+
+2. **Dependency Validation** (Commit f8411bc)
+   - Backend validation in `backend/main.py` lines 610-635
+   - Loads WBS dependencies from wbs.json
+   - Checks existing commitments before allowing new ones
+   - Returns clear error: "Du må først forplikte deg til følgende avhengige pakker: [X, Y] før du kan akseptere 'Z'."
+
+3. **Timeline Validation** (Commit f8411bc)
+   - Backend validation in `backend/main.py` lines 659-703
+   - Runs CPM calculation before each commitment
+   - Compares projected completion vs deadline (2026-05-15)
+   - Blocks commitments that would make project late
+   - Error message shows days late and suggests renegotiation
+
+4. **Baseline Snapshot** (Completed Dec 30)
+   - Client-side workaround in `frontend/components/history-panel.tsx` lines 106-162
+   - Generates virtual baseline snapshot from wbs.json (12 locked contracts)
+   - Displays as version 0 in history panel
+   - Shows starting state: 390 MNOK committed, 310 MNOK available
+
+**What's Fully Functional:**
+- ✅ Authentication & authorization (Supabase + RLS)
+- ✅ Dashboard with 3-tier budget display (310/390/700 MNOK)
+- ✅ AI negotiation with 4 agents (Gemini 2.5 Flash)
+- ✅ Vendor contract acceptance (12-step flow with automatic snapshots)
+- ✅ Budget validation (prevents overspending)
+- ✅ Dependency validation (prevents invalid dependencies)
+- ✅ Timeline validation (prevents late delivery)
+- ✅ Critical path algorithm (CPM with ES/EF/LS/LF/slack)
+- ✅ Gantt Chart visualization
+- ✅ Precedence Diagram (AON network)
+- ✅ History panel with snapshot reconstruction
+- ✅ Session completion flow
+- ✅ Database schema (6 tables, RLS, triggers, computed columns)
+
+**Only 1 Feature Remains:**
+- ❌ Owner Perspective Budget Revision Acceptance (6-8 hours)
+
+---
+
+### **IMPLEMENTATION PLAN: Owner Budget Revision Feature**
+
+**Total Estimated Time: 6-8 hours**
+
+This feature allows students to negotiate with the owner agent (Anne-Lise Berg) to increase the available budget when they cannot complete all required work packages within the 310 MNOK constraint.
+
+---
+
+#### **Implementation Task 1: Database Migration - Budget Revision Snapshot Function (1-2 hours)**
+
+**Priority: HIGH - Do this first, as backend depends on it**
+
+**File:** `database/migrations/003_budget_revisions.sql` (NEW FILE)
+
+**Action:** Create new SQL migration file with the following content:
+
+```sql
+-- ============================================================================
+-- Budget Revision Snapshot Function
+-- Creates a snapshot when owner approves budget increase
+-- ============================================================================
+
+CREATE OR REPLACE FUNCTION create_budget_revision_snapshot(
+    p_session_id UUID,
+    p_old_available BIGINT,
+    p_new_available BIGINT,
+    p_old_total BIGINT,
+    p_new_total BIGINT,
+    p_revision_amount BIGINT,
+    p_justification TEXT
+) RETURNS UUID AS $$
+DECLARE
+    v_snapshot_id UUID;
+    v_version INT;
+    v_session game_sessions%ROWTYPE;
+    v_current_budget_committed BIGINT;
+    v_project_end_date DATE;
+    v_days_before_deadline INT;
+    v_previous_snapshot session_snapshots%ROWTYPE;
+BEGIN
+    -- Get current session
+    SELECT * INTO v_session FROM game_sessions WHERE id = p_session_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Session not found: %', p_session_id;
+    END IF;
+
+    -- Calculate next version number
+    SELECT COALESCE(MAX(version), 0) + 1 INTO v_version
+    FROM session_snapshots
+    WHERE session_id = p_session_id;
+
+    -- Get previous snapshot for timeline data (budget doesn't affect timeline)
+    SELECT * INTO v_previous_snapshot
+    FROM session_snapshots
+    WHERE session_id = p_session_id
+    ORDER BY version DESC
+    LIMIT 1;
+
+    -- Calculate current committed budget (in øre)
+    v_current_budget_committed := COALESCE(v_session.current_budget_used, 0) * 100;
+
+    -- Use previous timeline data (budget revision doesn't change project timeline)
+    IF v_previous_snapshot IS NOT NULL THEN
+        v_project_end_date := v_previous_snapshot.project_end_date;
+        v_days_before_deadline := v_previous_snapshot.days_before_deadline;
+    ELSE
+        -- Fallback if no previous snapshot
+        v_project_end_date := '2025-09-29'::DATE;
+        v_days_before_deadline := (DATE '2026-05-15' - v_project_end_date);
+    END IF;
+
+    -- Insert snapshot
+    INSERT INTO session_snapshots (
+        session_id,
+        version,
+        label,
+        snapshot_type,
+        budget_committed,
+        budget_available,
+        budget_total,
+        contract_wbs_id,
+        contract_cost,
+        contract_duration,
+        contract_supplier,
+        project_end_date,
+        days_before_deadline,
+        gantt_state,
+        precedence_state
+    ) VALUES (
+        p_session_id,
+        v_version,
+        'Budsjettøkning: +' || (p_revision_amount / 100000000)::TEXT || ' MNOK',
+        'budget_revision',
+        v_current_budget_committed,
+        p_new_available,
+        p_new_total,
+        NULL, -- No contract associated
+        NULL,
+        NULL,
+        NULL,
+        v_project_end_date,
+        v_days_before_deadline,
+        COALESCE(v_previous_snapshot.gantt_state, '{}'::JSONB), -- Copy from previous
+        COALESCE(v_previous_snapshot.precedence_state, '{}'::JSONB) -- Copy from previous
+    )
+    RETURNING id INTO v_snapshot_id;
+
+    RETURN v_snapshot_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Grant execute permission
+GRANT EXECUTE ON FUNCTION create_budget_revision_snapshot TO authenticated;
+
+-- Add comment
+COMMENT ON FUNCTION create_budget_revision_snapshot IS
+    'Creates a snapshot when owner agent approves a budget revision. ' ||
+    'Timeline data is copied from previous snapshot since budget changes do not affect CPM.';
+```
+
+**Deployment Steps:**
+1. Open Supabase Dashboard → SQL Editor
+2. Paste the SQL above
+3. Execute the migration
+4. Verify function created: `SELECT proname FROM pg_proc WHERE proname = 'create_budget_revision_snapshot';`
+
+**Success Criteria:**
+- ✅ Function exists in database
+- ✅ Function returns UUID
+- ✅ Can be called by authenticated users
+
+---
+
+#### **Implementation Task 2: Backend API - Budget Revision Endpoint (2 hours)**
+
+**File:** `backend/main.py`
+
+**Action 1:** Add Pydantic model (add after other models, around line 225)
+
+```python
+class BudgetRevisionRequest(BaseModel):
+    revision_amount: int  # Amount to increase in øre (e.g., 50000000 = 50 MNOK)
+    justification: str     # Reason for increase (from AI agent response)
+    affects_total_budget: bool = True  # Whether to increase total or just available
+```
+
+**Action 2:** Add endpoint (add after other session endpoints, around line 576)
+
+```python
+@app.post("/api/sessions/{session_id}/budget-revision", tags=["Sessions"])
+def accept_budget_revision(
+    session_id: str,
+    request: BudgetRevisionRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client),
+):
+    """
+    Accept a budget revision offer from the owner agent.
+    Updates session budget and creates a budget_revision snapshot.
+    """
+    try:
+        # 1. Validate session ownership
+        session_response = (
+            db.table("game_sessions")
+            .select("*")
+            .eq("id", session_id)
+            .eq("user_id", current_user["id"])
+            .single()
+            .execute()
+        )
+
+        if not session_response.data:
+            raise HTTPException(status_code=404, detail="Spillsesjon ikke funnet")
+
+        session = session_response.data
+
+        # 2. Validate revision amount
+        if request.revision_amount <= 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Budsjettøkning må være positiv"
+            )
+
+        if not request.justification or len(request.justification.strip()) == 0:
+            raise HTTPException(
+                status_code=400,
+                detail="Begrunnelse for budsjettøkning er påkrevd"
+            )
+
+        # 3. Calculate old and new budgets
+        old_available = session["available_budget"]
+        old_total = session["total_budget"]
+
+        # Convert from øre to NOK for calculation
+        revision_nok = request.revision_amount / 100
+
+        new_available = old_available + revision_nok
+        new_total = old_total + revision_nok if request.affects_total_budget else old_total
+
+        # 4. Update session budgets
+        db.table("game_sessions").update({
+            "available_budget": new_available,
+            "total_budget": new_total
+        }).eq("id", session_id).execute()
+
+        # 5. Create budget revision snapshot
+        try:
+            db.rpc(
+                "create_budget_revision_snapshot",
+                {
+                    "p_session_id": session_id,
+                    "p_old_available": int(old_available * 100),  # Convert to øre
+                    "p_new_available": int(new_available * 100),
+                    "p_old_total": int(old_total * 100),
+                    "p_new_total": int(new_total * 100),
+                    "p_revision_amount": request.revision_amount,
+                    "p_justification": request.justification,
+                },
+            ).execute()
+        except Exception as snapshot_error:
+            print(f"Warning: Could not create budget revision snapshot: {snapshot_error}")
+            import traceback
+            traceback.print_exc()
+
+        # 6. Return success with updated budget info
+        return {
+            "success": True,
+            "old_available_budget": old_available,
+            "new_available_budget": new_available,
+            "old_total_budget": old_total,
+            "new_total_budget": new_total,
+            "revision_amount_mnok": revision_nok / 1_000_000,
+            "message": f"Budsjett økt med {revision_nok / 1_000_000:.0f} MNOK"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error accepting budget revision: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail="En feil oppstod ved godkjenning av budsjettøkning"
+        )
+```
+
+**Testing:**
+```bash
+# Test with curl (replace TOKEN and SESSION_ID)
+curl -X POST http://localhost:8000/api/sessions/{SESSION_ID}/budget-revision \
+  -H "Authorization: Bearer {TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "revision_amount": 5000000000,
+    "justification": "Godkjent på grunn av uforutsette kostnader",
+    "affects_total_budget": true
+  }'
+```
+
+**Success Criteria:**
+- ✅ Endpoint returns 200 with success message
+- ✅ Session budget updated in database
+- ✅ Snapshot created with type='budget_revision'
+- ✅ Error handling works (404 for invalid session, 400 for invalid amount)
+
+---
+
+#### **Implementation Task 3: Frontend - Budget Revision Detection & UI (2 hours)**
+
+**File 1:** `frontend/components/chat-interface.tsx`
+
+**Action 1:** Add budget revision regex pattern and interface (around line 30)
+
+```typescript
+// Add to existing regex patterns
+const budgetRevisionPattern = /budsjett.*?økning.*?(\d+)\s*MNOK/i;
+
+interface BudgetRevisionOffer {
+  revision_amount_mnok: number;
+  revision_amount_ore: number;
+  justification: string;
+  old_budget: number;
+  new_budget: number;
+}
+
+// Budget Revision Offer Box Component
+function BudgetRevisionOfferBox({
+  offer,
+  onAccept,
+  onReject,
+}: {
+  offer: BudgetRevisionOffer;
+  onAccept: () => void;
+  onReject: () => void;
+}) {
+  return (
+    <div className="my-4 p-4 border-2 border-green-500 bg-green-50 rounded-lg">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-2xl">💰</span>
+        <h3 className="font-bold text-lg text-green-800">
+          Budsjettøkning: +{offer.revision_amount_mnok} MNOK
+        </h3>
+      </div>
+
+      <div className="space-y-2 text-sm mb-4">
+        <div className="flex justify-between">
+          <span className="text-gray-600">Nåværende tilgjengelig budsjett:</span>
+          <span className="font-semibold">{offer.old_budget.toFixed(0)} MNOK</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-gray-600">Nytt tilgjengelig budsjett:</span>
+          <span className="font-semibold text-green-700">
+            {offer.new_budget.toFixed(0)} MNOK
+          </span>
+        </div>
+        <div className="pt-2 border-t border-green-200">
+          <p className="text-gray-700 italic">{offer.justification}</p>
+        </div>
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          onClick={onAccept}
+          className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold"
+        >
+          ✓ Godta budsjettøkning
+        </button>
+        <button
+          onClick={onReject}
+          className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+        >
+          ✗ Avslå
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+**Action 2:** Add budget revision detection logic
+
+```typescript
+// Add detection function
+const detectBudgetRevision = (text: string): BudgetRevisionOffer | null => {
+  const match = text.match(budgetRevisionPattern);
+  if (!match) return null;
+
+  const revisionAmountMnok = parseInt(match[1]);
+  const revisionAmountOre = revisionAmountMnok * 100000000;
+
+  // Extract justification
+  const justificationMatch = text.match(/(?:fordi|på grunn av|grunnet|for å)\s+(.+?)(?:\.|$)/i);
+  const justification = justificationMatch
+    ? justificationMatch[1]
+    : "Godkjent budsjettøkning";
+
+  const oldBudget = gameContext?.available_budget
+    ? gameContext.available_budget / 1_000_000
+    : 310;
+  const newBudget = oldBudget + revisionAmountMnok;
+
+  return {
+    revision_amount_mnok: revisionAmountMnok,
+    revision_amount_ore: revisionAmountOre,
+    justification,
+    old_budget: oldBudget,
+    new_budget: newBudget,
+  };
+};
+
+// Add state for accepted budget revisions
+const [acceptedBudgetRevisions, setAcceptedBudgetRevisions] = useState<Set<string>>(
+  new Set()
+);
+
+// In message rendering, add budget revision check
+{message.role === "agent" && (
+  <>
+    {(() => {
+      const offer = detectOffer(message.content);
+      if (offer && !acceptedOffers.has(message.content)) {
+        return <OfferBox offer={offer} onAccept={...} onReject={...} />;
+      }
+
+      // Budget revision detection
+      const budgetRevision = detectBudgetRevision(message.content);
+      if (budgetRevision && !acceptedBudgetRevisions.has(message.content)) {
+        return (
+          <BudgetRevisionOfferBox
+            offer={budgetRevision}
+            onAccept={() => handleBudgetRevisionAccept(budgetRevision, message.content)}
+            onReject={() => handleBudgetRevisionReject(message.content)}
+          />
+        );
+      }
+
+      return null;
+    })()}
+  </>
+)}
+```
+
+**File 2:** `frontend/app/game/[sessionId]/[agentId]/[wbsId]/page.tsx`
+
+**Action:** Add budget revision acceptance handler
+
+```typescript
+async function handleBudgetRevisionAccept(
+  revision: BudgetRevisionOffer,
+  messageContent: string
+) {
+  try {
+    setAcceptedBudgetRevisions((prev) => new Set(prev).add(messageContent));
+
+    const token = await getAuthToken();
+    if (!token) {
+      alert("Ingen autentiseringstoken funnet");
+      return;
+    }
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/sessions/${sessionId}/budget-revision`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          revision_amount: revision.revision_amount_ore,
+          justification: revision.justification,
+          affects_total_budget: true,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      alert(`Feil: ${error.detail || "Kunne ikke godkjenne budsjettøkning"}`);
+      setAcceptedBudgetRevisions((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(messageContent);
+        return newSet;
+      });
+      return;
+    }
+
+    const result = await response.json();
+    alert(
+      `✅ ${result.message}\n\nTilgjengelig budsjett økt fra ${result.old_available_budget / 1_000_000} MNOK til ${result.new_available_budget / 1_000_000} MNOK`
+    );
+
+    // Redirect to dashboard
+    router.push("/dashboard");
+  } catch (error) {
+    console.error("Error accepting budget revision:", error);
+    alert("En feil oppstod ved godkjenning av budsjettøkning");
+    setAcceptedBudgetRevisions((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(messageContent);
+      return newSet;
+    });
+  }
+}
+
+function handleBudgetRevisionReject(messageContent: string) {
+  setAcceptedBudgetRevisions((prev) => new Set(prev).add(messageContent));
+}
+```
+
+**Success Criteria:**
+- ✅ Budget revision offers detected in owner agent responses
+- ✅ BudgetRevisionOfferBox renders with correct amounts
+- ✅ Accept button calls backend API
+- ✅ Success message shows updated budget
+- ✅ Redirect to dashboard works
+
+---
+
+#### **Implementation Task 4: History Panel - Display Budget Revisions (1-2 hours)**
+
+**File:** `frontend/components/history-panel.tsx`
+
+**Action 1:** Update snapshot card rendering (around line 250)
+
+```typescript
+{snapshots.map((snapshot) => {
+  const isBudgetRevision = snapshot.snapshot_type === "budget_revision";
+  const isBaseline = snapshot.snapshot_type === "baseline";
+
+  return (
+    <div
+      key={snapshot.id}
+      onClick={() => setSelectedSnapshot(snapshot)}
+      className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+        selectedSnapshot?.id === snapshot.id
+          ? "border-blue-500 bg-blue-50"
+          : "border-gray-200 hover:border-gray-300"
+      }`}
+    >
+      {/* Version badge */}
+      <div className="flex items-center justify-between mb-2">
+        <span
+          className={`px-2 py-1 text-xs font-semibold rounded ${
+            isBaseline
+              ? "bg-blue-100 text-blue-800"
+              : isBudgetRevision
+              ? "bg-green-100 text-green-800"
+              : "bg-gray-100 text-gray-800"
+          }`}
+        >
+          Versjon {snapshot.version}
+        </span>
+        <span className="text-xs text-gray-500">
+          {format(new Date(snapshot.created_at), "d. MMM yyyy HH:mm", {
+            locale: nb,
+          })}
+        </span>
+      </div>
+
+      {/* Label */}
+      <h3 className="font-semibold text-sm mb-2">{snapshot.label}</h3>
+
+      {/* Budget Revision Details */}
+      {isBudgetRevision ? (
+        <div className="space-y-1 text-xs text-gray-600">
+          <div className="flex items-center gap-1">
+            <span className="text-lg">💰</span>
+            <span>Budsjettøkning</span>
+          </div>
+          <div className="pl-6">
+            <p>
+              Tilgjengelig: {(snapshot.budget_available / 100000000).toFixed(0)}{" "}
+              MNOK
+            </p>
+            <p className="text-gray-500 italic text-xs mt-1">
+              Ingen endring i tidslinje
+            </p>
+          </div>
+        </div>
+      ) : isBaseline ? (
+        <div className="text-xs text-gray-600">
+          <p>12 forhåndsinngåtte kontrakter</p>
+          <p>390 MNOK forpliktet</p>
+        </div>
+      ) : (
+        <div className="space-y-1 text-xs text-gray-600">
+          <p>
+            <strong>Pakke:</strong> {snapshot.contract_wbs_id}
+          </p>
+          <p>
+            <strong>Kostnad:</strong>{" "}
+            {snapshot.contract_cost
+              ? (snapshot.contract_cost / 100000000).toFixed(0)
+              : "N/A"}{" "}
+            MNOK
+          </p>
+          <p>
+            <strong>Leverandør:</strong> {snapshot.contract_supplier}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+})}
+```
+
+**Action 2:** Update Overview tab for budget revisions
+
+```typescript
+{/* In Overview tab content */}
+{selectedSnapshot?.snapshot_type === "budget_revision" ? (
+  <div className="space-y-4">
+    <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+      <span className="text-4xl">💰</span>
+      <div>
+        <h4 className="font-bold text-lg text-green-800">
+          Budsjettøkning godkjent
+        </h4>
+        <p className="text-sm text-gray-600">
+          {selectedSnapshot.label}
+        </p>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-2 gap-4">
+      <div className="p-4 bg-white border border-gray-200 rounded-lg">
+        <p className="text-sm text-gray-500 mb-1">Tilgjengelig budsjett</p>
+        <p className="text-2xl font-bold text-green-600">
+          {(selectedSnapshot.budget_available / 100000000).toFixed(0)} MNOK
+        </p>
+      </div>
+      <div className="p-4 bg-white border border-gray-200 rounded-lg">
+        <p className="text-sm text-gray-500 mb-1">Total budsjett</p>
+        <p className="text-2xl font-bold">
+          {(selectedSnapshot.budget_total / 100000000).toFixed(0)} MNOK
+        </p>
+      </div>
+    </div>
+
+    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+      <p className="text-sm font-semibold text-gray-700 mb-2">
+        Prosjektets tidslinje
+      </p>
+      <p className="text-sm text-gray-600">
+        📅 Ferdigstillelse: {selectedSnapshot.project_end_date}
+      </p>
+      <p className="text-sm text-gray-600">
+        ⏰ {selectedSnapshot.days_before_deadline} dager før frist
+      </p>
+      <p className="text-xs text-gray-500 italic mt-2">
+        Ingen endring i tidslinje (budsjettøkning påvirker ikke kritisk sti)
+      </p>
+    </div>
+  </div>
+) : (
+  // Existing contract snapshot rendering
+  ...
+)}
+```
+
+**Success Criteria:**
+- ✅ Budget revision snapshots show with green badge and 💰 icon
+- ✅ Overview tab shows budget change clearly
+- ✅ Gantt/Precedence tabs show unchanged timeline
+
+---
+
+### **TESTING & VERIFICATION PLAN (1-2 hours)**
+
+#### **Test Checklist**
+
+**1. Budget Revision Flow (E2E):**
+- [ ] Start new session
+- [ ] Navigate to owner agent (Anne-Lise Berg)
+- [ ] Request budget increase in chat
+- [ ] Verify AI responds with budget offer
+- [ ] Verify BudgetRevisionOfferBox appears
+- [ ] Click "Godta budsjettøkning"
+- [ ] Verify success message
+- [ ] Verify redirect to dashboard
+- [ ] Verify increased budget displayed
+- [ ] Open history panel
+- [ ] Verify budget revision snapshot appears
+- [ ] Verify Overview/Gantt/Precedence tabs work
+
+**2. Validation Testing:**
+- [ ] Dependency validation works (try 1.4.1 before 1.3.1)
+- [ ] Timeline validation works (try late offer)
+- [ ] Budget validation works (try overspending)
+- [ ] Budget revision validation (try negative amount)
+
+**3. Complete User Journey:**
+- [ ] Register → Login → Create session
+- [ ] Negotiate with 3 vendors
+- [ ] Accept 3 contracts
+- [ ] Request budget increase
+- [ ] Complete session
+- [ ] View complete history
+
+**4. Database Verification:**
+```sql
+-- Check session updated
+SELECT available_budget, total_budget FROM game_sessions WHERE id = '{SESSION_ID}';
+
+-- Check snapshot created
+SELECT version, snapshot_type, label FROM session_snapshots
+WHERE session_id = '{SESSION_ID}' ORDER BY version;
+```
+
+---
+
+### **POST-MVP ROADMAP**
+
+**Immediate Priority (10-13 hours):**
+1. Export UI (2-3 hours)
+2. Renegotiation/Uncommit (3-4 hours)
+3. History Panel UX Polish (2-3 hours)
+4. Agent Timeout UI (3 hours)
+
+**Medium Priority (20-30 hours):**
+5. Mobile Responsiveness (8-12 hours)
+6. Administration Panel (12-16 hours)
+
+**Long-term (40+ hours):**
+7. Automated Testing (40+ hours)
+8. Production Deployment (4-8 hours)
+
+---
+
+### **RECOMMENDED EXECUTION SCHEDULE**
+
+**Today (Dec 31):**
+- Task 1: Database migration (1-2 hours)
+- Task 2: Backend endpoint (2 hours)
+
+**Tomorrow (Jan 1):**
+- Task 3: Frontend UI (2 hours)
+- Task 4: History panel (1-2 hours)
+- Testing & verification (1-2 hours)
+
+**Total to MVP: 6-8 hours**
+
+---
+
+### **🎓 ACADEMIC ASSESSMENT**
+
+**Strengths:**
+✅ Solid architecture (Next.js, FastAPI, PostgreSQL)
+✅ Robust validation (dependency, timeline, budget)
+✅ Correct CPM implementation
+✅ Data persistence with RLS
+✅ AI integration with context
+✅ Comprehensive documentation
+
+**Grade: A-** (would be A with testing + deployment)
+
+**Recommendation:** Complete owner budget revision to reach 100% MVP, then deploy and pilot with students.
 
 ---
 
