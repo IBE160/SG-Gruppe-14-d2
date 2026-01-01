@@ -24,6 +24,11 @@ interface Snapshot {
   contract_cost: number | null;
   contract_duration: number | null;
   contract_supplier: string | null;
+  // Budget revision fields
+  revision_old_budget?: number | null;
+  revision_new_budget?: number | null;
+  revision_amount?: number | null;
+  revision_justification?: string | null;
   project_end_date: string;
   days_before_deadline: number;
   gantt_state: any;
@@ -337,6 +342,7 @@ export function HistoryPanel({
                 {snapshots.map((snapshot) => {
                   const isSelected = selectedSnapshot?.id === snapshot.id;
                   const isBaseline = snapshot.snapshot_type === "baseline";
+                  const isBudgetRevision = snapshot.snapshot_type === "budget_revision";
 
                   return (
                     <div
@@ -360,17 +366,23 @@ export function HistoryPanel({
                           style={{
                             backgroundColor: isBaseline
                               ? colors.button.primary.bg
+                              : isBudgetRevision
+                              ? "#f59e0b" // amber-500 for budget revisions
                               : colors.status.success.border,
                           }}
                         >
                           Versjon {snapshot.version}
                         </span>
+                        {isBudgetRevision && (
+                          <span className="text-lg">💰</span>
+                        )}
                       </div>
 
                       <h3 className="text-sm font-semibold text-gray-900">
                         {snapshot.label}
                       </h3>
 
+                      {/* Contract details (for contract_acceptance snapshots) */}
                       {snapshot.contract_wbs_id && (
                         <p className="mt-1 text-xs text-gray-700">
                           ✓ WBS {snapshot.contract_wbs_id} -{" "}
@@ -383,6 +395,23 @@ export function HistoryPanel({
                           • {formatBudget(snapshot.contract_cost)} MNOK,{" "}
                           {snapshot.contract_duration} dager
                         </p>
+                      )}
+
+                      {/* Budget revision details (for budget_revision snapshots) */}
+                      {isBudgetRevision && snapshot.revision_amount && (
+                        <>
+                          <p className="mt-1 text-xs text-gray-700">
+                            💰 Budsjettøkning: +{formatBudget(snapshot.revision_amount)} MNOK
+                          </p>
+                          {snapshot.revision_justification && (
+                            <p className="mt-1 text-xs italic text-gray-600">
+                              "{snapshot.revision_justification}"
+                            </p>
+                          )}
+                          <p className="mt-1 text-xs text-blue-600">
+                            ℹ️ Ingen endring i prosjektets tidslinje
+                          </p>
+                        </>
                       )}
 
                       <p className="mt-2 text-xs text-gray-500">

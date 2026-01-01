@@ -11,6 +11,14 @@ import {
   formatDuration,
 } from '@/lib/api/chat';
 import { getAgentName, getAgentInitials, getAgentRole } from '@/lib/api/agent-status';
+import { acceptBudgetRevision } from '@/lib/api/sessions';
+
+interface BudgetRevisionOffer {
+  revision_amount: number; // in øre
+  justification: string;
+  old_budget: number; // in øre
+  new_budget: number; // in øre
+}
 
 interface ChatInterfaceProps {
   sessionId: string;
@@ -20,7 +28,91 @@ interface ChatInterfaceProps {
   onOfferAccepted?: (offer: OfferData) => void;
   onOfferRejected?: (offer: OfferData) => void;
   onOfferReceived?: (offer: OfferData | null) => void;
+  onBudgetRevisionAccepted?: () => void; // New callback for budget revision
   onSwitchAgent?: () => void;
+}
+
+// Parse budget revision offers from owner agent responses
+function parseBudgetRevisionFromResponse(response: string, currentBudget?: number): {
+  containsRevision: boolean;
+  revision_amount?: number; // in øre
+  justification?: string;
+  old_budget?: number; // in øre
+  new_budget?: number; // in øre
+} {
+  // Look for budget revision patterns - VERY specific to catch ONLY the increase amount
+  // Must match the APPROVAL phrase with the amount right next to it
+  const revisionPatterns = [
+    // Pattern 1: "godkjenner en budsjettøkning på X MNOK" (most specific - prioritize this!)
+    /godkjenner\s+(?:en\s+)?budsjett(?:økning|revisjon)\s+på\s+(\d+[.,]?\d*)\s*MNOK/i,
+    // Pattern 2: "godkjenner X MNOK" (followed immediately by MNOK)
+    /godkjenner\s+(\d+[.,]?\d*)\s*MNOK(?:\s+ekstra)?/i,
+    // Pattern 3: "økning på X MNOK" (in same sentence as approval)
+    /(?:godkjenn|godtar|aksepterer).*?økning\s+på\s+(\d+[.,]?\d*)\s*MNOK/i,
+    // Pattern 4: "+X MNOK" (explicit plus sign right before number)
+    /\+\s*(\d+[.,]?\d*)\s*MNOK/i,
+  ];
+
+  let revision_amount: number | undefined;
+  for (const pattern of revisionPatterns) {
+    const match = response.match(pattern);
+    if (match) {
+      const value = parseFloat(match[1].replace(',', '.'));
+      // Sanity check: budget increase should be between 10 and 500 MNOK
+      if (value >= 10 && value <= 500) {
+        revision_amount = value * 1_000_000; // Convert MNOK to NOK (same as offers)
+        break;
+      }
+    }
+  }
+
+  // Extract justification - look for text explaining why
+  let justification: string | undefined;
+  const justificationPatterns = [
+    /(?:fordi|grunnet|på grunn av|begrunnelse)[:\s]+([^.!?]+)/is,
+    /(?:godkjent|godkjenner)[:\s]+([^.!?]+)/is,
+  ];
+
+  for (const pattern of justificationPatterns) {
+    const match = response.match(pattern);
+    if (match) {
+      justification = match[1].trim();
+      break;
+    }
+  }
+
+  // Default justification if not found but revision detected
+  if (revision_amount && !justification) {
+    justification = "Godkjent budsjettøkning fra eier";
+  }
+
+  const containsRevision = revision_amount !== undefined;
+
+  // Try to extract old budget from response if not provided
+  let old_budget = currentBudget || 0;
+
+  // If currentBudget seems wrong (< 10 million NOK = < 10 MNOK), try to find it in the response
+  if (old_budget < 10_000_000) {
+    const oldBudgetMatch = response.match(/(?:nåværende|tilgjengelig|gammelt)\s+budsjett.*?(\d+)\s*MNOK/i);
+    if (oldBudgetMatch) {
+      old_budget = parseFloat(oldBudgetMatch[1]) * 1_000_000; // Convert MNOK to NOK
+      console.log('[BudgetRevision] Extracted old budget from response:', old_budget / 1_000_000, 'MNOK');
+    } else {
+      // Default to 310 MNOK if we can't find it
+      old_budget = 310_000_000; // 310 MNOK in NOK
+      console.warn('[BudgetRevision] Could not determine old budget, defaulting to 310 MNOK');
+    }
+  }
+
+  const new_budget = old_budget + (revision_amount || 0);
+
+  return {
+    containsRevision,
+    revision_amount,
+    justification,
+    old_budget,
+    new_budget,
+  };
 }
 
 export function ChatInterface({
@@ -31,6 +123,7 @@ export function ChatInterface({
   onOfferAccepted,
   onOfferRejected,
   onOfferReceived,
+  onBudgetRevisionAccepted,
   onSwitchAgent,
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -38,6 +131,7 @@ export function ChatInterface({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pendingOffer, setPendingOffer] = useState<OfferData | null>(null);
+  const [pendingBudgetRevision, setPendingBudgetRevision] = useState<BudgetRevisionOffer | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const agentName = getAgentName(agentId);
@@ -133,11 +227,29 @@ export function ChatInterface({
 
       setMessages((prev) => [...prev, agentMessage]);
 
-      // Set pending offer if detected
+      // Set pending offer if detected (for supplier agents)
       if (agentMessage.contains_offer && agentMessage.offer_data) {
         setPendingOffer(agentMessage.offer_data);
         if (onOfferReceived) {
           onOfferReceived(agentMessage.offer_data);
+        }
+      }
+
+      // Check for budget revision offers (for owner agent only)
+      if (agentType === 'owner') {
+        const budgetRevisionInfo = parseBudgetRevisionFromResponse(
+          response.response,
+          gameContext?.available_budget
+        );
+
+        if (budgetRevisionInfo.containsRevision) {
+          const revisionOffer: BudgetRevisionOffer = {
+            revision_amount: budgetRevisionInfo.revision_amount!,
+            justification: budgetRevisionInfo.justification!,
+            old_budget: budgetRevisionInfo.old_budget!,
+            new_budget: budgetRevisionInfo.new_budget!,
+          };
+          setPendingBudgetRevision(revisionOffer);
         }
       }
     } catch (err: any) {
@@ -181,6 +293,57 @@ export function ChatInterface({
       };
       setMessages((prev) => [...prev, rejectionMessage]);
     }
+  };
+
+  const handleAcceptBudgetRevision = async () => {
+    if (!pendingBudgetRevision) return;
+
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      await acceptBudgetRevision(sessionId, {
+        revision_amount: pendingBudgetRevision.revision_amount,
+        justification: pendingBudgetRevision.justification,
+        affects_total_budget: true, // Municipality budget increase affects both available and total
+      });
+
+      setPendingBudgetRevision(null);
+
+      // Add acceptance message
+      const mnokAmount = Math.round(pendingBudgetRevision.revision_amount / 1_000_000);
+      const acceptanceMessage: ChatMessage = {
+        id: Date.now().toString(),
+        role: 'user',
+        content: `Jeg godtar budsjettøkningen på ${mnokAmount} MNOK. Takk!`,
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, acceptanceMessage]);
+
+      // Notify parent component
+      if (onBudgetRevisionAccepted) {
+        onBudgetRevisionAccepted();
+      }
+    } catch (err: any) {
+      setError(err.message || 'Kunne ikke godkjenne budsjettrevisjon.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRejectBudgetRevision = () => {
+    if (!pendingBudgetRevision) return;
+
+    setPendingBudgetRevision(null);
+
+    // Add rejection message
+    const rejectionMessage: ChatMessage = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: 'Jeg avslår denne budsjettøkningen. Kan vi diskutere andre løsninger?',
+      timestamp: new Date().toISOString(),
+    };
+    setMessages((prev) => [...prev, rejectionMessage]);
   };
 
   return (
@@ -241,7 +404,7 @@ export function ChatInterface({
               <AgentMessage message={message} />
             )}
 
-            {/* Offer Box */}
+            {/* Offer Box (for supplier agents) */}
             {message.contains_offer && message.offer_data && message === messages[messages.length - 1] && (
               <OfferBox
                 offer={message.offer_data}
@@ -252,6 +415,16 @@ export function ChatInterface({
             )}
           </div>
         ))}
+
+        {/* Budget Revision Offer Box (for owner agent) - shown after all messages */}
+        {pendingBudgetRevision && agentType === 'owner' && (
+          <BudgetRevisionOfferBox
+            offer={pendingBudgetRevision}
+            onAccept={handleAcceptBudgetRevision}
+            onReject={handleRejectBudgetRevision}
+            disabled={isLoading}
+          />
+        )}
 
         {/* Loading indicator */}
         {isLoading && (
@@ -445,6 +618,84 @@ function OfferBox({
 
         <p className="mt-2 text-xs text-green-700">
           Ved å godta, oppdateres budsjettet ditt automatisk
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Budget Revision Offer Box with accept/reject buttons
+function BudgetRevisionOfferBox({
+  offer,
+  onAccept,
+  onReject,
+  disabled,
+}: {
+  offer: BudgetRevisionOffer;
+  onAccept: () => void;
+  onReject: () => void;
+  disabled: boolean;
+}) {
+  // Helper to convert NOK to MNOK for display
+  const formatToMNOK = (nokAmount: number): string => {
+    const mnok = nokAmount / 1_000_000; // NOK to MNOK
+    return `${mnok.toFixed(0)} MNOK`;
+  };
+
+  return (
+    <div className="mt-4 flex justify-start">
+      <div
+        className="max-w-[700px] rounded-lg border-2 p-4"
+        style={{
+          backgroundColor: colors.chat.offer.bg,
+          borderColor: colors.chat.offer.border,
+        }}
+      >
+        <p className="text-sm font-bold text-green-900">💰 BUDSJETTØKNING TILGJENGELIG</p>
+        <div className="mt-2 space-y-1 text-sm text-gray-700">
+          <p>Økning: {formatToMNOK(offer.revision_amount)}</p>
+          <p>Gammelt budsjett: {formatToMNOK(offer.old_budget)}</p>
+          <p>Nytt budsjett: {formatToMNOK(offer.new_budget)}</p>
+          <p className="mt-2 italic">Begrunnelse: {offer.justification}</p>
+        </div>
+
+        {/* Accept/Reject Buttons */}
+        <div className="mt-4 flex gap-4">
+          <button
+            onClick={onAccept}
+            disabled={disabled}
+            className="rounded-md px-6 py-3 text-sm font-semibold text-white transition-colors disabled:opacity-50"
+            style={{
+              backgroundColor: colors.button.success.bg,
+            }}
+            onMouseEnter={(e) => {
+              if (!disabled) {
+                e.currentTarget.style.backgroundColor = colors.button.success.hover;
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = colors.button.success.bg;
+            }}
+          >
+            ✓ Godta budsjettøkning
+          </button>
+
+          <button
+            onClick={onReject}
+            disabled={disabled}
+            className="rounded-md border px-6 py-3 text-sm font-semibold transition-colors disabled:opacity-50"
+            style={{
+              backgroundColor: colors.button.secondary.bg,
+              borderColor: colors.button.secondary.border,
+              color: colors.button.secondary.text,
+            }}
+          >
+            ✗ Avslå
+          </button>
+        </div>
+
+        <p className="mt-2 text-xs text-green-700">
+          Ved å godta, øker det tilgjengelige budsjettet ditt
         </p>
       </div>
     </div>

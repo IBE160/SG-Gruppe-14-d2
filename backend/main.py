@@ -228,6 +228,12 @@ class NegotiationHistoryRecord(BaseModel):
     sentiment: Optional[str] = None
 
 
+class BudgetRevisionRequest(BaseModel):
+    revision_amount: int  # Increase in øre (e.g., 50000000 = 50 MNOK)
+    justification: str  # Reason for budget increase
+    affects_total_budget: bool = False  # If True, increases total from 700 MNOK
+
+
 class ValidationResponse(BaseModel):
     valid: bool
     earliest_start: Dict[str, str]
@@ -876,6 +882,134 @@ def get_commitments(
     except Exception as e:
         print(f"Error fetching commitments: {str(e)}")
         raise HTTPException(status_code=500, detail="En feil oppstod ved henting av forpliktelser")
+
+
+# ---- Budget Revisions ----
+
+@app.post("/api/sessions/{session_id}/budget-revision", response_model=SessionResponse, tags=["Budget"])
+def accept_budget_revision(
+    session_id: str,
+    revision: BudgetRevisionRequest,
+    current_user: dict = Depends(get_current_user),
+    db: Client = Depends(get_db_client),
+):
+    """
+    Accept a budget revision from the owner agent.
+    Increases available budget and creates a snapshot.
+    """
+    try:
+        # Validate inputs
+        if revision.revision_amount <= 0:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Revisjonsbeløp må være positivt, fikk: {revision.revision_amount}"
+            )
+
+        if not revision.justification or not revision.justification.strip():
+            raise HTTPException(
+                status_code=400,
+                detail="Begrunnelse er påkrevd for budsjettrevisjoner"
+            )
+
+        # Fetch current session
+        session_response = (
+            db.table("game_sessions")
+            .select("*")
+            .eq("id", session_id)
+            .eq("user_id", current_user["id"])
+            .single()
+            .execute()
+        )
+
+        if not session_response.data:
+            raise HTTPException(status_code=404, detail="Spillsesjon ikke funnet")
+
+        session = session_response.data
+
+        # Calculate old and new budget values (in øre)
+        old_budget = session["available_budget"]
+        new_budget = old_budget + revision.revision_amount
+
+        # Update session budget
+        update_data = {
+            "available_budget": new_budget,
+            "updated_at": datetime.utcnow().isoformat()
+        }
+
+        # If affects_total_budget, also increase total
+        if revision.affects_total_budget:
+            new_total = session["total_budget"] + revision.revision_amount
+            update_data["total_budget"] = new_total
+
+        # Update the session
+        updated_session_response = (
+            db.table("game_sessions")
+            .update(update_data)
+            .eq("id", session_id)
+            .execute()
+        )
+
+        if not updated_session_response.data:
+            raise HTTPException(
+                status_code=500,
+                detail="Kunne ikke oppdatere sesjon med nytt budsjett"
+            )
+
+        # Create budget revision snapshot using database function
+        try:
+            print(f"\n[BudgetRevision] Creating snapshot with params:")
+            print(f"  - session_id: {session_id}")
+            print(f"  - old_budget: {old_budget:,} NOK ({old_budget/1_000_000:.0f} MNOK)")
+            print(f"  - new_budget: {new_budget:,} NOK ({new_budget/1_000_000:.0f} MNOK)")
+            print(f"  - revision_amount: {revision.revision_amount:,} NOK ({revision.revision_amount/1_000_000:.0f} MNOK)")
+            print(f"  - justification: {revision.justification[:50]}...")
+            print(f"  - affects_total_budget: {revision.affects_total_budget}")
+
+            snapshot_result = db.rpc(
+                "create_budget_revision_snapshot",
+                {
+                    "p_session_id": session_id,
+                    "p_old_budget": old_budget,
+                    "p_new_budget": new_budget,
+                    "p_revision_amount": revision.revision_amount,
+                    "p_justification": revision.justification,
+                    "p_affects_total_budget": revision.affects_total_budget
+                }
+            ).execute()
+
+            if not snapshot_result.data:
+                print(f"[BudgetRevision] WARNING: Snapshot creation returned no data")
+            else:
+                print(f"[BudgetRevision] SUCCESS: Snapshot created with ID: {snapshot_result.data}")
+
+        except Exception as snapshot_error:
+            print(f"[BudgetRevision] ERROR creating snapshot: {str(snapshot_error)}")
+            import traceback
+            traceback.print_exc()
+            # Don't fail the whole request if snapshot fails
+            # The budget update is already done
+
+        # Fetch and return the updated session
+        final_session_response = (
+            db.table("game_sessions")
+            .select("*")
+            .eq("id", session_id)
+            .single()
+            .execute()
+        )
+
+        return SessionResponse(**final_session_response.data)
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error accepting budget revision: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail="En feil oppstod ved godkjenning av budsjettrevisjon"
+        )
 
 
 # ---- History ----

@@ -295,3 +295,46 @@ export async function getUserSessions(): Promise<GameSession[]> {
   const data: GameSession[] = await response.json();
   return data;
 }
+
+/**
+ * Accept a budget revision from the owner agent
+ */
+export async function acceptBudgetRevision(
+  sessionId: string,
+  revision: {
+    revision_amount: number;
+    justification: string;
+    affects_total_budget?: boolean;
+  }
+): Promise<GameSession> {
+  const supabase = createClient();
+
+  // Get JWT token
+  const {
+    data: { session },
+    error: authError,
+  } = await supabase.auth.getSession();
+
+  if (authError || !session) {
+    throw new Error('Ikke autentisert. Vennligst logg inn igjen.');
+  }
+
+  const response = await fetch(`${API_URL}/api/sessions/${sessionId}/budget-revision`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify(revision),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(
+      errorData.detail || errorData.message || 'Kunne ikke godkjenne budsjettrevisjon.'
+    );
+  }
+
+  const data: GameSession = await response.json();
+  return data;
+}

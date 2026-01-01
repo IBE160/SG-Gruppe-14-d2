@@ -17,7 +17,7 @@ export function BudgetDisplay({ session, showDetails = true }: BudgetDisplayProp
   // Get progress bar color
   const progressColor = getBudgetProgressColor(tier1Percentage);
 
-  // Format amounts
+  // Format amounts (convert from NOK to MNOK: 1,000,000 NOK = 1 MNOK)
   const formatMNOK = (amount: number) => {
     return `${(amount / 1_000_000).toFixed(0)} MNOK`;
   };

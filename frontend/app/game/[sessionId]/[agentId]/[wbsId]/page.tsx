@@ -89,6 +89,17 @@ export default function GamePage() {
     }
   }
 
+  async function handleBudgetRevisionAccepted() {
+    // Budget revision was accepted - reload session to get updated budget
+    try {
+      const sessionData = await getSession(sessionId);
+      setSession(sessionData as unknown as GameSession);
+      console.log('Session budget updated after budget revision');
+    } catch (err) {
+      console.error('Failed to reload session after budget revision:', err);
+    }
+  }
+
   async function handleOfferAccepted(offer: OfferData) {
     if (!session || !wbsElement) return;
 
@@ -249,6 +260,7 @@ export default function GamePage() {
             onOfferAccepted={handleOfferAccepted}
             onOfferRejected={handleOfferRejected}
             onOfferReceived={setPendingOffer}
+            onBudgetRevisionAccepted={handleBudgetRevisionAccepted}
           />
         </div>
       </div>

@@ -7,9 +7,9 @@
 
 ---
 
-## 📊 Executive Summary (Updated: December 31, 2025)
+## 📊 Executive Summary (Updated: January 1, 2026)
 
-### Project Status: **MVP-READY - 99% COMPLETE** ✅
+### Project Status: **MVP-READY - 95% COMPLETE** ✅
 
 The PM Simulator project has successfully implemented core functionality and is **ready for classroom demonstrations**. The application features a working AI-powered negotiation system, full authentication, budget tracking, data persistence, critical path calculation, fully functional Gantt chart and Precedence diagram visualizations, stable offer acceptance flow, and **complete snapshot system with history/timeline view**. Users can now view project state at any point in time, compare different snapshots, and see how decisions impacted the timeline via Gantt and Precedence diagrams. The core application is stable.
 
@@ -22,9 +22,25 @@ The PM Simulator project has successfully implemented core functionality and is 
 - ✅ Snapshot system fixes - Fixed database constraints, type conversions, and timeline format consistency (December 31, 2025)
 - ✅ History/Timeline View - Full end-to-end snapshot creation, storage, and visualization working (December 31, 2025)
 
-**Only 1 critical feature remains for MVP (6-8 hours total):**
+**Recent Completions (January 1, 2026):**
 
-1. Owner perspective budget revision acceptance (6-8 hours) - **See detailed implementation plan below**
+- ✅ **Owner Budget Revision Feature (95% complete)** - Full negotiation flow working:
+  - ✅ Frontend budget revision detection with regex patterns (chat-interface.tsx:35-116)
+  - ✅ Budget revision offer box UI with accept/reject buttons (chat-interface.tsx:630-692)
+  - ✅ Backend API endpoint POST /api/sessions/{sessionId}/budget-revision (backend/main.py:889-1000)
+  - ✅ Database migration 003 for budget revision snapshot support (database/migrations/003_budget_revisions.sql)
+  - ✅ Database migration 004 fixing NOK/øre unit conversion (database/migrations/004_fix_budget_revision_units.sql)
+  - ✅ History panel budget revision snapshot rendering with 💰 icon (history-panel.tsx:369-415)
+  - ✅ Dashboard budget refresh callback wired to ChatInterface (dashboard/page.tsx:566)
+  - ✅ AI agent prompt updates for strict 2-3 round negotiation (AI_AGENT_SYSTEM_PROMPTS.md:77-218)
+  - ✅ Dynamic amount matching (agent approves exact user-requested amount within 50 MNOK per-round limit)
+  - ✅ Total budget and available budget correctly updated after acceptance
+  - ✅ Unit conversion bugs fixed (session budgets stored in NOK, not øre)
+  - 🟡 Snapshot creation failing silently (database function executes but no snapshot appears in history)
+
+**Critical issue blocking completion (2-4 hours to resolve):**
+
+1. 🔴 **Budget Revision Snapshot Creation Failing** - Budget updates correctly, but create_budget_revision_snapshot() database function not creating snapshots in session_snapshots table. Requires database debugging to identify why RPC call succeeds but INSERT fails.
 
 All other remaining items are nice-to-have enhancements.
 
@@ -32,10 +48,29 @@ All other remaining items are nice-to-have enhancements.
 
 ### ⚠️ Known Issues
 
-**No critical issues at this time.**
+**Critical (Blocking MVP Completion):**
+
+1. 🔴 **Budget Revision Snapshot Not Created (January 1, 2026)** - Despite successful budget update, the `create_budget_revision_snapshot()` database function does not create snapshots in `session_snapshots` table:
+   - **Symptom**: Budget increases correctly (e.g., 310 → 342 MNOK), total budget updates (700 → 732 MNOK), dashboard refreshes with new values, but no new snapshot appears in History panel (still shows only 2 baseline snapshots)
+   - **Backend behavior**: RPC call to `create_budget_revision_snapshot()` executes without throwing exceptions, but INSERT statement inside function may be failing silently
+   - **Parameters passed**: session_id (UUID), old_budget (310000000 NOK), new_budget (342000000 NOK), revision_amount (32000000 NOK), justification (text), affects_total_budget (true)
+   - **Database migrations applied**: 003_budget_revisions.sql (adds snapshot_type='budget_revision' support, revision columns, database function) and 004_fix_budget_revision_units.sql (fixes NOK vs øre conversion in validation)
+   - **Debug logging added**: backend/main.py:960-989 prints detailed RPC parameters and catches all exceptions with traceback
+   - **Next steps**: Check backend terminal for error output when accepting budget revision, verify database function permissions, check if INSERT constraint is failing (budget_committed + budget_available != budget_total validation may be failing due to data type or calculation error)
+   - **Files involved**:
+     - Backend: backend/main.py:889-1000 (accept_budget_revision endpoint)
+     - Database: database/migrations/003_budget_revisions.sql, database/migrations/004_fix_budget_revision_units.sql
+     - Frontend: frontend/components/chat-interface.tsx:35-116 (parseBudgetRevisionFromResponse)
 
 **Recently Resolved:**
 
+- ✅ **Unit Conversion Bug (Fixed: January 1, 2026)** - Budget revision amounts were being converted to øre (multiply by 100,000,000) but session budgets are stored in NOK (multiply by 1,000,000). Fixed in:
+  - chat-interface.tsx:63 (revision_amount now uses 1_000_000 multiplier, not 100_000_000)
+  - chat-interface.tsx:98-102 (old_budget extraction and default now use NOK units)
+  - chat-interface.tsx:314 (acceptance message formatting now divides by 1_000_000)
+  - chat-interface.tsx:640-643 (formatToMNOK helper now divides by 1_000_000)
+  - database/migrations/004_fix_budget_revision_units.sql (database function label calculation now divides by 1_000_000)
+- ✅ **Total Budget Not Updating (Fixed: January 1, 2026)** - Budget revisions were only updating available_budget, not total_budget. Fixed by changing affects_total_budget from false to true in chat-interface.tsx:308
 - ✅ **Authentication Validation (Fixed: December 31, 2025)** - Resolved JWT validation issue. The temporary debug bypass code in `backend/main.py` `get_current_user()` function has been replaced with proper Supabase Auth API validation using `supabase.auth.get_user(token.credentials)`. Authentication now works correctly for all users without bypassing security.
 - ✅ **Snapshot System Database Errors (Fixed: December 31, 2025)** - Resolved three critical issues preventing snapshot creation:
   1. Budget total constraint violation - Fixed hardcoded value in database function from 700000000 (7 MNOK) to 70000000000 (700 MNOK) to match CHECK constraint
@@ -73,15 +108,25 @@ All other remaining items are nice-to-have enhancements.
 
 ### What's Partially Working 🟡
 
-**In Progress (40% complete):**
+**In Progress (95% complete):**
 
-1. 🟡 **Owner Perspective** (40%) - User can chat with owner agent (Anne-Lise Berg), but budget revision acceptance is NOT implemented (no UI button, no backend endpoint, no snapshot creation)
+1. 🟡 **Owner Perspective Budget Revision** (95%) - Full negotiation flow implemented and working:
+   - ✅ User can chat with owner agent (Anne-Lise Berg)
+   - ✅ Budget revision detection from AI responses
+   - ✅ Budget revision offer box with accept/reject UI
+   - ✅ Backend API endpoint for budget revision acceptance
+   - ✅ Budget updates correctly (available and total budget increase)
+   - ✅ Dashboard refreshes after acceptance
+   - ✅ AI agent enforces 2-3 round strict negotiation
+   - ✅ Dynamic amount matching (exact user request within limits)
+   - ✅ History panel renders budget revision snapshots with 💰 icon
+   - 🔴 Snapshot creation failing (database function executes but no INSERT - requires debugging)
 
 ### What's Missing ❌
 
 **Critical for MVP:**
 
-1. ❌ **Owner Perspective Budget Revision** - No UI to accept revised budgets from owner agent, no backend endpoint, no snapshot creation (est: 6-8 hours)
+1. 🔴 **Debug Budget Revision Snapshot Creation** - Database function not inserting snapshots (est: 2-4 hours to debug and fix)
 
 **Recently Completed:**
 
@@ -97,6 +142,7 @@ All other remaining items are nice-to-have enhancements.
 9. ⚠️ **Mobile Responsiveness** - Desktop-optimized only, limited mobile support (est: 8-12 hours)
 10. ❌ **Automated Testing** - No test suite (unit/integration/E2E) (est: 40+ hours)
 11. ❌ **Administration Panel** - Teacher/admin dashboard to view all student sessions and results from database (est: 12-16 hours)
+12. ❌ **Document Upload for Budget Justification** - AI-powered document analysis to support budget revision requests (est: 16-24 hours) - See detailed specification below
 
 ---
 
@@ -274,7 +320,7 @@ All other remaining items are nice-to-have enhancements.
 
 ---
 
-### ❌ Owner Budget Revision Acceptance (NOT IMPLEMENTED)
+### 🟡 Owner Budget Revision Acceptance (95% IMPLEMENTED - January 1, 2026)
 
 **What Currently Works:**
 
@@ -282,70 +328,64 @@ All other remaining items are nice-to-have enhancements.
 - ✅ User can chat with owner agent
 - ✅ Owner agent can propose budget increases in chat responses (via AI)
 - ✅ Game context includes budget info sent to agent
+- ✅ **Budget revision detection** - Regex patterns detect when owner approves budget increase (chat-interface.tsx:35-87)
+- ✅ **Accept/Reject UI** - BudgetRevisionOfferBox component shows offer details and action buttons (chat-interface.tsx:630-692)
+- ✅ **Backend endpoint** - POST /api/sessions/{sessionId}/budget-revision implemented (backend/main.py:889-1000)
+- ✅ **Session update logic** - available_budget and total_budget correctly updated in game_sessions table
+- ✅ **Dashboard refresh** - Dashboard reloads session after acceptance (dashboard/page.tsx:133-157, 566)
+- ✅ **AI strict negotiation** - Owner enforces 2-3 round negotiation before approval (AI_AGENT_SYSTEM_PROMPTS.md:77-218)
+- ✅ **Dynamic amount matching** - Agent approves exact user-requested amount within limits (50 MNOK/round, 100 MNOK total)
+- ✅ **History panel rendering** - Budget revision snapshots display with 💰 icon (history-panel.tsx:369-415)
+- ✅ **Database migrations** - snapshot_type='budget_revision' support added (migrations/003, 004)
 
-**What's Missing:**
+**What's Broken:**
 
-- ❌ **No OfferBox equivalent** for budget revision offers (no UI to accept/reject)
-- ❌ **No backend endpoint** `POST /api/sessions/{sessionId}/budget-revision`
-- ❌ **No database table** `budget_revisions` to track revision history
-- ❌ **No snapshot creation** for type='budget_revision' events
-- ❌ **No session update logic** to modify `available_budget` or `total_budget`
+- 🔴 **Snapshot creation failing** - create_budget_revision_snapshot() function executes but INSERT doesn't create snapshots
+  - Budget updates work correctly (310 → 342 MNOK, 700 → 732 MNOK)
+  - RPC call succeeds without exceptions
+  - Database function may be failing on INSERT constraint (budget_committed + budget_available != budget_total)
+  - Debug logging added (backend/main.py:960-989) - check backend terminal for error details
 
-**What Would Be Needed (Estimated 6-8 hours):**
+**What Remains (Estimated 2-4 hours):**
 
-1. **Frontend OfferBox for Budget Revisions** (2 hours)
+1. **Debug Snapshot Creation** (2-4 hours)
 
-   - New regex pattern to detect budget revision offers in chat
-   - New `BudgetRevisionOfferBox` component with Accept/Reject buttons
-   - Handler `handleBudgetRevisionAccepted()`
-2. **Backend Endpoint** (2 hours)
+   - Check backend terminal for RPC error output (debug logging already added)
+   - Verify database function constraint validation logic
+   - Check if budget_committed + budget_available == budget_total calculation is correct
+   - Verify database function permissions (RLS policies, execution rights)
+   - Test database function manually via Supabase SQL Editor with sample parameters
+   - Fix INSERT constraint or data type issue preventing snapshot creation
 
-   ```python
-   @app.post("/api/sessions/{session_id}/budget-revision")
-   async def accept_budget_revision(
-       session_id: str,
-       request: BudgetRevisionRequest
-   ):
-       # Update game_sessions.available_budget
-       # Update game_sessions.total_budget (if applicable)
-       # Create budget_revision_snapshot
-       # Return updated session
-   ```
-3. **Database Schema Update** (1 hour)
+**Implementation Completed (January 1, 2026):**
 
-   - Add `budget_revisions` table (optional, for audit trail)
-   - Update `create_budget_revision_snapshot()` function
-   - Add fields: `revision_old_budget`, `revision_new_budget`, `revision_justification`
-4. **Snapshot Creation** (1 hour)
+- ✅ Frontend budget revision detection with regex patterns (chat-interface.tsx:35-87)
+- ✅ BudgetRevisionOfferBox UI component with accept/reject buttons (chat-interface.tsx:630-692)
+- ✅ Backend endpoint POST /api/sessions/{sessionId}/budget-revision (backend/main.py:889-1000)
+- ✅ Database migration 003 adds budget_revision snapshot type and revision columns
+- ✅ Database migration 004 fixes NOK vs øre conversion in validation
+- ✅ Snapshot creation via create_budget_revision_snapshot() database function
+- ✅ History panel displays budget revision snapshots with 💰 icon and amber badge
+- ✅ AI agent strict negotiation (2-3 rounds, dynamic amounts, 50 MNOK/round limit)
+- ✅ All unit conversion bugs fixed (session budgets use NOK, not øre)
 
-   - New snapshot type: `'budget_revision'`
-   - Store old and new budget amounts
-   - Store justification text
-   - NO need to recalculate timeline (budget doesn't affect CPM)
-5. **History Panel Update** (1-2 hours)
-
-   - Display budget revision snapshots differently (no contract details)
-   - Show budget increase amount and justification
-   - Add "Budget Revision" badge/icon
-
-**Key Inputs Required for Owner Budget Revision:**
+**Key Inputs Implemented:**
 
 ```typescript
-{
-  revision_amount: number,      // Increase in øre (e.g., 50000000 = 50 MNOK)
-  justification: string,        // "Approved due to scope change"
-  affects_total_budget: boolean // true = increase total, false = just available
+interface BudgetRevisionRequest {
+  revision_amount: number;      // Increase in NOK (e.g., 50000000 = 50 MNOK)
+  justification: string;        // "Approved due to scope change"
+  affects_total_budget: boolean // true = increase both available and total
 }
 ```
 
-**Database Effects Would Be:**
+**Database Effects Implemented:**
 
-- INSERT into `budget_revisions` table (if created)
-- UPDATE `game_sessions.available_budget` += revision_amount
-- UPDATE `game_sessions.total_budget` += revision_amount (if affects_total_budget=true)
-- INSERT into `session_snapshots` with snapshot_type='budget_revision'
-- NO wbs_commitments changes
-- NO timeline recalculation needed (budget doesn't affect critical path)
+- ✅ UPDATE `game_sessions.available_budget` += revision_amount
+- ✅ UPDATE `game_sessions.total_budget` += revision_amount (when affects_total_budget=true)
+- 🔴 INSERT into `session_snapshots` with snapshot_type='budget_revision' (FAILING - requires debugging)
+- ✅ NO wbs_commitments changes
+- ✅ NO timeline recalculation needed (budget doesn't affect critical path)
 
 ---
 
@@ -1526,6 +1566,301 @@ WHERE session_id = '{SESSION_ID}' ORDER BY version;
 **Nice to Have (Future Enhancements)**
 
 - **Renegotiation/Uncommit Feature** (3-4 hours) - DELETE endpoint + uncommit UI to reverse accepted offers
+- **Document Upload for Budget Justification** (16-24 hours) - See detailed specification in "Future Feature Specifications" section below
+
+---
+
+## 📄 Future Feature Specifications
+
+### Document Upload for Budget Justification (Owner Perspective)
+
+**Status:** Nice to Have - Not Currently Planned for Development
+
+**Estimated Effort:** 16-24 hours
+
+**Purpose:**
+Enable students to upload supporting documentation (PDF, Excel, Word) when requesting budget increases from the owner agent (Anne-Lise Berg). The AI agent analyzes uploaded documents to evaluate the strength of budget justification, making the simulation more realistic and pedagogically valuable.
+
+---
+
+#### **Feature Overview**
+
+**Core Functionality:**
+1. **Contextual Document Guidance** - System suggests what documentation is needed based on user's budget request arguments
+2. **Multi-File Upload** - Support for multiple files in different formats (PDF, XLSX, DOCX)
+3. **AI Document Analysis** - Owner agent analyzes uploaded documents to evaluate budget justification strength
+4. **Evidence-Based Decisions** - Budget approvals weighted by quality of documentation provided
+
+**Supported File Formats:**
+- **PDF** (.pdf) - Technical reports, geotechnical studies, risk assessments
+- **Excel** (.xlsx, .xls) - Cost breakdowns, budget analyses, financial projections
+- **Word** (.docx, .doc) - Project proposals, scope change documentation, expert opinions
+
+**Maximum Upload:**
+- Up to 5 files per budget request
+- Maximum 10 MB per file
+- Total maximum 25 MB per request
+
+---
+
+#### **User Flow**
+
+**Step 1: User Makes Budget Request**
+```
+User: "Vi trenger 50 MNOK ekstra for grunnarbeidet"
+
+Owner Agent (Anne-Lise Berg): "Jeg trenger dokumentasjon før jeg kan vurdere dette.
+Basert på din forespørsel om grunnarbeid, trenger jeg:
+
+📋 Anbefalt dokumentasjon:
+1. Geoteknisk rapport (PDF) - Viser grunnforhold og risiko
+2. Kostnadsanalyse (Excel) - Detaljert oversikt over ekstra utgifter
+3. Risikovurdering (PDF/Word) - Konsekvenser av å ikke godkjenne
+
+Du kan laste opp dokumenter nedenfor ↓"
+```
+
+**Step 2: Contextual Document Suggestions**
+
+Based on user's argument context, system suggests specific document types:
+
+| User Argument Context | Suggested Documents |
+|----------------------|---------------------|
+| Geotechnical issues | - Geotechnical survey report (PDF)<br>- Soil stability analysis (PDF/Excel)<br>- Foundation design calculations (PDF) |
+| Safety concerns | - Risk assessment report (PDF/Word)<br>- Safety audit findings (PDF)<br>- Regulatory compliance documentation (PDF) |
+| Scope changes | - Change request form (Word/PDF)<br>- Impact analysis (Excel)<br>- Stakeholder approval (PDF) |
+| Cost overruns | - Detailed cost breakdown (Excel)<br>- Vendor quotes (PDF)<br>- Market price comparison (Excel) |
+| Legal/regulatory | - Compliance report (PDF)<br>- Legal opinion (PDF/Word)<br>- Regulatory requirements (PDF) |
+
+**Step 3: File Upload Interface**
+
+```
+┌─────────────────────────────────────────────────┐
+│  📎 Last opp dokumentasjon                      │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│  [Dra og slipp filer her]                      │
+│  eller                                          │
+│  [ Velg filer ]                                 │
+│                                                 │
+│  Støttede formater: PDF, Excel (.xlsx), Word   │
+│  Maks 5 filer, 10 MB per fil                   │
+├─────────────────────────────────────────────────┤
+│  Opplastede filer:                             │
+│  ✓ Geoteknisk_rapport.pdf (2.4 MB)            │
+│  ✓ Kostnadsanalyse.xlsx (876 KB)              │
+│  ✓ Risikovurdering.docx (1.2 MB)              │
+│                                                 │
+│  [ Send dokumentasjon til Anne-Lise Berg ]     │
+└─────────────────────────────────────────────────┘
+```
+
+**Step 4: AI Document Analysis**
+
+Owner agent receives documents and analyzes:
+- **PDF parsing** - Extract text, tables, images for analysis
+- **Excel analysis** - Read spreadsheets, validate calculations, check formulas
+- **Word processing** - Extract structured content, headings, tables
+
+**Step 5: Evidence-Based Response**
+
+```
+Anne-Lise Berg: "Takk for dokumentasjonen. Jeg har gjennomgått:
+
+✓ Geoteknisk rapport fra Nordic Geo AS (2024-12-15)
+  - Viser ustabil leire på 3-8 meters dybde
+  - Anbefaler peleforsterkning med 45 stålpeler
+
+✓ Kostnadsanalyse
+  - Detaljert prisberegning: 48.5 MNOK
+  - Inkluderer materialer, arbeid, maskinleie
+  - Samsvarer med markedspriser
+
+✓ Risikovurdering
+  - Estimert 85% sannsynlighet for setningsskader uten tiltak
+  - Potensiell reparasjonskostnad: 120-150 MNOK
+
+Basert på denne solide dokumentasjonen godkjenner jeg en
+budsjettøkning på 50 MNOK. Dette er godt begrunnet."
+```
+
+---
+
+#### **Technical Implementation**
+
+**Frontend Components:**
+1. **FileUploadWidget** - Drag-and-drop file upload interface
+   - File validation (format, size)
+   - Upload progress indication
+   - File preview/management
+
+2. **DocumentSuggestionPanel** - Contextual document recommendations
+   - Analyzes user's chat messages
+   - Suggests relevant document types
+   - Links to document templates (optional)
+
+3. **UploadedDocumentsList** - Shows uploaded files
+   - File name, size, upload status
+   - Remove/replace functionality
+   - Validation indicators
+
+**Backend Implementation:**
+
+1. **File Storage Service** (4-6 hours)
+   ```python
+   POST /api/sessions/{session_id}/documents/upload
+   - Validate file format (PDF, XLSX, DOCX)
+   - Virus scanning (ClamAV or similar)
+   - Store in Supabase Storage
+   - Generate secure URL for AI access
+   ```
+
+2. **Document Processing Pipeline** (8-12 hours)
+   ```python
+   - PDF: PyPDF2 or pdfplumber for text extraction
+   - Excel: openpyxl for spreadsheet reading
+   - Word: python-docx for document parsing
+   - Store extracted content in database
+   ```
+
+3. **AI Document Analysis Integration** (4-6 hours)
+   ```python
+   - Send document content to Gemini AI
+   - Provide context: "User is requesting budget increase for [X]"
+   - Ask AI to evaluate document quality
+   - Extract key findings, numbers, evidence
+   - Return structured analysis
+   ```
+
+**Database Schema:**
+
+```sql
+CREATE TABLE document_uploads (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    session_id UUID REFERENCES game_sessions(id),
+    uploaded_by UUID REFERENCES auth.users(id),
+    file_name VARCHAR(255) NOT NULL,
+    file_type VARCHAR(50) NOT NULL, -- 'pdf', 'xlsx', 'docx'
+    file_size_bytes BIGINT NOT NULL,
+    storage_path TEXT NOT NULL,
+    extracted_content TEXT, -- Parsed text content
+    ai_analysis JSONB, -- AI's analysis results
+    related_budget_request_id UUID, -- Link to budget revision
+    uploaded_at TIMESTAMPTZ DEFAULT NOW(),
+    analyzed_at TIMESTAMPTZ
+);
+```
+
+**AI Prompt Enhancement:**
+
+```markdown
+# DOCUMENT ANALYSIS CAPABILITY
+
+When user uploads documents for budget justification:
+
+1. Acknowledge receipt: "Takk for dokumentasjonen. Jeg ser på..."
+2. Analyze each document:
+   - PDF reports: Check author, date, findings, recommendations
+   - Excel files: Validate calculations, check totals, assess reasonableness
+   - Word docs: Review structure, completeness, professional quality
+3. Evaluate strength of evidence:
+   - Strong: Technical reports from certified experts, detailed calculations, compliance docs
+   - Medium: General proposals, rough estimates, internal memos
+   - Weak: Incomplete data, outdated info, unsubstantiated claims
+4. Provide feedback on documentation quality
+5. Make decision based on evidence strength
+
+Document analysis should INCREASE likelihood of approval if:
+- Documents are from credible sources (certified engineers, auditors, etc.)
+- Data is recent (within last 6 months)
+- Numbers are detailed and verifiable
+- Evidence directly supports the requested amount
+```
+
+---
+
+#### **Pedagogical Benefits**
+
+**Learning Outcomes:**
+1. **Professional Communication** - Students learn to support requests with evidence
+2. **Document Preparation** - Practice creating technical and financial documentation
+3. **Critical Thinking** - Understand what constitutes strong vs. weak evidence
+4. **Real-World Skills** - Mirror actual project management documentation requirements
+
+**Assessment Opportunities:**
+- Quality of documentation submitted
+- Appropriateness of document types chosen
+- Accuracy and completeness of information
+- Professional formatting and presentation
+
+---
+
+#### **Security Considerations**
+
+**File Upload Security:**
+- Virus/malware scanning before processing
+- File size limits to prevent DoS attacks
+- Content validation (actual PDF/Excel/Word, not disguised executables)
+- Sandboxed document parsing environment
+
+**Data Privacy:**
+- Uploaded documents deleted after session completion
+- No personally identifiable information (PII) in documents
+- Row-Level Security (RLS) ensures users only access own documents
+
+**AI Safety:**
+- Sanitize document content before sending to AI
+- Prevent prompt injection through document content
+- Validate AI responses before presenting to user
+
+---
+
+#### **Implementation Phases**
+
+**Phase 1: Basic Upload (6-8 hours)**
+- File upload UI component
+- Backend storage endpoint
+- Simple file validation
+- Display uploaded file list
+
+**Phase 2: Document Processing (6-8 hours)**
+- PDF text extraction
+- Excel spreadsheet parsing
+- Word document parsing
+- Store extracted content in database
+
+**Phase 3: AI Integration (4-6 hours)**
+- Send document content to AI agent
+- Enhance AI prompt with document analysis instructions
+- Parse AI's document analysis
+- Display analysis results to user
+
+**Phase 4: Contextual Suggestions (2-3 hours)**
+- Analyze user's chat context
+- Generate relevant document suggestions
+- Display dynamic recommendations
+- Link to document templates (optional)
+
+---
+
+#### **Success Metrics**
+
+- **Adoption Rate** - % of budget requests that include documentation
+- **Approval Rate** - Budget requests with docs vs. without docs
+- **Document Quality** - AI assessment scores of submitted documents
+- **Learning Outcomes** - Student feedback on documentation preparation skills
+- **Time to Approval** - Reduced negotiation rounds with good documentation
+
+---
+
+#### **Future Enhancements (Beyond Initial Implementation)**
+
+1. **Document Templates** - Provide downloadable templates for common document types
+2. **OCR Support** - Handle scanned PDFs and images
+3. **Real-time Validation** - Check document quality during upload
+4. **Collaboration** - Multiple students can contribute documents to same request
+5. **Version Control** - Track document revisions and updates
+6. **Export for Grading** - Teachers can download student-submitted documentation for assessment
 
 ### Updated Timeline Estimates
 

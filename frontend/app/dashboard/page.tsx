@@ -130,6 +130,32 @@ export default function DashboardPage() {
     }
   }
 
+  async function handleBudgetRevisionAccepted() {
+    // Budget revision was accepted - reload session and commitments to update budget display
+    if (!session) return;
+
+    try {
+      console.log('[Dashboard] Budget revision accepted, reloading session data...');
+
+      // Reload session to get updated budget
+      const sessions = await getUserSessions();
+      const updatedSession = sessions.find(s => s.id === session.id);
+
+      if (updatedSession) {
+        setSession(updatedSession);
+        console.log('[Dashboard] Session budget updated:', {
+          available: updatedSession.available_budget,
+          total: updatedSession.total_budget
+        });
+      }
+
+      // Reload commitments and validation data
+      await loadCommitmentsAndValidation();
+    } catch (err) {
+      console.error('[Dashboard] Failed to reload session after budget revision:', err);
+    }
+  }
+
   async function handleStartNewSession() {
     setIsLoading(true);
     setError(null);
@@ -537,6 +563,7 @@ export default function DashboardPage() {
                 agentId="anne-lise-berg"
                 agentType="owner"
                 gameContext={gameContext}
+                onBudgetRevisionAccepted={handleBudgetRevisionAccepted}
               />
             </div>
           </div>
